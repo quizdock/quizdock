@@ -57,8 +57,8 @@ importers:
   apps/backend:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.31.0
-        version: 1.31.0(supports-color@8.1.1)(zod@4.4.3)
+        specifier: ^1.32.0
+        version: 1.32.0(supports-color@8.1.1)(zod@4.4.3)
       '@nestjs/common':
         specifier: ^11.2.7
         version: 11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
@@ -312,7 +312,7 @@ importers:
         version: 25.0.1(supports-color@8.1.1)
       orval:
         specifier: ^8.22.0
-        version: 8.39.0(@modelcontextprotocol/sdk@1.31.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3)
+        version: 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3)
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
@@ -1356,8 +1356,8 @@ packages:
   '@microsoft/tsdoc@0.16.0':
     resolution: {integrity: sha512-xgAyonlVVS+q7Vc7qLW0UrJU7rSFcETRWsqdXZtjzRU8dF+6CkozTK4V4y1LwOX7j8r/vHphjDeMeGI4tNGeGA==}
 
-  '@modelcontextprotocol/sdk@1.31.0':
-    resolution: {integrity: sha512-UvTMgnNlnIBO/22ob2RcVGDlcvOslQs8T59+FTGdA0L27a39fdGF/EDETNtDVK4DZGpwomlsYpRdA8UXcVL/pw==}
+  '@modelcontextprotocol/sdk@1.32.0':
+    resolution: {integrity: sha512-8BviX/hK4Gd2eL1KdTwm0gfl4d3wdoErW0Jd00h6nomUAtk6IJk5vwQJc6kfWtJTzN5OEV/lgIiJKI8fiDGAlA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -7236,7 +7236,7 @@ snapshots:
 
   '@microsoft/tsdoc@0.16.0': {}
 
-  '@modelcontextprotocol/sdk@1.31.0(supports-color@8.1.1)(zod@4.4.3)':
+  '@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3)':
     dependencies:
       '@hono/node-server': 2.1.1(hono@4.13.10)
       ajv: 8.20.0
@@ -7455,13 +7455,13 @@ snapshots:
       - '@faker-js/faker'
       - zod
 
-  '@orval/mcp@8.39.0(@modelcontextprotocol/sdk@1.31.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)':
+  '@orval/mcp@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)':
     dependencies:
       '@orval/core': 8.39.0
       '@orval/fetch': 8.39.0
       '@orval/zod': 8.39.0(zod@4.4.3)
     optionalDependencies:
-      '@modelcontextprotocol/sdk': 1.31.0(supports-color@8.1.1)(zod@4.4.3)
+      '@modelcontextprotocol/sdk': 1.32.0(supports-color@8.1.1)(zod@4.4.3)
     transitivePeerDependencies:
       - '@faker-js/faker'
       - zod
@@ -11221,7 +11221,7 @@ snapshots:
 
   orderedmap@2.1.1: {}
 
-  orval@8.39.0(@modelcontextprotocol/sdk@1.31.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3):
+  orval@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3):
     dependencies:
       '@commander-js/extra-typings': 15.0.0(commander@15.0.0)
       '@orval/angular': 8.39.0
@@ -11230,7 +11230,7 @@ snapshots:
       '@orval/effect': 8.39.0(effect@3.20.0)
       '@orval/fetch': 8.39.0
       '@orval/hono': 8.39.0(typescript@5.9.3)(zod@4.4.3)
-      '@orval/mcp': 8.39.0(@modelcontextprotocol/sdk@1.31.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)
+      '@orval/mcp': 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)
       '@orval/mock': 8.39.0
       '@orval/pinia-colada': 8.39.0
       '@orval/query': 8.39.0(@tanstack/react-query@5.101.0(react@19.2.7))
