@@ -42,6 +42,24 @@ describe('results', () => {
     expect(topRows(ranking.ranked, 2)).toHaveLength(2);
   });
 
+  it('breaks score ties by answer time before arrival, consistently on every quiz result', () => {
+    const ranked = rankPlayers(players, {
+      a: JSON.stringify({ score: 500, streak: 0, answerTimeSavedMs: 10_000 }),
+      b: JSON.stringify({ score: 500, streak: 0, answerTimeSavedMs: 15_000 }),
+      c: JSON.stringify({ score: 500, streak: 0, answerTimeSavedMs: 15_000 }),
+      d: JSON.stringify({ score: 600, streak: 0, answerTimeSavedMs: 0 }),
+    });
+    const timed = rankingOf(ranked);
+    expect(ranked.map((p) => p.id)).toEqual(['d', 'b', 'c', 'a']);
+    expect(personalLeaderboard(timed, 'b').you).toEqual({ score: 500, rank: 2 });
+    expect(personalPodium(timed, 'a', null).you).toEqual({ score: 500, rank: 4 });
+    // Room ties still use arrival, even when the quiz's tie uses time.
+    expect(scoreTable(ranked, [], false).find((r) => r.playerId === 'a')).toMatchObject({
+      quizRank: 4,
+      roomRank: 2,
+    });
+  });
+
   it('adds its own line to a player, none to a screen', () => {
     expect(personalLeaderboard(ranking, 'a').you).toEqual({ score: 500, rank: 2 });
     expect(personalLeaderboard(ranking, undefined).you).toBeUndefined();
