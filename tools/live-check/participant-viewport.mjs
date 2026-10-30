@@ -195,7 +195,13 @@ export async function checkParticipantViewport({ browser, api, hostSocket, URL, 
     host.emit('host:reveal', { pin });
     await waitState('REVEAL');
     await next('SLIDE_SHOW');
-    await page.getByText('End of slide.', { exact: true }).scrollIntoViewIfNeeded();
+    const slideEnd = page.getByText('End of slide.', { exact: true });
+    await slideEnd.scrollIntoViewIfNeeded();
+    const endBox = await slideEnd.boundingBox();
+    check(
+      endBox.y >= 0 && endBox.y + endBox.height <= 390,
+      'the end of a long slide is inside the viewport after scrolling',
+    );
     await frame('phone-viewport-slide');
     await next('PODIUM');
     await frame('phone-viewport-podium');

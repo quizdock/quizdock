@@ -40,6 +40,7 @@ export function Surface({
   // The subtitle-like halo is the design default: only an explicit `false` removes it.
   textOutline = true,
   className,
+  contentClassName,
   backdrop,
   overlay,
   children,
@@ -48,6 +49,8 @@ export function Surface({
   textTone?: SlideTextTone;
   textOutline?: boolean;
   className?: string;
+  /** Layout constraints for the inner content, when the page bounds its height. */
+  contentClassName?: string;
   /** A layer drawn behind the content in place of an image — a slide's video (#125). */
   backdrop?: ReactNode;
   /** Drawn over everything, content included: the motion layer's fading background. */
@@ -77,7 +80,9 @@ export function Surface({
           {veil}
         </>
       ) : null}
-      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col">{children}</div>
+      <div className={cn('relative z-10 flex w-full flex-1 flex-col', contentClassName)}>
+        {children}
+      </div>
       {overlay}
     </div>
   );

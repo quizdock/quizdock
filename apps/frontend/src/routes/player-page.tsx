@@ -584,6 +584,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               : !!themed && 'url' in themed.background
           }
           className={cn('min-h-0 flex-1', TYPE_BASE.phone)}
+          contentClassName="min-h-0"
           overlay={
             <>
               <BackdropFade stepKey={stepKey} backdrop={phoneBackdrop} />
@@ -743,7 +744,10 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
     const slideHears = !!slide.audioTarget && playsSound(slide.audioTarget, presence);
     return (
       <div
-        className={cn('flex min-h-0 flex-1 overflow-y-auto overscroll-y-contain', TYPE_BASE.phone)}
+        className={cn(
+          'flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain',
+          TYPE_BASE.phone,
+        )}
       >
         {participantBar}
         <SlidePlaybackContext.Provider
