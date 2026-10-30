@@ -18,7 +18,7 @@ docker run --rm -v "$root:/src" -v quizdock-generate-api:/store -e CI=true -e CO
     mkdir /work && cd /src
     tar -cf - --exclude=node_modules --exclude=dist \
       package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json \
-      .prettierrc.json .prettierignore packages apps/backend apps/frontend \
+      .prettierrc.json .prettierignore patches packages apps/backend apps/frontend \
       | tar -C /work -xf -
     cd /work
     corepack enable 2>/dev/null

@@ -1,0 +1,96 @@
+diff --git a/src/v4/core/regexes.ts b/src/v4/core/regexes.ts
+index 3c963186809db2efaf7594d5683fb5c2b7b22194..17105d19448b9ac5147c1973f39cdd4c3efebe53 100644
+--- a/src/v4/core/regexes.ts
++++ b/src/v4/core/regexes.ts
+@@ -147,8 +147,8 @@ export function datetime(args: {
+   // if (args.offset) opts.push(`([+-]\\d{2}:\\d{2})`);
+   if (args.offset) opts.push(`([+-](?:[01]\\d|2[0-3]):[0-5]\\d)`);
+ 
+-  // RFC 3339 mandates seconds wherever the time carries a `Z` or an offset, so only the unqualified form `local` adds may omit them
+-  const qualified = `${timeSource({ precision: args.precision, seconds: true })}(?:${opts.join("|")})`;
++  // QuizDock: preserve the UTC minute precision accepted by existing bundle schemas.
++  const qualified = `${timeSource({ precision: args.precision, seconds: false })}(?:${opts.join("|")})`;
+   const timeRegex = args.local ? `${qualified}|${timeSource({ precision: args.precision })}` : qualified;
+ 
+   return new RegExp(`^${dateSource}T(?:${timeRegex})$`);
+diff --git a/src/v4/core/to-json-schema.ts b/src/v4/core/to-json-schema.ts
+index 855c0c7f2d424bddd8bcf900dbe244d7151994e5..204467c73e15bc84086ad6045df9814e1636737b 100644
+--- a/src/v4/core/to-json-schema.ts
++++ b/src/v4/core/to-json-schema.ts
+@@ -659,11 +659,7 @@ export function finalize<T extends schemas.$ZodType>(
+       flattenRef(entry[0]);
+     }
+ 
+-    if (ctx.target !== "openapi-3.0") {
+-      for (const entry of ctx.seen.entries()) {
+-        compactTypeUnion(entry[1].def ?? entry[1].schema);
+-      }
+-    }
++    // QuizDock: preserve anyOf for existing OpenAPI consumers and published bundle schemas.
+ 
+     for (const rewrite of ctx.deferred) rewrite();
+ 
+diff --git a/v4/core/regexes.cjs b/v4/core/regexes.cjs
+index 6846616cdb3358139aed229078ac5248cb53f27b..68edc8061650bd8e08d25bab7e942268dbffd217 100644
+--- a/v4/core/regexes.cjs
++++ b/v4/core/regexes.cjs
+@@ -133,8 +133,8 @@ function datetime(args) {
+     // if (args.offset) opts.push(`([+-]\\d{2}:\\d{2})`);
+     if (args.offset)
+         opts.push(`([+-](?:[01]\\d|2[0-3]):[0-5]\\d)`);
+-    // RFC 3339 mandates seconds wherever the time carries a `Z` or an offset, so only the unqualified form `local` adds may omit them
+-    const qualified = `${timeSource({ precision: args.precision, seconds: true })}(?:${opts.join("|")})`;
++    // QuizDock: preserve the UTC minute precision accepted by existing bundle schemas.
++    const qualified = `${timeSource({ precision: args.precision, seconds: false })}(?:${opts.join("|")})`;
+     const timeRegex = args.local ? `${qualified}|${timeSource({ precision: args.precision })}` : qualified;
+     return new RegExp(`^${dateSource}T(?:${timeRegex})$`);
+ }
+diff --git a/v4/core/regexes.js b/v4/core/regexes.js
+index e433775ab3fd5fba02d9648ba05182a3bfcd0792..fdcadbe5d962d53d21e9049129fd6aceeb8fadb1 100644
+--- a/v4/core/regexes.js
++++ b/v4/core/regexes.js
+@@ -100,8 +100,8 @@ export function datetime(args) {
+     // if (args.offset) opts.push(`([+-]\\d{2}:\\d{2})`);
+     if (args.offset)
+         opts.push(`([+-](?:[01]\\d|2[0-3]):[0-5]\\d)`);
+-    // RFC 3339 mandates seconds wherever the time carries a `Z` or an offset, so only the unqualified form `local` adds may omit them
+-    const qualified = `${timeSource({ precision: args.precision, seconds: true })}(?:${opts.join("|")})`;
++    // QuizDock: preserve the UTC minute precision accepted by existing bundle schemas.
++    const qualified = `${timeSource({ precision: args.precision, seconds: false })}(?:${opts.join("|")})`;
+     const timeRegex = args.local ? `${qualified}|${timeSource({ precision: args.precision })}` : qualified;
+     return new RegExp(`^${dateSource}T(?:${timeRegex})$`);
+ }
+diff --git a/v4/core/to-json-schema.cjs b/v4/core/to-json-schema.cjs
+index c2db7a55afd652408925c24bba4103d3b3351857..bd3d245a6bc3351cb89b21bec2e6942da332ee79 100644
+--- a/v4/core/to-json-schema.cjs
++++ b/v4/core/to-json-schema.cjs
+@@ -478,11 +478,7 @@ function finalize(ctx, schema) {
+         for (const entry of [...ctx.seen.entries()].reverse()) {
+             flattenRef(entry[0]);
+         }
+-        if (ctx.target !== "openapi-3.0") {
+-            for (const entry of ctx.seen.entries()) {
+-                compactTypeUnion(entry[1].def ?? entry[1].schema);
+-            }
+-        }
++        // QuizDock: preserve anyOf for existing OpenAPI consumers and published bundle schemas.
+         for (const rewrite of ctx.deferred)
+             rewrite();
+         // After flattening, every member that was extracted is a `$ref`, so the fold sees the final shape. A schema that inherits an intersection — through `z.lazy`, or any `ref` chain — holds the same `allOf` array, so fold by array identity to catch every copy.
+diff --git a/v4/core/to-json-schema.js b/v4/core/to-json-schema.js
+index c0ae14b7326566650a389c86c367c64341e7edcb..d911f5e0074f3d1db96f3ab61495260b5001c374 100644
+--- a/v4/core/to-json-schema.js
++++ b/v4/core/to-json-schema.js
+@@ -469,11 +469,7 @@ export function finalize(ctx, schema) {
+         for (const entry of [...ctx.seen.entries()].reverse()) {
+             flattenRef(entry[0]);
+         }
+-        if (ctx.target !== "openapi-3.0") {
+-            for (const entry of ctx.seen.entries()) {
+-                compactTypeUnion(entry[1].def ?? entry[1].schema);
+-            }
+-        }
++        // QuizDock: preserve anyOf for existing OpenAPI consumers and published bundle schemas.
+         for (const rewrite of ctx.deferred)
+             rewrite();
+         // After flattening, every member that was extracted is a `$ref`, so the fold sees the final shape. A schema that inherits an intersection — through `z.lazy`, or any `ref` chain — holds the same `allOf` array, so fold by array identity to catch every copy.

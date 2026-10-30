@@ -20,6 +20,7 @@ RUN if [ "$TARGETARCH" = arm64 ]; then echo linux-arm64-openssl-3.0.x; else echo
 
 # Manifests d'abord (cache des couches d'install).
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc tsconfig.base.json ./
+COPY patches patches
 COPY packages/contracts/package.json packages/contracts/
 COPY apps/backend/package.json apps/backend/
 COPY apps/frontend/package.json apps/frontend/

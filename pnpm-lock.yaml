@@ -6,12 +6,18 @@ settings:
 
 overrides:
   ws@>=8.0.0 <8.21.0: '>=8.21.0 <9'
-  multer@<2.3.0: '>=2.3.0 <3'
+  multer@<2.5.0: '>=2.5.0 <3'
+  body-parser@>=2.0.0 <2.4.0: '>=2.4.0 <3'
+  zod@>=4.0.0 <4.6.6: 4.6.6
+  vite@>=6.0.0 <6.4.4: '>=6.4.4 <7'
   js-yaml@>=4.0.0 <4.3.2: '>=4.3.2 <5'
   js-yaml@>=5.0.0 <5.4.1: '>=5.4.1 <6'
   mysql2@<3.23.1: '>=3.23.1 <4'
   deepmerge-ts@<8.0.0: '>=8.0.0 <9'
   handlebars@<4.7.10: '>=4.7.10 <5'
+
+patchedDependencies:
+  zod@4.6.6: 43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137
 
 importers:
 
@@ -58,7 +64,7 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.32.0
-        version: 1.32.0(supports-color@8.1.1)(zod@4.4.3)
+        version: 1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
       '@nestjs/common':
         specifier: ^11.2.7
         version: 11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
@@ -109,7 +115,7 @@ importers:
         version: 6.2.12
       nestjs-zod:
         specifier: ^5.4.0
-        version: 5.4.0(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/swagger@11.4.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.7)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.4.3)
+        version: 5.4.0(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/swagger@11.4.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.7)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
       pg:
         specifier: ^8.21.0
         version: 8.21.0
@@ -132,8 +138,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       zod:
-        specifier: ^4.4.3
-        version: 4.4.3
+        specifier: 4.6.6
+        version: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
     devDependencies:
       '@nestjs/cli':
         specifier: ^11.0.24
@@ -212,7 +218,7 @@ importers:
         version: link:../../packages/contracts
       '@tailwindcss/vite':
         specifier: ^4.3.0
-        version: 4.3.0(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.3.0(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
       '@tanstack/react-form':
         specifier: ^1.33.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -289,8 +295,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0
       zod:
-        specifier: ^4.4.3
-        version: 4.4.3
+        specifier: 4.6.6
+        version: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.6.3
@@ -306,35 +312,35 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(supports-color@8.1.1)(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.7.0(supports-color@8.1.1)(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1(supports-color@8.1.1)
       orval:
         specifier: ^8.22.0
-        version: 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3)
+        version: 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
       vite:
-        specifier: ^6.0.7
-        version: 6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+        specifier: '>=6.4.4 <7'
+        version: 6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/contracts:
     dependencies:
       zod:
-        specifier: ^4.4.3
-        version: 4.4.3
+        specifier: 4.6.6
+        version: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
     devDependencies:
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
 
 packages:
 
@@ -1361,7 +1367,7 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
-      zod: ^3.25 || ^4.0
+      zod: 4.6.6
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
@@ -1607,7 +1613,7 @@ packages:
   '@orval/zod@8.39.0':
     resolution: {integrity: sha512-Nk+kblVjhmkm/Bp70OFsVx/8LTXOQBcpV+vu7Y21XMqi1ch7MUc1hgcKULffdoDRB3jWSeKhmwDEkZ85XuZj7Q==}
     peerDependencies:
-      zod: '>=3'
+      zod: 4.6.6
     peerDependenciesMeta:
       zod:
         optional: true
@@ -2065,7 +2071,7 @@ packages:
   '@tailwindcss/vite@4.3.0':
     resolution: {integrity: sha512-t6J3OrB5Fc0ExuhohouH0fWUGMYL6PTLhW+E7zIk/pdbnJARZDCwjBznFnkh5ynRnIRSI4YjtTH0t6USjJISrw==}
     peerDependencies:
-      vite: ^5.2.0 || ^6 || ^7 || ^8
+      vite: '>=6.4.4 <7'
 
   '@tanstack/devtools-event-client@0.4.3':
     resolution: {integrity: sha512-OZI6QyULw0FI0wjgmeYzCIfbgPsOEzwJtCpa69XrfLMtNXLGnz3d/dIabk7frg0TmHo+Ah49w5I4KC7Tufwsvw==}
@@ -2637,7 +2643,7 @@ packages:
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+      vite: '>=6.4.4 <7'
 
   '@vitest/expect@4.1.11':
     resolution: {integrity: sha512-VX2x5vNJXET47KAFzwERI+KRMtTTCSWTfSMKsW7JsUsXV4psq++e3DvZpuTDOpHcxytiDs6p2nhVb2tVDiiUYw==}
@@ -2646,7 +2652,7 @@ packages:
     resolution: {integrity: sha512-2XJVD55d1o5AZous5CCGKS74g/riOj9odEt2bQpCVZeblHyHdnMeFl4jl0XjU21stf4mbjUkew2eXQZt65g5CQ==}
     peerDependencies:
       msw: ^2.4.9
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vite: '>=6.4.4 <7'
     peerDependenciesMeta:
       msw:
         optional: true
@@ -2922,8 +2928,8 @@ packages:
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
 
-  body-parser@2.3.0:
-    resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
+  body-parser@2.4.0:
+    resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
     engines: {node: '>=18'}
 
   brace-expansion@1.1.21:
@@ -3157,6 +3163,10 @@ packages:
 
   content-type@2.0.0:
     resolution: {integrity: sha512-j/O/d7GcZCyNl7/hwZAb606rzqkyvaDctLmckbxLzHvFBzTJHuGEdodATcP3yIRoDrLHkIATJuvzbFlp/ki2cQ==}
+    engines: {node: '>=18'}
+
+  content-type@2.1.0:
+    resolution: {integrity: sha512-mj7UPXE0jaqaOsukNZRUEfEi2AcL7C/vwmwcHV0O97eO1E1pxBZuyjlZrx5seTaNBg1U6+o35wpa35Qfcc+7ag==}
     engines: {node: '>=18'}
 
   conventional-changelog-angular@8.3.1:
@@ -4736,8 +4746,8 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  multer@2.4.0:
-    resolution: {integrity: sha512-7dqa0ZcFfzbefdTuIkzOSMvZWC0J7FLqBOjJUZvDCXShIURWKxAyTT1wHhnE5q19c7jOJf43IYYKjBmZVZmvhg==}
+  multer@2.5.0:
+    resolution: {integrity: sha512-BsqOzYGVq49JcW2IzoSAxeKYRevb+dGGPPWleOR8Lrlk4igwxu1/9pwSXlByhCb7MVZDrNJFC0IBP5/O5nLYRw==}
     engines: {node: '>= 10.16.0'}
 
   mute-stream@2.0.0:
@@ -4784,7 +4794,7 @@ packages:
       '@nestjs/common': ^10.0.0 || ^11.0.0
       '@nestjs/swagger': ^7.4.2 || ^8.0.0 || ^11.0.0
       rxjs: ^7.0.0
-      zod: ^3.25.0 || ^4.0.0
+      zod: 4.6.6
     peerDependenciesMeta:
       '@nestjs/swagger':
         optional: true
@@ -5157,6 +5167,10 @@ packages:
 
   qs@6.16.0:
     resolution: {integrity: sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==}
+    engines: {node: '>=0.6'}
+
+  qs@6.17.1:
+    resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
     engines: {node: '>=0.6'}
 
   range-parser@1.2.1:
@@ -5935,8 +5949,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite@6.4.3:
-    resolution: {integrity: sha512-NTKlcQjlAK7MlQoyb6LgaqHc8sso/pVyUJYWMws3jg21uTJw/LddqIFPcPqP6PzpgbIcZyKI85sFE4HBrQDA8A==}
+  vite@6.4.5:
+    resolution: {integrity: sha512-4enwjFfi4IwtEh0w+jPzpLVOFQiPHmmzPxcHXQOyEur47o6u0jE573DmGpjA+7irXoMLYRZD5ZaFUEneS3abPg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -5991,7 +6005,7 @@ packages:
       '@vitest/ui': 4.1.11
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vite: '>=6.4.4 <7'
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -6192,16 +6206,16 @@ packages:
   zod-to-json-schema@3.25.2:
     resolution: {integrity: sha512-O/PgfnpT1xKSDeQYSCfRI5Gy3hPf91mKVDuYLUHZJMiDFptvP41MSnWofm8dnCm0256ZNfZIM7DSzuSMAFnjHA==}
     peerDependencies:
-      zod: ^3.25.28 || ^4
+      zod: 4.6.6
 
   zod-validation-error@4.0.2:
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
+      zod: 4.6.6
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -7236,7 +7250,7 @@ snapshots:
 
   '@microsoft/tsdoc@0.16.0': {}
 
-  '@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3)':
+  '@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))':
     dependencies:
       '@hono/node-server': 2.1.1(hono@4.13.10)
       ajv: 8.20.0
@@ -7253,8 +7267,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.4.3
-      zod-to-json-schema: 3.25.2(zod@4.4.3)
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
+      zod-to-json-schema: 3.25.2(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
     transitivePeerDependencies:
       - supports-color
 
@@ -7333,7 +7347,7 @@ snapshots:
       '@nestjs/core': 11.2.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/platform-express@11.2.7)(@nestjs/websockets@11.2.7)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       cors: 2.8.6
       express: 5.2.1(supports-color@8.1.1)
-      multer: 2.4.0
+      multer: 2.5.0
       path-to-regexp: 8.4.2
       tslib: 2.8.1
     transitivePeerDependencies:
@@ -7445,23 +7459,23 @@ snapshots:
     transitivePeerDependencies:
       - '@faker-js/faker'
 
-  '@orval/hono@8.39.0(typescript@5.9.3)(zod@4.4.3)':
+  '@orval/hono@8.39.0(typescript@5.9.3)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))':
     dependencies:
       '@orval/core': 8.39.0
-      '@orval/zod': 8.39.0(zod@4.4.3)
+      '@orval/zod': 8.39.0(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
       - '@faker-js/faker'
       - zod
 
-  '@orval/mcp@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)':
+  '@orval/mcp@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)))(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))':
     dependencies:
       '@orval/core': 8.39.0
       '@orval/fetch': 8.39.0
-      '@orval/zod': 8.39.0(zod@4.4.3)
+      '@orval/zod': 8.39.0(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
     optionalDependencies:
-      '@modelcontextprotocol/sdk': 1.32.0(supports-color@8.1.1)(zod@4.4.3)
+      '@modelcontextprotocol/sdk': 1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
     transitivePeerDependencies:
       - '@faker-js/faker'
       - zod
@@ -7500,12 +7514,12 @@ snapshots:
     transitivePeerDependencies:
       - '@faker-js/faker'
 
-  '@orval/zod@8.39.0(zod@4.4.3)':
+  '@orval/zod@8.39.0(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))':
     dependencies:
       '@orval/core': 8.39.0
       jsesc: 3.1.0
     optionalDependencies:
-      zod: 4.4.3
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
     transitivePeerDependencies:
       - '@faker-js/faker'
 
@@ -7799,7 +7813,7 @@ snapshots:
       '@scalar/helpers': 0.16.0
       nanoid: 5.1.16
       type-fest: 5.10.0
-      zod: 4.4.3
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
 
   '@scarf/scarf@1.4.0': {}
 
@@ -7913,12 +7927,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.0
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.0
 
-  '@tailwindcss/vite@4.3.0(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
+  '@tailwindcss/vite@4.3.0(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@tailwindcss/node': 4.3.0
       '@tailwindcss/oxide': 4.3.0
       tailwindcss: 4.3.0
-      vite: 6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
   '@tanstack/devtools-event-client@0.4.3': {}
 
@@ -8627,7 +8641,7 @@ snapshots:
       d3-time-format: 4.1.0
       internmap: 2.0.3
 
-  '@vitejs/plugin-react@4.7.0(supports-color@8.1.1)(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
+  '@vitejs/plugin-react@4.7.0(supports-color@8.1.1)(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))
@@ -8635,7 +8649,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -8648,13 +8662,13 @@ snapshots:
       chai: 6.3.0
       tinyrainbow: 3.2.0
 
-  '@vitest/mocker@4.1.11(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.11(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -8960,15 +8974,15 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  body-parser@2.3.0(supports-color@8.1.1):
+  body-parser@2.4.0(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
-      content-type: 2.0.0
+      content-type: 2.1.0
       debug: 4.4.3(supports-color@8.1.1)
       http-errors: 2.0.1
       iconv-lite: 0.7.3
       on-finished: 2.4.1
-      qs: 6.16.0
+      qs: 6.17.1
       raw-body: 3.0.2
       type-is: 2.1.0
     transitivePeerDependencies:
@@ -9178,6 +9192,8 @@ snapshots:
   content-type@1.0.5: {}
 
   content-type@2.0.0: {}
+
+  content-type@2.1.0: {}
 
   conventional-changelog-angular@8.3.1:
     dependencies:
@@ -9550,8 +9566,8 @@ snapshots:
       '@babel/parser': 7.29.7
       eslint: 10.4.1(jiti@2.7.0)(supports-color@8.1.1)
       hermes-parser: 0.25.1
-      zod: 4.4.3
-      zod-validation-error: 4.0.2(zod@4.4.3)
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
+      zod-validation-error: 4.0.2(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
     transitivePeerDependencies:
       - supports-color
 
@@ -9698,7 +9714,7 @@ snapshots:
   express@5.2.1(supports-color@8.1.1):
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.3.0(supports-color@8.1.1)
+      body-parser: 2.4.0(supports-color@8.1.1)
       content-disposition: 1.1.0
       content-type: 1.0.5
       cookie: 0.7.2
@@ -11105,7 +11121,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  multer@2.4.0:
+  multer@2.5.0:
     dependencies:
       append-field: 1.0.0
       busboy: 1.6.0
@@ -11140,12 +11156,12 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  nestjs-zod@5.4.0(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/swagger@11.4.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.7)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.4.3):
+  nestjs-zod@5.4.0(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/swagger@11.4.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.7)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)):
     dependencies:
       '@nestjs/common': 11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
       deepmerge: 4.3.1
       rxjs: 7.8.2
-      zod: 4.4.3
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
     optionalDependencies:
       '@nestjs/swagger': 11.4.7(@nestjs/common@11.2.7(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.7)(reflect-metadata@0.2.2)
 
@@ -11221,7 +11237,7 @@ snapshots:
 
   orderedmap@2.1.1: {}
 
-  orval@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.4.3):
+  orval@8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)))(@tanstack/react-query@5.101.0(react@19.2.7))(effect@3.20.0)(prettier@3.8.3)(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@5.9.3)))(typedoc@0.28.19(typescript@5.9.3))(typescript@5.9.3)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)):
     dependencies:
       '@commander-js/extra-typings': 15.0.0(commander@15.0.0)
       '@orval/angular': 8.39.0
@@ -11229,14 +11245,14 @@ snapshots:
       '@orval/core': 8.39.0
       '@orval/effect': 8.39.0(effect@3.20.0)
       '@orval/fetch': 8.39.0
-      '@orval/hono': 8.39.0(typescript@5.9.3)(zod@4.4.3)
-      '@orval/mcp': 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.4.3))(zod@4.4.3)
+      '@orval/hono': 8.39.0(typescript@5.9.3)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
+      '@orval/mcp': 8.39.0(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)))(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
       '@orval/mock': 8.39.0
       '@orval/pinia-colada': 8.39.0
       '@orval/query': 8.39.0(@tanstack/react-query@5.101.0(react@19.2.7))
       '@orval/solid-start': 8.39.0
       '@orval/swr': 8.39.0
-      '@orval/zod': 8.39.0(zod@4.4.3)
+      '@orval/zod': 8.39.0(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137))
       '@scalar/json-magic': 0.15.4
       '@scalar/openapi-parser': 0.29.10
       '@scalar/openapi-types': 0.9.7
@@ -11558,6 +11574,11 @@ snapshots:
       react: 19.2.7
 
   qs@6.16.0:
+    dependencies:
+      es-define-property: 1.0.1
+      side-channel: 1.1.1
+
+  qs@6.17.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -12350,7 +12371,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0):
+  vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
@@ -12366,10 +12387,10 @@ snapshots:
       terser: 5.48.0
       yaml: 2.9.0
 
-  vitest@4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)):
+  vitest@4.1.11(@types/node@24.13.2)(jsdom@25.0.1(supports-color@8.1.1))(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.11(vite@6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -12386,7 +12407,7 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.2.0
-      vite: 6.4.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 6.4.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.2
@@ -12570,14 +12591,14 @@ snapshots:
       grammex: 3.1.13
       graphmatch: 1.1.1
 
-  zod-to-json-schema@3.25.2(zod@4.4.3):
+  zod-to-json-schema@3.25.2(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)):
     dependencies:
-      zod: 4.4.3
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
 
-  zod-validation-error@4.0.2(zod@4.4.3):
+  zod-validation-error@4.0.2(zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)):
     dependencies:
-      zod: 4.4.3
+      zod: 4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137)
 
-  zod@4.4.3: {}
+  zod@4.6.6(patch_hash=43fc8455f75e61286c7f19b97704e71bebd68d7ce42ea2f6dab7c01f7029b137): {}
 
   zwitch@2.0.4: {}

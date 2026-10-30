@@ -43,6 +43,7 @@ services:
     volumes:
       # Manifestes + lockfile + configs (pour `pnpm install` et les outils).
       - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml:ro
+      - ./patches:/app/patches:ro
       - ./pnpm-lock.yaml:/app/pnpm-lock.yaml:ro
       - ./package.json:/app/package.json:ro
       - ./.npmrc:/app/.npmrc:ro
@@ -75,6 +76,7 @@ services:
       npm_config_verify_deps_before_run: 'false'
     volumes:
       - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml:ro
+      - ./patches:/app/patches:ro
       - ./pnpm-lock.yaml:/app/pnpm-lock.yaml:ro
       - ./package.json:/app/package.json:ro
       - ./.npmrc:/app/.npmrc:ro

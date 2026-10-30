@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Manifests d'abord (cache des couches d'install)
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc tsconfig.base.json ./
+COPY patches patches
 COPY packages/contracts/package.json packages/contracts/
 COPY apps/backend/package.json apps/backend/
 # Le schéma Prisma doit être présent avant l'install : le postinstall du backend

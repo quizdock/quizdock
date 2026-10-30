@@ -20,6 +20,7 @@ How QuizDock is scanned, hardened and audited.
 
 | Date | Report |
 |---|---|
+| 2026-10-30 | [`cve-audit-2026-10-30.md`](cve-audit-2026-10-30.md) — six high-severity dependency findings fixed without changing the audit gate |
 | 2026-10-03 | [`audit-2026-10-03.md`](audit-2026-10-03.md) — global audit of `v0.13.1`: application, supply chain, robustness, accessibility, docs, dead code |
 | 2026-09-21 | [`cve-audit-2026-09-21.md`](cve-audit-2026-09-21.md) — `:latest` was the standalone image; Prisma 7.10 drops hono; non-root dev images |
 | 2026-06-25 | [`cve-audit-2026-06-25.md`](cve-audit-2026-06-25.md) |
