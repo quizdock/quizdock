@@ -34,5 +34,5 @@ docker run --rm --network "$network" --ipc host \
   mcr.microsoft.com/playwright:v1.61.1-noble sh -c "cd /work \
     && { [ -d node_modules/playwright ] || npm install --no-audit --no-fund \
          playwright@1.61.1 socket.io-client@4 >/dev/null; } \
-    && cp /check/check.mjs . && node check.mjs"
+    && cp /check/*.mjs . && node check.mjs"
 echo "pictures: $out"

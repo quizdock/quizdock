@@ -209,6 +209,14 @@
 }
 
 @layer base {
+  /* Only the participant has a viewport-bound frame. Contain browser bounce and
+     pull-to-refresh too; its content regions still scroll and pinch zoom stays enabled. */
+  html:has([data-shell='participant']) {
+    overscroll-behavior-y: none;
+  }
+  body:has([data-shell='participant']) {
+    overflow: hidden;
+  }
   * {
     border-color: var(--border);
   }

@@ -77,7 +77,7 @@ export function Surface({
           {veil}
         </>
       ) : null}
-      <div className="relative z-10 flex w-full flex-1 flex-col">{children}</div>
+      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col">{children}</div>
       {overlay}
     </div>
   );
