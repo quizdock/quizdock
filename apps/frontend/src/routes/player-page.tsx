@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useAudienceLanguage } from '../i18n/interface-language';
 import { useWakeLock } from '@/lib/use-wake-lock';
+import { OpeningCountdown } from '../game/opening-countdown';
 import { LiveMotion } from '../game/motion/level';
 import { BackdropFade, StepEnter } from '../game/motion/step-transition';
 import { type Backdrop, stepKeyOf } from '../game/motion/step';
@@ -206,7 +207,14 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   // Délai de lecture (§6/§8) : la fenêtre de réponse n'ouvre qu'à `startedAt`. Avant,
   // une réponse serait rejetée par le serveur (« trop tôt ») sans être comptée — on
   // bloque donc la saisie pendant la lecture pour ne jamais perdre de réponse.
-  const readingLeft = useCountdown(question ? question.startedAt : null);
+  const runningReadingLeft = useCountdown(question && !view.paused ? question.startedAt : null);
+  const readingLeft =
+    view.paused && question && view.pausedRemainingMs !== null
+      ? Math.max(
+          0,
+          Math.ceil((view.pausedRemainingMs - (question.endsAt - question.startedAt)) / 1000),
+        )
+      : runningReadingLeft;
   const reading = readingLeft !== null && readingLeft > 0;
   // Avatar affiché : dans le lobby, la graine choisie localement (aperçu avant
   // enregistrement) ; une fois la partie lancée, **celle que le serveur connaît**
@@ -583,7 +591,8 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               ? view.question.textOutline
               : !!themed && 'url' in themed.background
           }
-          className={cn('flex-1', TYPE_BASE.phone)}
+          className={cn('min-h-0 flex-1', TYPE_BASE.phone)}
+          contentClassName="min-h-0"
           overlay={
             <>
               <BackdropFade stepKey={stepKey} backdrop={phoneBackdrop} />
@@ -595,7 +604,10 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
           }
         >
           {participantBar}
-          <StepEnter stepKey={stepKey} className="flex flex-1 flex-col px-4 py-4">
+          <StepEnter
+            stepKey={stepKey}
+            className="flex min-h-0 flex-1 flex-col px-4 py-[min(1rem,3dvh)]"
+          >
             {children}
           </StepEnter>
         </Surface>
@@ -607,7 +619,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
     surface(
       <section
         className={cn(
-          'mx-auto flex w-full flex-1 flex-col items-center gap-[1.5em] py-[1.5em] text-center',
+          'mx-auto flex min-h-0 w-full flex-1 flex-col items-center gap-[1.5em] overflow-y-auto overscroll-y-contain py-[1.5em] text-center [&>*]:shrink-0',
           opts.wide ? 'max-w-[24em] md:max-w-[36em]' : 'max-w-[24em]',
         )}
       >
@@ -711,7 +723,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   // window, a portrait phone would pile its bands up. As large as it fits, either way.
   if (showScreen && view.state && view.state !== 'ENDED') {
     return (
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="content-phone">{participantBar}</div>
         <div className="flex min-h-0 flex-1 flex-col px-2 py-4">
           <FittedStage className="rounded-lg border">
@@ -739,7 +751,12 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
     // the sound meant for them; a phone in the room plays only a sound meant for everyone.
     const slideHears = !!slide.audioTarget && playsSound(slide.audioTarget, presence);
     return (
-      <div className={cn('flex flex-1', TYPE_BASE.phone)}>
+      <div
+        className={cn(
+          'flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain',
+          TYPE_BASE.phone,
+        )}
+      >
         {participantBar}
         <SlidePlaybackContext.Provider
           value={{
@@ -933,7 +950,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
     return surface(
       // Fills the viewport under the header: the chrono on top, the prompt centred in
       // the remaining height, the answer zone at the bottom.
-      <section className="mx-auto flex w-full max-w-[24em] flex-1 flex-col gap-[0.75em] text-center md:max-w-[36em]">
+      <section className="mx-auto flex min-h-0 w-full max-w-[24em] flex-1 flex-col gap-[min(0.75em,2dvh)] text-center md:max-w-[36em]">
         {clock ? (
           // Pinned on top while the rest scrolls; above an opened picture too.
           <QuestionClockBar
@@ -946,7 +963,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             )}
           />
         ) : null}
-        <div className="flex min-h-0 flex-1 flex-col justify-center gap-[0.75em] overflow-y-auto py-[0.5em]">
+        <div className="flex min-h-[3em] flex-1 flex-col justify-center-safe gap-[0.75em] overflow-y-auto overscroll-y-contain py-[0.5em] [&>*]:shrink-0">
           {/* The prompt first, then the picture: a small one in the room (it is big on the
               projection), a tap to open it over the screen (#92). */}
           <Markdown
@@ -987,7 +1004,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         </div>
         <div
           className={cn(
-            'flex w-full shrink-0 flex-col items-center gap-[0.75em] pb-[0.5em]',
+            'flex min-h-0 w-full flex-col items-center gap-[0.75em] overflow-y-auto overscroll-y-contain pb-[max(0.5em,env(safe-area-inset-bottom))] [&>*]:shrink-0',
             tiled &&
               'bg-background sticky bottom-0 pt-[0.5em] pb-[max(0.5em,env(safe-area-inset-bottom))]',
             tiled && STICKY_ON_BACKDROP,
@@ -996,10 +1013,11 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         >
           <AnswerRules question={question} />
           {reading ? (
-            <p className="text-muted-foreground text-[1.1em] font-medium">
-              {question.listenFirst ? t('player.listenFirst') : t('player.readQuestion')}{' '}
-              <span className="tabular-nums">{readingLeft}</span>
-            </p>
+            <OpeningCountdown
+              remaining={readingLeft}
+              label={question.listenFirst ? t('player.listenFirst') : t('player.readQuestion')}
+              paused={view.paused}
+            />
           ) : lost ? (
             <p role="alert" className="text-destructive text-[1.1em] font-semibold">
               {t(`player.answerRefused.${refusal}`)}

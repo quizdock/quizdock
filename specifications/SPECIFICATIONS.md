@@ -199,6 +199,24 @@ If the answer is right:
 ### Ties
 When final scores tie, they are broken by: (1) the lowest cumulative answer time, (2) the order in which people joined the game.
 
+The same order applies to the quiz's live leaderboard, podium, host quiz ranks and
+archived final ranks. For each question reached, an accepted answer contributes
+its server-measured `tMs`, capped at the question's full time limit; no accepted
+answer contributes that full limit. This includes wrong answers and questions
+before a late join. Slides and unreached questions contribute nothing. Revealing
+early does not shorten the limit used for an unanswered question. Scores, streaks,
+and the room's own tie-break (total score, then arrival, room §6 step 3) are unchanged.
+
+The game's Redis score keeps `answerTimeSavedMs`: the sum of
+`timeLimitMs - min(tMs, timeLimitMs)` for accepted answers. Everyone has the same
+baseline (the sum of reached question limits), so more time saved means a lower
+cumulative time. Update it with the first accepted submission, including deferred
+numeric scoring, and never on a refused or duplicate answer. Ranking reads this
+summary, not each answer. Scores from an older running game acquire the summary
+once from retained answer records, atomically without replacing their points or
+recreating a removed player. The next quiz starts it at zero; room totals and the
+archive's answered-only average time keep their existing meaning.
+
 ### Multiple choice — the partial scoring option (v1.1)
 ```
 points = P_max_time * (right_ticks - wrong_ticks) / total_right   (floored at 0)

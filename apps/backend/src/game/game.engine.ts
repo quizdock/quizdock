@@ -2405,6 +2405,8 @@ export class GameEngine {
     // Applique le score (read-modify-write sûr : 1 seul socket par joueur).
     scored.score += score.points;
     scored.streak = score.newStreak;
+    const limitMs = question.timeLimitS * 1000;
+    scored.answerTimeSavedMs = (scored.answerTimeSavedMs ?? 0) + limitMs - Math.min(tMs, limitMs);
     await this.redis.hset(gameKeys.scores(meta.id), playerId, JSON.stringify(scored));
 
     await this.countAnswers(refOf(pin, meta), questionIndex);
