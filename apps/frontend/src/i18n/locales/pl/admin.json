@@ -539,8 +539,8 @@
         "docker": "Docker Desktop, sieć typu bridge: kontener nie widzi własnych adresów maszyny — ustaw je w HOST_LAN_IPS."
       },
       "expired": "Ten test wygasł: rozpocznij go ponownie.",
-      "adoptHelp": "Gdy telefon dotrze do adresu, ustaw go jako adres zaproszeń instancji: każda poczekalnia od niego zaczyna (APP_PUBLIC_URL). Prowadzący może nadal wybrać inny dla danej gry.",
-      "adoptReadOnly": "Administracja nie może tu zmieniać ustawień: adres zaproszeń instancji pozostaje taki, jak ustawił go operator (APP_PUBLIC_URL). Prowadzący wybiera adres każdej gry w poczekalni.",
+      "adoptHelp": "Gdy telefon dotrze do adresu, ustaw go jako adres zaproszeń instancji: każdy pokój od niego zaczyna (APP_PUBLIC_URL). Prowadzący może nadal wybrać inny dla danej gry.",
+      "adoptReadOnly": "Administracja nie może tu zmieniać ustawień: adres zaproszeń instancji pozostaje taki, jak ustawił go operator (APP_PUBLIC_URL). Prowadzący wybiera adres każdej gry w pokoju.",
       "other": "Inny adres",
       "add": "Dodaj",
       "current": "Adres zaproszeń instancji",
@@ -624,10 +624,10 @@
       "games": "Trwające gry",
       "players": "Połączeni uczestnicy",
       "none": "W tej chwili nie toczy się żadna gra.",
-      "lobby_one": "{{count}} w poczekalni",
-      "lobby_few": "{{count}} w poczekalni",
-      "lobby_many": "{{count}} w poczekalni",
-      "lobby_other": "{{count}} w poczekalni",
+      "lobby_one": "{{count}} w pokoju",
+      "lobby_few": "{{count}} w pokoju",
+      "lobby_many": "{{count}} w pokoju",
+      "lobby_other": "{{count}} w pokoju",
       "playing_one": "{{count}} w trakcie gry",
       "playing_few": "{{count}} w trakcie gry",
       "playing_many": "{{count}} w trakcie gry",
@@ -643,7 +643,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "Poczekalnia",
+      "lobby": "Pokój",
       "question": "Pytanie {{index}} z {{total}}"
     },
     "instance": {

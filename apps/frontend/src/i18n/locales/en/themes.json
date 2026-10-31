@@ -208,7 +208,7 @@
       "gong": "Time up"
     },
     "soundUpload": "Choose a sound",
-    "soundsHint": "A sound the host picked for the room still wins; the room's mixer keeps the levels.",
+    "soundsHint": "A sound the host picked for the lobby still wins; the lobby's mixer keeps the levels.",
     "motion": "Motion",
     "motionStyle": {
       "standard": "Standard",
@@ -218,7 +218,7 @@
     },
     "confetti": "confetti",
     "confettiLabel": "Confetti for the players who found the answer",
-    "motionHint": "The room's Animations switch and each device's reduced motion always win.",
+    "motionHint": "The lobby's Animations switch and each device's reduced motion always win.",
     "accessibility": "Accessibility",
     "checksMet": "{{met}} of {{total}} checks met",
     "accessibilityHint": "Measured on the theme's colours, never declared. An accessible theme carries the badge in the library and the quiz settings; the others carry nothing. A projector shows colours its own way: these are guides, nothing is blocked.",

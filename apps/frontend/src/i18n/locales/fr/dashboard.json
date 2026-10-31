@@ -55,7 +55,7 @@
   "pageOf": "Page {{page}} sur {{pages}}",
   "searchSessions": "Chercher un salon, un PIN, un animateur",
   "filterState": "État",
-  "stateLobby": "Salle d’attente",
+  "stateLobby": "Salon",
   "statePlaying": "En jeu",
   "sortPlayers": "Plus de participants",
   "sortPin": "PIN",

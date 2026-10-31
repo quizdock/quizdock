@@ -38,7 +38,7 @@
       "23": "Calm (−23 LUFS, broadcast)"
     },
     "audioTargetLabel": "Who hears the sound",
-    "audioTargetHelp": "Which devices play the sounds and videos of the quiz. Participants in the room see the projection: their phones stay silent unless \"Every device\" is chosen, which echoes if they share a room. A question can choose otherwise, and the host can change it for a session.",
+    "audioTargetHelp": "Which devices play the sounds and videos of the quiz. Participants on site see the projection: their phones stay silent unless \"Every device\" is chosen, which echoes if they share a space. A question can choose otherwise, and the host can change it for a session.",
     "audioTarget": {
       "projection": "Projection only",
       "projection_remote": "Projection and remote participants",
@@ -184,7 +184,7 @@
     "audioExcludesVideoSound": "The slide already has a sound: one sound at a time. Remove it to turn the video’s on.",
     "videoSoundExcludesAudio": "The video plays its own sound: no extra sound. Mute the video to add one.",
     "variablesLegend": "Variables",
-    "variablesHint": "Write one in a heading or a text: it is replaced wherever the slide shows. The quiz’s appear filled in the preview, the room’s once the quiz is played.",
+    "variablesHint": "Write one in a heading or a text: it is replaced wherever the slide shows. The quiz’s appear filled in the preview, the lobby’s once the quiz is played.",
     "variables": {
       "title": "The quiz’s title",
       "description": "The quiz’s description",
@@ -192,9 +192,9 @@
       "author": "Its author",
       "tags": "Its tags",
       "license": "Its licence",
-      "room": "The room’s name",
+      "room": "The lobby’s name",
       "host": "The host’s name",
-      "pin": "The room’s PIN",
+      "pin": "The lobby’s PIN",
       "join": "The address to join (host/join)",
       "players": "How many participants are connected",
       "question": "The number of the question that follows the slide",
@@ -245,8 +245,8 @@
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "In auto mode: how long the right answer stays on screen before moving on. Empty = the instance’s setting.",
     "audioTargetLabel": "Who hears this sound",
-    "audioTargetHint": "Which devices play this question's sound or video. \"Every device\" includes the phones in the room, which echo if they share it.",
-    "audioTargetDefault": "The quiz's setting in the room",
+    "audioTargetHint": "Which devices play this question's sound or video. \"Every device\" includes the phones on site, which echo if they share a space.",
+    "audioTargetDefault": "The quiz's setting in the lobby",
     "waveformSizeLabel": "Waveform size",
     "waveformSizeHint": "How thick the sound's waveform is drawn on the projection and the phones.",
     "waveformPreview": "Waveform preview",
@@ -519,11 +519,11 @@
     "image_choice": "The answers are pictures, 2 or 4, each with its colour and shape. One right picture, or several when set; scored like a single or multiple choice."
   },
   "sessions": {
-    "running_one": "{{count}} room is playing it",
-    "running_other": "{{count}} rooms are playing it",
+    "running_one": "{{count}} lobby is playing it",
+    "running_other": "{{count}} lobbies are playing it",
     "players_one": "{{count}} player",
     "players_other": "{{count}} players",
-    "liveEditsHint": "Layout and presentation edits (backgrounds, contrast, explanations, slides) reach the rooms playing it at their next step; questions and answers stay as launched."
+    "liveEditsHint": "Layout and presentation edits (backgrounds, contrast, explanations, slides) reach the lobbies playing it at their next step; questions and answers stay as launched."
   },
   "publication": {
     "open": "Export for publication",

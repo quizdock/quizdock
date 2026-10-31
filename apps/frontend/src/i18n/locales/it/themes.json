@@ -1,6 +1,6 @@
 {
   "title": "Temi",
-  "intro": "L’aspetto di un quiz sulla proiezione e sui telefoni dei giocatori, dalla sala d’attesa al podio. Ogni conduttore può usare tutti i temi; solo il proprietario e gli amministratori li modificano.",
+  "intro": "L’aspetto di un quiz sulla proiezione e sui telefoni dei giocatori, dalla sala al podio. Ogni conduttore può usare tutti i temi; solo il proprietario e gli amministratori li modificano.",
   "import": "Importa",
   "new": "Nuovo tema",
   "search": "Cerca per nome",
@@ -92,7 +92,7 @@
     "phase": "Momento della partita",
     "device": "Schermo",
     "phases": {
-      "lobby": "Sala d’attesa",
+      "lobby": "Sala",
       "question": "Domanda",
       "reveal": "Risposta",
       "podium": "Podio"

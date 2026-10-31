@@ -98,8 +98,8 @@ describe('AdminStatsPage', () => {
     expect(within(row).getByText('Question 3 sur 10')).toBeInTheDocument();
     expect(within(row).getByText('PIN 123456')).toBeInTheDocument();
     const lobby = screen.getByText('Fleuves').closest('tr')!;
-    expect(within(lobby).getByText('Salle d’attente')).toBeInTheDocument();
-    expect(screen.getByText('1 en salle d’attente · 1 en jeu')).toBeInTheDocument();
+    expect(within(lobby).getByText('Salon')).toBeInTheDocument();
+    expect(screen.getByText('1 au salon · 1 en jeu')).toBeInTheDocument();
   });
 
   it('says when nothing is played, and shows the instance at a glance', async () => {

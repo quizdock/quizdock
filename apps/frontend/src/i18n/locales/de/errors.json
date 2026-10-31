@@ -43,7 +43,7 @@
     "open_access_forbidden": "Offener Zugang ist auf diesem Server nicht erlaubt.",
     "open_access_guests_only": "Bei offenem Zugang haben Teilnehmende kein Konto: keine persönliche Auswertung, kein Name aus einem Konto.",
     "next_quiz_unavailable": "Dieses Quiz kann in diesem Raum nicht als nächstes gespielt werden.",
-    "next_quiz_from_lobby": "Das nächste Quiz wird im Warteraum des Raums gewählt.",
+    "next_quiz_from_lobby": "Das nächste Quiz wird im Raum gewählt.",
     "review_unavailable": "Ein Rückblick auf einen Schritt ist nur zwischen zwei Fragen möglich.",
     "step_not_played": "Dieser Schritt wurde noch nicht gespielt."
   },

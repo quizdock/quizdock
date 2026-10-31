@@ -382,7 +382,7 @@ describe('PlayerPage (client participant)', () => {
     expect(await screen.findByText(/dès que Claire revient/)).toBeInTheDocument();
   });
 
-  it('LOBBY : salle d’attente avec le pseudo', async () => {
+  it('LOBBY : salon avec le pseudo', async () => {
     loadPlayerSession.mockReturnValue({
       pin: '771122',
       nickname: 'Bob',

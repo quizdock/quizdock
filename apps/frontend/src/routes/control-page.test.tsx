@@ -216,9 +216,9 @@ describe('ControlPage: the room’s next quiz (#89)', () => {
       podium: { podium: [{ nickname: 'Ada', score: 900, rank: 1 }] },
     });
     renderApp('/session/482913/console');
-    fireEvent.click(await screen.findByRole('button', { name: /Retour à la salle d’attente/ }));
+    fireEvent.click(await screen.findByRole('button', { name: /Retour au salon/ }));
     const dialog = await screen.findByRole('dialog');
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Retour à la salle d’attente' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Retour au salon' }));
     expect(fakeSocket.emit).toHaveBeenCalledWith(
       'host:back-to-lobby',
       { pin: '482913', archive: true },
@@ -299,10 +299,10 @@ describe('ControlPage: the room’s next quiz (#89)', () => {
       podium: { podium: [{ nickname: 'Ada', score: 900, rank: 1 }] },
     });
     const { unmount } = renderApp('/session/482913/console');
-    fireEvent.click(await screen.findByRole('button', { name: /Retour à la salle d’attente/ }));
+    fireEvent.click(await screen.findByRole('button', { name: /Retour au salon/ }));
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).queryByRole('checkbox')).toBeNull();
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Retour à la salle d’attente' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Retour au salon' }));
     expect(fakeSocket.emit).toHaveBeenCalledWith(
       'host:back-to-lobby',
       { pin: '482913', archive: false },

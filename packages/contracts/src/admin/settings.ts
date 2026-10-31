@@ -18,7 +18,7 @@ import { z } from 'zod';
 /** C1 critical (start-up, data, security) · C2 high (access, resources) · C3 normal · C4 cosmetic. */
 export type Criticality = 'C1' | 'C2' | 'C3' | 'C4';
 
-/** When a new value takes effect: on its next use, for rooms opened after it, or at the next start. */
+/** When a new value takes effect: on its next use, for lobbies opened after it, or at the next start. */
 export type Applies = 'live' | 'next-room' | 'restart';
 
 export type SettingCategory =
@@ -273,7 +273,7 @@ export const SETTINGS = {
   APP_LANG: define<string>({
     key: 'APP_LANG',
     description:
-      "UI language for the instance, by default (no browser detection): anyone may pick their own, kept in their account or on their device; the projection speaks the quiz's language or the room's, and so does a player's phone unless they picked theirs. New quizzes start in this language; each quiz can be set to another in its settings.",
+      "UI language for the instance, by default (no browser detection): anyone may pick their own, kept in their account or on their device; the projection speaks the quiz's language or the lobby's, and so does a player's phone unless they picked theirs. New quizzes start in this language; each quiz can be set to another in its settings.",
     category: 'identity',
     criticality: 'C4',
     schema: text(),
@@ -828,7 +828,7 @@ export const SETTINGS = {
   GAME_MEDIA_WAIT_S: define({
     key: 'GAME_MEDIA_WAIT_S',
     description:
-      'How long the room waits at most, before a question, for the devices that play its sound or video to load it (the host can start anyway), in seconds. `0` never waits.',
+      'How long the lobby waits at most, before a question, for the devices that play its sound or video to load it (the host can start anyway), in seconds. `0` never waits.',
     category: 'pace',
     criticality: 'C3',
     schema: number(),
@@ -844,7 +844,7 @@ export const SETTINGS = {
   LIVE_MOTION: define({
     key: 'LIVE_MOTION',
     description:
-      'Transitions between steps on the projection and the phones, as a new room starts: the previous background fades out, the step comes in, the standings slide. `off` for old projectors or low-end devices. The host switches it for their room at any time (console, *Animations*); a device asking the system to reduce motion keeps fades only.',
+      'Transitions between steps on the projection and the phones, as a new lobby starts: the previous background fades out, the step comes in, the standings slide. `off` for old projectors or low-end devices. The host switches it for their lobby at any time (console, *Animations*); a device asking the system to reduce motion keeps fades only.',
     category: 'pace',
     criticality: 'C4',
     schema: oneOf(['on', 'off'] as const, (raw) => raw.trim().toLowerCase()),
@@ -856,7 +856,7 @@ export const SETTINGS = {
   }),
   GAME_HOST_GRACE_MS: define({
     key: 'GAME_HOST_GRACE_MS',
-    description: 'How long a disconnected host may come back before the room is told, in ms.',
+    description: 'How long a disconnected host may come back before the lobby is told, in ms.',
     category: 'internal',
     criticality: 'C3',
     schema: number(),
@@ -869,7 +869,7 @@ export const SETTINGS = {
   }),
   GAME_HOST_WINDOW_MS: define({
     key: 'GAME_HOST_WINDOW_MS',
-    description: 'How long a room waits for its host to come back, in ms.',
+    description: 'How long a lobby waits for its host to come back, in ms.',
     category: 'internal',
     criticality: 'C3',
     schema: number(),

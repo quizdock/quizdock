@@ -38,7 +38,7 @@
       "23": "Sakin (−23 LUFS, yayın)"
     },
     "audioTargetLabel": "Sesi kim duyar",
-    "audioTargetHelp": "Quizdeki ses ve videolar hangi cihazlarda oynatılsın? Odadaki katılımcılar yansıtma ekranını görür. “Her cihaz” seçilmedikçe telefonları sessiz kalır; aynı odada birden fazla cihazdan ses çalmak yankıya neden olabilir. Sorular ve sunucu bu ayarı değiştirebilir.",
+    "audioTargetHelp": "Quizdeki ses ve videolar hangi cihazlarda oynatılsın? Mekândaki katılımcılar yansıtma ekranını görür. “Her cihaz” seçilmedikçe telefonları sessiz kalır; aynı ortamda birden fazla cihazdan ses çalmak yankıya neden olabilir. Sorular ve sunucu bu ayarı değiştirebilir.",
     "audioTarget": {
       "projection": "Yalnızca projeksiyon",
       "projection_remote": "Projeksiyon ve uzak katılımcılar",
@@ -245,7 +245,7 @@
     "revealDelayPlaceholder": "oto",
     "revealDelayHint": "Otomatik modda: doğru yanıtın sonraki adıma geçmeden önce ekranda kalma süresi. Boş = sunucunun ayarı.",
     "audioTargetLabel": "Bu sesi kim duyar",
-    "audioTargetHint": "Bu sorunun sesini veya videosunu hangi cihazlarda oynatıyor? \"Her cihaz\", odadaki telefonları içerir ve paylaştıkları takdirde yankılanır.",
+    "audioTargetHint": "Bu sorunun sesini veya videosunu hangi cihazlarda oynatıyor? \"Her cihaz\", mekândaki telefonları içerir ve paylaştıkları takdirde yankılanır.",
     "audioTargetDefault": "Quizin odadaki ayarı",
     "waveformSizeLabel": "Dalga biçimi boyutu",
     "waveformSizeHint": "Projeksiyon ve telefonlarda sesin dalga biçiminin ne kadar kalın çizildiği.",

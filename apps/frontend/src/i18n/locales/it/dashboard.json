@@ -55,7 +55,7 @@
   "pageOf": "Pagina {{page}} di {{pages}}",
   "searchSessions": "Cerca una sala, un PIN, un conduttore",
   "filterState": "Stato",
-  "stateLobby": "Sala d’attesa",
+  "stateLobby": "Sala",
   "statePlaying": "In gioco",
   "sortPlayers": "Più partecipanti",
   "sortPin": "PIN",

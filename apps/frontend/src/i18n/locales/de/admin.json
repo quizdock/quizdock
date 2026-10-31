@@ -533,8 +533,8 @@
         "docker": "Docker Desktop, ein Bridge-Netzwerk: Der Container sieht die eigenen Adressen des Rechners nicht — tragen Sie sie in HOST_LAN_IPS ein."
       },
       "expired": "Dieser Test ist abgelaufen: Starten Sie ihn erneut.",
-      "adoptHelp": "Sobald ein Handy eine Adresse erreicht hat, machen Sie sie zur Einladungsadresse der Instanz: Jeder Warteraum geht von ihr aus (APP_PUBLIC_URL). Eine Quizleitung kann für ein Quiz trotzdem eine andere wählen.",
-      "adoptReadOnly": "Die Administration kann hier keine Einstellungen ändern: Die Einladungsadresse der Instanz bleibt, wie der Betreiber sie gesetzt hat (APP_PUBLIC_URL). Eine Quizleitung wählt die Adresse jedes Quiz im Warteraum.",
+      "adoptHelp": "Sobald ein Handy eine Adresse erreicht hat, machen Sie sie zur Einladungsadresse der Instanz: Jeder Raum geht von ihr aus (APP_PUBLIC_URL). Eine Quizleitung kann für ein Quiz trotzdem eine andere wählen.",
+      "adoptReadOnly": "Die Administration kann hier keine Einstellungen ändern: Die Einladungsadresse der Instanz bleibt, wie der Betreiber sie gesetzt hat (APP_PUBLIC_URL). Eine Quizleitung wählt die Adresse jedes Quiz im Raum.",
       "other": "Andere Adresse",
       "add": "Hinzufügen",
       "current": "Die Einladungsadresse der Instanz",
@@ -618,8 +618,8 @@
       "games": "Laufende Quizze",
       "players": "Verbundene Teilnehmende",
       "none": "Gerade wird kein Quiz gespielt.",
-      "lobby_one": "{{count}} im Warteraum",
-      "lobby_other": "{{count}} im Warteraum",
+      "lobby_one": "{{count}} im Raum",
+      "lobby_other": "{{count}} im Raum",
       "playing_one": "{{count}} wird gespielt",
       "playing_other": "{{count}} werden gespielt"
     },
@@ -633,7 +633,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "Warteraum",
+      "lobby": "Raum",
       "question": "Frage {{index}} von {{total}}"
     },
     "instance": {

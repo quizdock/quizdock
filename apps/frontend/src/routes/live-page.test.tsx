@@ -43,7 +43,7 @@ describe('LivePage', () => {
     expect(screen.getByText('Géographie')).toBeInTheDocument();
     expect(screen.getByText(/animée par Carol/)).toBeInTheDocument();
 
-    // Et l'état : salle d'attente ou en jeu.
+    // Et l'état : salon ou en jeu.
     fireEvent.change(screen.getByPlaceholderText(/Chercher un salon/), {
       target: { value: '' },
     });

@@ -533,8 +533,8 @@
         "docker": "Docker Desktop 的 bridge 網路：容器看不到本機自身的位址——請在 HOST_LAN_IPS 中設定。"
       },
       "expired": "此測試已過期：請重新開始。",
-      "adoptHelp": "手機連線成功後，可將該位址設為執行個體的加入位址：每個等候室都以它為起點（APP_PUBLIC_URL）。主持人仍可為某一局選擇其他位址。",
-      "adoptReadOnly": "此處的管理後台不能修改設定：執行個體的加入位址維持維運人員的設定（APP_PUBLIC_URL）。主持人在等候室為每一局選擇位址。",
+      "adoptHelp": "手機連線成功後，可將該位址設為執行個體的加入位址：每個房間都以它為起點（APP_PUBLIC_URL）。主持人仍可為某一局選擇其他位址。",
+      "adoptReadOnly": "此處的管理後台不能修改設定：執行個體的加入位址維持維運人員的設定（APP_PUBLIC_URL）。主持人在房間為每一局選擇位址。",
       "other": "其他位址",
       "add": "新增",
       "current": "執行個體的加入位址",
@@ -618,8 +618,8 @@
       "games": "進行中的遊戲",
       "players": "已連線的玩家",
       "none": "目前沒有進行中的遊戲。",
-      "lobby_one": "{{count}} 個在等候室",
-      "lobby_other": "{{count}} 個在等候室",
+      "lobby_one": "{{count}} 個在房間",
+      "lobby_other": "{{count}} 個在房間",
       "playing_one": "{{count}} 個進行中",
       "playing_other": "{{count}} 個進行中"
     },
@@ -633,7 +633,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "等候室",
+      "lobby": "房間",
       "question": "第 {{index}} 題，共 {{total}} 題"
     },
     "instance": {

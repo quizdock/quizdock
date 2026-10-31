@@ -137,7 +137,7 @@ Contributors changing the bundle schema or a content schema run
   `-23` calm (broadcast). The files are never re-encoded.
 - `quiz.audioTarget` (version 3): which devices play the sounds —
   `projection`, `projection_remote` (default: the projection and the remote
-  participants) or `everyone` (room phones included). A question may carry its
+  participants) or `everyone` (phones on site included). A question may carry its
   own `audioTarget`; omitted, it follows the quiz (or the host's choice for a
   session).
 - A question's `media` is its visual (an image or an MP4), `audio` its sound

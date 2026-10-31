@@ -1,6 +1,6 @@
 {
   "title": "Motywy",
-  "intro": "Wygląd quizu na projekcji i telefonach graczy, od poczekalni po podium. Każdy prowadzący może używać każdego motywu; zmienia go tylko jego właściciel i administratorzy.",
+  "intro": "Wygląd quizu na projekcji i telefonach graczy, od pokoju po podium. Każdy prowadzący może używać każdego motywu; zmienia go tylko jego właściciel i administratorzy.",
   "import": "Importuj",
   "new": "Nowy motyw",
   "search": "Szukaj po nazwie",
@@ -94,7 +94,7 @@
     "phase": "Moment gry",
     "device": "Ekran",
     "phases": {
-      "lobby": "Poczekalnia",
+      "lobby": "Pokój",
       "question": "Pytanie",
       "reveal": "Odpowiedź",
       "podium": "Podium"

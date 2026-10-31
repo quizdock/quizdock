@@ -17,8 +17,8 @@ remaining work: [`SPECIFICATIONS-THEMING.md`](../specifications/SPECIFICATIONS-T
 | `markers` | what marks an answer besides its colour: `icons`, `letters` (A–H) or `numbers` (1–8), by the answer's place in its question. Never the colour alone. |
 | `accent` | the live screens' `--primary`: the standings' bars, the "ready" and "you" marks. |
 | `font` | a shipped font (`system`, `atkinson`, `lexend`, `nunito`, `fredoka`, `inter`, `bitter`, `comic-neue` — OFL, `public/fonts`) or an imported woff2 with its licence. |
-| `sounds` | the room effects (`ding`, `tick`, `countdown`, `gong`). A sample the host picked for the room wins, then the theme's, then the synthesised effect. |
-| `motion` | a `style` (`standard`, `sober`, `dynamic`, `festive`) setting the live motion tokens, and a `revealEffect` (`confetti`). The room's *Animations* switch and the device's reduced motion win. |
+| `sounds` | the lobby’s effects (`ding`, `tick`, `countdown`, `gong`). A sample the host picked for the lobby wins, then the theme's, then the synthesised effect. |
+| `motion` | a `style` (`standard`, `sober`, `dynamic`, `festive`) setting the live motion tokens, and a `revealEffect` (`confetti`). The lobby's *Animations* switch and the device's reduced motion win. |
 
 The text and icons on the answers are always white (Classic included). The default order
 of the answers' colours is green, red, blue, yellow, purple, orange, pink, teal
@@ -93,7 +93,7 @@ passes every check says so: an *Accessible* badge and filter; the others carry n
 game views in `theme-preview.tsx`) at four moments. The quiz settings pick a theme with
 thumbnails; every preview of the quiz's steps (the preview page, the question and slide
 forms, the cards, the read-only page) shows it. The console's sound preview plays the
-theme's sample of an effect the room has none of its own for.
+theme's sample of an effect the lobby has none of its own for.
 
 ## Bundles
 

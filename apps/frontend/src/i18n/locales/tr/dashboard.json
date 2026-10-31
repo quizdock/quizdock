@@ -50,7 +50,7 @@
   "pageOf": "Sayfa {{page}} / {{pages}}",
   "searchSessions": "Oda, PIN ve sunucu arayın",
   "filterState": "Aşama",
-  "stateLobby": "Lobi",
+  "stateLobby": "Oda",
   "statePlaying": "Oynanıyor",
   "sortPlayers": "Çoğu katılımcı",
   "sortPin": "PIN",

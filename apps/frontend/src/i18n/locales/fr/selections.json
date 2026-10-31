@@ -1,7 +1,7 @@
 {
   "newName": "Nouvelle sélection",
   "new": "Nouvelle sélection",
-  "intro": "Une sélection aligne des quiz pour les lancer d’un coup dans un salon : après chaque quiz, la salle d’attente propose le suivant. Partagée, les autres animateurs peuvent la présenter ou en créer la leur.",
+  "intro": "Une sélection aligne des quiz pour les lancer d’un coup dans un salon : après chaque quiz, le salon propose le suivant. Partagée, les autres animateurs peuvent la présenter ou en créer la leur.",
   "emptyTitle": "Aucune sélection pour l’instant",
   "empty": "Créez-en une pour aligner les quiz d’une séance, ou enregistrez un salon comme sélection depuis sa console.",
   "search": "Chercher dans les sélections",

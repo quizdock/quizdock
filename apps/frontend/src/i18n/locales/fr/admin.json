@@ -536,8 +536,8 @@
         "docker": "Docker Desktop, un réseau bridge : le conteneur ne voit pas les adresses de la machine elle-même — indiquez-les dans HOST_LAN_IPS."
       },
       "expired": "Ce test a expiré : relancez-le.",
-      "adoptHelp": "Une fois une adresse atteinte depuis un téléphone, faites-en l’adresse pour rejoindre de l’instance : chaque salle d’attente part d’elle (APP_PUBLIC_URL). Un animateur peut encore en choisir une autre pour une partie.",
-      "adoptReadOnly": "L’administration ne peut pas modifier les réglages ici : l’adresse pour rejoindre de l’instance reste celle de l’exploitant (APP_PUBLIC_URL). Un animateur choisit l’adresse de chaque partie dans la salle d’attente.",
+      "adoptHelp": "Une fois une adresse atteinte depuis un téléphone, faites-en l’adresse pour rejoindre de l’instance : chaque salon part d’elle (APP_PUBLIC_URL). Un animateur peut encore en choisir une autre pour une partie.",
+      "adoptReadOnly": "L’administration ne peut pas modifier les réglages ici : l’adresse pour rejoindre de l’instance reste celle de l’exploitant (APP_PUBLIC_URL). Un animateur choisit l’adresse de chaque partie dans le salon.",
       "other": "Autre adresse",
       "add": "Ajouter",
       "current": "L’adresse pour rejoindre de l’instance",
@@ -621,9 +621,9 @@
       "games": "Parties en cours",
       "players": "Joueurs connectés",
       "none": "Aucune partie en cours.",
-      "lobby_one": "{{count}} en salle d’attente",
-      "lobby_many": "{{count}} en salle d’attente",
-      "lobby_other": "{{count}} en salle d’attente",
+      "lobby_one": "{{count}} au salon",
+      "lobby_many": "{{count}} au salon",
+      "lobby_other": "{{count}} au salon",
       "playing_one": "{{count}} en jeu",
       "playing_many": "{{count}} en jeu",
       "playing_other": "{{count}} en jeu"
@@ -638,7 +638,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "Salle d’attente",
+      "lobby": "Salon",
       "question": "Question {{index}} sur {{total}}"
     },
     "instance": {

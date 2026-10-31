@@ -42,7 +42,7 @@
     "open_access_forbidden": "此伺服器不允許開放存取。",
     "open_access_guests_only": "開放存取時參與者沒有帳號：沒有個人追蹤，也不使用帳號名稱。",
     "next_quiz_unavailable": "此測驗不能作為本房間的下一個測驗。",
-    "next_quiz_from_lobby": "下一個測驗在房間大廳中選擇。",
+    "next_quiz_from_lobby": "下一個測驗在房間中選擇。",
     "review_unavailable": "只能在兩道題之間回看已進行的步驟。",
     "step_not_played": "此步驟尚未進行。"
   },

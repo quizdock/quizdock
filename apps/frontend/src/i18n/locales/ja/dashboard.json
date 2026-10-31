@@ -50,7 +50,7 @@
   "pageOf": "{{page}} / {{pages}} ページ",
   "searchSessions": "ルーム、PIN、ホストを検索",
   "filterState": "状態",
-  "stateLobby": "待機室",
+  "stateLobby": "ルーム",
   "statePlaying": "進行中",
   "sortPlayers": "参加者が多い順",
   "sortPin": "PIN",

@@ -1,6 +1,6 @@
 {
   "title": "Temas",
-  "intro": "El aspecto de un cuestionario en la proyección y en los teléfonos de los jugadores, desde la sala de espera hasta el podio. Cualquier anfitrión puede usar todos los temas; solo su propietario y los administradores los cambian.",
+  "intro": "El aspecto de un cuestionario en la proyección y en los teléfonos de los jugadores, desde la sala hasta el podio. Cualquier anfitrión puede usar todos los temas; solo su propietario y los administradores los cambian.",
   "import": "Importar",
   "new": "Nuevo tema",
   "search": "Buscar por nombre",
@@ -92,7 +92,7 @@
     "phase": "Momento de la partida",
     "device": "Pantalla",
     "phases": {
-      "lobby": "Sala de espera",
+      "lobby": "Sala",
       "question": "Pregunta",
       "reveal": "Respuesta",
       "podium": "Podio"

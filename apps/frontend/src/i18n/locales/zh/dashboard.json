@@ -50,7 +50,7 @@
   "pageOf": "第 {{page}} / {{pages}} 页",
   "searchSessions": "搜索房间、PIN 或主持人",
   "filterState": "状态",
-  "stateLobby": "等候室",
+  "stateLobby": "房间",
   "statePlaying": "进行中",
   "sortPlayers": "参与者最多",
   "sortPin": "PIN 码",

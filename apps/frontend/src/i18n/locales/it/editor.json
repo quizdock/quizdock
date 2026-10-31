@@ -38,7 +38,7 @@
       "23": "Tranquillo (−23 LUFS, broadcast)"
     },
     "audioTargetLabel": "Chi sente il suono",
-    "audioTargetHelp": "Quali dispositivi riproducono i suoni e i video del quiz. I partecipanti presenti in sala vedono la proiezione: i loro telefoni restano muti a meno che non si scelga «Tutti i dispositivi», che crea eco se condividono lo stesso ambiente. Una domanda può scegliere diversamente, e il conduttore può cambiarlo per una sessione.",
+    "audioTargetHelp": "Quali dispositivi riproducono i suoni e i video del quiz. I partecipanti in presenza vedono la proiezione: i loro telefoni restano muti a meno che non si scelga «Tutti i dispositivi», che crea eco se condividono lo stesso ambiente. Una domanda può scegliere diversamente, e il conduttore può cambiarlo per una sessione.",
     "audioTarget": {
       "projection": "Solo la proiezione",
       "projection_remote": "Proiezione e partecipanti a distanza",
@@ -249,7 +249,7 @@
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "In modalità automatica: per quanto tempo la risposta corretta resta sullo schermo prima di andare avanti. Vuoto = l’impostazione dell’istanza.",
     "audioTargetLabel": "Chi sente questo suono",
-    "audioTargetHint": "Quali dispositivi riproducono il suono o il video di questa domanda. «Tutti i dispositivi» include i telefoni in sala, che creano eco se condividono lo stesso ambiente.",
+    "audioTargetHint": "Quali dispositivi riproducono il suono o il video di questa domanda. «Tutti i dispositivi» include i telefoni dei presenti, che creano eco se condividono lo stesso ambiente.",
     "audioTargetDefault": "L’impostazione del quiz nella sala",
     "waveformSizeLabel": "Dimensione della forma d’onda",
     "waveformSizeHint": "Lo spessore con cui viene disegnata la forma d’onda del suono sulla proiezione e sui telefoni.",

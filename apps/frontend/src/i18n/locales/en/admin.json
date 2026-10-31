@@ -106,12 +106,12 @@
   },
   "applies": {
     "live": "Live",
-    "next-room": "Next room",
+    "next-room": "Next lobby",
     "restart": "At restart"
   },
   "appliesHelp": {
     "live": "On its next use: a game in progress follows it.",
-    "next-room": "In the rooms opened after the change; a room in progress keeps its own.",
+    "next-room": "In the lobbies opened after the change; a lobby in progress keeps its own.",
     "restart": "Read once at start: the instance must restart."
   },
   "readOnly": {
@@ -452,7 +452,7 @@
     "noLinks": "No library: the editor shows none (an instance without Internet).",
     "saved": {
       "live": "Saved: it applies now.",
-      "next-room": "Saved: it applies to the rooms opened from now on.",
+      "next-room": "Saved: it applies to the lobbies opened from now on.",
       "restart": "Saved: it applies at the next restart."
     }
   },

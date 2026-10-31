@@ -1,9 +1,9 @@
 {
   "newName": "New selection",
   "new": "New selection",
-  "intro": "A selection lines quizzes up to launch them into a room in one go: after each quiz, the room’s lobby picks the next one. Shared, other hosts can present it or create their own from it.",
+  "intro": "A selection lines quizzes up to launch them into a lobby in one go: after each quiz, the lobby picks the next one. Shared, other hosts can present it or create their own from it.",
   "emptyTitle": "No selection yet",
-  "empty": "Create one to line up the quizzes of a session, or save a room as a selection from its console.",
+  "empty": "Create one to line up the quizzes of a session, or save a lobby as a selection from its console.",
   "search": "Search the selections",
   "noMatch": "No selection matches.",
   "deleteConfirm": {
@@ -38,7 +38,7 @@
   "addThisQuiz": "Add this quiz",
   "noQuizToAdd": "No other quiz to add.",
   "noQuizTitle": "No quiz yet",
-  "noQuiz": "Add the quizzes to play, in the order the room plays them.",
+  "noQuiz": "Add the quizzes to play, in the order the lobby plays them.",
   "questionCount_one": "{{count}} question",
   "questionCount_other": "{{count}} questions",
   "unplayable": {

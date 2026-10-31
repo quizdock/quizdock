@@ -50,7 +50,7 @@
   "pageOf": "पेज {{page}} / {{pages}}",
   "searchSessions": "रूम, PIN या होस्ट खोजें",
   "filterState": "अवस्था",
-  "stateLobby": "लॉबी",
+  "stateLobby": "रूम",
   "statePlaying": "खेला जा रहा है",
   "sortPlayers": "सबसे ज़्यादा प्रतिभागी",
   "sortPin": "PIN",

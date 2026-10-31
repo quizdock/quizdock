@@ -1,6 +1,6 @@
 {
   "title": "Themes",
-  "intro": "Das Aussehen eines Quiz auf der Projektion und den Handys der Spieler, vom Warteraum bis zum Podium. Jeder Moderator kann jedes Theme verwenden; nur sein Eigentümer und die Administratoren ändern es.",
+  "intro": "Das Aussehen eines Quiz auf der Projektion und den Handys der Spieler, vom Raum bis zum Podium. Jeder Moderator kann jedes Theme verwenden; nur sein Eigentümer und die Administratoren ändern es.",
   "import": "Importieren",
   "new": "Neues Theme",
   "search": "Nach Namen suchen",
@@ -90,7 +90,7 @@
     "phase": "Moment des Spiels",
     "device": "Bildschirm",
     "phases": {
-      "lobby": "Warteraum",
+      "lobby": "Raum",
       "question": "Frage",
       "reveal": "Antwort",
       "podium": "Podium"

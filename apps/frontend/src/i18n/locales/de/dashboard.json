@@ -50,7 +50,7 @@
   "pageOf": "Seite {{page}} von {{pages}}",
   "searchSessions": "Raum, PIN oder Quizleitung suchen",
   "filterState": "Zustand",
-  "stateLobby": "Warteraum",
+  "stateLobby": "Raum",
   "statePlaying": "Läuft",
   "sortPlayers": "Meiste Teilnehmende",
   "sortPin": "PIN",

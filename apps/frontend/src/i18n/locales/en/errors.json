@@ -10,7 +10,7 @@
   },
   "host": {
     "auth_required": "Host authentication required.",
-    "forbidden": "You are not the host of this room."
+    "forbidden": "You are not the host of this lobby."
   },
   "quiz": {
     "not_found": "Quiz not found.",
@@ -18,18 +18,18 @@
     "empty": "The quiz has no questions.",
     "requires_question": "A quiz must have at least one question to become “ready” (RG-02).",
     "transition_forbidden": "Forbidden state transition: {{from}} → {{target}}.",
-    "in_use": "This quiz is being played in a room: close the room first.",
+    "in_use": "This quiz is being played in a lobby: close the lobby first.",
     "item_not_in_quiz": "This item does not belong to this quiz any more: reload the page.",
     "reorder_incomplete": "The order sent is missing some items: reload the page and try again.",
     "incomplete_one": "1 step is unfinished: complete it to publish the quiz.",
     "incomplete_other": "{{count}} steps are unfinished: complete them to publish the quiz."
   },
   "session": {
-    "not_found": "Room not found or closed.",
-    "ended": "The room is closed.",
-    "banned": "You have been removed from this room by the host.",
-    "join_required": "Join the room before answering.",
-    "already_joined": "You are already in this room.",
+    "not_found": "Lobby not found or closed.",
+    "ended": "The lobby is closed.",
+    "banned": "You have been removed from this lobby by the host.",
+    "join_required": "Join the lobby before answering.",
+    "already_joined": "You are already in this lobby.",
     "already_started": "The quiz has already started.",
     "quiz_required": "Pick the quiz first.",
     "reveal_required": "Action only possible after the reveal.",
@@ -39,11 +39,11 @@
     "options_locked": "These options can only be changed before the quiz starts.",
     "join_url_invalid": "Invalid invitation address (expected http(s)://host[:port]).",
     "archive_quiz_gone": "The quiz was deleted while it was played: it ended without an archive.",
-    "locked": "This room no longer accepts new participants.",
+    "locked": "This lobby no longer accepts new participants.",
     "open_access_forbidden": "Open access is not allowed on this server.",
     "open_access_guests_only": "In open access participants have no account: no personal tracking, no name taken from an account.",
-    "next_quiz_unavailable": "This quiz cannot be played next in this room.",
-    "next_quiz_from_lobby": "The next quiz is picked in the room's lobby.",
+    "next_quiz_unavailable": "This quiz cannot be played next in this lobby.",
+    "next_quiz_from_lobby": "The next quiz is picked in the lobby.",
     "review_unavailable": "You can only look back at a step between two questions.",
     "step_not_played": "This step has not been played yet."
   },
@@ -51,7 +51,7 @@
     "not_found": "Player not found."
   },
   "nickname": {
-    "taken": "This nickname is already taken in this room.",
+    "taken": "This nickname is already taken in this lobby.",
     "invalid_length": "The nickname must be between {{min}} and {{max}} characters."
   },
   "pin": {
@@ -81,7 +81,7 @@
     "too_long": "Too long to fit the {{maxMb}} MB limit for this kind of media, even compressed. Shorten it first.",
     "canceled": "Conversion cancelled.",
     "in_use": "This media is still used by a quiz or a session: remove it from there first.",
-    "playing": "A room is playing this media right now: try again once it closes.",
+    "playing": "A lobby is playing this media right now: try again once it closes.",
     "not_adopted_yet": "This file is being moved to shared storage: try again in a moment.",
     "embed_bounds": "The video's start and end don't fit: the end must come after the start."
   },
@@ -244,6 +244,6 @@
     "too_many_quizzes": "A selection holds at most 50 quizzes.",
     "duplicate_quiz": "A quiz appears only once in a selection.",
     "quiz_not_found": "This quiz cannot be added: it is neither yours nor shared with you.",
-    "nothing_to_save": "This room played no quiz you can keep in a selection."
+    "nothing_to_save": "This lobby played no quiz you can keep in a selection."
   }
 }

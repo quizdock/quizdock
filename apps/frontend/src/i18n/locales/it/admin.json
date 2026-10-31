@@ -536,8 +536,8 @@
         "docker": "Docker Desktop, una rete bridge: il container non vede gli indirizzi della macchina — impostali in HOST_LAN_IPS."
       },
       "expired": "Questa prova è scaduta: riavviala.",
-      "adoptHelp": "Quando un telefono ha raggiunto un indirizzo, rendilo l’indirizzo d’invito dell’istanza: ogni sala d’attesa parte da esso (APP_PUBLIC_URL). Un conduttore può comunque sceglierne un altro per una partita.",
-      "adoptReadOnly": "L’amministrazione non può modificare le impostazioni qui: l’indirizzo d’invito dell’istanza resta quello impostato dal gestore (APP_PUBLIC_URL). Un conduttore sceglie l’indirizzo di ogni partita nella sala d’attesa.",
+      "adoptHelp": "Quando un telefono ha raggiunto un indirizzo, rendilo l’indirizzo d’invito dell’istanza: ogni sala parte da esso (APP_PUBLIC_URL). Un conduttore può comunque sceglierne un altro per una partita.",
+      "adoptReadOnly": "L’amministrazione non può modificare le impostazioni qui: l’indirizzo d’invito dell’istanza resta quello impostato dal gestore (APP_PUBLIC_URL). Un conduttore sceglie l’indirizzo di ogni partita nella sala.",
       "other": "Un altro indirizzo",
       "add": "Aggiungi",
       "current": "L’indirizzo d’invito dell’istanza",
@@ -621,9 +621,9 @@
       "games": "Partite in corso",
       "players": "Partecipanti connessi",
       "none": "Nessuna partita in corso in questo momento.",
-      "lobby_one": "{{count}} in sala d’attesa",
-      "lobby_many": "{{count}} in sala d’attesa",
-      "lobby_other": "{{count}} in sala d’attesa",
+      "lobby_one": "{{count}} in sala",
+      "lobby_many": "{{count}} in sala",
+      "lobby_other": "{{count}} in sala",
       "playing_one": "{{count}} in gioco",
       "playing_many": "{{count}} in gioco",
       "playing_other": "{{count}} in gioco"
@@ -638,7 +638,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "Sala d’attesa",
+      "lobby": "Sala",
       "question": "Domanda {{index}} di {{total}}"
     },
     "instance": {

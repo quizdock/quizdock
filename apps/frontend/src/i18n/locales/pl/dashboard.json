@@ -60,7 +60,7 @@
   "pageOf": "Strona {{page}} z {{pages}}",
   "searchSessions": "Szukaj pokoju, PIN-u, prowadzącego",
   "filterState": "Stan",
-  "stateLobby": "Poczekalnia",
+  "stateLobby": "Pokój",
   "statePlaying": "W grze",
   "sortPlayers": "Najwięcej uczestników",
   "sortPin": "PIN",

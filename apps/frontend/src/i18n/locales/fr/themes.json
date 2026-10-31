@@ -1,6 +1,6 @@
 {
   "title": "Thèmes",
-  "intro": "L’apparence d’un quiz sur la projection et les téléphones des joueurs, de la salle d’attente au podium. Tout animateur peut utiliser tous les thèmes ; seuls leur propriétaire et les administrateurs les modifient.",
+  "intro": "L’apparence d’un quiz sur la projection et les téléphones des joueurs, du salon au podium. Tout animateur peut utiliser tous les thèmes ; seuls leur propriétaire et les administrateurs les modifient.",
   "import": "Importer",
   "new": "Nouveau thème",
   "search": "Chercher par nom",
@@ -92,7 +92,7 @@
     "phase": "Moment de la partie",
     "device": "Écran",
     "phases": {
-      "lobby": "Salle d’attente",
+      "lobby": "Salon",
       "question": "Question",
       "reveal": "Réponse",
       "podium": "Podium"

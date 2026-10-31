@@ -533,8 +533,8 @@
         "docker": "Docker Desktop 的 bridge 网络：容器看不到本机自身的地址——请在 HOST_LAN_IPS 中设置。"
       },
       "expired": "此测试已过期：请重新开始。",
-      "adoptHelp": "手机访问成功后，可将该地址设为实例的加入地址：每个等候室都以它为起点（APP_PUBLIC_URL）。主持人仍可为某一局选择其他地址。",
-      "adoptReadOnly": "此处的管理后台不能修改设置：实例的加入地址保持运维人员的设定（APP_PUBLIC_URL）。主持人在等候室为每一局选择地址。",
+      "adoptHelp": "手机访问成功后，可将该地址设为实例的加入地址：每个房间都以它为起点（APP_PUBLIC_URL）。主持人仍可为某一局选择其他地址。",
+      "adoptReadOnly": "此处的管理后台不能修改设置：实例的加入地址保持运维人员的设定（APP_PUBLIC_URL）。主持人在房间为每一局选择地址。",
       "other": "其他地址",
       "add": "添加",
       "current": "实例的加入地址",
@@ -618,8 +618,8 @@
       "games": "进行中的游戏",
       "players": "已连接的玩家",
       "none": "当前没有进行中的游戏。",
-      "lobby_one": "{{count}} 个在等候室",
-      "lobby_other": "{{count}} 个在等候室",
+      "lobby_one": "{{count}} 个在房间",
+      "lobby_other": "{{count}} 个在房间",
       "playing_one": "{{count}} 个进行中",
       "playing_other": "{{count}} 个进行中"
     },
@@ -633,7 +633,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "等候室",
+      "lobby": "房间",
       "question": "第 {{index}} 题，共 {{total}} 题"
     },
     "instance": {
