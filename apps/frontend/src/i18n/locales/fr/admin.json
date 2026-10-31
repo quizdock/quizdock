@@ -622,12 +622,12 @@
       "games": "Parties en cours",
       "players": "Joueurs connectés",
       "none": "Aucune partie en cours.",
-      "lobby_one": "{{count}} au salon",
-      "lobby_many": "{{count}} au salon",
-      "lobby_other": "{{count}} au salon",
-      "playing_one": "{{count}} en jeu",
-      "playing_many": "{{count}} en jeu",
-      "playing_other": "{{count}} en jeu"
+      "lobby_one": "{{count}} dans le salon",
+      "lobby_many": "{{count}} dans le salon",
+      "lobby_other": "{{count}} dans le salon",
+      "playing_one": "{{count}} joueur",
+      "playing_many": "{{count}} joueurs",
+      "playing_other": "{{count}} joueurs"
     },
     "columns": {
       "quiz": "Quiz",
