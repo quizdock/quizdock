@@ -64,7 +64,38 @@ const NICKNAME_HOMONYM_MAX = 20;
 const AVATAR_SEED_MAX = 64;
 
 /** A player's score at the start of a game. */
-const ZERO_SCORE = JSON.stringify({ score: 0, streak: 0 } satisfies PlayerScore);
+const ZERO_SCORE = JSON.stringify({
+  score: 0,
+  streak: 0,
+  answerTimeSavedMs: 0,
+} satisfies PlayerScore);
+
+/**
+ * Upgrade an older score once, from its retained answers. Runs atomically with
+ * submissions: never overwrites a newer score or recreates a banned player.
+ * KEYS: scores, each question's answers. ARGV: player id, question limits (ms).
+ */
+const SCORE_TIME_SCRIPT = `
+local raw = redis.call('HGET', KEYS[1], ARGV[1])
+if not raw then return false end
+local score = cjson.decode(raw)
+if score.answerTimeSavedMs == nil then
+  local limits = cjson.decode(ARGV[2])
+  local saved = 0
+  for i = 2, #KEYS do
+    local answer = redis.call('HGET', KEYS[i], ARGV[1])
+    if answer then
+      local t = cjson.decode(answer).tMs
+      local limit = limits[i - 1]
+      saved = saved + limit - math.min(limit, math.max(0, t))
+    end
+  end
+  score.answerTimeSavedMs = saved
+  raw = cjson.encode(score)
+  redis.call('HSET', KEYS[1], ARGV[1], raw)
+end
+return raw
+`;
 
 /*
  * The two moves that must see the same room: a player joining and a quiz
@@ -638,6 +669,13 @@ export class GameService {
       this.redis.hgetall(gameKeys.players(pin)),
       this.redis.hgetall(gameKeys.scores(gameId)),
     ]);
+    // Old games are upgraded once; ordinary ranking reads only players and scores.
+    for (const [id, raw] of Object.entries(scores)) {
+      if ((JSON.parse(raw) as PlayerScore).answerTimeSavedMs !== undefined) continue;
+      const upgraded = await this.upgradeScoreTime(gameId, id);
+      if (upgraded) scores[id] = JSON.stringify(upgraded);
+      else delete scores[id];
+    }
     return rankPlayers(players, scores);
   }
 
@@ -809,6 +847,25 @@ export class GameService {
   /** A player's score in a game (null when they do not play it). */
   async getScore(gameId: GameId, playerId: string): Promise<PlayerScore | null> {
     const raw = await this.redis.hget(gameKeys.scores(gameId), playerId);
+    if (!raw) return null;
+    const score = JSON.parse(raw) as PlayerScore;
+    return score.answerTimeSavedMs === undefined ? this.upgradeScoreTime(gameId, playerId) : score;
+  }
+
+  private async upgradeScoreTime(gameId: GameId, playerId: string): Promise<PlayerScore | null> {
+    const snapshot = await this.getSnapshot(gameId);
+    const questions = snapshot?.questions ?? [];
+    const keys = [
+      gameKeys.scores(gameId),
+      ...questions.map((q) => gameKeys.answers(gameId, q.orderIndex)),
+    ];
+    const raw = (await this.redis.eval(
+      SCORE_TIME_SCRIPT,
+      keys.length,
+      ...keys,
+      playerId,
+      JSON.stringify(questions.map((q) => q.timeLimitS * 1000)),
+    )) as string | null;
     return raw ? (JSON.parse(raw) as PlayerScore) : null;
   }
 
