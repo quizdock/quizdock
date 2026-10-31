@@ -89,6 +89,14 @@ export const tagSchema = z.string().regex(TAG_RE).max(TAG_MAX_LENGTH);
 export const MAX_TAGS = QUIZ_MAX_TAGS;
 
 /**
+ * UTC timestamp whose seconds may be left out (`2026-10-31T10:00Z`). Zod 4.6 made
+ * them required after a `Z`, as RFC 3339 does; the published bundle format has
+ * always accepted them missing, so its pattern stays the one Zod 4.4 wrote.
+ */
+const BUNDLE_DATETIME_RE =
+  /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$/;
+
+/**
  * Quiz Store metadata (#20): the fields a future catalogue needs and that would
  * be costly to retrofit. `slug` is the only identity that travels — never an
  * internal id. `namespace` is reserved for a Store submission (`<username>/<slug>`)
@@ -100,7 +108,7 @@ const storeBundleFields = {
   /** Content revision, bumped by every export (an integer, not semver). */
   revision: z.number().int().min(0).optional(),
   /** ISO 8601, UTC. */
-  updatedAt: z.iso.datetime().optional(),
+  updatedAt: z.stringFormat('date-time', BUNDLE_DATETIME_RE).optional(),
   /** Vocabulary to be closed by the Store; free text until then. */
   domain: z.string().trim().min(1).max(50).nullable().optional(),
   tags: z.array(tagSchema).max(MAX_TAGS).optional(),

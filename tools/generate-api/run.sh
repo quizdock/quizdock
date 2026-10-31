@@ -17,7 +17,7 @@ docker run --rm -v "$root:/src" -v quizdock-generate-api:/store -e CI=true -e CO
   "node:$node" sh -euc '
     mkdir /work && cd /src
     tar -cf - --exclude=node_modules --exclude=dist \
-      package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json \
+      package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json patches \
       .prettierrc.json .prettierignore packages apps/backend apps/frontend \
       | tar -C /work -xf -
     cd /work
