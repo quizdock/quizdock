@@ -197,7 +197,7 @@ export interface MediaLibraryLink {
 
 /**
  * Free libraries under open licences (Creative Commons, public domain), several for
- * each kind: images, videos, sounds and music. Content free of charge but under a
+ * each kind: images, videos, audio and music. Content free of charge but under a
  * site's own licence (Pexels, Pixabay…) is left out: an author can add it.
  */
 export const DEFAULT_MEDIA_LIBRARY_LINKS: MediaLibraryLink[] = [
@@ -628,7 +628,7 @@ export const SETTINGS = {
   MEDIA_DIR: define({
     key: 'MEDIA_DIR',
     description:
-      'Where uploaded images, videos and sounds are stored. Mount a volume here to persist.',
+      'Where uploaded images, videos and audio files are stored. Mount a volume here to persist.',
     category: 'storage',
     criticality: 'C1',
     schema: text(),
@@ -716,7 +716,7 @@ export const SETTINGS = {
   }),
   MEDIA_MAX_AUDIO_MB: define({
     key: 'MEDIA_MAX_AUDIO_MB',
-    description: 'Max size of an uploaded **sound**, in MB. The editor converts to M4A (AAC).',
+    description: 'Max size of an uploaded **audio file**, in MB. The editor converts to M4A (AAC).',
     category: 'limits',
     criticality: 'C2',
     schema: number({ positive: true }),
@@ -828,7 +828,7 @@ export const SETTINGS = {
   GAME_MEDIA_WAIT_S: define({
     key: 'GAME_MEDIA_WAIT_S',
     description:
-      'How long the lobby waits at most, before a question, for the devices that play its sound or video to load it (the host can start anyway), in seconds. `0` never waits.',
+      'How long the lobby waits at most, before a question, for the devices that play its audio or video to load it (the host can start anyway), in seconds. `0` never waits.',
     category: 'pace',
     criticality: 'C3',
     schema: number(),

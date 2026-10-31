@@ -262,7 +262,7 @@
           "key": "MEDIA_DIR",
           "default": "`/data/media` (images)",
           "level": "C1",
-          "description": "Where uploaded images, videos and sounds are stored. Mount a volume here to persist.",
+          "description": "Where uploaded images, videos and audio files are stored. Mount a volume here to persist.",
           "accepts": "a path",
           "applies": "restart",
           "administration": false
@@ -313,7 +313,7 @@
           "key": "MEDIA_MAX_AUDIO_MB",
           "default": "`10`",
           "level": "C2",
-          "description": "Max size of an uploaded **sound**, in MB. The editor converts to M4A (AAC).",
+          "description": "Max size of an uploaded **audio file**, in MB. The editor converts to M4A (AAC).",
           "accepts": "1 to 100 (MB)",
           "applies": "live",
           "administration": true
@@ -385,7 +385,7 @@
           "key": "GAME_MEDIA_WAIT_S",
           "default": "`10`",
           "level": "C3",
-          "description": "How long the lobby waits at most, before a question, for the devices that play its sound or video to load it (the host can start anyway), in seconds. `0` never waits.",
+          "description": "How long the lobby waits at most, before a question, for the devices that play its audio or video to load it (the host can start anyway), in seconds. `0` never waits.",
           "accepts": "0 to 60 (s)",
           "applies": "live",
           "administration": true,
