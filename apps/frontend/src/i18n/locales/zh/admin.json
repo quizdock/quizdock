@@ -188,14 +188,14 @@
     "CLIENT_DIR": "网页应用文件夹",
     "MEDIA_MAX_BYTES": "图片大小上限",
     "MEDIA_MAX_VIDEO_MB": "视频大小上限",
-    "MEDIA_MAX_AUDIO_MB": "声音大小上限",
+    "MEDIA_MAX_AUDIO_MB": "音频文件大小上限",
     "IMPORT_MAX_BYTES": "导入测验大小上限",
     "PUBLICATION_MAX_MB": "发布测验大小上限",
     "MEDIA_LIBRARY_LINKS": "免费媒体库",
     "GAME_READ_DELAY_MS": "计时前的阅读时间",
     "GAME_ALL_ANSWERED_DELAY_MS": "全员作答后的停顿",
     "GAME_AUTO_ADVANCE_MS": "自动模式：每步时长",
-    "GAME_MEDIA_WAIT_S": "等待声音和视频",
+    "GAME_MEDIA_WAIT_S": "等待音频和视频",
     "LIVE_MOTION": "直播画面的过渡效果",
     "GAME_HOST_GRACE_MS": "主持人离开前的宽限时间",
     "GAME_HOST_WINDOW_MS": "主持人返回时限",
@@ -447,7 +447,7 @@
     "kinds": {
       "image": "图片",
       "video": "视频",
-      "audio": "声音"
+      "audio": "音频"
     },
     "noLinks": "没有媒体库：编辑器不显示任何媒体库（无互联网的实例）。",
     "saved": {
@@ -588,7 +588,7 @@
         },
         "public": {
           "title": "公众、大型活动",
-          "help": "对所有人开放——需使用身份提供方——并在拥挤的 Wi-Fi 上为声音和视频留出更多加载时间。"
+          "help": "对所有人开放——需使用身份提供方——并在拥挤的 Wi-Fi 上为音频和视频留出更多加载时间。"
         },
         "other": {
           "title": "都有一些、其他",

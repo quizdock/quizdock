@@ -30,7 +30,7 @@
   "noMatch": "Kein Theme eines Moderators passt.",
   "noneYet": "Noch kein Moderator hat ein Theme erstellt: Beginne mit einem mitgelieferten.",
   "deleteTitle": "Dieses Theme löschen?",
-  "deleteText": "„{{name}}“ wird von keinem Quiz verwendet. Seine Symbole, Schrift und Klänge gehen mit, sofern nichts anderes sie nutzt.",
+  "deleteText": "„{{name}}“ wird von keinem Quiz verwendet. Seine Symbole, Schrift und Effekte gehen mit, sofern nichts anderes sie nutzt.",
   "copyName": "{{name}} (Kopie)",
   "newName": "Mein {{parent}}",
   "name": "Name",
@@ -197,7 +197,7 @@
     "fontLicense": "Lizenz der Schrift",
     "fontUpload": "Eine Schrift importieren (.woff2)…",
     "fontHint": "Eine importierte Schrift nennt ihre Lizenz: OFL 1.1, CC0, CC BY oder CC BY-SA.",
-    "sounds": "Klänge",
+    "sounds": "Effekte",
     "builtinSounds": "Eingebaut",
     "ownSounds_one": "{{count}} des Themes",
     "ownSounds_other": "{{count}} des Themes",
@@ -207,8 +207,8 @@
       "countdown": "Countdown",
       "gong": "Zeit abgelaufen"
     },
-    "soundUpload": "Einen Klang wählen",
-    "soundsHint": "Ein Klang, den der Moderator für den Raum gewählt hat, hat Vorrang; das Mischpult des Raums behält die Pegel.",
+    "soundUpload": "Einen Effekt wählen",
+    "soundsHint": "Ein Effekt, den die Quizleitung für den Raum gewählt hat, hat Vorrang; das Mischpult des Raums behält die Pegel.",
     "motion": "Bewegung",
     "motionStyle": {
       "standard": "Standard",
@@ -224,7 +224,7 @@
     "accessibilityHint": "Auf den Farben des Themes gemessen, nie erklärt. Ein barrierefreies Theme trägt das Abzeichen in der Bibliothek und den Quiz-Einstellungen; die anderen tragen nichts. Ein Projektor zeigt Farben auf seine Weise: Das sind Richtwerte, nichts wird blockiert.",
     "license": "Lizenz",
     "noLicense": "Keine Lizenz",
-    "licenseHelp": "Die Bedingungen, unter denen andere das Theme wiederverwenden dürfen; ein Community-Store verlangt eine. Sie müssen die Rechte an seinen Bildern, Symbolen, Klängen und seiner Schriftart besitzen."
+    "licenseHelp": "Die Bedingungen, unter denen andere das Theme wiederverwenden dürfen; ein Community-Store verlangt eine. Sie müssen die Rechte an seinen Bildern, Symbolen, Effekten und seiner Schriftart besitzen."
   },
   "picker": {
     "legend": "Theme",

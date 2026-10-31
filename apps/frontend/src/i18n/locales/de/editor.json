@@ -25,20 +25,20 @@
     "descriptionLabel": "Beschreibung",
     "descriptionPlaceholder": "Beschreibung (optional)…",
     "save": "Speichern",
-    "soundLegend": "Ton",
+    "soundLegend": "Audio",
     "soundSummary": "{{lufs}} LUFS · {{target}} · {{tail}} s Pause",
     "mediaTailLabel": "Pause nach einem Medium",
-    "mediaTailHelp": "Dauert der Ton oder das Video einer Frage länger als ihr Timer, wird die Frage bis zum Ende des Mediums plus diese Pause verlängert: Nichts wird mitten im Abspielen abgeschnitten.",
+    "mediaTailHelp": "Dauert das Audio oder das Video einer Frage länger als ihr Timer, wird die Frage bis zum Ende des Mediums plus diese Pause verlängert: Nichts wird mitten im Abspielen abgeschnitten.",
     "seconds": "s",
     "loudnessLabel": "Lautstärkeangleichung",
-    "loudnessHelp": "Der Pegel, auf den jeder Ton und jedes Video des Quiz beim Abspielen gebracht wird, damit die Lautstärke von Frage zu Frage gleich bleibt. Die Dateien werden nicht verändert.",
+    "loudnessHelp": "Der Pegel, auf den jedes Audio und jedes Video des Quiz beim Abspielen gebracht wird, damit die Lautstärke von Frage zu Frage gleich bleibt. Die Dateien werden nicht verändert.",
     "loudness": {
       "14": "Laut (−14 LUFS, Streaming)",
       "16": "Ausgewogen (−16 LUFS)",
       "23": "Ruhig (−23 LUFS, Rundfunk)"
     },
-    "audioTargetLabel": "Wer den Ton hört",
-    "audioTargetHelp": "Welche Geräte die Töne und Videos des Quiz abspielen. Teilnehmende vor Ort sehen die Projektion: Ihre Handys bleiben stumm, außer „Alle Geräte“ ist gewählt, was ein Echo erzeugt, wenn sie sich einen Raum teilen. Eine Frage kann anders wählen, und die Quizleitung kann es für eine Sitzung ändern.",
+    "audioTargetLabel": "Wer das Audio hört",
+    "audioTargetHelp": "Welche Geräte die Audios und Videos des Quiz abspielen. Teilnehmende vor Ort sehen die Projektion: Ihre Handys bleiben stumm, außer „Alle Geräte“ ist gewählt, was ein Echo erzeugt, wenn sie sich einen Raum teilen. Eine Frage kann anders wählen, und die Quizleitung kann es für eine Sitzung ändern.",
     "audioTarget": {
       "projection": "Nur Projektion",
       "projection_remote": "Projektion und Teilnehmende aus der Ferne",
@@ -179,10 +179,10 @@
     "videoCover": "Füllt die Folie hinter ihrem Inhalt (auf den Bildschirm zugeschnitten).",
     "videoLoop": "Schleife",
     "videoLoopHint": "Läuft, solange die Folie angezeigt wird. Aus: wird einmal abgespielt und bleibt auf dem letzten Bild stehen — im automatischen Modus wartet die Folie auf das Ende.",
-    "videoSound": "Ton",
-    "videoSoundHint": "Spielt den eigenen Ton des Videos. Aus: stumm, und die Folie kann einen eigenen Ton haben.",
-    "audioExcludesVideoSound": "Die Folie hat bereits einen Ton: jeweils nur ein Ton. Entfernen Sie ihn, um den des Videos einzuschalten.",
-    "videoSoundExcludesAudio": "Das Video spielt seinen eigenen Ton: kein zusätzlicher Ton. Schalten Sie das Video stumm, um einen hinzuzufügen.",
+    "videoSound": "Audio",
+    "videoSoundHint": "Spielt das eigene Audio des Videos. Aus: stumm, und die Folie kann ein eigenes Audio haben.",
+    "audioExcludesVideoSound": "Die Folie hat bereits ein Audio: jeweils nur eines. Entfernen Sie es, um das des Videos einzuschalten.",
+    "videoSoundExcludesAudio": "Das Video spielt sein eigenes Audio: kein zusätzliches Audio. Schalten Sie das Video stumm, um eines hinzuzufügen.",
     "variablesLegend": "Variablen",
     "variablesHint": "In eine Überschrift oder einen Text schreiben: Sie wird überall ersetzt, wo die Folie erscheint. Die des Quiz erscheinen in der Vorschau ausgefüllt, die des Raums, sobald das Quiz gespielt wird.",
     "variables": {
@@ -244,13 +244,13 @@
     "revealDelayLabel": "Antwort angezeigt für (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "Im automatischen Modus: wie lange die richtige Antwort auf dem Bildschirm bleibt, bevor es weitergeht. Leer = Einstellung der Instanz.",
-    "audioTargetLabel": "Wer diesen Ton hört",
-    "audioTargetHint": "Welche Geräte den Ton oder das Video dieser Frage abspielen. „Alle Geräte“ schließt die Handys vor Ort ein, die ein Echo erzeugen, wenn sie sich den Raum teilen.",
+    "audioTargetLabel": "Wer dieses Audio hört",
+    "audioTargetHint": "Welche Geräte das Audio oder das Video dieser Frage abspielen. „Alle Geräte“ schließt die Handys vor Ort ein, die ein Echo erzeugen, wenn sie sich den Raum teilen.",
     "audioTargetDefault": "Die Einstellung des Quiz im Raum",
     "waveformSizeLabel": "Größe der Wellenform",
-    "waveformSizeHint": "Wie dick die Wellenform des Tons auf der Projektion und den Handys gezeichnet wird.",
+    "waveformSizeHint": "Wie dick die Wellenform des Audios auf der Projektion und den Handys gezeichnet wird.",
     "waveformPreview": "Vorschau der Wellenform",
-    "waveformHiddenNote": "Auf der Projektion und den Handys ausgeblendet — der Ton spielt trotzdem, und Ihre Konsole zeigt sie weiterhin.",
+    "waveformHiddenNote": "Auf der Projektion und den Handys ausgeblendet — das Audio spielt trotzdem, und Ihre Konsole zeigt sie weiterhin.",
     "waveformSize": {
       "S": "Klein",
       "M": "Mittel",
@@ -334,7 +334,7 @@
     "titleAdd": "Neue Frage",
     "stretchedTime": "Das Medium dauert {{media}} s: Die Frage dauert {{total}} s (Ende des Mediums + {{tail}} s Pause des Quiz).",
     "listenFirstLabel": "Timer starten, wenn das Medium endet",
-    "listenFirstHint": "Erst zuhören, dann antworten: Niemand kann antworten, während der Ton oder das Video läuft, und alle haben danach die volle Zeit zum Nachdenken.",
+    "listenFirstHint": "Erst zuhören, dann antworten: Niemand kann antworten, während das Audio oder das Video läuft, und alle haben danach die volle Zeit zum Nachdenken.",
     "listenFirstTime": "Das Medium läuft {{media}} s, dann beginnen die {{time}} s zum Antworten.",
     "promptImageNotice": "Dieses Bild im Fragetext wäre besser in den Medien der Frage aufgehoben: auf jedem Bildschirm gerahmt, auf Handys zoombar, vorab geladen.",
     "promptImageMove": "Zu den Medien verschieben",
@@ -406,7 +406,7 @@
     "numericTarget": "Ziel: {{value}} (± {{tolerance}})",
     "credits": "Nachweise",
     "video": "Video der Frage",
-    "sound": "Ton · {{seconds}} s",
+    "sound": "Audio · {{seconds}} s",
     "steps": "Schritte",
     "backToEditor": "Zurück zum Editor",
     "device": "Gerät",
@@ -430,15 +430,15 @@
     "altHelp": "Wird von Screenreadern vorgelesen. Beschreiben Sie, was das Bild zeigt, wenn es einen Teil der Frage trägt; lassen Sie es leer, wenn das Bild nur Dekoration ist.",
     "slotsLegend": "Medien der Frage",
     "visualLabel": "Bild/Video",
-    "audioLabel": "Ton",
+    "audioLabel": "Audio",
     "kindImage": "Bild",
     "kindVideo": "Video",
     "none": "Keines",
     "addImage": "Bild hinzufügen",
     "addVideo": "Video hinzufügen",
-    "addAudio": "Ton hinzufügen",
-    "videoExcludesAudio": "Das Video hat bereits seinen eigenen Ton: keine zusätzliche Tonspur. Entfernen Sie das Video, um einen Ton hinzuzufügen.",
-    "audioExcludesVideo": "Ein Video hat bereits seinen eigenen Ton: Entfernen Sie den Ton, um ein Video zu wählen.",
+    "addAudio": "Audio hinzufügen",
+    "videoExcludesAudio": "Das Video hat bereits sein eigenes Audio: keine zusätzliche Audiospur. Entfernen Sie das Video, um ein Audio hinzuzufügen.",
+    "audioExcludesVideo": "Ein Video hat bereits sein eigenes Audio: Entfernen Sie das Audio, um ein Video zu wählen.",
     "converting": "Wird konvertiert…",
     "convertingPercent": "Wird konvertiert… {{percent}} %",
     "cancelConversion": "Abbrechen",
@@ -463,14 +463,14 @@
       "title": {
         "image": "Meine Medien · Bilder",
         "video": "Meine Medien · Videos",
-        "audio": "Meine Medien · Töne"
+        "audio": "Meine Medien · Audios"
       },
       "usedIn_one": "Verwendet in {{count}} Quiz",
       "usedIn_other": "Verwendet in {{count}} Quizzen",
       "openKind": {
         "image": "Meine Bilder",
         "video": "Meine Videos",
-        "audio": "Meine Töne"
+        "audio": "Meine Audios"
       },
       "inHistory": "Für frühere Ergebnisse aufbewahrt",
       "tab": {
@@ -549,12 +549,12 @@
       "ready": "Markieren Sie das Quiz zuerst als bereit (Veröffentlichen).",
       "settings": "In den Quiz-Einstellungen unter Teilen festlegen.",
       "size": "Die schwersten Medien verkleinern oder entfernen:",
-      "credit": "Sie sind für die Rechte an jedem Bild, Ton und Video verantwortlich, das Sie veröffentlichen. Geben Sie in Ihrer Mediathek einen Nachweis an (Urheber, Lizenz, Quelle)."
+      "credit": "Sie sind für die Rechte an jedem Bild, Audio und Video verantwortlich, das Sie veröffentlichen. Geben Sie in Ihrer Mediathek einen Nachweis an (Urheber, Lizenz, Quelle)."
     },
     "kind": {
       "image": "Bild",
       "video": "Video",
-      "audio": "Ton"
+      "audio": "Audio"
     },
     "slugLabel": "Kurzname",
     "slugHelp": "Woran der Katalog dieses Quiz in Ihrem Repository erkennt. Datei: {{file}}",
@@ -588,7 +588,7 @@
   "importReport": {
     "imported_one": "1 Frage aus Kahoot importiert.",
     "imported_other": "{{count}} Fragen aus Kahoot importiert.",
-    "media": "Bilder und Töne werden nicht übernommen.",
+    "media": "Bilder und Audios werden nicht übernommen.",
     "incomplete_one": "1 Frage vor dem Veröffentlichen abzuschließen: Sie ist in der Liste markiert.",
     "incomplete_other": "{{count}} Fragen vor dem Veröffentlichen abzuschließen: Sie sind in der Liste markiert.",
     "skipped": "Zeile {{row}} ausgelassen: {{reason}}",

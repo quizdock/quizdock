@@ -59,25 +59,25 @@
     "too_many_attempts": "Zu viele falsche PINs von dieser Adresse. Bitte in einer Minute erneut versuchen."
   },
   "media": {
-    "unsupported_type": "Nicht unterstütztes Format: ein Bild, ein MP4-Video (H.264) oder ein Ton (MP3, M4A). Der Editor konvertiert die anderen Dateien, die dieser Browser lesen kann; SVG wird nicht angenommen.",
+    "unsupported_type": "Nicht unterstütztes Format: ein Bild, ein MP4-Video (H.264) oder eine Audiodatei (MP3, M4A). Der Editor konvertiert die anderen Dateien, die dieser Browser lesen kann; SVG wird nicht angenommen.",
     "file_missing": "Datei fehlt (Feld „file“).",
     "file_too_large": "Datei zu groß (höchstens {{maxMb}} MB für diese Medienart).",
     "image_too_large": "Dieses Bild ist zu groß (höchstens {{maxMp}} Megapixel).",
     "not_found": "Medium nicht gefunden.",
     "demo_disabled": "Medien-Uploads sind auf der Demo-Instanz deaktiviert.",
-    "video_with_audio": "Ein Video bringt bereits seinen eigenen Ton mit: Entfernen Sie die Tonspur oder das Video.",
+    "video_with_audio": "Ein Video bringt bereits sein eigenes Audio mit: Entfernen Sie die Audiospur oder das Video.",
     "wrong_kind": "Dieses Medium ist nicht von der Art, die dieser Platz aufnimmt.",
     "embeds_disabled": "YouTube- und Vimeo-Videos sind auf dieser Instanz ausgeschaltet.",
     "invalid": "Die Medien der Frage sind nicht gültig.",
     "quicktime": "QuickTime-Dateien (.mov) werden nicht angenommen. Exportieren Sie das Video als MP4 (H.264), zum Beispiel mit HandBrake (handbrake.fr).",
     "unsupported_video_codec": "Nicht unterstützter Videocodec ({{codec}}). Nur H.264 läuft überall. Ein mit dem iPhone aufgenommenes Video ist oft HEVC: Konvertieren Sie es in MP4 H.264, zum Beispiel mit HandBrake (handbrake.fr), oder stellen Sie die Kamera auf „Maximale Kompatibilität“.",
-    "unsupported_audio_codec": "Der Ton dieses Videos ({{codec}}) ist nicht AAC. Exportieren Sie es erneut als MP4 H.264 + AAC, zum Beispiel mit HandBrake (handbrake.fr).",
-    "no_video_track": "Diese Datei enthält kein Video. Für einen einzelnen Ton verwenden Sie den Tonplatz.",
-    "unreadable_mp3": "Dieser Ton kann nicht gelesen werden: Die Datei scheint beschädigt.",
-    "metadata_invalid": "Was am Ton gemessen wurde, ist nicht gültig ({{field}}). Versuchen Sie den Upload erneut.",
-    "cannot_read": "Dieser Browser kann diese Datei nicht lesen. Versuchen Sie einen anderen Browser, oder konvertieren Sie sie zuerst mit einem eigenen Werkzeug (HandBrake für Videos, Audacity für Töne).",
+    "unsupported_audio_codec": "Das Audio dieses Videos ({{codec}}) ist nicht AAC. Exportieren Sie es erneut als MP4 H.264 + AAC, zum Beispiel mit HandBrake (handbrake.fr).",
+    "no_video_track": "Diese Datei enthält kein Video. Für ein Audio allein verwenden Sie den Audioplatz.",
+    "unreadable_mp3": "Diese Audiodatei kann nicht gelesen werden: Sie scheint beschädigt.",
+    "metadata_invalid": "Was am Audio gemessen wurde, ist nicht gültig ({{field}}). Versuchen Sie den Upload erneut.",
+    "cannot_read": "Dieser Browser kann diese Datei nicht lesen. Versuchen Sie einen anderen Browser, oder konvertieren Sie sie zuerst mit einem eigenen Werkzeug (HandBrake für Videos, Audacity für Audios).",
     "cannot_convert_video": "Dieser Browser kann dieses Video nicht in MP4 H.264 konvertieren. Verwenden Sie Chrome, Edge oder Safari, oder konvertieren Sie es zuerst mit HandBrake (handbrake.fr).",
-    "cannot_convert_audio": "Dieser Browser kann diesen Ton nicht in AAC konvertieren. Versuchen Sie einen anderen Browser, oder konvertieren Sie ihn zuerst mit Audacity (audacityteam.org).",
+    "cannot_convert_audio": "Dieser Browser kann dieses Audio nicht in AAC konvertieren. Versuchen Sie einen anderen Browser, oder konvertieren Sie es zuerst mit Audacity (audacityteam.org).",
     "too_long": "Zu lang für das Limit von {{maxMb}} MB für diese Medienart, selbst komprimiert. Kürzen Sie es zuerst.",
     "canceled": "Konvertierung abgebrochen.",
     "in_use": "Dieses Medium wird noch von einem Quiz oder einer Sitzung verwendet: Entfernen Sie es zuerst dort.",
@@ -134,7 +134,7 @@
       "no_correct": "Eine Umfrage hat keine richtige Antwort."
     },
     "prompt": {
-      "required": "Schreiben Sie die Frage, oder fügen Sie ein Bild oder einen Ton hinzu, der sie stellt."
+      "required": "Schreiben Sie die Frage, oder fügen Sie ein Bild oder ein Audio hinzu, das sie stellt."
     },
     "scoring": {
       "not_available": "Diese Wertung gilt nicht für diesen Fragetyp."
@@ -170,7 +170,7 @@
     "too_large": "Das Quiz ist zu groß für den Community-Katalog."
   },
   "slide": {
-    "two_sounds": "Eine Folie spielt jeweils nur einen Ton: Schalten Sie das Video stumm oder entfernen Sie den Ton.",
+    "two_sounds": "Eine Folie spielt jeweils nur ein Audio: Schalten Sie das Video stumm oder entfernen Sie das Audio.",
     "background_conflict": "Ein Hintergrund ist ein Bild oder ein Verlauf, nicht beides.",
     "empty": "Die Folie zeigt nichts: Fügen Sie eine Überschrift, einen Text, ein Bild, einen Hintergrund oder ein Video hinzu.",
     "not_found": "Diese Folie existiert nicht mehr: Sie wurde inzwischen gelöscht.",

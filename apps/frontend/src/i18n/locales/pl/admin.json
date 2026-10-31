@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Folder aplikacji webowej",
     "MEDIA_MAX_BYTES": "Największy obraz",
     "MEDIA_MAX_VIDEO_MB": "Największy film",
-    "MEDIA_MAX_AUDIO_MB": "Największy dźwięk",
+    "MEDIA_MAX_AUDIO_MB": "Największy plik audio",
     "IMPORT_MAX_BYTES": "Największy importowany quiz",
     "PUBLICATION_MAX_MB": "Największy quiz do publikacji",
     "MEDIA_LIBRARY_LINKS": "Darmowe biblioteki multimediów",
     "GAME_READ_DELAY_MS": "Czas na przeczytanie przed licznikiem",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pauza, gdy wszyscy odpowiedzieli",
     "GAME_AUTO_ADVANCE_MS": "Tryb automatyczny: czas na krok",
-    "GAME_MEDIA_WAIT_S": "Oczekiwanie na dźwięki i filmy",
+    "GAME_MEDIA_WAIT_S": "Oczekiwanie na nagrania i filmy",
     "LIVE_MOTION": "Przejścia na ekranach na żywo",
     "GAME_HOST_GRACE_MS": "Czas prowadzącego przed opuszczeniem",
     "GAME_HOST_WINDOW_MS": "Czas prowadzącego na powrót",
@@ -451,7 +451,7 @@
     "kinds": {
       "image": "Obrazy",
       "video": "Filmy",
-      "audio": "Dźwięki"
+      "audio": "Nagrania"
     },
     "noLinks": "Brak bibliotek: edytor żadnej nie pokazuje (instancja bez Internetu).",
     "saved": {
@@ -594,7 +594,7 @@
         },
         "public": {
           "title": "Publiczność, duże wydarzenie",
-          "help": "Otwarte dla wszystkich — z dostawcą tożsamości — i więcej czasu na wczytanie dźwięków i filmów w przeciążonej sieci Wi-Fi."
+          "help": "Otwarte dla wszystkich — z dostawcą tożsamości — i więcej czasu na wczytanie nagrań i filmów w przeciążonej sieci Wi-Fi."
         },
         "other": {
           "title": "Wszystkiego po trochu, inne",

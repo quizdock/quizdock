@@ -188,7 +188,7 @@
     "CLIENT_DIR": "Web uygulaması klasörü",
     "MEDIA_MAX_BYTES": "En büyük görsel boyutu",
     "MEDIA_MAX_VIDEO_MB": "En büyük video boyutu",
-    "MEDIA_MAX_AUDIO_MB": "En büyük ses boyutu",
+    "MEDIA_MAX_AUDIO_MB": "En büyük ses dosyası",
     "IMPORT_MAX_BYTES": "İçe aktarılan en büyük quiz",
     "PUBLICATION_MAX_MB": "Yayımlanacak en büyük quiz",
     "MEDIA_LIBRARY_LINKS": "Ücretsiz medya kütüphaneleri",

@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Cartella dell’applicazione web",
     "MEDIA_MAX_BYTES": "Immagine più grande",
     "MEDIA_MAX_VIDEO_MB": "Video più grande",
-    "MEDIA_MAX_AUDIO_MB": "Suono più grande",
+    "MEDIA_MAX_AUDIO_MB": "File audio più grande",
     "IMPORT_MAX_BYTES": "Quiz importato più grande",
     "PUBLICATION_MAX_MB": "Quiz più grande per la pubblicazione",
     "MEDIA_LIBRARY_LINKS": "Librerie di media gratuite",
     "GAME_READ_DELAY_MS": "Tempo di lettura prima del timer",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pausa quando tutti hanno risposto",
     "GAME_AUTO_ADVANCE_MS": "Modalità automatica: tempo su un passaggio",
-    "GAME_MEDIA_WAIT_S": "Attesa per suoni e video",
+    "GAME_MEDIA_WAIT_S": "Attesa per audio e video",
     "LIVE_MOTION": "Transizioni sulle schermate dal vivo",
     "GAME_HOST_GRACE_MS": "Tolleranza del conduttore prima di uscire",
     "GAME_HOST_WINDOW_MS": "Finestra di ritorno del conduttore",
@@ -449,7 +449,7 @@
     "kinds": {
       "image": "Immagini",
       "video": "Video",
-      "audio": "Suoni"
+      "audio": "Audio"
     },
     "noLinks": "Nessuna libreria: l’editor non ne mostra (un’istanza senza Internet).",
     "saved": {
@@ -591,7 +591,7 @@
         },
         "public": {
           "title": "Il pubblico, un grande evento",
-          "help": "Aperta a tutti — con un provider di identità — e più tempo per caricare suoni e video su un Wi‑Fi affollato."
+          "help": "Aperta a tutti — con un provider di identità — e più tempo per caricare audio e video su un Wi‑Fi affollato."
         },
         "other": {
           "title": "Un po’ di tutto, altro",

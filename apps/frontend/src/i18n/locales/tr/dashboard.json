@@ -157,10 +157,10 @@
       "removeDescription": "Sunucular artık bunu kütüphanelerinde bulamıyor. Bunu kullanan quizler kopyalarını saklar.",
       "removeFailed": "Medya geri çekilemedi.",
       "saveFailed": "Değişiklik kaydedilemedi.",
-      "drop": "Görselleri, videoları veya sesleri buraya bırakın, birkaçı birden olabilir.",
+      "drop": "Görselleri, videoları veya ses dosyalarını buraya bırakın, birkaçı birden olabilir.",
       "choose": "Dosya seç",
       "sending": "{{total}} dosyadan {{done}}. gönderiliyor…",
-      "unsupported": "Görsel, video veya ses değil."
+      "unsupported": "Görsel, video veya ses dosyası değil."
     },
     "global": "Genel",
     "preview": {

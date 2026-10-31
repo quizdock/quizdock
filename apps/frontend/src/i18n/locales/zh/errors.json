@@ -58,25 +58,25 @@
     "too_many_attempts": "此地址输入错误的 PIN 次数过多。请一分钟后再试。"
   },
   "media": {
-    "unsupported_type": "不支持的格式：图片、MP4 视频（H.264）或声音（MP3、M4A）。编辑器会转换此浏览器能读取的其他文件；不接受 SVG。",
+    "unsupported_type": "不支持的格式：图片、MP4 视频（H.264）或音频文件（MP3、M4A）。编辑器会转换此浏览器能读取的其他文件；不接受 SVG。",
     "file_missing": "缺少文件（“file”字段）。",
     "file_too_large": "文件过大（此类媒体最大 {{maxMb}} MB）。",
     "image_too_large": "这张图片太大（最多 {{maxMp}} 百万像素）。",
     "not_found": "未找到媒体。",
     "demo_disabled": "演示实例已禁用媒体上传。",
-    "video_with_audio": "视频自带声音：请移除音轨或视频。",
+    "video_with_audio": "视频自带音频：请移除音轨或视频。",
     "wrong_kind": "此媒体类型与该位置不符。",
     "embeds_disabled": "此实例已关闭 YouTube 和 Vimeo 视频。",
     "invalid": "题目的媒体无效。",
     "quicktime": "不接受 QuickTime 文件（.mov）。请将视频导出为 MP4（H.264），例如使用 HandBrake（handbrake.fr）。",
     "unsupported_video_codec": "不支持的视频编码（{{codec}}）。只有 H.264 可在所有设备播放。iPhone 拍摄的视频通常为 HEVC：请转换为 MP4 H.264，例如使用 HandBrake（handbrake.fr），或将相机设置为“兼容性最佳”。",
-    "unsupported_audio_codec": "此视频的声音（{{codec}}）不是 AAC。请重新导出为 MP4 H.264 + AAC，例如使用 HandBrake（handbrake.fr）。",
-    "no_video_track": "此文件不含视频。仅有声音时请使用声音栏位。",
-    "unreadable_mp3": "无法读取此声音：文件可能已损坏。",
-    "metadata_invalid": "对声音的测量数据无效（{{field}}）。请重新上传。",
-    "cannot_read": "此浏览器无法读取该文件。请换一个浏览器，或先用专用工具转换（视频用 HandBrake，声音用 Audacity）。",
+    "unsupported_audio_codec": "此视频的音频（{{codec}}）不是 AAC。请重新导出为 MP4 H.264 + AAC，例如使用 HandBrake（handbrake.fr）。",
+    "no_video_track": "此文件不含视频。仅有音频时请使用音频栏位。",
+    "unreadable_mp3": "无法读取此音频文件：文件可能已损坏。",
+    "metadata_invalid": "对音频的测量数据无效（{{field}}）。请重新上传。",
+    "cannot_read": "此浏览器无法读取该文件。请换一个浏览器，或先用专用工具转换（视频用 HandBrake，音频用 Audacity）。",
     "cannot_convert_video": "此浏览器无法将该视频转换为 MP4 H.264。请使用 Chrome、Edge 或 Safari，或先用 HandBrake（handbrake.fr）转换。",
-    "cannot_convert_audio": "此浏览器无法将该声音转换为 AAC。请换一个浏览器，或先用 Audacity（audacityteam.org）转换。",
+    "cannot_convert_audio": "此浏览器无法将该音频转换为 AAC。请换一个浏览器，或先用 Audacity（audacityteam.org）转换。",
     "too_long": "即使压缩后也超出此类媒体 {{maxMb}} MB 的上限。请先剪短。",
     "canceled": "转换已取消。",
     "in_use": "此媒体仍被测验或游戏使用：请先从那里移除。",
@@ -133,7 +133,7 @@
       "no_correct": "投票没有正确答案。"
     },
     "prompt": {
-      "required": "请写下题目，或添加一张提出问题的图片或声音。"
+      "required": "请写下题目，或添加提出问题的图片或音频。"
     },
     "scoring": {
       "not_available": "此计分方式不适用于该题型。"
@@ -169,7 +169,7 @@
     "too_large": "测验对社区目录来说过大。"
   },
   "slide": {
-    "two_sounds": "一张幻灯片一次只播放一个声音：请将视频静音或移除其声音。",
+    "two_sounds": "一张幻灯片一次只播放一段音频：请将视频静音或移除其音频。",
     "background_conflict": "背景只能是图片或渐变，不能同时使用。",
     "empty": "幻灯片没有任何内容：请添加标题、文字、图片、背景或视频。",
     "not_found": "此幻灯片已不存在：它已被删除。",

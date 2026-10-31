@@ -54,10 +54,10 @@
   "demo": {
     "banner": "Öffentliche Demo — ein Quizleitungskonto für alle Besucher; alles wird stündlich gelöscht."
   },
-  "chromiumOnly": "Diese Seite ist für Chrome, Edge oder einen anderen Chromium-Browser gebaut. In diesem Browser funktionieren das Hochladen und Abspielen von Videos und Tönen möglicherweise nicht richtig.",
+  "chromiumOnly": "Diese Seite ist für Chrome, Edge oder einen anderen Chromium-Browser gebaut. In diesem Browser funktionieren das Hochladen und Abspielen von Videos und Audios möglicherweise nicht richtig.",
   "play": "Abspielen",
   "pause": "Pause",
-  "position": "Position im Ton",
+  "position": "Position im Audio",
   "fallback": {
     "notFoundTitle": "Diese Seite existiert nicht",
     "notFoundText": "Der Link ist vielleicht veraltet, oder das Ziel wurde gelöscht.",

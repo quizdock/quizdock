@@ -25,20 +25,20 @@
     "descriptionLabel": "描述",
     "descriptionPlaceholder": "描述（可选）…",
     "save": "保存",
-    "soundLegend": "声音",
+    "soundLegend": "音频",
     "soundSummary": "{{lufs}} LUFS · {{target}} · 暂停 {{tail}} 秒",
     "mediaTailLabel": "媒体播放后的停顿",
-    "mediaTailHelp": "当题目的声音或视频比计时更长时，题目时间会延长到媒体结束再加上此停顿：播放不会被中途打断。",
+    "mediaTailHelp": "当题目的音频或视频比计时更长时，题目时间会延长到媒体结束再加上此停顿：播放不会被中途打断。",
     "seconds": "秒",
-    "loudnessLabel": "声音均衡",
-    "loudnessHelp": "播放时将测验中每个声音和视频调整到的响度，使各题之间音量一致。文件本身不会被修改。",
+    "loudnessLabel": "音频均衡",
+    "loudnessHelp": "播放时将测验中每个音频和视频调整到的响度，使各题之间音量一致。文件本身不会被修改。",
     "loudness": {
       "14": "响亮（−14 LUFS，流媒体）",
       "16": "均衡（−16 LUFS）",
       "23": "柔和（−23 LUFS，电视广播）"
     },
-    "audioTargetLabel": "谁能听到声音",
-    "audioTargetHelp": "哪些设备播放测验中的声音和视频。现场参与者能看到投影：除非选择“所有设备”，否则他们的手机保持静音；若共处一室，“所有设备”会产生回声。单个题目可另行设置，主持人也可在某次会话中更改。",
+    "audioTargetLabel": "谁能听到音频",
+    "audioTargetHelp": "哪些设备播放测验中的音频和视频。现场参与者能看到投影：除非选择“所有设备”，否则他们的手机保持静音；若共处一室，“所有设备”会产生回声。单个题目可另行设置，主持人也可在某次会话中更改。",
     "audioTarget": {
       "projection": "仅投影",
       "projection_remote": "投影和远程参与者",
@@ -179,10 +179,10 @@
     "videoCover": "铺满幻灯片内容的背后（按屏幕裁剪）。",
     "videoLoop": "循环",
     "videoLoopHint": "幻灯片显示期间一直播放。关闭：只播放一次并停在最后一帧——自动模式下，幻灯片会等它播完。",
-    "videoSound": "声音",
-    "videoSoundHint": "播放视频自带的声音。关闭：静音，幻灯片可以有自己的声音。",
-    "audioExcludesVideoSound": "幻灯片已有声音：一次只能有一个声音。移除它才能打开视频的声音。",
-    "videoSoundExcludesAudio": "视频播放自带的声音：不能再加声音。将视频静音后才能添加。",
+    "videoSound": "音频",
+    "videoSoundHint": "播放视频自带的音频。关闭：静音，幻灯片可以有自己的音频。",
+    "audioExcludesVideoSound": "幻灯片已有音频：一次只能有一个。移除它才能打开视频的音频。",
+    "videoSoundExcludesAudio": "视频播放自带的音频：不能再加音频。将视频静音后才能添加。",
     "variablesLegend": "变量",
     "variablesHint": "写在标题或文本中：幻灯片显示时会被替换。测验的变量在预览中显示，房间的变量在进行测验时显示。",
     "variables": {
@@ -244,13 +244,13 @@
     "revealDelayLabel": "答案显示时长（秒）",
     "revealDelayPlaceholder": "自动",
     "revealDelayHint": "自动模式下：正确答案在屏幕上停留多久再继续。留空 = 实例的设置。",
-    "audioTargetLabel": "谁能听到这个声音",
-    "audioTargetHint": "哪些设备播放本题的声音或视频。“所有设备”包括现场的手机，若共处一室会产生回声。",
+    "audioTargetLabel": "谁能听到这段音频",
+    "audioTargetHint": "哪些设备播放本题的音频或视频。“所有设备”包括现场的手机，若共处一室会产生回声。",
     "audioTargetDefault": "房间中本测验的设置",
     "waveformSizeLabel": "波形大小",
-    "waveformSizeHint": "声音波形在投影和手机上显示的粗细。",
+    "waveformSizeHint": "音频波形在投影和手机上显示的粗细。",
     "waveformPreview": "波形预览",
-    "waveformHiddenNote": "在投影和手机上隐藏——声音照常播放，你的控制台仍会显示波形。",
+    "waveformHiddenNote": "在投影和手机上隐藏——音频照常播放，你的控制台仍会显示波形。",
     "waveformSize": {
       "S": "小",
       "M": "中",
@@ -334,7 +334,7 @@
     "titleAdd": "新建题目",
     "stretchedTime": "媒体时长 {{media}} 秒：此题将持续 {{total}} 秒（媒体结束 + 测验设置的 {{tail}} 秒停顿）。",
     "listenFirstLabel": "媒体结束后再开始计时",
-    "listenFirstHint": "先听后答：播放声音或视频期间无法作答，之后每个人都有相同的思考时间。",
+    "listenFirstHint": "先听后答：播放音频或视频期间无法作答，之后每个人都有相同的思考时间。",
     "listenFirstTime": "媒体播放 {{media}} 秒，然后开始 {{time}} 秒的作答时间。",
     "promptImageNotice": "题干中的这张图片放在题目媒体中会更好：在所有屏幕上都有合适的框，可在手机上放大，并会提前加载。",
     "promptImageMove": "移到媒体",
@@ -406,7 +406,7 @@
     "numericTarget": "目标：{{value}}（± {{tolerance}}）",
     "credits": "署名",
     "video": "题目视频",
-    "sound": "声音 · {{seconds}} 秒",
+    "sound": "音频 · {{seconds}} 秒",
     "steps": "步骤",
     "backToEditor": "返回编辑器",
     "device": "设备",
@@ -430,15 +430,15 @@
     "altHelp": "供屏幕阅读器朗读。当图片本身是题目的一部分时，请描述图片内容；纯装饰性图片可留空。",
     "slotsLegend": "题目媒体",
     "visualLabel": "画面",
-    "audioLabel": "声音",
+    "audioLabel": "音频",
     "kindImage": "图片",
     "kindVideo": "视频",
     "none": "无",
     "addImage": "添加图片",
     "addVideo": "添加视频",
-    "addAudio": "添加声音",
-    "videoExcludesAudio": "视频自带声音：不能再加音轨。移除视频后才能添加声音。",
-    "audioExcludesVideo": "视频自带声音：移除声音后才能选择视频。",
+    "addAudio": "添加音频",
+    "videoExcludesAudio": "视频自带音频：不能再加音轨。移除视频后才能添加音频。",
+    "audioExcludesVideo": "视频自带音频：移除音频后才能选择视频。",
     "converting": "转换中…",
     "convertingPercent": "转换中… {{percent}} %",
     "cancelConversion": "取消",
@@ -463,14 +463,14 @@
       "title": {
         "image": "我的媒体 · 图片",
         "video": "我的媒体 · 视频",
-        "audio": "我的媒体 · 声音"
+        "audio": "我的媒体 · 音频"
       },
       "usedIn_one": "用于 {{count}} 个测验",
       "usedIn_other": "用于 {{count}} 个测验",
       "openKind": {
         "image": "我的图片",
         "video": "我的视频",
-        "audio": "我的声音"
+        "audio": "我的音频"
       },
       "inHistory": "为以往结果保留",
       "tab": {
@@ -549,12 +549,12 @@
       "ready": "请先将测验设为就绪（发布）。",
       "settings": "请在测验设置的“共享”中设置。",
       "size": "请压缩或移除最大的媒体：",
-      "credit": "你须对发布的每张图片、每段声音和视频的权利负责。请在媒体库中为其署名（作者、许可协议、来源）。"
+      "credit": "你须对发布的每张图片、每段音频和视频的权利负责。请在媒体库中为其署名（作者、许可协议、来源）。"
     },
     "kind": {
       "image": "图片",
       "video": "视频",
-      "audio": "声音"
+      "audio": "音频"
     },
     "slugLabel": "短名称",
     "slugHelp": "目录在你的仓库中识别此测验的名称。文件：{{file}}",
@@ -588,7 +588,7 @@
   "importReport": {
     "imported_one": "已从 Kahoot 导入 1 道题。",
     "imported_other": "已从 Kahoot 导入 {{count}} 道题。",
-    "media": "图片和声音不会导入。",
+    "media": "图片和音频不会导入。",
     "incomplete_one": "发布前有 1 道题需要完成，已在列表中标出。",
     "incomplete_other": "发布前有 {{count}} 道题需要完成，已在列表中标出。",
     "skipped": "第 {{row}} 行未导入：{{reason}}",

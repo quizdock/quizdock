@@ -30,7 +30,7 @@
   "noMatch": "没有匹配的主持人主题。",
   "noneYet": "还没有主持人创建主题：从自带主题开始吧。",
   "deleteTitle": "删除此主题？",
-  "deleteText": "“{{name}}”未被任何测验使用。它的图标、字体和声音会一并删除，除非别处还在使用。",
+  "deleteText": "“{{name}}”未被任何测验使用。它的图标、字体和音效会一并删除，除非别处还在使用。",
   "copyName": "{{name}}（副本）",
   "newName": "我的{{parent}}",
   "name": "名称",
@@ -197,18 +197,18 @@
     "fontLicense": "字体许可",
     "fontUpload": "导入字体（.woff2）…",
     "fontHint": "导入的字体需注明许可：OFL 1.1、CC0、CC BY 或 CC BY-SA。",
-    "sounds": "声音",
+    "sounds": "音效",
     "builtinSounds": "内置",
-    "ownSounds_one": "主题声音 {{count}} 个",
-    "ownSounds_other": "主题声音 {{count}} 个",
+    "ownSounds_one": "主题音效 {{count}} 个",
+    "ownSounds_other": "主题音效 {{count}} 个",
     "sound": {
       "ding": "收到答案",
       "tick": "最后几秒",
       "countdown": "倒计时",
       "gong": "时间到"
     },
-    "soundUpload": "选择声音",
-    "soundsHint": "主持人为房间选择的声音优先；房间的混音器保持音量。",
+    "soundUpload": "选择音效",
+    "soundsHint": "主持人为房间选择的音效优先；房间的混音器保持音量。",
     "motion": "动效",
     "motionStyle": {
       "standard": "标准",
@@ -224,7 +224,7 @@
     "accessibilityHint": "根据主题的颜色测量，绝不自行声明。无障碍主题会在主题库和测验设置中显示徽章；其他主题不显示任何标记。投影仪显示颜色各有不同：这些只是参考，不会阻止任何操作。",
     "license": "许可协议",
     "noLicense": "无许可协议",
-    "licenseHelp": "他人可以在何种条件下再次使用该主题；社区商店要求必须选择。你必须拥有其图片、图标、声音和字体的权利。"
+    "licenseHelp": "他人可以在何种条件下再次使用该主题；社区商店要求必须选择。你必须拥有其图片、图标、音效和字体的权利。"
   },
   "picker": {
     "legend": "主题",

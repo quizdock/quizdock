@@ -25,20 +25,20 @@
     "descriptionLabel": "簡介",
     "descriptionPlaceholder": "簡介（可選）…",
     "save": "儲存",
-    "soundLegend": "聲音",
+    "soundLegend": "音訊",
     "soundSummary": "{{lufs}} LUFS · {{target}} · 暫停 {{tail}} 秒",
     "mediaTailLabel": "媒體播放後的停頓",
-    "mediaTailHelp": "當題目的聲音或影片比計時更長時，題目時間會延長到媒體結束再加上此停頓：播放不會被中途打斷。",
+    "mediaTailHelp": "當題目的音訊或影片比計時更長時，題目時間會延長到媒體結束再加上此停頓：播放不會被中途打斷。",
     "seconds": "秒",
-    "loudnessLabel": "聲音均衡",
-    "loudnessHelp": "播放時將測驗中每個聲音與影片調整到的響度，讓各題之間音量一致。檔案本身不會被修改。",
+    "loudnessLabel": "音訊均衡",
+    "loudnessHelp": "播放時將測驗中每個音訊與影片調整到的響度，讓各題之間音量一致。檔案本身不會被修改。",
     "loudness": {
       "14": "響亮（−14 LUFS，串流）",
       "16": "均衡（−16 LUFS）",
       "23": "柔和（−23 LUFS，電視廣播）"
     },
-    "audioTargetLabel": "誰聽得到聲音",
-    "audioTargetHelp": "哪些裝置播放測驗中的聲音與影片。現場參與者看得到投影：除非選擇「所有裝置」，否則他們的手機保持靜音；若共處一室，「所有裝置」會產生回音。單一題目可另行設定，主持人也可在某次會話中更改。",
+    "audioTargetLabel": "誰聽得到音訊",
+    "audioTargetHelp": "哪些裝置播放測驗中的音訊與影片。現場參與者看得到投影：除非選擇「所有裝置」，否則他們的手機保持靜音；若共處一室，「所有裝置」會產生回音。單一題目可另行設定，主持人也可在某次會話中更改。",
     "audioTarget": {
       "projection": "僅投影",
       "projection_remote": "投影與遠端參與者",
@@ -179,10 +179,10 @@
     "videoCover": "鋪滿簡報內容的背後（依螢幕裁切）。",
     "videoLoop": "循環",
     "videoLoopHint": "簡報顯示期間持續播放。關閉：只播放一次並停在最後一格——自動模式下，簡報會等它播完。",
-    "videoSound": "聲音",
-    "videoSoundHint": "播放影片本身的聲音。關閉：靜音，簡報可以有自己的聲音。",
-    "audioExcludesVideoSound": "簡報已有聲音：一次只能有一個聲音。移除它才能開啟影片的聲音。",
-    "videoSoundExcludesAudio": "影片播放本身的聲音：不能再加聲音。將影片靜音後才能加入。",
+    "videoSound": "音訊",
+    "videoSoundHint": "播放影片本身的音訊。關閉：靜音，簡報可以有自己的音訊。",
+    "audioExcludesVideoSound": "簡報已有音訊：一次只能有一個。移除它才能開啟影片的音訊。",
+    "videoSoundExcludesAudio": "影片播放本身的音訊：不能再加音訊。將影片靜音後才能加入。",
     "variablesLegend": "變數",
     "variablesHint": "寫在標題或文字中：簡報顯示時會被替換。測驗的變數在預覽中顯示，房間的變數在進行測驗時顯示。",
     "variables": {
@@ -244,13 +244,13 @@
     "revealDelayLabel": "答案顯示時長（秒）",
     "revealDelayPlaceholder": "自動",
     "revealDelayHint": "自動模式下：正確答案在畫面上停留多久再繼續。留空 = 執行個體的設定。",
-    "audioTargetLabel": "誰聽得到這個聲音",
-    "audioTargetHint": "哪些裝置播放本題的聲音或影片。「所有裝置」包含現場的手機，若共處一室會產生回音。",
+    "audioTargetLabel": "誰聽得到這段音訊",
+    "audioTargetHint": "哪些裝置播放本題的音訊或影片。「所有裝置」包含現場的手機，若共處一室會產生回音。",
     "audioTargetDefault": "房間中本測驗的設定",
     "waveformSizeLabel": "波形大小",
-    "waveformSizeHint": "聲音波形在投影與手機上顯示的粗細。",
+    "waveformSizeHint": "音訊波形在投影與手機上顯示的粗細。",
     "waveformPreview": "波形預覽",
-    "waveformHiddenNote": "在投影與手機上隱藏——聲音照常播放，你的控制台仍會顯示波形。",
+    "waveformHiddenNote": "在投影與手機上隱藏——音訊照常播放，你的控制台仍會顯示波形。",
     "waveformSize": {
       "S": "小",
       "M": "中",
@@ -334,7 +334,7 @@
     "titleAdd": "新增題目",
     "stretchedTime": "媒體長度 {{media}} 秒：此題將持續 {{total}} 秒（媒體結束 + 測驗設定的 {{tail}} 秒停頓）。",
     "listenFirstLabel": "媒體結束後再開始計時",
-    "listenFirstHint": "先聽後答：播放聲音或影片期間無法作答，之後每個人都有相同的思考時間。",
+    "listenFirstHint": "先聽後答：播放音訊或影片期間無法作答，之後每個人都有相同的思考時間。",
     "listenFirstTime": "媒體播放 {{media}} 秒，然後開始 {{time}} 秒的作答時間。",
     "promptImageNotice": "題幹中的這張圖片放在題目媒體中會更好：在所有螢幕上都有合適的框，可在手機上放大，並會預先載入。",
     "promptImageMove": "移到媒體",
@@ -406,7 +406,7 @@
     "numericTarget": "目標：{{value}}（± {{tolerance}}）",
     "credits": "出處",
     "video": "題目影片",
-    "sound": "聲音 · {{seconds}} 秒",
+    "sound": "音訊 · {{seconds}} 秒",
     "steps": "步驟",
     "backToEditor": "返回編輯器",
     "device": "裝置",
@@ -430,15 +430,15 @@
     "altHelp": "供螢幕閱讀器朗讀。當圖片本身是題目的一部分時，請描述圖片內容；純裝飾性圖片可留空。",
     "slotsLegend": "題目媒體",
     "visualLabel": "畫面",
-    "audioLabel": "聲音",
+    "audioLabel": "音訊",
     "kindImage": "圖片",
     "kindVideo": "影片",
     "none": "無",
     "addImage": "新增圖片",
     "addVideo": "新增影片",
-    "addAudio": "新增聲音",
-    "videoExcludesAudio": "影片本身已有聲音：不能再加音軌。移除影片後才能新增聲音。",
-    "audioExcludesVideo": "影片本身已有聲音：移除聲音後才能選擇影片。",
+    "addAudio": "新增音訊",
+    "videoExcludesAudio": "影片本身已有音訊：不能再加音軌。移除影片後才能新增音訊。",
+    "audioExcludesVideo": "影片本身已有音訊：移除音訊後才能選擇影片。",
     "converting": "轉換中…",
     "convertingPercent": "轉換中… {{percent}} %",
     "cancelConversion": "取消",
@@ -463,14 +463,14 @@
       "title": {
         "image": "我的媒體 · 圖片",
         "video": "我的媒體 · 影片",
-        "audio": "我的媒體 · 聲音"
+        "audio": "我的媒體 · 音訊"
       },
       "usedIn_one": "用於 {{count}} 個測驗",
       "usedIn_other": "用於 {{count}} 個測驗",
       "openKind": {
         "image": "我的圖片",
         "video": "我的影片",
-        "audio": "我的聲音"
+        "audio": "我的音訊"
       },
       "inHistory": "為過往結果保留",
       "tab": {
@@ -549,12 +549,12 @@
       "ready": "請先將測驗設為就緒（發布）。",
       "settings": "請在測驗設定的「分享」中設定。",
       "size": "請壓縮或移除最大的媒體：",
-      "credit": "你須對發布的每張圖片、每段聲音與影片的權利負責。請在媒體庫中標示（作者、授權條款、來源）。"
+      "credit": "你須對發布的每張圖片、每段音訊與影片的權利負責。請在媒體庫中標示（作者、授權條款、來源）。"
     },
     "kind": {
       "image": "圖片",
       "video": "影片",
-      "audio": "聲音"
+      "audio": "音訊"
     },
     "slugLabel": "短名稱",
     "slugHelp": "目錄在你的儲存庫中識別此測驗的名稱。檔案：{{file}}",
@@ -588,7 +588,7 @@
   "importReport": {
     "imported_one": "已從 Kahoot 匯入 1 道題。",
     "imported_other": "已從 Kahoot 匯入 {{count}} 道題。",
-    "media": "圖片和聲音不會匯入。",
+    "media": "圖片和音訊不會匯入。",
     "incomplete_one": "發布前有 1 道題需要完成，已在清單中標出。",
     "incomplete_other": "發布前有 {{count}} 道題需要完成，已在清單中標出。",
     "skipped": "第 {{row}} 列未匯入：{{reason}}",

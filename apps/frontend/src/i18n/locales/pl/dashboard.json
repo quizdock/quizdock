@@ -81,7 +81,7 @@
     "kind": {
       "image": "Obrazy",
       "video": "Filmy",
-      "audio": "Dźwięki",
+      "audio": "Nagrania",
       "icon": "Ikony motywów",
       "font": "Czcionki motywów"
     },
@@ -183,10 +183,10 @@
       "removeDescription": "Prowadzący nie znajdą go już w swojej bibliotece. Quizy, które go używają, zachowują swoją kopię.",
       "removeFailed": "Nie udało się wycofać materiału.",
       "saveFailed": "Nie udało się zapisać zmiany.",
-      "drop": "Upuść tutaj obrazy, filmy lub dźwięki, kilka naraz.",
+      "drop": "Upuść tutaj obrazy, filmy lub pliki audio, kilka naraz.",
       "choose": "Wybierz pliki",
       "sending": "Wysyłanie {{done}} z {{total}}…",
-      "unsupported": "To nie jest obraz, film ani dźwięk."
+      "unsupported": "To nie jest obraz, film ani plik audio."
     },
     "global": "Globalne",
     "preview": {

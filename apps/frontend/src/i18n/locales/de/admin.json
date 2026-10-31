@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Ordner der Webanwendung",
     "MEDIA_MAX_BYTES": "Größtes Bild",
     "MEDIA_MAX_VIDEO_MB": "Größtes Video",
-    "MEDIA_MAX_AUDIO_MB": "Größter Ton",
+    "MEDIA_MAX_AUDIO_MB": "Größte Audiodatei",
     "IMPORT_MAX_BYTES": "Größtes importiertes Quiz",
     "PUBLICATION_MAX_MB": "Größtes Quiz zur Veröffentlichung",
     "MEDIA_LIBRARY_LINKS": "Freie Mediatheken",
     "GAME_READ_DELAY_MS": "Lesezeit vor dem Timer",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pause, wenn alle geantwortet haben",
     "GAME_AUTO_ADVANCE_MS": "Automatischer Modus: Zeit pro Schritt",
-    "GAME_MEDIA_WAIT_S": "Warten auf Töne und Videos",
+    "GAME_MEDIA_WAIT_S": "Warten auf Audios und Videos",
     "LIVE_MOTION": "Übergänge auf den Live-Bildschirmen",
     "GAME_HOST_GRACE_MS": "Schonfrist der Quizleitung vor dem Verlassen",
     "GAME_HOST_WINDOW_MS": "Rückkehrfrist der Quizleitung",
@@ -447,7 +447,7 @@
     "kinds": {
       "image": "Bilder",
       "video": "Videos",
-      "audio": "Töne"
+      "audio": "Audios"
     },
     "noLinks": "Keine Mediathek: Der Editor zeigt keine an (eine Instanz ohne Internet).",
     "saved": {
@@ -588,7 +588,7 @@
         },
         "public": {
           "title": "Die Öffentlichkeit, eine große Veranstaltung",
-          "help": "Offen für alle — mit einem Identitätsanbieter — und mehr Zeit zum Laden von Tönen und Videos in einem überlasteten WLAN."
+          "help": "Offen für alle — mit einem Identitätsanbieter — und mehr Zeit zum Laden von Audios und Videos in einem überlasteten WLAN."
         },
         "other": {
           "title": "Von allem etwas, anderes",

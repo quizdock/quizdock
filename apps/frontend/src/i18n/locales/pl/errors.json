@@ -61,7 +61,7 @@
     "too_many_attempts": "Zbyt wiele błędnych PIN-ów z tego adresu. Spróbuj ponownie za minutę."
   },
   "media": {
-    "unsupported_type": "Nieobsługiwany format: obraz, film MP4 (H.264) lub dźwięk (MP3, M4A). Edytor konwertuje inne pliki, które ta przeglądarka potrafi odczytać; SVG nie jest akceptowany.",
+    "unsupported_type": "Nieobsługiwany format: obraz, film MP4 (H.264) lub plik audio (MP3, M4A). Edytor konwertuje inne pliki, które ta przeglądarka potrafi odczytać; SVG nie jest akceptowany.",
     "file_missing": "Brak pliku (pole „file”).",
     "file_too_large": "Plik za duży (najwyżej {{maxMb}} MB dla tego rodzaju multimediów).",
     "image_too_large": "Ten obraz jest za duży (najwyżej {{maxMp}} megapikseli).",
@@ -74,12 +74,12 @@
     "quicktime": "Pliki QuickTime (.mov) nie są akceptowane. Wyeksportuj film jako MP4 (H.264), na przykład w HandBrake (handbrake.fr).",
     "unsupported_video_codec": "Nieobsługiwany kodek wideo ({{codec}}). Wszędzie odtwarza się tylko H.264. Film nagrany iPhone’em to często HEVC: przekonwertuj go do MP4 H.264, na przykład w HandBrake (handbrake.fr), albo ustaw w aparacie „Najbardziej zgodne”.",
     "unsupported_audio_codec": "Dźwięk tego filmu ({{codec}}) nie jest w formacie AAC. Wyeksportuj go ponownie jako MP4 H.264 + AAC, na przykład w HandBrake (handbrake.fr).",
-    "no_video_track": "Ten plik nie zawiera obrazu wideo. Dla samego dźwięku użyj miejsca na dźwięk.",
-    "unreadable_mp3": "Nie można odczytać tego dźwięku: plik wygląda na uszkodzony.",
-    "metadata_invalid": "Pomiar dźwięku jest nieprawidłowy ({{field}}). Spróbuj przesłać ponownie.",
-    "cannot_read": "Ta przeglądarka nie potrafi odczytać tego pliku. Spróbuj innej przeglądarki albo najpierw przekonwertuj plik odpowiednim narzędziem (HandBrake dla filmów, Audacity dla dźwięków).",
+    "no_video_track": "Ten plik nie zawiera obrazu wideo. Dla samego nagrania użyj miejsca na nagranie.",
+    "unreadable_mp3": "Nie można odczytać tego pliku audio: wygląda na uszkodzony.",
+    "metadata_invalid": "Pomiar nagrania jest nieprawidłowy ({{field}}). Spróbuj przesłać ponownie.",
+    "cannot_read": "Ta przeglądarka nie potrafi odczytać tego pliku. Spróbuj innej przeglądarki albo najpierw przekonwertuj plik odpowiednim narzędziem (HandBrake dla filmów, Audacity dla nagrań).",
     "cannot_convert_video": "Ta przeglądarka nie potrafi przekonwertować tego filmu do MP4 H.264. Użyj Chrome, Edge lub Safari albo najpierw przekonwertuj go w HandBrake (handbrake.fr).",
-    "cannot_convert_audio": "Ta przeglądarka nie potrafi przekonwertować tego dźwięku do AAC. Spróbuj innej przeglądarki albo najpierw przekonwertuj go w Audacity (audacityteam.org).",
+    "cannot_convert_audio": "Ta przeglądarka nie potrafi przekonwertować tego nagrania do AAC. Spróbuj innej przeglądarki albo najpierw przekonwertuj je w Audacity (audacityteam.org).",
     "too_long": "Za długie, aby zmieścić się w limicie {{maxMb}} MB dla tego rodzaju multimediów, nawet po kompresji. Najpierw je skróć.",
     "canceled": "Anulowano konwersję.",
     "in_use": "Ten materiał jest nadal używany przez quiz lub sesję: najpierw go stamtąd usuń.",
@@ -136,7 +136,7 @@
       "no_correct": "Ankieta nie ma poprawnej odpowiedzi."
     },
     "prompt": {
-      "required": "Napisz pytanie albo dodaj obraz lub dźwięk, który je zadaje."
+      "required": "Napisz pytanie albo dodaj obraz lub nagranie, które je zadaje."
     },
     "scoring": {
       "not_available": "Ta punktacja nie dotyczy tego typu pytania."
@@ -172,7 +172,7 @@
     "too_large": "Quiz jest za duży dla katalogu społeczności."
   },
   "slide": {
-    "two_sounds": "Slajd odtwarza jeden dźwięk naraz: wycisz jego film albo usuń jego dźwięk.",
+    "two_sounds": "Slajd odtwarza jeden dźwięk naraz: wycisz jego film albo usuń jego nagranie.",
     "background_conflict": "Tło to obraz albo gradient, nie oba naraz.",
     "empty": "Slajd nic nie pokazuje: dodaj nagłówek, tekst, obraz, tło lub film.",
     "not_found": "Ten slajd już nie istnieje: w międzyczasie został usunięty.",

@@ -332,7 +332,12 @@ machine-assisted — native review welcome.
   - **effect** (fr _effet_): the game's short sounds — tick, ding, gong,
     countdown — set per lobby or per theme; never _sound_ / _son_.
   - Other locales follow the sense, not the en word: one word for the medium,
-    one for the effects.
+    one for the effects, the device's output in the locale's idiom — de
+    _Audio_ / _Effekt_ / _Ton_; es _audio_ / _efecto_ / _sonido_; it _audio_ /
+    _effetto_ / _audio_; pl _nagranie_ (_plik audio_) / _efekt_ / _dźwięk_; ru
+    _аудио_ / _эффект_ / _звук_; tr _ses_ / _efekt_ / _ses_; hi _ऑडियो_ /
+    _इफ़ेक्ट_ / _आवाज़_; ja _音声_ / _効果音_ / _音声_; zh _音频_ / _音效_ /
+    _声音_; zh-TW _音訊_ / _音效_ / _聲音_.
 
 - **leave, stop, close**: one verb per thing ended, never swapped.
   - **leave** (fr _quitter_): a participant going out of the lobby (_Leave the

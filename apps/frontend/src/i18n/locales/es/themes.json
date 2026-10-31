@@ -32,7 +32,7 @@
   "noMatch": "Ningún tema creado por un anfitrión coincide.",
   "noneYet": "Ningún anfitrión ha creado un tema aún: empieza desde un tema incluido.",
   "deleteTitle": "¿Eliminar este tema?",
-  "deleteText": "«{{name}}» no lo usa ningún cuestionario. Sus iconos, fuente y sonidos se van con él, salvo que otra cosa los use.",
+  "deleteText": "«{{name}}» no lo usa ningún cuestionario. Sus iconos, fuente y efectos se van con él, salvo que otra cosa los use.",
   "copyName": "{{name}} (copia)",
   "newName": "Mi {{parent}}",
   "name": "Nombre",
@@ -200,7 +200,7 @@
     "fontLicense": "Licencia de la fuente",
     "fontUpload": "Importar una fuente (.woff2)…",
     "fontHint": "Una fuente importada indica su licencia: OFL 1.1, CC0, CC BY o CC BY-SA.",
-    "sounds": "Sonidos",
+    "sounds": "Efectos",
     "builtinSounds": "Integrados",
     "ownSounds_one": "{{count}} del tema",
     "ownSounds_many": "{{count}} del tema",
@@ -211,8 +211,8 @@
       "countdown": "Cuenta atrás",
       "gong": "Tiempo agotado"
     },
-    "soundUpload": "Elegir un sonido",
-    "soundsHint": "Un sonido elegido por el anfitrión para la sala tiene prioridad; la mesa de mezclas de la sala mantiene los niveles.",
+    "soundUpload": "Elegir un efecto",
+    "soundsHint": "Un efecto elegido por el anfitrión para la sala tiene prioridad; la mesa de mezclas de la sala mantiene los niveles.",
     "motion": "Movimiento",
     "motionStyle": {
       "standard": "Estándar",
@@ -228,7 +228,7 @@
     "accessibilityHint": "Medida sobre los colores del tema, nunca declarada. Un tema accesible lleva la insignia en la biblioteca y en los ajustes del cuestionario; los demás no llevan nada. Un proyector muestra los colores a su manera: son referencias, nada se bloquea.",
     "license": "Licencia",
     "noLicense": "Sin licencia",
-    "licenseHelp": "Las condiciones con las que otros pueden reutilizar el tema; una tienda comunitaria exige una. Debes tener los derechos sobre sus imágenes, iconos, sonidos y fuente."
+    "licenseHelp": "Las condiciones con las que otros pueden reutilizar el tema; una tienda comunitaria exige una. Debes tener los derechos sobre sus imágenes, iconos, efectos y fuente."
   },
   "picker": {
     "legend": "Tema",

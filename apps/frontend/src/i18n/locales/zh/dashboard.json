@@ -69,7 +69,7 @@
     "kind": {
       "image": "图片",
       "video": "视频",
-      "audio": "声音",
+      "audio": "音频",
       "icon": "主题图标",
       "font": "主题字体"
     },
@@ -157,10 +157,10 @@
       "removeDescription": "主持人将无法在媒体库中找到它。使用它的测验保留各自的副本。",
       "removeFailed": "无法撤下该媒体。",
       "saveFailed": "无法保存更改。",
-      "drop": "将图片、视频或声音拖放到此处，可一次多个。",
+      "drop": "将图片、视频或音频文件拖放到此处，可一次多个。",
       "choose": "选择文件",
       "sending": "正在发送 {{done}} / {{total}}…",
-      "unsupported": "不是图片、视频或声音。"
+      "unsupported": "不是图片、视频或音频文件。"
     },
     "global": "全局",
     "preview": {
