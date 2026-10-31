@@ -4,6 +4,60 @@ All notable changes to QuizDock are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com); versions follow
 [Semantic Versioning](https://semver.org). Generated from conventional commits.
 
+## [0.16.0] - 2026-10-14
+
+### Bug Fixes
+
+- The answers in the app's own order, true green and false red *(samples)*
+- The console previews the projection and a phone in the room's language *(web)*
+- A standings row has its own band, seen at 0 points in dark mode *(web)*
+- The console shares a link alone, the projection's too *(web)*
+- Templates and community cards are built as a quiz's in My quizzes *(web)*
+- A hovered card no longer hides its buttons' own hover *(web)*
+- A theme's line and card are built as a quiz's in My quizzes *(web)*
+- The themes' bar sorts, and sits as the other tabs' do *(web)*
+- The themes' Accessible chip sits under the search bar *(web)*
+- The themes' filters are My quizzes' own *(web)*
+- The selections' filters are My quizzes' own *(web)*
+- A selection's whole line hovers, as a quiz's in My quizzes *(web)*
+- A selected selection line's pace and Autostart sit under its title *(web)*
+- The main action of a shared quiz stays last, and green *(web)*
+
+### Documentation
+
+- The interface in light and dark *(screenshots)*
+- The screens of 0.16 *(screenshots)*
+- Selections, delivered on dev *(specs)*
+- Selections, settled *(specs)*
+- Presenting a shared quiz, delivered on dev *(specs)*
+- Presenting a shared quiz, settled *(specs)*
+- Selections and presenting a shared quiz, drafted *(specs)*
+- The audit of 2026-10-03, and what it left open *(security)*
+
+### Features
+
+- Each shipped theme marks its answers its own way *(themes)*
+- Nine more countries to discover *(samples)*
+- A selection's lines show their quiz's first step *(web)*
+- The lobby's settings in two tabs, and the console under the top bar as any page *(web)*
+- A selection's fan is a hand of cards that spreads on hover *(web)*
+- A selection is pictured as a fan of its first three quizzes *(web)*
+- A selection's page is laid out as the quiz editor *(web)*
+- A selection's sharing sits at the right of its name and description *(web)*
+- A selection line's drag handle shows on hover *(web)*
+- A selection's lines behave as the quiz editor's steps *(web)*
+- A selection's quizzes reorder by drag or arrows, and open from their menu *(web)*
+- Selections — their pages, the console's queue, saving a room as one *(web)*
+- Selections, launched into a room and saved from one *(live)*
+- The two actions on a shared quiz read on two lines *(web)*
+- Presenting another host's shared quiz comes first, copying it second *(web)*
+- Present another host's shared quiz, keeping nothing *(web)*
+- Another host's shared quiz can be presented, keeping nothing *(live)*
+
+### Contributors
+
+- Francois Chaussin
+
 ## [0.15.0] - 2026-10-13
 
 ### Bug Fixes
