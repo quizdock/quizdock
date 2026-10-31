@@ -1,6 +1,12 @@
 import { randomBytes } from 'node:crypto';
 import { NotFoundException } from '@nestjs/common';
-import { OptionColor, OptionShape, QuestionType } from '@quiz-dock/contracts';
+import {
+  OptionColor,
+  OptionShape,
+  PointsMode,
+  QuestionType,
+  type QuestionRevealPayload,
+} from '@quiz-dock/contracts';
 import { GameEngine } from './game.engine';
 import { type GameId, gameKeys } from './game.keys';
 import { GameService } from './game.service';
@@ -186,7 +192,7 @@ describe('GameEngine (characterization)', () => {
     await redis.hset(gameKeys.room(pin), toHash(roomFields));
     await redis.hset(gameKeys.game(gameId), toHash(gameFields));
     await redis.set(gameKeys.snapshot(gameId), JSON.stringify(snapshot));
-    const zero: PlayerScore = { score: 0, streak: 0 };
+    const zero: PlayerScore = { score: 0, streak: 0, answerTimeSavedMs: 0 };
     for (const [id, rec] of Object.entries(players)) {
       await redis.hset(gameKeys.players(pin), id, JSON.stringify(rec));
       await redis.hset(gameKeys.scores(gameId), id, JSON.stringify(zero));
@@ -484,6 +490,149 @@ describe('GameEngine (characterization)', () => {
     });
   });
 
+  describe('quiz tie-breaks (#259)', () => {
+    beforeEach(() => {
+      process.env.GAME_ALL_ANSWERED_DELAY_MS = '60000';
+    });
+
+    it('uses cumulative time on tied scores in the reveal, host table and podium, but not room ties', async () => {
+      const ann = join('p1');
+      const desk = new FakeSocket({ isHostControl: true });
+      sockets.push(desk);
+      const snap = snapshotOf([
+        question({ pointsMode: PointsMode.Fixed }),
+        question({ pointsMode: PointsMode.Fixed, timeLimitS: 30 }),
+      ]);
+      const t0 = await startedAt(snap, {
+        p1: player('Ann', { joinedAt: 1 }),
+        p2: player('Bob', { joinedAt: 2 }),
+      });
+      await engine.submit(pin, 'p1', 0, snap.questions[0].options[0].id, t0 + 100);
+      await engine.submit(pin, 'p2', 0, snap.questions[0].options[0].id, t0 + 600);
+      await engine.reveal(pin, HOST);
+      await engine.next(pin, HOST); // standings
+      await engine.next(pin, HOST); // second question
+      const t1 = (await meta()).questionStartedAt;
+      await engine.submit(pin, 'p1', 1, snap.questions[1].options[0].id, t1 + 900);
+      await engine.submit(pin, 'p2', 1, snap.questions[1].options[0].id, t1 + 200);
+      await engine.reveal(pin, HOST);
+      expect((await scoreOf('p1')).score).toBe((await scoreOf('p2')).score);
+      expect(ann.of<QuestionRevealPayload>('question:reveal').at(-1)?.yourResult?.rank).toBe(2);
+      expect(
+        desk
+          .of<{ rows: { playerId: string; quizRank: number; roomRank: number }[] }>('game:scores')
+          .at(-1)?.rows,
+      ).toContainEqual(expect.objectContaining({ playerId: 'p2', quizRank: 1, roomRank: 2 }));
+      await engine.next(pin, HOST);
+      expect(
+        ann
+          .of<{ podium: { nickname: string }[] }>('game:podium')
+          .at(-1)
+          ?.podium.map((p) => p.nickname),
+      ).toEqual(['Bob', 'Ann']);
+      expect((await scoreOf('p1')).answerTimeSavedMs).toBe(49_000);
+      expect((await scoreOf('p2')).answerTimeSavedMs).toBe(49_200);
+    });
+
+    it('charges unanswered questions their full limit, even when revealed early', async () => {
+      const snap = snapshotOf([question()]);
+      const t0 = await startedAt(snap, {
+        p1: player('Ann', { joinedAt: 1 }),
+        p2: player('Bob', { joinedAt: 2 }),
+      });
+      // Both score zero. A wrong but prompt answer beats not answering.
+      await engine.submit(pin, 'p2', 0, snap.questions[0].options[1].id, t0 + 1_000);
+      expect(
+        await engine.submit(pin, 'p2', 0, snap.questions[0].options[0].id, t0 + 500),
+      ).toMatchObject({ accepted: false, reason: 'duplicate' });
+      await engine.reveal(pin, HOST);
+      expect((await game.rankedPlayers(pin, gameId)).map((p) => p.nickname)).toEqual([
+        'Bob',
+        'Ann',
+      ]);
+      expect((await scoreOf('p2')).answerTimeSavedMs).toBe(19_000);
+      expect((await scoreOf('p1')).answerTimeSavedMs).toBe(0);
+    });
+
+    it('counts questions before a late join as unanswered', async () => {
+      process.env.AUTH_MODE = 'none';
+      const snap = snapshotOf([question(), question()]);
+      const t0 = await startedAt(snap, { p1: player('Ann', { joinedAt: 1 }) });
+      await engine.submit(pin, 'p1', 0, snap.questions[0].options[1].id, t0 + 1_000);
+      await engine.reveal(pin, HOST);
+      await engine.next(pin, HOST);
+      await engine.next(pin, HOST);
+      const late = await game.joinSession(pin, 'Late', null);
+      const t1 = (await meta()).questionStartedAt;
+      await engine.submit(pin, 'p1', 1, snap.questions[1].options[1].id, t1 + 1_000);
+      await engine.submit(pin, late.playerId, 1, snap.questions[1].options[1].id, t1 + 10);
+      await engine.reveal(pin, HOST);
+      // Sum of actual answers alone would reward Late (10ms vs Ann's 2000ms).
+      expect((await game.rankedPlayers(pin, gameId)).map((p) => p.nickname)).toEqual([
+        'Ann',
+        'Late',
+      ]);
+      expect((await game.getScore(gameId, late.playerId))?.answerTimeSavedMs).toBe(19_990);
+    });
+
+    it('caps grace-period answer time at the full limit and falls back to arrival', async () => {
+      const snap = snapshotOf([question()]);
+      const t0 = await startedAt(snap, {
+        p1: player('Ann', { joinedAt: 1 }),
+        p2: player('Bob', { joinedAt: 2 }),
+      });
+      await engine.submit(pin, 'p2', 0, snap.questions[0].options[1].id, t0 + 20_200);
+      expect(
+        await engine.submit(pin, 'p1', 0, snap.questions[0].options[1].id, t0 + 20_301),
+      ).toMatchObject({ accepted: false, reason: 'late' });
+      await engine.reveal(pin, HOST);
+      expect((await game.rankedPlayers(pin, gameId)).map((p) => p.nickname)).toEqual([
+        'Ann',
+        'Bob',
+      ]);
+      expect((await scoreOf('p2')).answerTimeSavedMs).toBe(0);
+    });
+
+    it('upgrades old scores from retained answers once and preserves them across later submissions', async () => {
+      const snap = snapshotOf([question(), question()]);
+      const t0 = await startedAt(snap, {
+        p1: player('Ann', { joinedAt: 1 }),
+        p2: player('Bob', { joinedAt: 2 }),
+      });
+      await redis.hset(gameKeys.scores(gameId), 'p1', JSON.stringify({ score: 0, streak: 0 }));
+      await redis.hset(
+        gameKeys.answers(gameId, 0),
+        'p1',
+        JSON.stringify({
+          answer: snap.questions[0].options[1].id,
+          isCorrect: false,
+          pointsAwarded: 0,
+          tMs: 2_000,
+          receivedAt: t0 + 2_000,
+        }),
+      );
+      const ranked = await game.rankedPlayers(pin, gameId);
+      expect(ranked[0]).toMatchObject({ id: 'p1', answerTimeSavedMs: 18_000 });
+      // Once upgraded, ranking and score reads no longer look through the answers.
+      const evalSpy = jest.spyOn(redis, 'eval');
+      const snapshotSpy = jest.spyOn(game, 'getSnapshot');
+      await game.rankedPlayers(pin, gameId);
+      expect(await scoreOf('p1')).toEqual({ score: 0, streak: 0, answerTimeSavedMs: 18_000 });
+      expect(evalSpy).not.toHaveBeenCalled();
+      expect(snapshotSpy).not.toHaveBeenCalled();
+      evalSpy.mockRestore();
+      snapshotSpy.mockRestore();
+      await engine.reveal(pin, HOST);
+      await engine.next(pin, HOST);
+      await engine.next(pin, HOST);
+      const t1 = (await meta()).questionStartedAt;
+      await engine.submit(pin, 'p1', 1, snap.questions[1].options[1].id, t1 + 3_000);
+      expect((await scoreOf('p1')).answerTimeSavedMs).toBe(35_000);
+      await redis.hdel(gameKeys.scores(gameId), 'p1');
+      expect(await scoreOf('p1')).toBeNull();
+    });
+  });
+
   describe('answers and reveal', () => {
     it('scores the first answer only, within the window, and reveals once everyone answered', async () => {
       const ann = join('p1');
@@ -545,9 +694,9 @@ describe('GameEngine (characterization)', () => {
       await revealed();
 
       expect(await Promise.all(['p1', 'p2', 'p3'].map(scoreOf))).toEqual([
-        { score: 1000, streak: 1 },
-        { score: 750, streak: 0 },
-        { score: 500, streak: 0 },
+        { score: 1000, streak: 1, answerTimeSavedMs: 19_999 },
+        { score: 750, streak: 0, answerTimeSavedMs: 19_999 },
+        { score: 500, streak: 0, answerTimeSavedMs: 19_999 },
       ]);
       const reveal = ann.of<{
         closest: { nickname: string; rank: number }[];
@@ -902,7 +1051,11 @@ describe('GameEngine (characterization)', () => {
       await redis.del(...(await redis.keys(`*${previous}*`)));
       expect(m.id).not.toBe(previous);
       expect([m.state, m.quizId, m.totalQuestions]).toEqual(['LOBBY', '', 0]);
-      expect(await game.getScore(m.id, 'p1')).toEqual({ score: 0, streak: 0 });
+      expect(await game.getScore(m.id, 'p1')).toEqual({
+        score: 0,
+        streak: 0,
+        answerTimeSavedMs: 0,
+      });
       expect(archive.archive).not.toHaveBeenCalled();
       expect((await game.standings(pin)).quizzesPlayed).toBe(0); // nothing of it kept
       // Nothing to start until a quiz is picked; the next quiz is picked there only.

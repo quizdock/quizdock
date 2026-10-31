@@ -85,8 +85,16 @@ describe('SessionArchiveService', () => {
   const scoresOf = (players: Record<string, string>): Record<string, string> =>
     Object.fromEntries(
       Object.entries(players).map(([id, json]) => {
-        const { score, streak } = JSON.parse(json) as { score: number; streak: number };
-        return [id, JSON.stringify({ score, streak })];
+        const {
+          score,
+          streak,
+          answerTimeSavedMs = 0,
+        } = JSON.parse(json) as {
+          score: number;
+          streak: number;
+          answerTimeSavedMs?: number;
+        };
+        return [id, JSON.stringify({ score, streak, answerTimeSavedMs })];
       }),
     );
 
@@ -222,6 +230,55 @@ describe('SessionArchiveService', () => {
     // Capture intégrale : une ligne de réponse par (joueur, question).
     expect(answerCreateMany).toHaveBeenCalledTimes(1);
     expect(answerCreateMany.mock.calls[0][0].data).toHaveLength(2);
+  });
+
+  it('archives the same time-based final ranks as the live quiz, preserving answered-only averages', async () => {
+    const players = {
+      p1: JSON.stringify({
+        nickname: 'Ann',
+        score: 1000,
+        streak: 1,
+        joinedAt: 1,
+        answerTimeSavedMs: 15_000,
+      }),
+      p2: JSON.stringify({
+        nickname: 'Bob',
+        score: 1000,
+        streak: 1,
+        joinedAt: 2,
+        answerTimeSavedMs: 19_000,
+      }),
+    };
+    const answers = {
+      p1: JSON.stringify({
+        answer: 'optA',
+        isCorrect: true,
+        pointsAwarded: 1000,
+        tMs: 5000,
+        receivedAt: 6000,
+      }),
+      p2: JSON.stringify({
+        answer: 'optA',
+        isCorrect: true,
+        pointsAwarded: 1000,
+        tMs: 1000,
+        receivedAt: 2000,
+      }),
+    };
+    const { prisma, playerCreate } = buildPrisma();
+    await archiveWith(prisma, buildRedis(players, answers)).archive(PIN, meta, {
+      interrupted: false,
+    });
+    expect(
+      playerCreate.mock.calls.map(([{ data }]) => [
+        data.nickname,
+        data.finalRank,
+        data.avgResponseMs,
+      ]),
+    ).toEqual([
+      ['Bob', 1, 1000],
+      ['Ann', 2, 5000],
+    ]);
   });
 
   it('a large room: answers in batches, in a transaction given the time it needs', async () => {

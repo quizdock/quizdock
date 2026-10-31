@@ -47,6 +47,7 @@ services:
       - ./package.json:/app/package.json:ro
       - ./.npmrc:/app/.npmrc:ro
       - ./tsconfig.base.json:/app/tsconfig.base.json:ro
+      - ./patches:/app/patches:ro
       - ./packages/contracts/package.json:/app/packages/contracts/package.json:ro
       - ./apps/backend/package.json:/app/apps/backend/package.json:ro
       - ./apps/backend/tsconfig.json:/app/apps/backend/tsconfig.json:ro
@@ -79,6 +80,7 @@ services:
       - ./package.json:/app/package.json:ro
       - ./.npmrc:/app/.npmrc:ro
       - ./tsconfig.base.json:/app/tsconfig.base.json:ro
+      - ./patches:/app/patches:ro
       - ./packages/contracts/package.json:/app/packages/contracts/package.json:ro
       - ./apps/frontend/package.json:/app/apps/frontend/package.json:ro
       - ./apps/frontend/tsconfig.json:/app/apps/frontend/tsconfig.json:ro

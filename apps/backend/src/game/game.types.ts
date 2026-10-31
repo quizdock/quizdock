@@ -144,6 +144,8 @@ export interface PlayerRecord {
 export interface PlayerScore {
   score: number;
   streak: number;
+  /** Sum of time saved against each answered question's limit (ms); absent before #259. */
+  answerTimeSavedMs?: number;
 }
 
 /**

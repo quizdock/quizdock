@@ -19,6 +19,7 @@ import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 import { io } from 'socket.io-client';
 import { checkOpeningCountdown } from './opening-countdown.mjs';
+import { checkParticipantViewport } from './participant-viewport.mjs';
 
 const URL = process.env.URL ?? 'http://localhost:5173';
 const OUT = process.env.OUT ?? '/out';
@@ -568,6 +569,7 @@ async function main() {
   players.close();
   await api('POST', `/games/${pin}/end`).catch(() => undefined);
   await checkOpeningCountdown({ browser, api, hostSocket, URL, shot, check });
+  await checkParticipantViewport({ browser, api, hostSocket, URL, shot, check });
   await cleanUp(); // while the signed-in browser is still there
   await browser.close();
   log(problems.length ? `PROBLEMS:\n- ${problems.join('\n- ')}` : 'ALL CHECKS PASSED');
