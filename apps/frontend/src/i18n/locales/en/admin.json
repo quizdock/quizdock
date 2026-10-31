@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Web application folder",
     "MEDIA_MAX_BYTES": "Largest image",
     "MEDIA_MAX_VIDEO_MB": "Largest video",
-    "MEDIA_MAX_AUDIO_MB": "Largest sound",
+    "MEDIA_MAX_AUDIO_MB": "Largest audio file",
     "IMPORT_MAX_BYTES": "Largest imported quiz",
     "PUBLICATION_MAX_MB": "Largest quiz for publication",
     "MEDIA_LIBRARY_LINKS": "Free media libraries",
     "GAME_READ_DELAY_MS": "Reading time before the timer",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pause once everyone answered",
     "GAME_AUTO_ADVANCE_MS": "Automatic mode: time on a step",
-    "GAME_MEDIA_WAIT_S": "Wait for sounds and videos",
+    "GAME_MEDIA_WAIT_S": "Wait for audio and videos",
     "LIVE_MOTION": "Transitions on the live screens",
     "GAME_HOST_GRACE_MS": "Host's grace before leaving",
     "GAME_HOST_WINDOW_MS": "Host's way back",
@@ -447,7 +447,7 @@
     "kinds": {
       "image": "Images",
       "video": "Videos",
-      "audio": "Sounds"
+      "audio": "Audio"
     },
     "noLinks": "No library: the editor shows none (an instance without Internet).",
     "saved": {
@@ -588,7 +588,7 @@
         },
         "public": {
           "title": "The public, a large event",
-          "help": "Open to all — with an identity provider — and more time for sounds and videos to load on a busy Wi-Fi."
+          "help": "Open to all — with an identity provider — and more time for audio and videos to load on a busy Wi-Fi."
         },
         "other": {
           "title": "A bit of everything, other",

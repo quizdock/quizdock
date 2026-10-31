@@ -55,7 +55,7 @@ neither: the instance's default, else Classic.
   `fill` forced to `currentColor`; scripts, styles, links and references dropped, a
   stroke reported. Stored as a media of kind `icon`, served as SVG only from such a row.
 - **Fonts**: a whole woff2 (`POST /themes/assets/font`), kind `font`.
-- **Pictures and sounds**: ordinary media (image, audio).
+- **Pictures and effects**: ordinary media (image, audio).
 - **The icon bank**: `public/icons/bank/<group>/<name>.svg` (Phosphor Icons, MIT,
   `public/licenses/phosphor-icons.txt`, but for the shapes drawn for QuizDock in
   `symbols`), listed in `ICON_BANK`, with sets of eight in
@@ -92,7 +92,7 @@ passes every check says so: an *Accessible* badge and filter; the others carry n
 (CC0, CC BY, CC BY-SA: what a community store accepts) included —, saved as it changes, with a preview drawn by the real projection and phone (`ThemePreview`, sample
 game views in `theme-preview.tsx`) at four moments. The quiz settings pick a theme with
 thumbnails; every preview of the quiz's steps (the preview page, the question and slide
-forms, the cards, the read-only page) shows it. The console's sound preview plays the
+forms, the cards, the read-only page) shows it. The console's effects preview plays the
 theme's sample of an effect the lobby has none of its own for.
 
 ## Bundles

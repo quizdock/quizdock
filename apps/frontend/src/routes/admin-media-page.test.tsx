@@ -275,7 +275,7 @@ describe('AdminMediaPage', () => {
     const notes = new File(['x'], 'notes.txt', { type: 'text/plain' });
     fireEvent.drop(zone, { dataTransfer: { files: [notes] } });
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'notes.txt — Ni une image, ni une vidéo, ni un son.',
+      'notes.txt — Ni une image, ni une vidéo, ni un fichier audio.',
     );
   });
 

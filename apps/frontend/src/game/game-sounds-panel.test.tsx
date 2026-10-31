@@ -60,12 +60,12 @@ describe("the room's sound controls (#93)", () => {
     expect(screen.queryByRole('option', { name: 'My jingle' })).toBeNull();
     fireEvent.change(track, { target: { value: 'library' } });
     // The editor's picker: upload a sound, or take one of *My sounds* (and the instance's).
-    expect(await screen.findByText('Ajouter un son')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Mes sons/ })).toBeInTheDocument();
+    expect(await screen.findByText('Ajouter un effet')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Mes audios/ })).toBeInTheDocument();
     fireEvent.change(track, { target: { value: '' } });
     expect(onChange).toHaveBeenCalledWith({ musicId: '' });
 
-    fireEvent.click(screen.getByRole('switch', { name: 'Un son à chaque réponse' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'Un effet à chaque réponse' }));
     expect(onChange).toHaveBeenCalledWith({ tick: false });
     fireEvent.change(screen.getByRole('slider', { name: 'Effets' }), { target: { value: '30' } });
     expect(onChange).toHaveBeenCalledWith({ sfxLevel: 0.3 });
@@ -112,7 +112,7 @@ describe("the room's sound controls (#93)", () => {
       </QueryClientProvider>,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Salon muet' }));
-    fireEvent.click(screen.getByRole('switch', { name: 'Son de la projection' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'Audio de la projection' }));
     expect(onChange).toHaveBeenCalledWith({ muted: false });
     fireEvent.click(screen.getByRole('button', { name: /Couper Médias/ }));
     expect(onChange).toHaveBeenCalledWith({ mediaMuted: true });

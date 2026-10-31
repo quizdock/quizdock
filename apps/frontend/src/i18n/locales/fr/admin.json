@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Dossier de l’application web",
     "MEDIA_MAX_BYTES": "Taille maximale d’une image",
     "MEDIA_MAX_VIDEO_MB": "Taille maximale d’une vidéo",
-    "MEDIA_MAX_AUDIO_MB": "Taille maximale d’un son",
+    "MEDIA_MAX_AUDIO_MB": "Taille maximale d’un fichier audio",
     "IMPORT_MAX_BYTES": "Taille maximale d’un quiz importé",
     "PUBLICATION_MAX_MB": "Taille maximale d’un quiz à publier",
     "MEDIA_LIBRARY_LINKS": "Médiathèques libres",
     "GAME_READ_DELAY_MS": "Temps de lecture avant le chrono",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pause quand tout le monde a répondu",
     "GAME_AUTO_ADVANCE_MS": "Mode automatique : durée d’une étape",
-    "GAME_MEDIA_WAIT_S": "Attente des sons et vidéos",
+    "GAME_MEDIA_WAIT_S": "Attente des audios et vidéos",
     "LIVE_MOTION": "Transitions des écrans en direct",
     "GAME_HOST_GRACE_MS": "Délai de grâce avant le départ de l’animateur",
     "GAME_HOST_WINDOW_MS": "Délai de retour de l’animateur",
@@ -449,7 +449,7 @@
     "kinds": {
       "image": "Images",
       "video": "Vidéos",
-      "audio": "Sons"
+      "audio": "Audios"
     },
     "noLinks": "Aucune médiathèque : l’éditeur n’en affiche aucune (une instance sans Internet).",
     "saved": {
@@ -591,7 +591,7 @@
         },
         "public": {
           "title": "Le public, un grand événement",
-          "help": "Ouvert à tous — avec un fournisseur d’identité — et plus de temps pour charger sons et vidéos sur un Wi-Fi chargé."
+          "help": "Ouvert à tous — avec un fournisseur d’identité — et plus de temps pour charger audios et vidéos sur un Wi-Fi chargé."
         },
         "other": {
           "title": "Un peu de tout, autre",

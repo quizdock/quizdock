@@ -323,6 +323,17 @@ machine-assisted — native review welcome.
   Never _partie_ / _game_ in the interface; `session` stays in code
   identifiers and routes.
 
+- **audio, effect, sound**: never _sound_ for a medium in en.
+  - **audio** (fr _audio_): a recorded medium beside image and video — _Add
+    audio_, _My audio_, _Who hears the audio_; countable as _an audio file_ in
+    en, _un audio_ / _des audios_ in fr. Also the device's output in en
+    (_Turn audio on_, _Without audio_); fr keeps _le son_ there (_Activer le
+    son_, _Sans le son_), the idiom of every interface.
+  - **effect** (fr _effet_): the game's short sounds — tick, ding, gong,
+    countdown — set per lobby or per theme; never _sound_ / _son_.
+  - Other locales follow the sense, not the en word: one word for the medium,
+    one for the effects.
+
 - **leave, stop, close**: one verb per thing ended, never swapped.
   - **leave** (fr _quitter_): a participant going out of the lobby (_Leave the
     lobby?_); never said of the host or of a quiz;

@@ -25,20 +25,20 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Description (optional)…",
     "save": "Save",
-    "soundLegend": "Sound",
+    "soundLegend": "Audio",
     "soundSummary": "{{lufs}} LUFS · {{target}} · {{tail}} s pause",
     "mediaTailLabel": "Pause after a media",
-    "mediaTailHelp": "When a question’s sound or video lasts longer than its timer, the question is stretched to the end of the media plus this pause: nothing is cut mid-play.",
+    "mediaTailHelp": "When a question’s audio or video lasts longer than its timer, the question is stretched to the end of the media plus this pause: nothing is cut mid-play.",
     "seconds": "s",
-    "loudnessLabel": "Sound levelling",
-    "loudnessHelp": "The level every sound and video of the quiz is brought to at playback, so the volume stays the same from one question to the next. The files are not changed.",
+    "loudnessLabel": "Audio levelling",
+    "loudnessHelp": "The level every audio and video of the quiz is brought to at playback, so the volume stays the same from one question to the next. The files are not changed.",
     "loudness": {
       "14": "Loud (−14 LUFS, streaming)",
       "16": "Balanced (−16 LUFS)",
       "23": "Calm (−23 LUFS, broadcast)"
     },
-    "audioTargetLabel": "Who hears the sound",
-    "audioTargetHelp": "Which devices play the sounds and videos of the quiz. Participants on site see the projection: their phones stay silent unless \"Every device\" is chosen, which echoes if they share a space. A question can choose otherwise, and the host can change it for a session.",
+    "audioTargetLabel": "Who hears the audio",
+    "audioTargetHelp": "Which devices play the audio and videos of the quiz. Participants on site see the projection: their phones stay silent unless \"Every device\" is chosen, which echoes if they share a space. A question can choose otherwise, and the host can change it for a session.",
     "audioTarget": {
       "projection": "Projection only",
       "projection_remote": "Projection and remote participants",
@@ -179,10 +179,10 @@
     "videoCover": "Fills the slide behind its content (cropped to the screen).",
     "videoLoop": "Loop",
     "videoLoopHint": "Runs as long as the slide shows. Off: plays once and stays on its last frame — the slide waits for its end in auto mode.",
-    "videoSound": "Sound",
-    "videoSoundHint": "Plays the video’s own sound. Off: muted, and the slide can have a sound of its own.",
-    "audioExcludesVideoSound": "The slide already has a sound: one sound at a time. Remove it to turn the video’s on.",
-    "videoSoundExcludesAudio": "The video plays its own sound: no extra sound. Mute the video to add one.",
+    "videoSound": "Audio",
+    "videoSoundHint": "Plays the video’s own audio. Off: muted, and the slide can have an audio of its own.",
+    "audioExcludesVideoSound": "The slide already has an audio: one at a time. Remove it to turn the video’s on.",
+    "videoSoundExcludesAudio": "The video plays its own audio: no extra audio. Mute the video to add one.",
     "variablesLegend": "Variables",
     "variablesHint": "Write one in a heading or a text: it is replaced wherever the slide shows. The quiz’s appear filled in the preview, the lobby’s once the quiz is played.",
     "variables": {
@@ -244,13 +244,13 @@
     "revealDelayLabel": "Answer shown for (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "In auto mode: how long the right answer stays on screen before moving on. Empty = the instance’s setting.",
-    "audioTargetLabel": "Who hears this sound",
-    "audioTargetHint": "Which devices play this question's sound or video. \"Every device\" includes the phones on site, which echo if they share a space.",
+    "audioTargetLabel": "Who hears this audio",
+    "audioTargetHint": "Which devices play this question's audio or video. \"Every device\" includes the phones on site, which echo if they share a space.",
     "audioTargetDefault": "The quiz's setting in the lobby",
     "waveformSizeLabel": "Waveform size",
-    "waveformSizeHint": "How thick the sound's waveform is drawn on the projection and the phones.",
+    "waveformSizeHint": "How thick the audio's waveform is drawn on the projection and the phones.",
     "waveformPreview": "Waveform preview",
-    "waveformHiddenNote": "Hidden on the projection and the phones — the sound still plays, and your console still shows it.",
+    "waveformHiddenNote": "Hidden on the projection and the phones — the audio still plays, and your console still shows it.",
     "waveformSize": {
       "S": "Small",
       "M": "Medium",
@@ -334,7 +334,7 @@
     "titleAdd": "New question",
     "stretchedTime": "The media lasts {{media}} s: the question will last {{total}} s (end of the media + the quiz’s {{tail}} s pause).",
     "listenFirstLabel": "Start the timer when the media ends",
-    "listenFirstHint": "Listen first, then answer: nobody can answer while the sound or video plays, and everyone gets the full time to think afterwards.",
+    "listenFirstHint": "Listen first, then answer: nobody can answer while the audio or video plays, and everyone gets the full time to think afterwards.",
     "listenFirstTime": "The media plays {{media}} s, then the {{time}} s of answering start.",
     "promptImageNotice": "This image in the prompt would be better in the question’s media: framed on every screen, zoomable on phones, loaded ahead.",
     "promptImageMove": "Move to the media",
@@ -406,7 +406,7 @@
     "numericTarget": "Target: {{value}} (± {{tolerance}})",
     "credits": "Credits",
     "video": "Question video",
-    "sound": "Sound · {{seconds}} s",
+    "sound": "Audio · {{seconds}} s",
     "steps": "Steps",
     "backToEditor": "Back to the editor",
     "device": "Device",
@@ -430,15 +430,15 @@
     "altHelp": "Read aloud by screen readers. Describe what the image shows when it carries part of the question; leave it empty when the image is decoration.",
     "slotsLegend": "Question media",
     "visualLabel": "Visual",
-    "audioLabel": "Sound",
+    "audioLabel": "Audio",
     "kindImage": "Image",
     "kindVideo": "Video",
     "none": "None",
     "addImage": "Add an image",
     "addVideo": "Add a video",
-    "addAudio": "Add a sound",
-    "videoExcludesAudio": "The video already has its own sound: no extra audio track. Remove the video to add a sound.",
-    "audioExcludesVideo": "A video already has its own sound: remove the sound to choose a video.",
+    "addAudio": "Add audio",
+    "videoExcludesAudio": "The video already has its own audio: no extra audio track. Remove the video to add audio.",
+    "audioExcludesVideo": "A video already has its own audio: remove the audio to choose a video.",
     "converting": "Converting…",
     "convertingPercent": "Converting… {{percent}} %",
     "cancelConversion": "Cancel",
@@ -463,14 +463,14 @@
       "title": {
         "image": "My media · images",
         "video": "My media · videos",
-        "audio": "My media · sounds"
+        "audio": "My media · audio"
       },
       "usedIn_one": "Used in {{count}} quiz",
       "usedIn_other": "Used in {{count}} quizzes",
       "openKind": {
         "image": "My images",
         "video": "My videos",
-        "audio": "My sounds"
+        "audio": "My audio"
       },
       "inHistory": "Kept for past results",
       "tab": {
@@ -549,12 +549,12 @@
       "ready": "Mark the quiz as ready (Publish) first.",
       "settings": "Set it in the quiz settings, under Sharing.",
       "size": "Lighten or remove the heaviest media:",
-      "credit": "You are responsible for the rights to every image, sound and video you publish. Credit them in your media library (author, licence, source)."
+      "credit": "You are responsible for the rights to every image, audio and video you publish. Credit them in your media library (author, licence, source)."
     },
     "kind": {
       "image": "Image",
       "video": "Video",
-      "audio": "Sound"
+      "audio": "Audio"
     },
     "slugLabel": "Short name",
     "slugHelp": "How the store knows this quiz in your repository. File: {{file}}",
@@ -588,7 +588,7 @@
   "importReport": {
     "imported_one": "1 question imported from Kahoot.",
     "imported_other": "{{count}} questions imported from Kahoot.",
-    "media": "Pictures and sounds are not brought over.",
+    "media": "Pictures and audio are not brought over.",
     "incomplete_one": "1 question to finish before publishing: it is flagged in the list.",
     "incomplete_other": "{{count}} questions to finish before publishing: they are flagged in the list.",
     "skipped": "Row {{row}} left out: {{reason}}",

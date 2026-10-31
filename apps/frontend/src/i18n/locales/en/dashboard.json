@@ -69,7 +69,7 @@
     "kind": {
       "image": "Images",
       "video": "Videos",
-      "audio": "Sounds",
+      "audio": "Audio",
       "icon": "Theme icons",
       "font": "Theme fonts"
     },
@@ -157,10 +157,10 @@
       "removeDescription": "Hosts no longer find it in their library. The quizzes that use it keep their copy.",
       "removeFailed": "The media could not be withdrawn.",
       "saveFailed": "The change could not be saved.",
-      "drop": "Drop images, videos or sounds here, several at once.",
+      "drop": "Drop images, videos or audio files here, several at once.",
       "choose": "Choose files",
       "sending": "Sending {{done}} of {{total}}…",
-      "unsupported": "Not an image, a video or a sound."
+      "unsupported": "Not an image, a video or an audio file."
     },
     "global": "Global",
     "preview": {

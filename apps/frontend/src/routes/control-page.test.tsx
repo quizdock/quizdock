@@ -455,7 +455,7 @@ describe('ControlPage (console hôte)', () => {
     hookState.value = view({ players: [{ playerId: 'p1', nickname: 'Alice' }] });
     renderApp('/session/482913/console');
     // In the lobby's second tab of settings.
-    fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et son' }));
+    fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et audio' }));
     fireEvent.change(await screen.findByLabelText('Langue des écrans'), {
       target: { value: 'tr' },
     });
@@ -493,9 +493,9 @@ describe('ControlPage (console hôte)', () => {
       },
     });
     renderApp('/session/482913/console');
-    fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et son' }));
+    fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et audio' }));
 
-    const select = await screen.findByLabelText('Qui entend le son dans ce quiz');
+    const select = await screen.findByLabelText('Qui entend l’audio dans ce quiz');
     expect(select).toHaveValue('projection_remote');
     // The column's head, then the participant's row: the cell's sign and the avatar's badge.
     expect(screen.getAllByLabelText('Participe à distance').length).toBeGreaterThan(1);
@@ -517,7 +517,7 @@ describe('ControlPage (console hôte)', () => {
     hookState.value = view({ quizHasSound: false, gameAudioTarget: 'projection_remote' });
     renderApp('/session/482913/console');
     await screen.findByLabelText('Code PIN');
-    expect(screen.queryByText('Qui entend le son dans ce quiz')).not.toBeInTheDocument();
+    expect(screen.queryByText('Qui entend l’audio dans ce quiz')).not.toBeInTheDocument();
   });
 
   it('MEDIA_LOADING: names who is still loading, and starts anyway on request', async () => {

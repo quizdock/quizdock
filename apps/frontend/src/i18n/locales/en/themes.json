@@ -30,7 +30,7 @@
   "noMatch": "No theme made by a host matches.",
   "noneYet": "No host has made a theme yet: start one from a shipped theme.",
   "deleteTitle": "Delete this theme?",
-  "deleteText": "“{{name}}” is used by no quiz. Its icons, font and sounds go with it, unless something else holds them.",
+  "deleteText": "“{{name}}” is used by no quiz. Its icons, font and effects go with it, unless something else holds them.",
   "copyName": "{{name}} (copy)",
   "newName": "My {{parent}}",
   "name": "Name",
@@ -197,7 +197,7 @@
     "fontLicense": "Licence of the font",
     "fontUpload": "Import a font (.woff2)…",
     "fontHint": "An imported font says its licence: OFL 1.1, CC0, CC BY or CC BY-SA.",
-    "sounds": "Sounds",
+    "sounds": "Effects",
     "builtinSounds": "Built-in",
     "ownSounds_one": "{{count}} of the theme",
     "ownSounds_other": "{{count}} of the theme",
@@ -207,8 +207,8 @@
       "countdown": "Countdown",
       "gong": "Time up"
     },
-    "soundUpload": "Choose a sound",
-    "soundsHint": "A sound the host picked for the lobby still wins; the lobby's mixer keeps the levels.",
+    "soundUpload": "Choose an effect",
+    "soundsHint": "An effect the host picked for the lobby still wins; the lobby's mixer keeps the levels.",
     "motion": "Motion",
     "motionStyle": {
       "standard": "Standard",
@@ -224,7 +224,7 @@
     "accessibilityHint": "Measured on the theme's colours, never declared. An accessible theme carries the badge in the library and the quiz settings; the others carry nothing. A projector shows colours its own way: these are guides, nothing is blocked.",
     "license": "Licence",
     "noLicense": "No licence",
-    "licenseHelp": "The terms others may reuse the theme under; a community store needs one. You must hold the rights to its pictures, icons, sounds and font."
+    "licenseHelp": "The terms others may reuse the theme under; a community store needs one. You must hold the rights to its pictures, icons, effects and font."
   },
   "picker": {
     "legend": "Theme",

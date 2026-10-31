@@ -312,7 +312,7 @@ async function main() {
   await shot(consolePage, 'console-lobby-first');
   check(await consolePage.getByRole('table').isVisible(), 'console: participants as a table');
   // The lobby's settings come in two tabs: the screens' language in the second.
-  await consolePage.getByRole('tab', { name: 'Screens and sound' }).click();
+  await consolePage.getByRole('tab', { name: 'Screens and audio' }).click();
   check(
     await consolePage.getByLabel('Language of the screens').isVisible(),
     'console: the audience language option in the lobby',
@@ -442,7 +442,7 @@ async function main() {
   await shot(consolePage, 'console-lobby-countdown-stopped');
 
   // ── 5. The room's choice of language for the audience's screens.
-  await consolePage.getByRole('tab', { name: 'Screens and sound' }).click();
+  await consolePage.getByRole('tab', { name: 'Screens and audio' }).click();
   await consolePage.getByLabel('Language of the screens').selectOption('fr');
   await sleep(1500);
   const lang2 = await screen.evaluate(() => document.documentElement.lang);
