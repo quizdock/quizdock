@@ -265,6 +265,16 @@ Shown on joining, **before** anything is collected, in the wording the two switc
 - Text input → a text field; numeric → a slider or the keypad; ordering → a list to drag.
 - Once answered: "Answer recorded ✓" plus a lock (one answer, RG-06).
 
+Before answers open, the participant sees a prominent numeric countdown beside the
+existing reading or listen-first instruction. A geometric ring turns and the number
+settles on each second, following the quiz theme's motion pace. This represents only
+the existing server-defined reading/listening window: no added delay, sound or local
+three-second sequence. Late joins show the actual time left; pauses freeze the count
+and its motion. At the opening deadline the answer controls replace it immediately.
+The room/instance animation switch and reduced-motion preference show a static count.
+The question remains readable throughout; the decorative ring is hidden from assistive
+technology and the timer does not announce every second.
+
 ### 5.4 Immediate feedback
 ```
 ┌───────────────────┐    ┌───────────────────┐

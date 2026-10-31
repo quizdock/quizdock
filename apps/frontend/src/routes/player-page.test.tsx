@@ -238,6 +238,42 @@ describe('PlayerPage (client participant)', () => {
     expect(await screen.findByRole('timer', { name: 'Écoute en cours' })).toHaveTextContent('4');
   });
 
+  it.each([false, true])(
+    'a paused opening freezes at the server remainder (listen first: %s)',
+    async (listenFirst) => {
+      loadPlayerSession.mockReturnValue({
+        pin: '771122',
+        nickname: 'Bob',
+        sessionToken: 't',
+        playerId: 'p1',
+      });
+      // The original deadline is already past: only the server's frozen remainder is valid.
+      const startedAt = Date.now() - 10_000;
+      hookState.value = view({
+        state: GameState.Answering,
+        paused: true,
+        pausedRemainingMs: 24_000,
+        question: {
+          questionIndex: 0,
+          type: 'single_choice',
+          prompt: 'Capitale ?',
+          options: [PARIS],
+          timeLimitS: 20,
+          basePoints: 1000,
+          startedAt,
+          endsAt: startedAt + 20_000,
+          listenFirst,
+          media: { visual: null, audio: null },
+        } as never,
+      });
+      renderApp('/join/771122');
+      const label = listenFirst ? /Écoute jusqu’au bout/ : /Lis bien la question/;
+      const opening = await screen.findByRole('timer', { name: label });
+      expect(opening).toHaveTextContent('4');
+      expect(screen.queryByRole('button', { name: /Paris/ })).not.toBeInTheDocument();
+    },
+  );
+
   it('carries the branding hooks: the page, its state, the clock, the prompt, the answers (lot 5)', async () => {
     loadPlayerSession.mockReturnValue({
       pin: '771122',

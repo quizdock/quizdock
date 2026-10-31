@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useAudienceLanguage } from '../i18n/interface-language';
 import { useWakeLock } from '@/lib/use-wake-lock';
+import { OpeningCountdown } from '../game/opening-countdown';
 import { LiveMotion } from '../game/motion/level';
 import { BackdropFade, StepEnter } from '../game/motion/step-transition';
 import { type Backdrop, stepKeyOf } from '../game/motion/step';
@@ -206,7 +207,14 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   // Délai de lecture (§6/§8) : la fenêtre de réponse n'ouvre qu'à `startedAt`. Avant,
   // une réponse serait rejetée par le serveur (« trop tôt ») sans être comptée — on
   // bloque donc la saisie pendant la lecture pour ne jamais perdre de réponse.
-  const readingLeft = useCountdown(question ? question.startedAt : null);
+  const runningReadingLeft = useCountdown(question && !view.paused ? question.startedAt : null);
+  const readingLeft =
+    view.paused && question && view.pausedRemainingMs !== null
+      ? Math.max(
+          0,
+          Math.ceil((view.pausedRemainingMs - (question.endsAt - question.startedAt)) / 1000),
+        )
+      : runningReadingLeft;
   const reading = readingLeft !== null && readingLeft > 0;
   // Avatar affiché : dans le lobby, la graine choisie localement (aperçu avant
   // enregistrement) ; une fois la partie lancée, **celle que le serveur connaît**
@@ -1005,10 +1013,11 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         >
           <AnswerRules question={question} />
           {reading ? (
-            <p className="text-muted-foreground text-[1.1em] font-medium">
-              {question.listenFirst ? t('player.listenFirst') : t('player.readQuestion')}{' '}
-              <span className="tabular-nums">{readingLeft}</span>
-            </p>
+            <OpeningCountdown
+              remaining={readingLeft}
+              label={question.listenFirst ? t('player.listenFirst') : t('player.readQuestion')}
+              paused={view.paused}
+            />
           ) : lost ? (
             <p role="alert" className="text-destructive text-[1.1em] font-semibold">
               {t(`player.answerRefused.${refusal}`)}
