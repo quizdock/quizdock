@@ -4,6 +4,40 @@ All notable changes to QuizDock are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com); versions follow
 [Semantic Versioning](https://semver.org). Generated from conventional commits.
 
+## [0.17.0] - 2026-10-31
+
+### Bug Fixes
+
+- Audio, not sound, in the settings' descriptions *(admin)*
+- Audio and effects in every other language *(i18n)*
+- Audio for the media, effects for the game's own sounds *(i18n)*
+- One word for the lobby in every language *(i18n)*
+- A quieter opening countdown, its ring above the instruction *(player)*
+- Vitest 4.1.12, and @vitest/mocker with it (tests only) *(deps)*
+- Break quiz score ties by cumulative answer time (#264) *(game)*
+- Keep the mobile participant frame within the viewport (#268) *(player)*
+- The MCP SDK 1.32, Zod 4.6, multer, body-parser, qs and vite patched (#272) *(deps)*
+
+### Dependencies
+
+- Bump the actions group across 1 directory with 2 updates *(deps)*
+
+### Documentation
+
+- The screens again, lobby and audio *(screenshots)*
+- The screens again, with the bounded participant frame *(screenshots)*
+
+### Features
+
+- Animate the countdown before answers open (#270) *(player)*
+
+### Contributors
+
+- Francois Chaussin
+- lutfullahkabalak
+- François CHAUSSIN
+- dependabot[bot]
+
 ## [0.16.0] - 2026-10-14
 
 ### Bug Fixes
