@@ -1,0 +1,64 @@
+diff --git a/dist/dto-D6Zp_oRO.mjs b/dist/dto-D6Zp_oRO.mjs
+--- a/dist/dto-D6Zp_oRO.mjs
++++ b/dist/dto-D6Zp_oRO.mjs
+@@ -366,6 +366,20 @@
+ 	}
+ 	return properties;
+ }
++/**
++* Zod 4.5+ folds `anyOf: [{ type: x }, { type: "null" }]` into `type: [x, "null"]`,
++* which @nestjs/swagger reads as an array: unfold it back.
++*/
++function unfoldNullableTypes(node) {
++	if (Array.isArray(node)) node.forEach(unfoldNullableTypes);
++	else if (node && typeof node === "object") {
++		if (Array.isArray(node.type) && node.type.includes("null")) {
++			node.anyOf = node.type.map((type) => ({ type }));
++			delete node.type;
++		}
++		Object.values(node).forEach(unfoldNullableTypes);
++	}
++}
+ function generateJsonSchema(schema, io) {
+ 	const generatedJsonSchema = "_zod" in schema ? toJSONSchema(schema, {
+ 		io,
+@@ -373,6 +387,7 @@
+ 			if (io === "output" && "id" in jsonSchema) jsonSchema.id = `${jsonSchema.id}_Output`;
+ 		}
+ 	}) : zodV3ToOpenAPI(schema);
++	unfoldNullableTypes(generatedJsonSchema);
+ 	const $defs = "$defs" in generatedJsonSchema && generatedJsonSchema.$defs ? generatedJsonSchema.$defs : void 0;
+ 	const newSchema = fixRefsToPointById(generatedJsonSchema, $defs);
+ 	const newDefs = {};
+diff --git a/dist/dto-ikA0c0Dz.cjs b/dist/dto-ikA0c0Dz.cjs
+--- a/dist/dto-ikA0c0Dz.cjs
++++ b/dist/dto-ikA0c0Dz.cjs
+@@ -389,6 +389,20 @@
+ 	}
+ 	return properties;
+ }
++/**
++* Zod 4.5+ folds `anyOf: [{ type: x }, { type: "null" }]` into `type: [x, "null"]`,
++* which @nestjs/swagger reads as an array: unfold it back.
++*/
++function unfoldNullableTypes(node) {
++	if (Array.isArray(node)) node.forEach(unfoldNullableTypes);
++	else if (node && typeof node === "object") {
++		if (Array.isArray(node.type) && node.type.includes("null")) {
++			node.anyOf = node.type.map((type) => ({ type }));
++			delete node.type;
++		}
++		Object.values(node).forEach(unfoldNullableTypes);
++	}
++}
+ function generateJsonSchema(schema, io) {
+ 	const generatedJsonSchema = "_zod" in schema ? (0, zod_v4_core.toJSONSchema)(schema, {
+ 		io,
+@@ -396,6 +410,7 @@
+ 			if (io === "output" && "id" in jsonSchema) jsonSchema.id = `${jsonSchema.id}_Output`;
+ 		}
+ 	}) : zodV3ToOpenAPI(schema);
++	unfoldNullableTypes(generatedJsonSchema);
+ 	const $defs = "$defs" in generatedJsonSchema && generatedJsonSchema.$defs ? generatedJsonSchema.$defs : void 0;
+ 	const newSchema = fixRefsToPointById(generatedJsonSchema, $defs);
+ 	const newDefs = {};

@@ -198,6 +198,16 @@ The `⋯` menu: Edit · Duplicate · Archive · Delete · See past sessions.
 
 ## 5. Participant client (mobile)
 
+The participant frame fills the available viewport, including when the browser's
+toolbar or software keyboard changes its height. The application header stays
+visible; the document itself does not scroll. Long lobby, feedback, slide and
+podium content scrolls within the participant area. While answering, the timer
+stays above a separately scrollable prompt and the answer controls stay below it.
+On short screens or with larger text, the answer area can scroll too so every
+control remains reachable. These regions contain overscroll rather than passing
+it to the page. Intentional pinch zoom remains available and does not resize the
+game layout.
+
 ### 5.1 Joining
 ```
 ┌───────────────────┐   ┌───────────────────┐

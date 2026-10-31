@@ -10,6 +10,7 @@ import { usePersonalLanguage } from '@/lib/personal-language';
 import { LanguageGlobe } from '@/components/language-switch';
 import { APP_NAME, getDemo } from '../config';
 import { cn } from '@/lib/utils';
+import { useParticipantViewport } from '@/lib/use-participant-viewport';
 
 /** Route id → `titles.*` key in `common`; the document title reads "<page> · <app>". */
 const TITLE_KEYS: Record<string, string> = {
@@ -66,6 +67,7 @@ export function RootLayout() {
       : routeId.startsWith('/join')
         ? 'participant'
         : 'app';
+  const participantHeight = useParticipantViewport(shell === 'participant');
   // The interface's language (#209): the one this person picked, kept in their account
   // or on the device; the game screens ask for the room's themselves.
   useInterfaceLanguage(usePersonalLanguage().language);
@@ -83,19 +85,21 @@ export function RootLayout() {
       className={cn(
         'qd-shell flex min-h-screen flex-col',
         // A phone is read outdoors: its hints a step darker (light theme; the dark one keeps its own).
-        shell === 'participant' && 'not-dark:[--muted-foreground:oklch(0.45_0_0)]',
+        shell === 'participant' &&
+          'h-dvh min-h-0 overflow-hidden not-dark:[--muted-foreground:oklch(0.45_0_0)]',
       )}
       data-shell={shell}
+      style={participantHeight === undefined ? undefined : { height: participantHeight }}
     >
       {/* La barre traverse l'écran — c'est la limite du cadre — mais son contenu
           suit exactement les marges de `main` : la marque s'aligne sur le titre
           de la page. Le nom s'efface sous `sm` pour laisser la place à la
           navigation sur un téléphone, et revient dès qu'il y a de la place. */}
-      <header className="qd-header border-b py-3">
+      <header className={cn('qd-header border-b py-3', shell === 'participant' && 'shrink-0')}>
         <div
           className={
             shell === 'participant'
-              ? 'content-phone flex items-center justify-between gap-3 px-4'
+              ? 'content-phone flex flex-wrap items-center justify-between gap-3 px-4'
               : 'content-shell flex items-center justify-between gap-3 px-6 lg:px-10'
           }
         >
@@ -119,7 +123,7 @@ export function RootLayout() {
             </Link>
           )}
           {shell === 'participant' ? (
-            <span className="flex items-center gap-2">
+            <span className="flex flex-wrap items-center gap-2">
               <LanguageGlobe />
               {/* Filled by the player page (avatar, nickname, Leave) through a portal. */}
               <div id="participant-topbar" className="flex items-center gap-2" />
@@ -158,7 +162,10 @@ export function RootLayout() {
         className={cn(
           'qd-main',
           shell === 'participant'
-            ? 'flex flex-1 flex-col'
+            ? cn(
+                'flex min-h-0 flex-1 flex-col',
+                routeId === '/join' ? 'overflow-y-auto overscroll-y-contain' : 'overflow-hidden',
+              )
             : 'content-shell flex-1 px-6 py-6 lg:px-10',
         )}
       >
