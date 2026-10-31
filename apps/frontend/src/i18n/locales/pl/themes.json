@@ -1,6 +1,6 @@
 {
   "title": "Motywy",
-  "intro": "Wygląd quizu na projekcji i telefonach graczy, od poczekalni po podium. Każdy prowadzący może używać każdego motywu; zmienia go tylko jego właściciel i administratorzy.",
+  "intro": "Wygląd quizu na projekcji i telefonach graczy, od pokoju po podium. Każdy prowadzący może używać każdego motywu; zmienia go tylko jego właściciel i administratorzy.",
   "import": "Importuj",
   "new": "Nowy motyw",
   "search": "Szukaj po nazwie",
@@ -34,7 +34,7 @@
   "noMatch": "Żaden motyw prowadzącego nie pasuje.",
   "noneYet": "Żaden prowadzący nie utworzył jeszcze motywu: zacznij od dostarczonego.",
   "deleteTitle": "Usunąć ten motyw?",
-  "deleteText": "„{{name}}” nie jest używany przez żaden quiz. Jego ikony, czcionka i dźwięki odejdą razem z nim, chyba że coś innego ich używa.",
+  "deleteText": "„{{name}}” nie jest używany przez żaden quiz. Jego ikony, czcionka i efekty odejdą razem z nim, chyba że coś innego ich używa.",
   "copyName": "{{name}} (kopia)",
   "newName": "Mój {{parent}}",
   "name": "Nazwa",
@@ -94,7 +94,7 @@
     "phase": "Moment gry",
     "device": "Ekran",
     "phases": {
-      "lobby": "Poczekalnia",
+      "lobby": "Pokój",
       "question": "Pytanie",
       "reveal": "Odpowiedź",
       "podium": "Podium"
@@ -203,7 +203,7 @@
     "fontLicense": "Licencja czcionki",
     "fontUpload": "Importuj czcionkę (.woff2)…",
     "fontHint": "Zaimportowana czcionka podaje swoją licencję: OFL 1.1, CC0, CC BY lub CC BY-SA.",
-    "sounds": "Dźwięki",
+    "sounds": "Efekty",
     "builtinSounds": "Wbudowane",
     "ownSounds_one": "{{count}} z motywu",
     "ownSounds_few": "{{count}} z motywu",
@@ -215,8 +215,8 @@
       "countdown": "Odliczanie",
       "gong": "Koniec czasu"
     },
-    "soundUpload": "Wybierz dźwięk",
-    "soundsHint": "Dźwięk wybrany przez prowadzącego dla pokoju ma pierwszeństwo; mikser pokoju zachowuje poziomy.",
+    "soundUpload": "Wybierz efekt",
+    "soundsHint": "Efekt wybrany przez prowadzącego dla pokoju ma pierwszeństwo; mikser pokoju zachowuje poziomy.",
     "motion": "Ruch",
     "motionStyle": {
       "standard": "Standardowy",
@@ -232,7 +232,7 @@
     "accessibilityHint": "Mierzona na kolorach motywu, nigdy deklarowana. Dostępny motyw ma odznakę w bibliotece i ustawieniach quizu; pozostałe nie mają niczego. Projektor pokazuje kolory po swojemu: to wskazówki, nic nie jest blokowane.",
     "license": "Licencja",
     "noLicense": "Brak licencji",
-    "licenseHelp": "Warunki, na jakich inni mogą ponownie wykorzystać motyw; sklep społeczności jej wymaga. Musisz mieć prawa do jego obrazów, ikon, dźwięków i czcionki."
+    "licenseHelp": "Warunki, na jakich inni mogą ponownie wykorzystać motyw; sklep społeczności jej wymaga. Musisz mieć prawa do jego obrazów, ikon, efektów i czcionki."
   },
   "picker": {
     "legend": "Motyw",

@@ -1,10 +1,10 @@
 {
-  "title": "Join a room",
+  "title": "Join a lobby",
   "pinLabel": "PIN, 6 digits",
   "continue": "Continue",
   "hint": "Type the PIN shown on the big screen",
-  "checking": "Looking for the room…",
-  "notFound": "No open room with this PIN. Check the big screen.",
-  "locked": "This room is closed to newcomers; a participant coming back still gets in.",
+  "checking": "Looking for the lobby…",
+  "notFound": "No open lobby with this PIN. Check the big screen.",
+  "locked": "This lobby is closed to newcomers; a participant coming back still gets in.",
   "checkedAt6": "Checked as soon as the 6th digit is in."
 }

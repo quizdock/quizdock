@@ -54,7 +54,7 @@
   "demo": {
     "banner": "Publiczne demo — jedno konto prowadzącego wspólne dla wszystkich odwiedzających; wszystko jest czyszczone co godzinę."
   },
-  "chromiumOnly": "Ta strona jest przygotowana dla Chrome, Edge lub innej przeglądarki opartej na Chromium. W tej przeglądarce przesyłanie i odtwarzanie filmów i dźwięków może działać niepoprawnie.",
+  "chromiumOnly": "Ta strona jest przygotowana dla Chrome, Edge lub innej przeglądarki opartej na Chromium. W tej przeglądarce przesyłanie i odtwarzanie filmów i nagrań może działać niepoprawnie.",
   "play": "Odtwórz",
   "pause": "Wstrzymaj",
   "position": "Pozycja w nagraniu",

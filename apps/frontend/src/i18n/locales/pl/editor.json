@@ -28,17 +28,17 @@
     "soundLegend": "Dźwięk",
     "soundSummary": "{{lufs}} LUFS · {{target}} · pauza {{tail}} s",
     "mediaTailLabel": "Pauza po multimediach",
-    "mediaTailHelp": "Gdy dźwięk lub film pytania trwa dłużej niż jego czas, pytanie zostaje wydłużone do końca nagrania plus tę pauzę: nic nie jest ucinane w trakcie odtwarzania.",
+    "mediaTailHelp": "Gdy nagranie lub film pytania trwa dłużej niż jego czas, pytanie zostaje wydłużone do końca odtwarzania plus tę pauzę: nic nie jest ucinane w trakcie.",
     "seconds": "s",
     "loudnessLabel": "Wyrównanie głośności",
-    "loudnessHelp": "Poziom, do którego przy odtwarzaniu sprowadzany jest każdy dźwięk i film quizu, aby głośność była taka sama od pytania do pytania. Pliki nie są zmieniane.",
+    "loudnessHelp": "Poziom, do którego przy odtwarzaniu sprowadzane jest każde nagranie i każdy film quizu, aby głośność była taka sama od pytania do pytania. Pliki nie są zmieniane.",
     "loudness": {
       "14": "Głośno (−14 LUFS, streaming)",
       "16": "Zrównoważenie (−16 LUFS)",
       "23": "Cicho (−23 LUFS, nadawanie)"
     },
     "audioTargetLabel": "Kto słyszy dźwięk",
-    "audioTargetHelp": "Które urządzenia odtwarzają dźwięki i filmy quizu. Uczestnicy na sali widzą projekcję: ich telefony milczą, chyba że wybrano „Każde urządzenie”, co daje echo, jeśli są w jednym pomieszczeniu. Pytanie może mieć inne ustawienie, a prowadzący może je zmienić na czas sesji.",
+    "audioTargetHelp": "Które urządzenia odtwarzają nagrania i filmy quizu. Uczestnicy na sali widzą projekcję: ich telefony milczą, chyba że wybrano „Każde urządzenie”, co daje echo, jeśli są w jednym pomieszczeniu. Pytanie może mieć inne ustawienie, a prowadzący może je zmienić na czas sesji.",
     "audioTarget": {
       "projection": "Tylko projekcja",
       "projection_remote": "Projekcja i zdalni uczestnicy",
@@ -188,9 +188,9 @@
     "videoLoop": "Zapętl",
     "videoLoopHint": "Odtwarzane, dopóki slajd jest widoczny. Wyłączone: odtwarzane raz i zatrzymuje się na ostatniej klatce — w trybie automatycznym slajd czeka na jego koniec.",
     "videoSound": "Dźwięk",
-    "videoSoundHint": "Odtwarza dźwięk filmu. Wyłączone: wyciszony, a slajd może mieć własny dźwięk.",
-    "audioExcludesVideoSound": "Slajd ma już dźwięk: jeden dźwięk naraz. Usuń go, aby włączyć dźwięk filmu.",
-    "videoSoundExcludesAudio": "Film odtwarza własny dźwięk: bez dodatkowego dźwięku. Wycisz film, aby dodać dźwięk.",
+    "videoSoundHint": "Odtwarza dźwięk filmu. Wyłączone: wyciszony, a slajd może mieć własne nagranie.",
+    "audioExcludesVideoSound": "Slajd ma już nagranie: jedno naraz. Usuń je, aby włączyć dźwięk filmu.",
+    "videoSoundExcludesAudio": "Film odtwarza własny dźwięk: bez dodatkowego nagrania. Wycisz film, aby dodać nagranie.",
     "variablesLegend": "Zmienne",
     "variablesHint": "Wpisz zmienną w nagłówku lub tekście: zostanie zastąpiona wszędzie, gdzie slajd jest wyświetlany. Zmienne quizu są wypełnione w podglądzie, zmienne pokoju — gdy quiz jest rozgrywany.",
     "variables": {
@@ -253,12 +253,12 @@
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "W trybie automatycznym: jak długo poprawna odpowiedź pozostaje na ekranie przed przejściem dalej. Puste = ustawienie instancji.",
     "audioTargetLabel": "Kto słyszy ten dźwięk",
-    "audioTargetHint": "Które urządzenia odtwarzają dźwięk lub film tego pytania. „Każde urządzenie” obejmuje telefony na sali, co daje echo, jeśli są w jednym pomieszczeniu.",
+    "audioTargetHint": "Które urządzenia odtwarzają nagranie lub film tego pytania. „Każde urządzenie” obejmuje telefony na sali, co daje echo, jeśli są w jednym pomieszczeniu.",
     "audioTargetDefault": "Ustawienie quizu w pokoju",
     "waveformSizeLabel": "Rozmiar wykresu fali",
-    "waveformSizeHint": "Jak gruby jest wykres fali dźwiękowej na projekcji i na telefonach.",
+    "waveformSizeHint": "Jak gruby jest wykres fali nagrania na projekcji i na telefonach.",
     "waveformPreview": "Podgląd wykresu fali",
-    "waveformHiddenNote": "Ukryty na projekcji i telefonach — dźwięk nadal gra, a twoja konsola nadal go pokazuje.",
+    "waveformHiddenNote": "Ukryty na projekcji i telefonach — nagranie nadal gra, a twoja konsola nadal go pokazuje.",
     "waveformSize": {
       "S": "Mały",
       "M": "Średni",
@@ -342,7 +342,7 @@
     "titleAdd": "Nowe pytanie",
     "stretchedTime": "Nagranie trwa {{media}} s: pytanie potrwa {{total}} s (koniec nagrania + pauza quizu {{tail}} s).",
     "listenFirstLabel": "Uruchom licznik po zakończeniu nagrania",
-    "listenFirstHint": "Najpierw słuchaj, potem odpowiadaj: nikt nie może odpowiedzieć, gdy gra dźwięk lub film, a potem każdy ma pełny czas do namysłu.",
+    "listenFirstHint": "Najpierw słuchaj, potem odpowiadaj: nikt nie może odpowiedzieć, gdy gra nagranie lub film, a potem każdy ma pełny czas do namysłu.",
     "listenFirstTime": "Nagranie trwa {{media}} s, potem zaczyna się {{time}} s na odpowiedź.",
     "promptImageNotice": "Ten obraz w treści pytania lepiej sprawdzi się w multimediach pytania: wykadrowany na każdym ekranie, powiększalny na telefonach, wczytywany z wyprzedzeniem.",
     "promptImageMove": "Przenieś do multimediów",
@@ -414,7 +414,7 @@
     "numericTarget": "Cel: {{value}} (± {{tolerance}})",
     "credits": "Autorstwo",
     "video": "Film pytania",
-    "sound": "Dźwięk · {{seconds}} s",
+    "sound": "Nagranie · {{seconds}} s",
     "steps": "Kroki",
     "backToEditor": "Wróć do edytora",
     "device": "Urządzenie",
@@ -438,15 +438,15 @@
     "altHelp": "Odczytywany na głos przez czytniki ekranu. Opisz, co przedstawia obraz, gdy jest częścią pytania; zostaw puste, gdy obraz jest dekoracją.",
     "slotsLegend": "Multimedia pytania",
     "visualLabel": "Obraz",
-    "audioLabel": "Dźwięk",
+    "audioLabel": "Nagranie",
     "kindImage": "Obraz",
     "kindVideo": "Film",
     "none": "Brak",
     "addImage": "Dodaj obraz",
     "addVideo": "Dodaj film",
-    "addAudio": "Dodaj dźwięk",
-    "videoExcludesAudio": "Film ma już własny dźwięk: bez dodatkowej ścieżki audio. Usuń film, aby dodać dźwięk.",
-    "audioExcludesVideo": "Film ma już własny dźwięk: usuń dźwięk, aby wybrać film.",
+    "addAudio": "Dodaj nagranie",
+    "videoExcludesAudio": "Film ma już własny dźwięk: bez dodatkowej ścieżki audio. Usuń film, aby dodać nagranie.",
+    "audioExcludesVideo": "Film ma już własny dźwięk: usuń nagranie, aby wybrać film.",
     "converting": "Konwertowanie…",
     "convertingPercent": "Konwertowanie… {{percent}} %",
     "cancelConversion": "Anuluj",
@@ -471,7 +471,7 @@
       "title": {
         "image": "Moje multimedia · obrazy",
         "video": "Moje multimedia · filmy",
-        "audio": "Moje multimedia · dźwięki"
+        "audio": "Moje multimedia · nagrania"
       },
       "usedIn_one": "Używany w {{count}} quizie",
       "usedIn_few": "Używany w {{count}} quizach",
@@ -480,7 +480,7 @@
       "openKind": {
         "image": "Moje obrazy",
         "video": "Moje filmy",
-        "audio": "Moje dźwięki"
+        "audio": "Moje nagrania"
       },
       "inHistory": "Zachowany dla dawnych wyników",
       "tab": {
@@ -565,12 +565,12 @@
       "ready": "Najpierw oznacz quiz jako gotowy (Opublikuj).",
       "settings": "Ustaw to w ustawieniach quizu, w sekcji Udostępnianie.",
       "size": "Odchudź lub usuń najcięższe multimedia:",
-      "credit": "Odpowiadasz za prawa do każdego publikowanego obrazu, dźwięku i filmu. Podaj ich autorstwo w swojej bibliotece multimediów (autor, licencja, źródło)."
+      "credit": "Odpowiadasz za prawa do każdego publikowanego obrazu, nagrania i filmu. Podaj ich autorstwo w swojej bibliotece multimediów (autor, licencja, źródło)."
     },
     "kind": {
       "image": "Obraz",
       "video": "Film",
-      "audio": "Dźwięk"
+      "audio": "Nagranie"
     },
     "slugLabel": "Krótka nazwa",
     "slugHelp": "Jak katalog rozpoznaje ten quiz w twoim repozytorium. Plik: {{file}}",
@@ -614,7 +614,7 @@
     "imported_few": "Zaimportowano {{count}} pytania z Kahoot.",
     "imported_many": "Zaimportowano {{count}} pytań z Kahoot.",
     "imported_other": "Zaimportowano {{count}} pytania z Kahoot.",
-    "media": "Obrazy i dźwięki nie są przenoszone.",
+    "media": "Obrazy i nagrania nie są przenoszone.",
     "incomplete_one": "1 pytanie do dokończenia przed publikacją: jest oznaczone na liście.",
     "incomplete_few": "{{count}} pytania do dokończenia przed publikacją: są oznaczone na liście.",
     "incomplete_many": "{{count}} pytań do dokończenia przed publikacją: są oznaczone na liście.",

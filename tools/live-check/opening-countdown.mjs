@@ -30,7 +30,7 @@ export async function checkOpeningCountdown({ browser, api, hostSocket, URL, sho
     ({ pin } = await host.emitWithAck('host:create', { quizId: quiz.id }));
     await page.goto(`${URL}/join/${pin}`);
     await page.getByLabel(/Nickname/).fill('Countdown');
-    await page.getByRole('button', { name: 'Join the room', exact: true }).click();
+    await page.getByRole('button', { name: 'Join the lobby', exact: true }).click();
     await page.waitForFunction(
       () => document.querySelector('.qd-player')?.dataset.state === 'LOBBY',
     );

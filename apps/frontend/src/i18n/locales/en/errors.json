@@ -10,7 +10,7 @@
   },
   "host": {
     "auth_required": "Host authentication required.",
-    "forbidden": "You are not the host of this room."
+    "forbidden": "You are not the host of this lobby."
   },
   "quiz": {
     "not_found": "Quiz not found.",
@@ -18,18 +18,18 @@
     "empty": "The quiz has no questions.",
     "requires_question": "A quiz must have at least one question to become “ready” (RG-02).",
     "transition_forbidden": "Forbidden state transition: {{from}} → {{target}}.",
-    "in_use": "This quiz is being played in a room: close the room first.",
+    "in_use": "This quiz is being played in a lobby: close the lobby first.",
     "item_not_in_quiz": "This item does not belong to this quiz any more: reload the page.",
     "reorder_incomplete": "The order sent is missing some items: reload the page and try again.",
     "incomplete_one": "1 step is unfinished: complete it to publish the quiz.",
     "incomplete_other": "{{count}} steps are unfinished: complete them to publish the quiz."
   },
   "session": {
-    "not_found": "Room not found or closed.",
-    "ended": "The room is closed.",
-    "banned": "You have been removed from this room by the host.",
-    "join_required": "Join the room before answering.",
-    "already_joined": "You are already in this room.",
+    "not_found": "Lobby not found or closed.",
+    "ended": "The lobby is closed.",
+    "banned": "You have been removed from this lobby by the host.",
+    "join_required": "Join the lobby before answering.",
+    "already_joined": "You are already in this lobby.",
     "already_started": "The quiz has already started.",
     "quiz_required": "Pick the quiz first.",
     "reveal_required": "Action only possible after the reveal.",
@@ -39,11 +39,11 @@
     "options_locked": "These options can only be changed before the quiz starts.",
     "join_url_invalid": "Invalid invitation address (expected http(s)://host[:port]).",
     "archive_quiz_gone": "The quiz was deleted while it was played: it ended without an archive.",
-    "locked": "This room no longer accepts new participants.",
+    "locked": "This lobby no longer accepts new participants.",
     "open_access_forbidden": "Open access is not allowed on this server.",
     "open_access_guests_only": "In open access participants have no account: no personal tracking, no name taken from an account.",
-    "next_quiz_unavailable": "This quiz cannot be played next in this room.",
-    "next_quiz_from_lobby": "The next quiz is picked in the room's lobby.",
+    "next_quiz_unavailable": "This quiz cannot be played next in this lobby.",
+    "next_quiz_from_lobby": "The next quiz is picked in the lobby.",
     "review_unavailable": "You can only look back at a step between two questions.",
     "step_not_played": "This step has not been played yet."
   },
@@ -51,7 +51,7 @@
     "not_found": "Player not found."
   },
   "nickname": {
-    "taken": "This nickname is already taken in this room.",
+    "taken": "This nickname is already taken in this lobby.",
     "invalid_length": "The nickname must be between {{min}} and {{max}} characters."
   },
   "pin": {
@@ -59,29 +59,29 @@
     "too_many_attempts": "Too many wrong PINs from this address. Try again in a minute."
   },
   "media": {
-    "unsupported_type": "Unsupported format: an image, an MP4 video (H.264) or a sound (MP3, M4A). The editor converts the other files this browser can read; SVG is not accepted.",
+    "unsupported_type": "Unsupported format: an image, an MP4 video (H.264) or an audio file (MP3, M4A). The editor converts the other files this browser can read; SVG is not accepted.",
     "file_missing": "Missing file (“file” field).",
     "file_too_large": "File too large (at most {{maxMb}} MB for this kind of media).",
     "image_too_large": "This picture is too large (at most {{maxMp}} megapixels).",
     "not_found": "Media not found.",
     "demo_disabled": "Media uploads are disabled on the demo instance.",
-    "video_with_audio": "A video already carries its own sound: remove the audio track or the video.",
+    "video_with_audio": "A video already carries its own audio: remove the audio track or the video.",
     "wrong_kind": "This media is not of the kind this slot takes.",
     "embeds_disabled": "YouTube and Vimeo videos are turned off on this instance.",
     "invalid": "The question’s media are not valid.",
     "quicktime": "QuickTime files (.mov) are not accepted. Export the video as MP4 (H.264), for instance with HandBrake (handbrake.fr).",
     "unsupported_video_codec": "Unsupported video codec ({{codec}}). Only H.264 plays everywhere. A video shot on an iPhone is often HEVC: convert it to MP4 H.264, for instance with HandBrake (handbrake.fr), or set the camera to “Most Compatible”.",
-    "unsupported_audio_codec": "The sound of this video ({{codec}}) is not AAC. Export it again as MP4 H.264 + AAC, for instance with HandBrake (handbrake.fr).",
-    "no_video_track": "This file holds no video. For a sound on its own, use the sound slot.",
-    "unreadable_mp3": "This sound cannot be read: the file looks damaged.",
-    "metadata_invalid": "What was measured on the sound is not valid ({{field}}). Try the upload again.",
-    "cannot_read": "This browser cannot read this file. Try another browser, or convert it first with a dedicated tool (HandBrake for videos, Audacity for sounds).",
+    "unsupported_audio_codec": "The audio of this video ({{codec}}) is not AAC. Export it again as MP4 H.264 + AAC, for instance with HandBrake (handbrake.fr).",
+    "no_video_track": "This file holds no video. For audio on its own, use the audio slot.",
+    "unreadable_mp3": "This audio file cannot be read: it looks damaged.",
+    "metadata_invalid": "What was measured on the audio is not valid ({{field}}). Try the upload again.",
+    "cannot_read": "This browser cannot read this file. Try another browser, or convert it first with a dedicated tool (HandBrake for videos, Audacity for audio).",
     "cannot_convert_video": "This browser cannot convert this video to MP4 H.264. Use Chrome, Edge or Safari, or convert it first with HandBrake (handbrake.fr).",
-    "cannot_convert_audio": "This browser cannot convert this sound to AAC. Try another browser, or convert it first with Audacity (audacityteam.org).",
+    "cannot_convert_audio": "This browser cannot convert this audio to AAC. Try another browser, or convert it first with Audacity (audacityteam.org).",
     "too_long": "Too long to fit the {{maxMb}} MB limit for this kind of media, even compressed. Shorten it first.",
     "canceled": "Conversion cancelled.",
     "in_use": "This media is still used by a quiz or a session: remove it from there first.",
-    "playing": "A room is playing this media right now: try again once it closes.",
+    "playing": "A lobby is playing this media right now: try again once it closes.",
     "not_adopted_yet": "This file is being moved to shared storage: try again in a moment.",
     "embed_bounds": "The video's start and end don't fit: the end must come after the start."
   },
@@ -134,7 +134,7 @@
       "no_correct": "A poll has no right answer."
     },
     "prompt": {
-      "required": "Write the question, or add a picture or a sound that asks it."
+      "required": "Write the question, or add a picture or an audio that asks it."
     },
     "scoring": {
       "not_available": "This scoring does not apply to this type of question."
@@ -170,7 +170,7 @@
     "too_large": "The quiz is too large for the community store."
   },
   "slide": {
-    "two_sounds": "A slide plays one sound at a time: mute its video or remove its sound.",
+    "two_sounds": "A slide plays one audio at a time: mute its video or remove its audio.",
     "background_conflict": "A background is an image or a gradient, not both.",
     "empty": "The slide shows nothing: add a heading, a text, an image, a background or a video.",
     "not_found": "This slide no longer exists: it was deleted meanwhile.",
@@ -244,6 +244,6 @@
     "too_many_quizzes": "A selection holds at most 50 quizzes.",
     "duplicate_quiz": "A quiz appears only once in a selection.",
     "quiz_not_found": "This quiz cannot be added: it is neither yours nor shared with you.",
-    "nothing_to_save": "This room played no quiz you can keep in a selection."
+    "nothing_to_save": "This lobby played no quiz you can keep in a selection."
   }
 }

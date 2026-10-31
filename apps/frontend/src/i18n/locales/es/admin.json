@@ -188,14 +188,14 @@
     "CLIENT_DIR": "Carpeta de la aplicación web",
     "MEDIA_MAX_BYTES": "Tamaño máximo de una imagen",
     "MEDIA_MAX_VIDEO_MB": "Tamaño máximo de un vídeo",
-    "MEDIA_MAX_AUDIO_MB": "Tamaño máximo de un sonido",
+    "MEDIA_MAX_AUDIO_MB": "Tamaño máximo de un archivo de audio",
     "IMPORT_MAX_BYTES": "Tamaño máximo de un quiz importado",
     "PUBLICATION_MAX_MB": "Tamaño máximo de un quiz para publicar",
     "MEDIA_LIBRARY_LINKS": "Bancos de medios libres",
     "GAME_READ_DELAY_MS": "Tiempo de lectura antes del temporizador",
     "GAME_ALL_ANSWERED_DELAY_MS": "Pausa cuando todos han respondido",
     "GAME_AUTO_ADVANCE_MS": "Modo automático: tiempo por paso",
-    "GAME_MEDIA_WAIT_S": "Espera de sonidos y vídeos",
+    "GAME_MEDIA_WAIT_S": "Espera de audios y vídeos",
     "LIVE_MOTION": "Transiciones en las pantallas en directo",
     "GAME_HOST_GRACE_MS": "Margen del anfitrión antes de salir",
     "GAME_HOST_WINDOW_MS": "Plazo de vuelta del anfitrión",
@@ -449,7 +449,7 @@
     "kinds": {
       "image": "Imágenes",
       "video": "Vídeos",
-      "audio": "Sonidos"
+      "audio": "Audios"
     },
     "noLinks": "Ningún banco: el editor no muestra ninguno (una instancia sin Internet).",
     "saved": {
@@ -536,8 +536,8 @@
         "docker": "Docker Desktop, una red bridge: el contenedor no ve las direcciones de la propia máquina — defínelas en HOST_LAN_IPS."
       },
       "expired": "Esta prueba expiró: vuelva a iniciarla.",
-      "adoptHelp": "Cuando un teléfono llegue a una dirección, conviértela en la dirección para unirse de la instancia: cada sala de espera parte de ella (APP_PUBLIC_URL). Un anfitrión aún puede elegir otra para una partida.",
-      "adoptReadOnly": "La administración no puede cambiar los ajustes aquí: la dirección para unirse de la instancia sigue siendo la del operador (APP_PUBLIC_URL). Un anfitrión elige la dirección de cada partida en la sala de espera.",
+      "adoptHelp": "Cuando un teléfono llegue a una dirección, conviértela en la dirección para unirse de la instancia: cada sala parte de ella (APP_PUBLIC_URL). Un anfitrión aún puede elegir otra para una partida.",
+      "adoptReadOnly": "La administración no puede cambiar los ajustes aquí: la dirección para unirse de la instancia sigue siendo la del operador (APP_PUBLIC_URL). Un anfitrión elige la dirección de cada partida en la sala.",
       "other": "Otra dirección",
       "add": "Añadir",
       "current": "La dirección para unirse de la instancia",
@@ -591,7 +591,7 @@
         },
         "public": {
           "title": "El público, un gran evento",
-          "help": "Abierto a todos — con un proveedor de identidad — y más tiempo para que carguen sonidos y vídeos en una Wi-Fi saturada."
+          "help": "Abierto a todos — con un proveedor de identidad — y más tiempo para que carguen audios y vídeos en una Wi-Fi saturada."
         },
         "other": {
           "title": "Un poco de todo, otro",
@@ -621,9 +621,9 @@
       "games": "Partidas en curso",
       "players": "Jugadores conectados",
       "none": "No hay ninguna partida en curso.",
-      "lobby_one": "{{count}} en la sala de espera",
-      "lobby_many": "{{count}} en la sala de espera",
-      "lobby_other": "{{count}} en la sala de espera",
+      "lobby_one": "{{count}} en la sala",
+      "lobby_many": "{{count}} en la sala",
+      "lobby_other": "{{count}} en la sala",
       "playing_one": "{{count}} en juego",
       "playing_many": "{{count}} en juego",
       "playing_other": "{{count}} en juego"
@@ -638,7 +638,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "Sala de espera",
+      "lobby": "Sala",
       "question": "Pregunta {{index}} de {{total}}"
     },
     "instance": {

@@ -1,6 +1,6 @@
 {
   "title": "Thèmes",
-  "intro": "L’apparence d’un quiz sur la projection et les téléphones des joueurs, de la salle d’attente au podium. Tout animateur peut utiliser tous les thèmes ; seuls leur propriétaire et les administrateurs les modifient.",
+  "intro": "L’apparence d’un quiz sur la projection et les téléphones des joueurs, du salon au podium. Tout animateur peut utiliser tous les thèmes ; seuls leur propriétaire et les administrateurs les modifient.",
   "import": "Importer",
   "new": "Nouveau thème",
   "search": "Chercher par nom",
@@ -32,7 +32,7 @@
   "noMatch": "Aucun thème créé par un animateur ne correspond.",
   "noneYet": "Aucun animateur n’a encore créé de thème : partez d’un thème livré.",
   "deleteTitle": "Supprimer ce thème ?",
-  "deleteText": "« {{name}} » n’est utilisé par aucun quiz. Ses icônes, sa police et ses sons partent avec lui, sauf si autre chose les utilise.",
+  "deleteText": "« {{name}} » n’est utilisé par aucun quiz. Ses icônes, sa police et ses effets partent avec lui, sauf si autre chose les utilise.",
   "copyName": "{{name}} (copie)",
   "newName": "Mon {{parent}}",
   "name": "Nom",
@@ -92,7 +92,7 @@
     "phase": "Moment de la partie",
     "device": "Écran",
     "phases": {
-      "lobby": "Salle d’attente",
+      "lobby": "Salon",
       "question": "Question",
       "reveal": "Réponse",
       "podium": "Podium"
@@ -200,7 +200,7 @@
     "fontLicense": "Licence de la police",
     "fontUpload": "Importer une police (.woff2)…",
     "fontHint": "Une police importée indique sa licence : OFL 1.1, CC0, CC BY ou CC BY-SA.",
-    "sounds": "Sons",
+    "sounds": "Effets",
     "builtinSounds": "Intégrés",
     "ownSounds_one": "{{count}} du thème",
     "ownSounds_many": "{{count}} du thème",
@@ -211,8 +211,8 @@
       "countdown": "Compte à rebours",
       "gong": "Temps écoulé"
     },
-    "soundUpload": "Choisir un son",
-    "soundsHint": "Un son choisi par l’animateur pour le salon garde la main ; la table de mixage du salon garde les niveaux.",
+    "soundUpload": "Choisir un effet",
+    "soundsHint": "Un effet choisi par l’animateur pour le salon garde la main ; la table de mixage du salon garde les niveaux.",
     "motion": "Mouvement",
     "motionStyle": {
       "standard": "Standard",
@@ -228,7 +228,7 @@
     "accessibilityHint": "Mesurée sur les couleurs du thème, jamais déclarée. Un thème accessible porte le badge dans la bibliothèque et les réglages du quiz ; les autres ne portent rien. Un vidéoprojecteur rend les couleurs à sa façon : ce sont des repères, rien n’est bloqué.",
     "license": "Licence",
     "noLicense": "Aucune licence",
-    "licenseHelp": "Les conditions auxquelles d’autres peuvent réutiliser le thème ; un store communautaire en exige une. Vous devez détenir les droits sur ses images, icônes, sons et police."
+    "licenseHelp": "Les conditions auxquelles d’autres peuvent réutiliser le thème ; un store communautaire en exige une. Vous devez détenir les droits sur ses images, icônes, effets et police."
   },
   "picker": {
     "legend": "Thème",

@@ -30,7 +30,7 @@
   "noMatch": "Sunucuların temalarından hiçbiri eşleşmiyor.",
   "noneYet": "Henüz hiçbir sunucu tema yapmadı: hazır bir temadan başlayın.",
   "deleteTitle": "Bu tema silinsin mi?",
-  "deleteText": "“{{name}}” hiçbir quizde kullanılmıyor. Simgeleri, yazı tipi ve sesleri de gider, başka bir şey kullanmıyorsa.",
+  "deleteText": "“{{name}}” hiçbir quizde kullanılmıyor. Simgeleri, yazı tipi ve efektleri de gider, başka bir şey kullanmıyorsa.",
   "copyName": "{{name}} (kopya)",
   "newName": "Benim {{parent}}",
   "name": "Ad",
@@ -197,7 +197,7 @@
     "fontLicense": "Yazı tipinin lisansı",
     "fontUpload": "Yazı tipi içe aktar (.woff2)…",
     "fontHint": "İçe aktarılan bir yazı tipi lisansını belirtir: OFL 1.1, CC0, CC BY veya CC BY-SA.",
-    "sounds": "Sesler",
+    "sounds": "Efektler",
     "builtinSounds": "Yerleşik",
     "ownSounds_one": "Temadan {{count}}",
     "ownSounds_other": "Temadan {{count}}",
@@ -207,8 +207,8 @@
       "countdown": "Geri sayım",
       "gong": "Süre doldu"
     },
-    "soundUpload": "Ses seç",
-    "soundsHint": "Sunucunun oda için seçtiği bir ses önceliklidir; odanın mikseri seviyeleri korur.",
+    "soundUpload": "Efekt seç",
+    "soundsHint": "Sunucunun oda için seçtiği bir efekt önceliklidir; odanın mikseri seviyeleri korur.",
     "motion": "Hareket",
     "motionStyle": {
       "standard": "Standart",
@@ -224,7 +224,7 @@
     "accessibilityHint": "Temanın renkleri üzerinde ölçülür, asla beyan edilmez. Erişilebilir bir tema kitaplıkta ve quiz ayarlarında rozet taşır; diğerleri hiçbir şey taşımaz. Bir projektör renkleri kendi bildiği gibi gösterir: bunlar yol gösterir, hiçbir şey engellenmez.",
     "license": "Lisans",
     "noLicense": "Lisans yok",
-    "licenseHelp": "Başkalarının temayı hangi koşullarla yeniden kullanabileceğini belirler; bir topluluk mağazası bunu gerektirir. Görsellerinin, simgelerinin, seslerinin ve yazı tipinin haklarının sizde olması gerekir."
+    "licenseHelp": "Başkalarının temayı hangi koşullarla yeniden kullanabileceğini belirler; bir topluluk mağazası bunu gerektirir. Görsellerinin, simgelerinin, efektlerinin ve yazı tipinin haklarının sizde olması gerekir."
   },
   "picker": {
     "legend": "Tema",

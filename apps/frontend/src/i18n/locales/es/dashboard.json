@@ -55,7 +55,7 @@
   "pageOf": "Página {{page}} de {{pages}}",
   "searchSessions": "Buscar una sala, un PIN, un anfitrión",
   "filterState": "Estado",
-  "stateLobby": "Sala de espera",
+  "stateLobby": "Sala",
   "statePlaying": "En juego",
   "sortPlayers": "Más participantes",
   "sortPin": "PIN",
@@ -75,7 +75,7 @@
     "kind": {
       "image": "Imágenes",
       "video": "Vídeos",
-      "audio": "Sonidos",
+      "audio": "Audios",
       "icon": "Iconos de tema",
       "font": "Fuentes de tema"
     },
@@ -170,10 +170,10 @@
       "removeDescription": "Los anfitriones ya no lo encuentran en su biblioteca. Los quizzes que lo usan conservan su copia.",
       "removeFailed": "No se pudo retirar el medio.",
       "saveFailed": "No se pudo guardar el cambio.",
-      "drop": "Suelta aquí imágenes, vídeos o sonidos, varios a la vez.",
+      "drop": "Suelta aquí imágenes, vídeos o archivos de audio, varios a la vez.",
       "choose": "Elegir archivos",
       "sending": "Enviando {{done}} de {{total}}…",
-      "unsupported": "No es una imagen, un vídeo ni un sonido."
+      "unsupported": "No es una imagen, un vídeo ni un archivo de audio."
     },
     "global": "Global",
     "preview": {

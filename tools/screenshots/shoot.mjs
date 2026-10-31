@@ -372,14 +372,14 @@ async function live(browser, quizzes) {
       .catch(() => undefined);
     return p;
   };
-  const lea = await phone('Léa', /In the room/);
+  const lea = await phone('Léa', /On site/);
   const joinForm = await shot(lea, 'join-form', { piece: true });
-  await lea.getByRole('button', { name: 'Join the room' }).click();
+  await lea.getByRole('button', { name: 'Join the lobby' }).click();
   await lea.getByRole('button', { name: "I'm ready" }).click();
   const joinLobby = await shot(lea, 'join-lobby', { piece: true });
   beside('join', joinForm, joinLobby);
   const tom = await phone('Tom', /Remote/);
-  await tom.getByRole('button', { name: 'Join the room' }).click();
+  await tom.getByRole('button', { name: 'Join the lobby' }).click();
   await tom.getByRole('button', { name: "I'm ready" }).click();
 
   await shot(consolePage, 'console-lobby');
@@ -614,11 +614,11 @@ async function film(browser, quizzes) {
   }
   await phone.page.getByLabel('Nickname').pressSequentially('Léa', { delay: 140 });
   await phone.page
-    .getByRole('radio', { name: /In the room/ })
+    .getByRole('radio', { name: /On site/ })
     .click()
     .catch(() => undefined);
   await sleep(300);
-  await phone.page.getByRole('button', { name: 'Join the room' }).click();
+  await phone.page.getByRole('button', { name: 'Join the lobby' }).click();
   await sleep(900);
   await phone.page.getByRole('button', { name: "I'm ready" }).click();
   for (const i of [3, 4, 5]) {

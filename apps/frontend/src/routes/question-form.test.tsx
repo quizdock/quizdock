@@ -337,7 +337,7 @@ describe('QuestionForm — media slots', () => {
     const fetchMock = mockApi([]);
     const { onClose } = renderForm();
     fireEvent.click(screen.getByText('Ajouter'));
-    expect(await screen.findByText(/Une vidéo a déjà son propre son/)).toBeInTheDocument();
+    expect(await screen.findByText(/Une vidéo a déjà son propre audio/)).toBeInTheDocument();
     expect(lastPost(fetchMock)).toBeNull();
     expect(onClose).not.toHaveBeenCalled();
   });

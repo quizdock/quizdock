@@ -96,7 +96,7 @@ export async function checkParticipantViewport({ browser, api, hostSocket, URL, 
     await page.setViewportSize({ width: 390, height: 780 });
     await page.goto(`${URL}/join/${pin}`);
     await page.getByLabel(/Nickname/).fill('Viewport');
-    await page.getByRole('button', { name: 'Join the room', exact: true }).click();
+    await page.getByRole('button', { name: 'Join the lobby', exact: true }).click();
     await waitState('LOBBY');
     await frame('phone-viewport-lobby');
     host.emit('host:start', { pin });

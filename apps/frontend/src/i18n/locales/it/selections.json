@@ -1,7 +1,7 @@
 {
   "newName": "Nuova selezione",
   "new": "Nuova selezione",
-  "intro": "Una selezione mette in fila dei quiz per lanciarli in una sala in un colpo solo: dopo ogni quiz, la sala d’attesa propone il successivo. Se condivisa, gli altri conduttori possono presentarla o crearne una propria.",
+  "intro": "Una selezione mette in fila dei quiz per lanciarli in una sala in un colpo solo: dopo ogni quiz, la sala propone il successivo. Se condivisa, gli altri conduttori possono presentarla o crearne una propria.",
   "emptyTitle": "Ancora nessuna selezione",
   "empty": "Creane una per mettere in fila i quiz di una sessione, o salva una sala come selezione dalla sua console.",
   "search": "Cerca tra le selezioni",

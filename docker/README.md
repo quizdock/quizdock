@@ -20,7 +20,7 @@
 [Source code](https://github.com/quizdock/quizdock)
 
 QuizDock is an open-source (MIT) live quiz platform for classrooms, teams and events: a
-big screen for the room, a phone for each player, every result in your own database.
+big screen on site, a phone for each player, every result in your own database.
 These images are the quickest reproducible way to run it on your own infrastructure.
 
 <img src="https://quizdock.github.io/demo.gif" width="800" alt="The host's console, the big screen and a player's phone: players join by PIN, Léa answers first and right, the reveal, the standings, her podium" />
@@ -77,7 +77,7 @@ The variables most instances set:
 | Variable | Default | What it does |
 |---|---|---|
 | `APP_NAME` | `QuizDock` | The name in the header, the tab title and share texts. |
-| `APP_LANG` | `en` | The instance's interface language, by default (anyone may pick theirs, kept in their account or on their device; the big screen speaks the quiz's or the room's, a player's phone too unless they picked theirs): `en`, `fr`, `es`, `zh`, `zh-TW`, `tr`, `de`, `hi`, `it`, `ja`, `pl`, `ru`. |
+| `APP_LANG` | `en` | The instance's interface language, by default (anyone may pick theirs, kept in their account or on their device; the big screen speaks the quiz's or the lobby's, a player's phone too unless they picked theirs): `en`, `fr`, `es`, `zh`, `zh-TW`, `tr`, `de`, `hi`, `it`, `ja`, `pl`, `ru`. |
 | `AUTH_MODE` | `none` | `none`: local mode, no identity provider, one host seat. `oidc`: sign-in with your provider. |
 | `APP_PUBLIC_URL` | — | The public address, offered first as the invitation address (QR code, join link). |
 | `ALLOW_ANONYMOUS_PARTICIPANTS` | `false` | OIDC mode only: lets hosts open a game to a PIN and a nickname. |

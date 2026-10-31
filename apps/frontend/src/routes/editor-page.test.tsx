@@ -496,7 +496,7 @@ describe('EditorPage', () => {
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
           fireEvent.change(
-            await screen.findByLabelText('Égalisation du son', { selector: 'select' }),
+            await screen.findByLabelText('Égalisation de l’audio', { selector: 'select' }),
             {
               target: { value: '-23' },
             },

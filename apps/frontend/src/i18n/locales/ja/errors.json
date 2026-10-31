@@ -43,7 +43,7 @@
     "open_access_forbidden": "このサーバーではオープンアクセスは許可されていません。",
     "open_access_guests_only": "オープンアクセスでは参加者はアカウントを持ちません。個人ごとの追跡はなく、アカウントから名前を取得することもありません。",
     "next_quiz_unavailable": "このクイズは、このルームで次に実施できません。",
-    "next_quiz_from_lobby": "次のクイズはルームの待機室で選びます。",
+    "next_quiz_from_lobby": "次のクイズはルームで選びます。",
     "review_unavailable": "ステップを振り返れるのは、問題と問題の間だけです。",
     "step_not_played": "このステップはまだ実施されていません。"
   },

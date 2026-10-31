@@ -54,10 +54,10 @@
   "demo": {
     "banner": "Demo pubblica — un unico account conduttore condiviso da tutti i visitatori; tutto viene cancellato ogni ora."
   },
-  "chromiumOnly": "Questa pagina è pensata per Chrome, Edge o un altro browser Chromium. In questo browser il caricamento e la riproduzione di video e suoni potrebbero non funzionare bene.",
+  "chromiumOnly": "Questa pagina è pensata per Chrome, Edge o un altro browser Chromium. In questo browser il caricamento e la riproduzione di video e audio potrebbero non funzionare bene.",
   "play": "Riproduci",
   "pause": "Pausa",
-  "position": "Posizione nel suono",
+  "position": "Posizione nell’audio",
   "fallback": {
     "notFoundTitle": "Questa pagina non esiste",
     "notFoundText": "Il link potrebbe essere vecchio, oppure ciò a cui puntava è stato eliminato.",

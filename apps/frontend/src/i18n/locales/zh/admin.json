@@ -188,14 +188,14 @@
     "CLIENT_DIR": "网页应用文件夹",
     "MEDIA_MAX_BYTES": "图片大小上限",
     "MEDIA_MAX_VIDEO_MB": "视频大小上限",
-    "MEDIA_MAX_AUDIO_MB": "声音大小上限",
+    "MEDIA_MAX_AUDIO_MB": "音频文件大小上限",
     "IMPORT_MAX_BYTES": "导入测验大小上限",
     "PUBLICATION_MAX_MB": "发布测验大小上限",
     "MEDIA_LIBRARY_LINKS": "免费媒体库",
     "GAME_READ_DELAY_MS": "计时前的阅读时间",
     "GAME_ALL_ANSWERED_DELAY_MS": "全员作答后的停顿",
     "GAME_AUTO_ADVANCE_MS": "自动模式：每步时长",
-    "GAME_MEDIA_WAIT_S": "等待声音和视频",
+    "GAME_MEDIA_WAIT_S": "等待音频和视频",
     "LIVE_MOTION": "直播画面的过渡效果",
     "GAME_HOST_GRACE_MS": "主持人离开前的宽限时间",
     "GAME_HOST_WINDOW_MS": "主持人返回时限",
@@ -447,7 +447,7 @@
     "kinds": {
       "image": "图片",
       "video": "视频",
-      "audio": "声音"
+      "audio": "音频"
     },
     "noLinks": "没有媒体库：编辑器不显示任何媒体库（无互联网的实例）。",
     "saved": {
@@ -533,8 +533,8 @@
         "docker": "Docker Desktop 的 bridge 网络：容器看不到本机自身的地址——请在 HOST_LAN_IPS 中设置。"
       },
       "expired": "此测试已过期：请重新开始。",
-      "adoptHelp": "手机访问成功后，可将该地址设为实例的加入地址：每个等候室都以它为起点（APP_PUBLIC_URL）。主持人仍可为某一局选择其他地址。",
-      "adoptReadOnly": "此处的管理后台不能修改设置：实例的加入地址保持运维人员的设定（APP_PUBLIC_URL）。主持人在等候室为每一局选择地址。",
+      "adoptHelp": "手机访问成功后，可将该地址设为实例的加入地址：每个房间都以它为起点（APP_PUBLIC_URL）。主持人仍可为某一局选择其他地址。",
+      "adoptReadOnly": "此处的管理后台不能修改设置：实例的加入地址保持运维人员的设定（APP_PUBLIC_URL）。主持人在房间为每一局选择地址。",
       "other": "其他地址",
       "add": "添加",
       "current": "实例的加入地址",
@@ -588,7 +588,7 @@
         },
         "public": {
           "title": "公众、大型活动",
-          "help": "对所有人开放——需使用身份提供方——并在拥挤的 Wi-Fi 上为声音和视频留出更多加载时间。"
+          "help": "对所有人开放——需使用身份提供方——并在拥挤的 Wi-Fi 上为音频和视频留出更多加载时间。"
         },
         "other": {
           "title": "都有一些、其他",
@@ -618,8 +618,8 @@
       "games": "进行中的游戏",
       "players": "已连接的玩家",
       "none": "当前没有进行中的游戏。",
-      "lobby_one": "{{count}} 个在等候室",
-      "lobby_other": "{{count}} 个在等候室",
+      "lobby_one": "{{count}} 个在房间",
+      "lobby_other": "{{count}} 个在房间",
       "playing_one": "{{count}} 个进行中",
       "playing_other": "{{count}} 个进行中"
     },
@@ -633,7 +633,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "等候室",
+      "lobby": "房间",
       "question": "第 {{index}} 题，共 {{total}} 题"
     },
     "instance": {

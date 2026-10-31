@@ -1,6 +1,6 @@
 {
   "title": "Temi",
-  "intro": "L’aspetto di un quiz sulla proiezione e sui telefoni dei giocatori, dalla sala d’attesa al podio. Ogni conduttore può usare tutti i temi; solo il proprietario e gli amministratori li modificano.",
+  "intro": "L’aspetto di un quiz sulla proiezione e sui telefoni dei giocatori, dalla sala al podio. Ogni conduttore può usare tutti i temi; solo il proprietario e gli amministratori li modificano.",
   "import": "Importa",
   "new": "Nuovo tema",
   "search": "Cerca per nome",
@@ -32,7 +32,7 @@
   "noMatch": "Nessun tema creato da un conduttore corrisponde.",
   "noneYet": "Nessun conduttore ha ancora creato un tema: parti da un tema fornito.",
   "deleteTitle": "Eliminare questo tema?",
-  "deleteText": "«{{name}}» non è usato da alcun quiz. Le sue icone, il font e i suoni se ne vanno con lui, a meno che altro li usi.",
+  "deleteText": "«{{name}}» non è usato da alcun quiz. Le sue icone, il font e gli effetti se ne vanno con lui, a meno che altro li usi.",
   "copyName": "{{name}} (copia)",
   "newName": "Il mio {{parent}}",
   "name": "Nome",
@@ -92,7 +92,7 @@
     "phase": "Momento della partita",
     "device": "Schermo",
     "phases": {
-      "lobby": "Sala d’attesa",
+      "lobby": "Sala",
       "question": "Domanda",
       "reveal": "Risposta",
       "podium": "Podio"
@@ -200,7 +200,7 @@
     "fontLicense": "Licenza del font",
     "fontUpload": "Importa un font (.woff2)…",
     "fontHint": "Un font importato indica la sua licenza: OFL 1.1, CC0, CC BY o CC BY-SA.",
-    "sounds": "Suoni",
+    "sounds": "Effetti",
     "builtinSounds": "Integrati",
     "ownSounds_one": "{{count}} del tema",
     "ownSounds_many": "{{count}} del tema",
@@ -211,8 +211,8 @@
       "countdown": "Conto alla rovescia",
       "gong": "Tempo scaduto"
     },
-    "soundUpload": "Scegli un suono",
-    "soundsHint": "Un suono scelto dal conduttore per la sala ha la precedenza; il mixer della sala mantiene i livelli.",
+    "soundUpload": "Scegli un effetto",
+    "soundsHint": "Un effetto scelto dal conduttore per la sala ha la precedenza; il mixer della sala mantiene i livelli.",
     "motion": "Movimento",
     "motionStyle": {
       "standard": "Standard",
@@ -228,7 +228,7 @@
     "accessibilityHint": "Misurata sui colori del tema, mai dichiarata. Un tema accessibile porta il badge nella libreria e nelle impostazioni del quiz; gli altri non portano nulla. Un proiettore mostra i colori a modo suo: sono indicazioni, nulla viene bloccato.",
     "license": "Licenza",
     "noLicense": "Nessuna licenza",
-    "licenseHelp": "Le condizioni alle quali altri possono riutilizzare il tema; uno store della community ne richiede una. Devi detenere i diritti sulle sue immagini, icone, suoni e font."
+    "licenseHelp": "Le condizioni alle quali altri possono riutilizzare il tema; uno store della community ne richiede una. Devi detenere i diritti sulle sue immagini, icone, effetti e font."
   },
   "picker": {
     "legend": "Tema",

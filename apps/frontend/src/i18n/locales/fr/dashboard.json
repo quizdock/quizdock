@@ -55,7 +55,7 @@
   "pageOf": "Page {{page}} sur {{pages}}",
   "searchSessions": "Chercher un salon, un PIN, un animateur",
   "filterState": "État",
-  "stateLobby": "Salle d’attente",
+  "stateLobby": "Salon",
   "statePlaying": "En jeu",
   "sortPlayers": "Plus de participants",
   "sortPin": "PIN",
@@ -75,7 +75,7 @@
     "kind": {
       "image": "Images",
       "video": "Vidéos",
-      "audio": "Sons",
+      "audio": "Audios",
       "icon": "Icônes de thème",
       "font": "Polices de thème"
     },
@@ -170,10 +170,10 @@
       "removeDescription": "Les hôtes ne le trouvent plus dans leur bibliothèque. Les quiz qui l’utilisent gardent leur copie.",
       "removeFailed": "Le média n’a pas pu être retiré.",
       "saveFailed": "La modification n’a pas pu être enregistrée.",
-      "drop": "Déposez ici des images, vidéos ou sons, plusieurs à la fois.",
+      "drop": "Déposez ici des images, vidéos ou fichiers audio, plusieurs à la fois.",
       "choose": "Choisir des fichiers",
       "sending": "Envoi {{done}} sur {{total}}…",
-      "unsupported": "Ni une image, ni une vidéo, ni un son."
+      "unsupported": "Ni une image, ni une vidéo, ni un fichier audio."
     },
     "global": "Global",
     "preview": {

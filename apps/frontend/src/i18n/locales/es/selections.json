@@ -1,7 +1,7 @@
 {
   "newName": "Nueva selección",
   "new": "Nueva selección",
-  "intro": "Una selección pone quizzes en fila para lanzarlos de una vez en una sala: tras cada quiz, la sala de espera propone el siguiente. Compartida, otros anfitriones pueden presentarla o crear la suya a partir de ella.",
+  "intro": "Una selección pone quizzes en fila para lanzarlos de una vez en una sala: tras cada quiz, la sala propone el siguiente. Compartida, otros anfitriones pueden presentarla o crear la suya a partir de ella.",
   "emptyTitle": "Todavía no hay selecciones",
   "empty": "Crea una para poner en fila los quizzes de una sesión, o guarda una sala como selección desde su consola.",
   "search": "Buscar en las selecciones",

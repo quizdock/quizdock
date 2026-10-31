@@ -15,8 +15,8 @@
     "backToEditor": "Back to editor",
     "empty": "No archived session for this quiz. At the end of a session, tick “Archive this quiz's results” to find it here.",
     "capture": "Capture",
-    "inRoom_one": "Room · {{count}} quiz",
-    "inRoom_other": "Room · {{count}} quizzes",
+    "inRoom_one": "Lobby · {{count}} quiz",
+    "inRoom_other": "Lobby · {{count}} quizzes",
     "pin": "PIN {{pin}}",
     "thDate": "Date",
     "thStatus": "Status",
@@ -56,16 +56,16 @@
       "filenameFallback": "session"
     },
     "room": {
-      "intro_one": "This session was played in a room: {{count}} quiz kept, one after another, the participants joining once.",
-      "intro_other": "This session was played in a room: {{count}} quizzes kept, one after another, the participants joining once.",
+      "intro_one": "This session was played in a lobby: {{count}} quiz kept, one after another, the participants joining once.",
+      "intro_other": "This session was played in a lobby: {{count}} quizzes kept, one after another, the participants joining once.",
       "thisSession": "this session",
-      "standingsTitle": "Room standings",
-      "standingsNote": "Summed over the archived quizzes of the room.",
-      "noPersonalTracking": "No room standings: at least one of its sessions did not track participants individually.",
+      "standingsTitle": "Lobby standings",
+      "standingsNote": "Summed over the archived quizzes of the lobby.",
+      "noPersonalTracking": "No lobby standings: at least one of its sessions did not track participants individually.",
       "thQuizzes": "Quizzes",
       "exportCsv": "Export standings (CSV)",
-      "csvFilename": "room",
-      "defaultName": "{{host}}'s room"
+      "csvFilename": "lobby",
+      "defaultName": "{{host}}'s lobby"
     },
     "notPlayed": "Not played",
     "statQuestionsPlayed_one": "{{count}} question played of {{total}}",
@@ -103,9 +103,9 @@
   },
   "gatherings": {
     "title": "Sessions",
-    "intro": "What you played, room by room: a room that played several quizzes is one line, its standings one page; a quiz played alone leads to its report.",
+    "intro": "What you played, lobby by lobby: a lobby that played several quizzes is one line, its standings one page; a quiz played alone leads to its report.",
     "none": "Nothing played yet: present a quiz, its results come here.",
-    "thRoom": "Room",
+    "thRoom": "Lobby",
     "thQuizzes": "Quizzes",
     "alone": "A quiz alone",
     "back": "Sessions"

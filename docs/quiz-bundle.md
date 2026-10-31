@@ -25,9 +25,9 @@ format is neither described in it nor listed as left out.
 Contributors changing the bundle schema or a content schema run
 `pnpm generate:schema` and commit the result.
 
-> **Videos and sounds (version 3).** A question's visual may be an MP4 video
+> **Videos and audio (version 3).** A question's visual may be an MP4 video
 > (H.264, AAC or no audio) and its audio slot an MP3 or an M4A (AAC, what the
-> editor converts every sound to). Other audio formats (ogg, wav) are refused:
+> editor converts every audio to). Other audio formats (ogg, wav) are refused:
 > the editor converts them before upload, an import does not.
 
 - **Export** — editor header → *Export*, `GET /api/v1/quizzes/:id/export`, or
@@ -130,26 +130,26 @@ Contributors changing the bundle schema or a content schema run
   counted on the bytes actually unpacked, which may not exceed twice
   `IMPORT_MAX_BYTES` in total, over at most 2,000 entries.
 - `quiz.mediaTailS` (version 3, 0–30, default 1): the pause kept after a
-  question's sound or video. A media longer than its question stretches the
+  question's audio or video. A media longer than its question stretches the
   question to the end of the media plus this pause — nothing is cut mid-play.
-- `quiz.loudnessTargetLufs` (version 3): the level sounds and videos are
+- `quiz.loudnessTargetLufs` (version 3): the level audio and videos are
   brought to at playback — `-14` loud (streaming), `-16` balanced (default),
   `-23` calm (broadcast). The files are never re-encoded.
-- `quiz.audioTarget` (version 3): which devices play the sounds —
+- `quiz.audioTarget` (version 3): which devices play the audio —
   `projection`, `projection_remote` (default: the projection and the remote
-  participants) or `everyone` (room phones included). A question may carry its
+  participants) or `everyone` (phones on site included). A question may carry its
   own `audioTarget`; omitted, it follows the quiz (or the host's choice for a
   session).
-- A question's `media` is its visual (an image or an MP4), `audio` its sound
-  (an MP3 or an M4A). Never both a video and a sound: the video carries its own.
-- `waveformSize` (version 3): how thick its sound's waveform is drawn — `S`,
+- A question's `media` is its visual (an image or an MP4), `audio` its audio file
+  (an MP3 or an M4A). Never both a video and an audio: the video carries its own.
+- `waveformSize` (version 3): how thick its audio's waveform is drawn — `S`,
   `M` (default) or `L`; `hidden` (version 4): not drawn on the projection nor
-  the phones, only on the host's console (the sound still plays).
+  the phones, only on the host's console (the audio still plays).
 - Slides with media (version 5), set like a question's: `video` (an MP4 filling
   the slide behind its content) with `videoLoop` and `videoSound` (both `true`
-  when omitted), `audio` (a sound) with its `waveformSize` (`hidden` when
-  omitted), and the slide's own `audioTarget`. A slide plays **one sound at
-  most**: a video with its sound and an `audio` together are refused
+  when omitted), `audio` (an audio file) with its `waveformSize` (`hidden` when
+  omitted), and the slide's own `audioTarget`. A slide plays **one audio at
+  most**: a video with its audio and an `audio` together are refused
   (`slide.two_sounds`).
 - Image choice (version 6): a question of type `image_choice` has 2 or 4
   options, each a picture — `media` with its `alt`, in the quiz's language —
@@ -216,8 +216,8 @@ at `null`. An imported bundle keeps whatever it carried, except its identity
 
 | Field | Type | Meaning |
 |---|---|---|
-| `version` (top level) | integer | Manifest schema version, up to `7`. An export stamps the **lowest version it needs** — `3`, `4` once a waveform is `hidden`, `5` once a slide carries a video or a sound, `6` once a question is an image choice, `7` once a question's picture or video sits above or beside its text (`mediaPosition`) — so an instance whose importer stops at an older version still takes a quiz that uses nothing newer. Absent in the earliest bundles: read as `0`, same layout. A bundle from a newer schema is refused. |
-| `media` (top level) | object | What each media file carries beyond its bytes, keyed by the same path the items reference: an `alt`, the description read aloud by screen readers (version 2); for a sound or a video, what the editor measured (version 3) — `durationMs`, `peaks` (200 values in 0–1, the waveform the screens draw), `origin` (`upload` or `recording`), `loudnessLufs` and `peakDbfs` (the playback gain). A sound needs `durationMs` and `peaks`. Absent in a version 1 bundle, and an image with no alternative text simply has no entry. |
+| `version` (top level) | integer | Manifest schema version, up to `7`. An export stamps the **lowest version it needs** — `3`, `4` once a waveform is `hidden`, `5` once a slide carries a video or an audio, `6` once a question is an image choice, `7` once a question's picture or video sits above or beside its text (`mediaPosition`) — so an instance whose importer stops at an older version still takes a quiz that uses nothing newer. Absent in the earliest bundles: read as `0`, same layout. A bundle from a newer schema is refused. |
+| `media` (top level) | object | What each media file carries beyond its bytes, keyed by the same path the items reference: an `alt`, the description read aloud by screen readers (version 2); for an audio or a video, what the editor measured (version 3) — `durationMs`, `peaks` (200 values in 0–1, the waveform the screens draw), `origin` (`upload` or `recording`), `loudnessLufs` and `peakDbfs` (the playback gain). An audio needs `durationMs` and `peaks`. Absent in a version 1 bundle, and an image with no alternative text simply has no entry. |
 | `slug` | `^[a-z0-9]+(-[a-z0-9]+)*$`, ≤ 60 | The identity that travels — never an internal id. Fixed by the owner's first export (derived from the title); the zip is named after it. Ignored on import: a copy carries nothing of its origin and gets its own slug at its first export. |
 | `namespace` | string or `null` | Reserved for a Store submission (`<username>/<slug>`); `null` on a local export. Ignored on import. |
 | `revision` | integer ≥ 0 | Publication counter of the quiz the bundle came from: **+1 every time it is shared** to a template catalogue. An import starts the copy back at 0 — it has never been shared itself. An integer, not semver. |

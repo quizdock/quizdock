@@ -1,7 +1,7 @@
 {
   "newName": "Neue Auswahl",
   "new": "Neue Auswahl",
-  "intro": "Eine Auswahl reiht Quizze aneinander, um sie in einem Zug in einem Raum zu starten: Nach jedem Quiz wählt der Warteraum das nächste. Geteilt, können andere Quizleitungen sie präsentieren oder daraus eine eigene erstellen.",
+  "intro": "Eine Auswahl reiht Quizze aneinander, um sie in einem Zug in einem Raum zu starten: Nach jedem Quiz wählt der Raum das nächste. Geteilt, können andere Quizleitungen sie präsentieren oder daraus eine eigene erstellen.",
   "emptyTitle": "Noch keine Auswahl",
   "empty": "Erstellen Sie eine, um die Quizze einer Sitzung aneinanderzureihen, oder speichern Sie einen Raum über seine Konsole als Auswahl.",
   "search": "Auswahlen durchsuchen",

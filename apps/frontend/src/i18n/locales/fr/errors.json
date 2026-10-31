@@ -43,8 +43,8 @@
     "locked": "Ce salon n’accepte plus de nouveaux participants.",
     "open_access_forbidden": "L’accès libre n’est pas autorisé sur ce serveur.",
     "open_access_guests_only": "En accès libre, les participants n’ont pas de compte : ni suivi individuel, ni nom tiré d’un compte.",
-    "next_quiz_unavailable": "Ce quiz ne peut pas être joué ensuite dans cette salle.",
-    "next_quiz_from_lobby": "Le quiz suivant se choisit dans la salle d’attente du salon.",
+    "next_quiz_unavailable": "Ce quiz ne peut pas être joué ensuite dans ce salon.",
+    "next_quiz_from_lobby": "Le quiz suivant se choisit dans le salon.",
     "review_unavailable": "On ne peut revenir sur une étape qu’entre deux questions.",
     "step_not_played": "Cette étape n’a pas encore été jouée."
   },
@@ -60,25 +60,25 @@
     "too_many_attempts": "Trop de codes PIN erronés depuis cette adresse. Réessayez dans une minute."
   },
   "media": {
-    "unsupported_type": "Format non pris en charge : une image, une vidéo MP4 (H.264) ou un son (MP3, M4A). L’éditeur convertit les autres fichiers que ce navigateur sait lire ; le SVG n’est pas accepté.",
+    "unsupported_type": "Format non pris en charge : une image, une vidéo MP4 (H.264) ou un fichier audio (MP3, M4A). L’éditeur convertit les autres fichiers que ce navigateur sait lire ; le SVG n’est pas accepté.",
     "file_missing": "Fichier manquant (champ « file »).",
     "file_too_large": "Fichier trop volumineux (maximum {{maxMb}} Mo pour ce type de média).",
     "image_too_large": "Cette image est trop grande (au plus {{maxMp}} mégapixels).",
     "not_found": "Média introuvable.",
     "demo_disabled": "L'envoi de médias est désactivé sur l'instance de démo.",
-    "video_with_audio": "Une vidéo a déjà son propre son : retirez la piste audio ou la vidéo.",
+    "video_with_audio": "Une vidéo a déjà son propre audio : retirez la piste audio ou la vidéo.",
     "wrong_kind": "Ce média n’est pas du type attendu à cet emplacement.",
     "embeds_disabled": "Les vidéos YouTube et Vimeo sont désactivées sur cette instance.",
     "invalid": "Médias de la question invalides.",
     "quicktime": "Les fichiers QuickTime (.mov) ne sont pas acceptés. Exportez la vidéo en MP4 (H.264), par exemple avec HandBrake (handbrake.fr).",
     "unsupported_video_codec": "Codec vidéo non pris en charge ({{codec}}). Seul le H.264 est lu partout. Une vidéo filmée sur iPhone est souvent en HEVC : convertissez-la en MP4 H.264, par exemple avec HandBrake (handbrake.fr), ou réglez l’appareil photo sur « Le plus compatible ».",
-    "unsupported_audio_codec": "Le son de cette vidéo ({{codec}}) n’est pas en AAC. Réexportez-la en MP4 H.264 + AAC, par exemple avec HandBrake (handbrake.fr).",
-    "no_video_track": "Ce fichier ne contient pas de vidéo. Pour un son seul, utilisez l’emplacement Son.",
-    "unreadable_mp3": "Ce son est illisible : le fichier semble endommagé.",
-    "metadata_invalid": "Les informations calculées sur le son sont invalides ({{field}}). Réessayez l’envoi.",
-    "cannot_read": "Ce navigateur ne sait pas lire ce fichier. Essayez un autre navigateur, ou convertissez-le d’abord avec un outil dédié (HandBrake pour les vidéos, Audacity pour les sons).",
+    "unsupported_audio_codec": "L’audio de cette vidéo ({{codec}}) n’est pas en AAC. Réexportez-la en MP4 H.264 + AAC, par exemple avec HandBrake (handbrake.fr).",
+    "no_video_track": "Ce fichier ne contient pas de vidéo. Pour un audio seul, utilisez l’emplacement Audio.",
+    "unreadable_mp3": "Ce fichier audio est illisible : il semble endommagé.",
+    "metadata_invalid": "Les informations calculées sur l’audio sont invalides ({{field}}). Réessayez l’envoi.",
+    "cannot_read": "Ce navigateur ne sait pas lire ce fichier. Essayez un autre navigateur, ou convertissez-le d’abord avec un outil dédié (HandBrake pour les vidéos, Audacity pour les audios).",
     "cannot_convert_video": "Ce navigateur ne sait pas convertir cette vidéo en MP4 H.264. Utilisez Chrome, Edge ou Safari, ou convertissez-la d’abord avec HandBrake (handbrake.fr).",
-    "cannot_convert_audio": "Ce navigateur ne sait pas convertir ce son en AAC. Essayez un autre navigateur, ou convertissez-le d’abord avec Audacity (audacityteam.org).",
+    "cannot_convert_audio": "Ce navigateur ne sait pas convertir cet audio en AAC. Essayez un autre navigateur, ou convertissez-le d’abord avec Audacity (audacityteam.org).",
     "too_long": "Trop long pour tenir dans la limite de {{maxMb}} Mo de ce type de média, même compressé. Raccourcissez-le d’abord.",
     "canceled": "Conversion annulée.",
     "in_use": "Ce média est encore utilisé par un quiz ou une partie : retirez-le d’abord de là.",
@@ -135,7 +135,7 @@
       "no_correct": "Un sondage n’a pas de bonne réponse."
     },
     "prompt": {
-      "required": "Écrivez la question, ou ajoutez une image ou un son qui la pose."
+      "required": "Écrivez la question, ou ajoutez une image ou un audio qui la pose."
     },
     "scoring": {
       "not_available": "Ce barème ne s’applique pas à ce type de question."
@@ -171,7 +171,7 @@
     "too_large": "Le quiz est trop volumineux pour le catalogue communautaire."
   },
   "slide": {
-    "two_sounds": "Une slide joue un seul son à la fois : coupez le son de sa vidéo ou retirez son son.",
+    "two_sounds": "Une slide joue un seul audio à la fois : coupez le son de sa vidéo ou retirez son audio.",
     "background_conflict": "Un fond est une image ou un dégradé, pas les deux.",
     "empty": "La diapositive n’affiche rien : ajoutez un titre, un texte, une image, un fond ou une vidéo.",
     "not_found": "Cette diapositive n’existe plus : elle a été supprimée entre-temps.",

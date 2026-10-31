@@ -42,7 +42,7 @@
     "open_access_forbidden": "此伺服器不允許開放存取。",
     "open_access_guests_only": "開放存取時參與者沒有帳號：沒有個人追蹤，也不使用帳號名稱。",
     "next_quiz_unavailable": "此測驗不能作為本房間的下一個測驗。",
-    "next_quiz_from_lobby": "下一個測驗在房間大廳中選擇。",
+    "next_quiz_from_lobby": "下一個測驗在房間中選擇。",
     "review_unavailable": "只能在兩道題之間回看已進行的步驟。",
     "step_not_played": "此步驟尚未進行。"
   },
@@ -58,25 +58,25 @@
     "too_many_attempts": "此位址輸入錯誤的 PIN 次數過多。請一分鐘後再試。"
   },
   "media": {
-    "unsupported_type": "不支援的格式：圖片、MP4 影片（H.264）或聲音（MP3、M4A）。編輯器會轉換此瀏覽器能讀取的其他檔案；不接受 SVG。",
+    "unsupported_type": "不支援的格式：圖片、MP4 影片（H.264）或音訊檔（MP3、M4A）。編輯器會轉換此瀏覽器能讀取的其他檔案；不接受 SVG。",
     "file_missing": "缺少文件（「file」欄位）。",
     "file_too_large": "檔案過大（此類媒體上限 {{maxMb}} MB）。",
     "image_too_large": "這張圖片太大（最多 {{maxMp}} 百萬像素）。",
     "not_found": "未找到媒體。",
     "demo_disabled": "示範實例已停用媒體上傳。",
-    "video_with_audio": "影片本身已有聲音：請移除音軌或影片。",
+    "video_with_audio": "影片本身已有音訊：請移除音軌或影片。",
     "wrong_kind": "此媒體類型與該位置不符。",
     "embeds_disabled": "此執行個體已停用 YouTube 與 Vimeo 影片。",
     "invalid": "題目的媒體無效。",
     "quicktime": "不接受 QuickTime 檔案（.mov）。請將影片匯出為 MP4（H.264），例如使用 HandBrake（handbrake.fr）。",
     "unsupported_video_codec": "不支援的影片編碼（{{codec}}）。只有 H.264 能在所有裝置播放。iPhone 拍攝的影片通常是 HEVC：請轉換為 MP4 H.264，例如使用 HandBrake（handbrake.fr），或將相機設定為「最相容」。",
-    "unsupported_audio_codec": "此影片的聲音（{{codec}}）不是 AAC。請重新匯出為 MP4 H.264 + AAC，例如使用 HandBrake（handbrake.fr）。",
-    "no_video_track": "此檔案不含影片。只有聲音時請使用聲音欄位。",
-    "unreadable_mp3": "無法讀取此聲音：檔案可能已損毀。",
-    "metadata_invalid": "對聲音的量測資料無效（{{field}}）。請重新上傳。",
-    "cannot_read": "此瀏覽器無法讀取這個檔案。請改用其他瀏覽器，或先用專用工具轉換（影片用 HandBrake，聲音用 Audacity）。",
+    "unsupported_audio_codec": "此影片的音訊（{{codec}}）不是 AAC。請重新匯出為 MP4 H.264 + AAC，例如使用 HandBrake（handbrake.fr）。",
+    "no_video_track": "此檔案不含影片。只有音訊時請使用音訊欄位。",
+    "unreadable_mp3": "無法讀取此音訊檔：檔案可能已損毀。",
+    "metadata_invalid": "對音訊的量測資料無效（{{field}}）。請重新上傳。",
+    "cannot_read": "此瀏覽器無法讀取這個檔案。請改用其他瀏覽器，或先用專用工具轉換（影片用 HandBrake，音訊用 Audacity）。",
     "cannot_convert_video": "此瀏覽器無法將這段影片轉換為 MP4 H.264。請使用 Chrome、Edge 或 Safari，或先用 HandBrake（handbrake.fr）轉換。",
-    "cannot_convert_audio": "此瀏覽器無法將這段聲音轉換為 AAC。請改用其他瀏覽器，或先用 Audacity（audacityteam.org）轉換。",
+    "cannot_convert_audio": "此瀏覽器無法將這段音訊轉換為 AAC。請改用其他瀏覽器，或先用 Audacity（audacityteam.org）轉換。",
     "too_long": "即使壓縮後也超出此類媒體 {{maxMb}} MB 的上限。請先剪短。",
     "canceled": "已取消轉換。",
     "in_use": "這個媒體仍被測驗或遊戲使用：請先從那裡移除。",
@@ -133,7 +133,7 @@
       "no_correct": "投票沒有正確答案。"
     },
     "prompt": {
-      "required": "請寫下題目，或新增一張提出問題的圖片或聲音。"
+      "required": "請寫下題目，或新增提出問題的圖片或音訊。"
     },
     "scoring": {
       "not_available": "此計分方式不適用於該題型。"
@@ -169,7 +169,7 @@
     "too_large": "測驗對社群目錄來說過大。"
   },
   "slide": {
-    "two_sounds": "一張簡報一次只播放一個聲音：請將影片靜音或移除其聲音。",
+    "two_sounds": "一張簡報一次只播放一段音訊：請將影片靜音或移除其音訊。",
     "background_conflict": "背景只能是圖片或漸層，不能同時使用。",
     "empty": "投影片沒有任何內容：請加入標題、文字、圖片、背景或影片。",
     "not_found": "此投影片已不存在：它已被刪除。",

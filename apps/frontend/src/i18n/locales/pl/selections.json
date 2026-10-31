@@ -1,7 +1,7 @@
 {
   "newName": "Nowy zestaw",
   "new": "Nowy zestaw",
-  "intro": "Zestaw ustawia quizy w kolejce, by uruchomić je w pokoju za jednym razem: po każdym quizie poczekalnia proponuje następny. Udostępniony może zostać zaprezentowany przez innych prowadzących albo posłużyć im do utworzenia własnego.",
+  "intro": "Zestaw ustawia quizy w kolejce, by uruchomić je w pokoju za jednym razem: po każdym quizie pokój proponuje następny. Udostępniony może zostać zaprezentowany przez innych prowadzących albo posłużyć im do utworzenia własnego.",
   "emptyTitle": "Nie ma jeszcze zestawów",
   "empty": "Utwórz zestaw, by ustawić w kolejce quizy jednej sesji, albo zapisz pokój jako zestaw z jego konsoli.",
   "search": "Szukaj w zestawach",

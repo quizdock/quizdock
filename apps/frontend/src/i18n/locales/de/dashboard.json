@@ -50,7 +50,7 @@
   "pageOf": "Seite {{page}} von {{pages}}",
   "searchSessions": "Raum, PIN oder Quizleitung suchen",
   "filterState": "Zustand",
-  "stateLobby": "Warteraum",
+  "stateLobby": "Raum",
   "statePlaying": "Läuft",
   "sortPlayers": "Meiste Teilnehmende",
   "sortPin": "PIN",
@@ -69,7 +69,7 @@
     "kind": {
       "image": "Bilder",
       "video": "Videos",
-      "audio": "Töne",
+      "audio": "Audios",
       "icon": "Theme-Symbole",
       "font": "Theme-Schriften"
     },
@@ -157,10 +157,10 @@
       "removeDescription": "Quizleitungen finden es nicht mehr in ihrer Mediathek. Die Quizze, die es verwenden, behalten ihre Kopie.",
       "removeFailed": "Das Medium konnte nicht zurückgezogen werden.",
       "saveFailed": "Die Änderung konnte nicht gespeichert werden.",
-      "drop": "Bilder, Videos oder Töne hier ablegen, gern mehrere auf einmal.",
+      "drop": "Bilder, Videos oder Audiodateien hier ablegen, gern mehrere auf einmal.",
       "choose": "Dateien auswählen",
       "sending": "Wird gesendet: {{done}} von {{total}}…",
-      "unsupported": "Weder Bild noch Video noch Ton."
+      "unsupported": "Weder Bild noch Video noch Audiodatei."
     },
     "global": "Global",
     "preview": {

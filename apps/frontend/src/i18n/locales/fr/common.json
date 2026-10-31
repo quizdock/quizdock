@@ -54,10 +54,10 @@
   "demo": {
     "banner": "Démo publique — un seul compte animateur partagé par tous les visiteurs ; tout est effacé chaque heure."
   },
-  "chromiumOnly": "Cette page est conçue pour Chrome, Edge ou un autre navigateur Chromium. Sur ce navigateur, l’envoi et la lecture des vidéos et des sons peuvent mal fonctionner.",
+  "chromiumOnly": "Cette page est conçue pour Chrome, Edge ou un autre navigateur Chromium. Sur ce navigateur, l’envoi et la lecture des vidéos et des audios peuvent mal fonctionner.",
   "play": "Lire",
   "pause": "Pause",
-  "position": "Position dans le son",
+  "position": "Position dans l’audio",
   "fallback": {
     "notFoundTitle": "Cette page n’existe pas",
     "notFoundText": "Le lien est peut-être ancien, ou ce qu’il désignait a été supprimé.",

@@ -188,14 +188,14 @@
     "CLIENT_DIR": "網頁應用程式資料夾",
     "MEDIA_MAX_BYTES": "圖片大小上限",
     "MEDIA_MAX_VIDEO_MB": "影片大小上限",
-    "MEDIA_MAX_AUDIO_MB": "聲音大小上限",
+    "MEDIA_MAX_AUDIO_MB": "音訊檔大小上限",
     "IMPORT_MAX_BYTES": "匯入測驗大小上限",
     "PUBLICATION_MAX_MB": "發布測驗大小上限",
     "MEDIA_LIBRARY_LINKS": "免費媒體庫",
     "GAME_READ_DELAY_MS": "計時前的閱讀時間",
     "GAME_ALL_ANSWERED_DELAY_MS": "全員作答後的停頓",
     "GAME_AUTO_ADVANCE_MS": "自動模式：每步時長",
-    "GAME_MEDIA_WAIT_S": "等待聲音與影片",
+    "GAME_MEDIA_WAIT_S": "等待音訊與影片",
     "LIVE_MOTION": "即時畫面的轉場效果",
     "GAME_HOST_GRACE_MS": "主持人離開前的寬限時間",
     "GAME_HOST_WINDOW_MS": "主持人返回時限",
@@ -447,7 +447,7 @@
     "kinds": {
       "image": "圖片",
       "video": "影片",
-      "audio": "聲音"
+      "audio": "音訊"
     },
     "noLinks": "沒有媒體庫：編輯器不顯示任何媒體庫（沒有網際網路的執行個體）。",
     "saved": {
@@ -533,8 +533,8 @@
         "docker": "Docker Desktop 的 bridge 網路：容器看不到本機自身的位址——請在 HOST_LAN_IPS 中設定。"
       },
       "expired": "此測試已過期：請重新開始。",
-      "adoptHelp": "手機連線成功後，可將該位址設為執行個體的加入位址：每個等候室都以它為起點（APP_PUBLIC_URL）。主持人仍可為某一局選擇其他位址。",
-      "adoptReadOnly": "此處的管理後台不能修改設定：執行個體的加入位址維持維運人員的設定（APP_PUBLIC_URL）。主持人在等候室為每一局選擇位址。",
+      "adoptHelp": "手機連線成功後，可將該位址設為執行個體的加入位址：每個房間都以它為起點（APP_PUBLIC_URL）。主持人仍可為某一局選擇其他位址。",
+      "adoptReadOnly": "此處的管理後台不能修改設定：執行個體的加入位址維持維運人員的設定（APP_PUBLIC_URL）。主持人在房間為每一局選擇位址。",
       "other": "其他位址",
       "add": "新增",
       "current": "執行個體的加入位址",
@@ -588,7 +588,7 @@
         },
         "public": {
           "title": "一般大眾、大型活動",
-          "help": "對所有人開放——需使用身分提供者——並在擁擠的 Wi-Fi 上為聲音和影片保留更多載入時間。"
+          "help": "對所有人開放——需使用身分提供者——並在擁擠的 Wi-Fi 上為音訊和影片保留更多載入時間。"
         },
         "other": {
           "title": "都有一些、其他",
@@ -618,8 +618,8 @@
       "games": "進行中的遊戲",
       "players": "已連線的玩家",
       "none": "目前沒有進行中的遊戲。",
-      "lobby_one": "{{count}} 個在等候室",
-      "lobby_other": "{{count}} 個在等候室",
+      "lobby_one": "{{count}} 個在房間",
+      "lobby_other": "{{count}} 個在房間",
       "playing_one": "{{count}} 個進行中",
       "playing_other": "{{count}} 個進行中"
     },
@@ -633,7 +633,7 @@
     },
     "pin": "PIN {{pin}}",
     "phase": {
-      "lobby": "等候室",
+      "lobby": "房間",
       "question": "第 {{index}} 題，共 {{total}} 題"
     },
     "instance": {

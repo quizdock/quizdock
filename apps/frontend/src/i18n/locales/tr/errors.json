@@ -43,7 +43,7 @@
     "open_access_forbidden": "Bu sunucuda açık erişime izin verilmiyor.",
     "open_access_guests_only": "Açık erişimde katılımcı hesabı bulunmaz; bireysel takip veya hesaptan alınan ad kullanılamaz.",
     "next_quiz_unavailable": "Bu quiz bu odada sıradaki quiz olarak oynatılamaz.",
-    "next_quiz_from_lobby": "Sonraki quiz odanın lobisinde seçilir.",
+    "next_quiz_from_lobby": "Sonraki quiz odada seçilir.",
     "review_unavailable": "Bir adımı yalnızca iki soru arasında yeniden gösterebilirsiniz.",
     "step_not_played": "Bu adım henüz oynanmadı."
   },
@@ -59,7 +59,7 @@
     "too_many_attempts": "Bu adresten çok fazla yanlış PIN girildi. Bir dakika sonra tekrar deneyin."
   },
   "media": {
-    "unsupported_type": "Desteklenmeyen format: bir görüntü, bir MP4 video (H.264) veya bir ses (MP3, M4A). Düzenleyici, bu tarayıcının okuyabileceği diğer dosyaları dönüştürür; SVG kabul edilmez.",
+    "unsupported_type": "Desteklenmeyen format: bir görüntü, bir MP4 video (H.264) veya bir ses dosyası (MP3, M4A). Düzenleyici, bu tarayıcının okuyabileceği diğer dosyaları dönüştürür; SVG kabul edilmez.",
     "file_missing": "Eksik dosya (“dosya” alanı).",
     "file_too_large": "Dosya çok büyük (bu tür medya için en fazla {{maxMb}} MB).",
     "image_too_large": "Bu görsel çok büyük (en fazla {{maxMp}} megapiksel).",
@@ -73,7 +73,7 @@
     "unsupported_video_codec": "Desteklenmeyen video codec bileşeni ({{codec}}). Her yerde yalnızca H.264 oynuyor. iPhone'da çekilen bir video genellikle HEVC'dir: örneğin HandBrake (handbrake.fr) ile MP4 H.264'e dönüştürün veya kamerayı \"En Uyumlu\" olarak ayarlayın.",
     "unsupported_audio_codec": "Bu videonun sesi ({{codec}}) AAC değil. Örneğin HandBrake (handbrake.fr) ile MP4 H.264 + AAC olarak tekrar dışa aktarın.",
     "no_video_track": "Bu dosyada video bulunmuyor. Kendi başına bir ses için ses yuvasını kullanın.",
-    "unreadable_mp3": "Bu ses okunamıyor: dosya hasarlı görünüyor.",
+    "unreadable_mp3": "Bu ses dosyası okunamıyor: hasarlı görünüyor.",
     "metadata_invalid": "Seste ölçülen değer geçerli değil ({{field}}). Yüklemeyi tekrar deneyin.",
     "cannot_read": "Bu tarayıcı bu dosyayı okuyamıyor. Başka bir tarayıcı deneyin veya önce onu özel bir araçla dönüştürün (videolar için HandBrake, sesler için Audacity).",
     "cannot_convert_video": "Bu tarayıcı bu videoyu MP4 H.264'e dönüştüremez. Chrome, Edge veya Safari kullanın veya önce HandBrake (handbrake.fr) ile dönüştürün.",
