@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Fuori dall’applicazione",
-    "intro": "Lette da Docker Compose, dallo script quizdock, dalla build dell’immagine o da Keycloak, mai dall’applicazione: si modificano dove vengono lette, non qui.",
+    "intro": "Lette da Docker Compose, dallo script quizdock, dalla build dell’immagine, da Keycloak o da Authentik, mai dall’applicazione: si modificano dove vengono lette, non qui.",
     "readBy": "Letta da",
     "what": "Cosa",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Script quizdock",
       "build": "Build dell’immagine",
       "dev": "Stack di sviluppo",

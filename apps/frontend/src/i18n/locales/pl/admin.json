@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Poza aplikacją",
-    "intro": "Odczytywane przez Docker Compose, skrypt quizdock, budowanie obrazu lub Keycloak, nigdy przez aplikację: zmienia się je tam, gdzie są odczytywane, nie tutaj.",
+    "intro": "Odczytywane przez Docker Compose, skrypt quizdock, budowanie obrazu, Keycloak lub Authentik, nigdy przez aplikację: zmienia się je tam, gdzie są odczytywane, nie tutaj.",
     "readBy": "Odczytuje",
     "what": "Co",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Skrypt quizdock",
       "build": "Budowanie obrazu",
       "dev": "Stos deweloperski",

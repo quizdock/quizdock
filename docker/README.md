@@ -53,7 +53,7 @@ chmod +x quizdock
 | Try QuizDock on your machine | One container, `:standalone` | `docker run …` above |
 | A lasting instance, no identity provider | Compose: app + PostgreSQL + Redis | `./quizdock init` |
 | Sign-in through your OpenID Connect provider | Compose, `AUTH_MODE=oidc` | `./quizdock init`, then [OIDC](https://quizdock.github.io/docs/operator/oidc/) |
-| A full evaluation with a bundled Keycloak | Compose + Keycloak | `./quizdock init --full` |
+| A full evaluation with a bundled identity provider | Compose + Keycloak or Authentik | `./quizdock init --full` |
 
 Details: [choose a deployment](https://quizdock.github.io/docs/operator/choose-a-deployment/).
 

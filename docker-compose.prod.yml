@@ -187,7 +187,7 @@ services:
     restart: unless-stopped
     environment:
       # The generation of these files: the backend says when they are older than the image.
-      QUIZDOCK_FILES: '2'
+      QUIZDOCK_FILES: '3'
       NODE_ENV: production
       PORT: '3000'
       AUTH_MODE: ${AUTH_MODE:-none}

@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "应用之外",
-    "intro": "由 Docker Compose、quizdock 脚本、镜像构建或 Keycloak 读取，而不是由应用读取：它们在被读取的地方更改，而不是在这里。",
+    "intro": "由 Docker Compose、quizdock 脚本、镜像构建、Keycloak 或 Authentik 读取，而不是由应用读取：它们在被读取的地方更改，而不是在这里。",
     "readBy": "读取方",
     "what": "用途",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock 脚本",
       "build": "镜像构建",
       "dev": "开发环境",

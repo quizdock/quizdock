@@ -69,7 +69,7 @@ Or one container to try it, at `http://localhost:18080`:
 docker run -p 18080:3000 -v quizdock:/data fchaussin/quizdock:standalone
 ```
 
-Other setups, OIDC and the full option with a bundled Keycloak:
+Other setups, OIDC and the full option with a bundled Keycloak or Authentik:
 [choose a deployment](https://quizdock.github.io/docs/operator/choose-a-deployment/).
 
 ## Screenshots

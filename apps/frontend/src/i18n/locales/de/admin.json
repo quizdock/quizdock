@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Außerhalb der Anwendung",
-    "intro": "Gelesen von Docker Compose, dem quizdock-Skript, dem Image-Build oder Keycloak, nie von der Anwendung: Sie werden dort geändert, wo sie gelesen werden, nicht hier.",
+    "intro": "Gelesen von Docker Compose, dem quizdock-Skript, dem Image-Build, Keycloak oder Authentik, nie von der Anwendung: Sie werden dort geändert, wo sie gelesen werden, nicht hier.",
     "readBy": "Gelesen von",
     "what": "Was",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock-Skript",
       "build": "Image-Build",
       "dev": "Entwicklungsumgebung",

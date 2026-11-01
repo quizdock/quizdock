@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Uygulamanın dışında",
-    "intro": "Bunları uygulama değil; Docker Compose, quizdock betiği, imaj derlemesi veya Keycloak okur. Okundukları yerde değiştirilirler, burada değil.",
+    "intro": "Bunları uygulama değil; Docker Compose, quizdock betiği, imaj derlemesi, Keycloak veya Authentik okur. Okundukları yerde değiştirilirler, burada değil.",
     "readBy": "Okuyan",
     "what": "Ne işe yarar",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock betiği",
       "build": "İmaj derlemesi",
       "dev": "Geliştirme ortamı",

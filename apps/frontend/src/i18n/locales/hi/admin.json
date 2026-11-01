@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "ऐप्लिकेशन से बाहर",
-    "intro": "इन्हें Docker Compose, quizdock स्क्रिप्ट, इमेज बिल्ड या Keycloak पढ़ते हैं, ऐप्लिकेशन कभी नहीं: इन्हें वहीं बदला जाता है जहाँ ये पढ़ी जाती हैं, यहाँ नहीं।",
+    "intro": "इन्हें Docker Compose, quizdock स्क्रिप्ट, इमेज बिल्ड, Keycloak या Authentik पढ़ते हैं, ऐप्लिकेशन कभी नहीं: इन्हें वहीं बदला जाता है जहाँ ये पढ़ी जाती हैं, यहाँ नहीं।",
     "readBy": "कौन पढ़ता है",
     "what": "क्या",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock स्क्रिप्ट",
       "build": "इमेज बिल्ड",
       "dev": "डेवलपमेंट स्टैक",

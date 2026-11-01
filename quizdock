@@ -7,7 +7,8 @@
 #
 # Deployment modes, chosen at `init` and remembered in `.env` (QUIZDOCK_MODE):
 #   compose     docker-compose.prod.yml — app + PostgreSQL + Redis (production)
-#   full        compose + bundled Keycloak (separate database)
+#   full        compose + a bundled identity provider (its own database):
+#               Keycloak or Authentik, chosen at `init` (QUIZDOCK_IAM)
 #   standalone  one container (fchaussin/quizdock:standalone) — a first try, one machine
 #
 # Admin commands (doctor, seat:*, user:*, quiz:*, samples:load, sessions:purge)
@@ -47,6 +48,9 @@ env_get() {
 }
 
 mode() { env_get QUIZDOCK_MODE compose; }
+# The bundled identity provider of the full mode; installs from before the choice have Keycloak.
+iam() { env_get QUIZDOCK_IAM keycloak; }
+iam_name() { case "$(iam)" in authentik) printf Authentik ;; *) printf Keycloak ;; esac; }
 tag() { env_get QUIZDOCK_TAG latest; }
 # The all-in-one image of that tag: `standalone` for latest, `standalone-X.Y.Z` for a release.
 standalone_image() {
@@ -76,12 +80,18 @@ files_url() { # files_url <image tag>
 }
 
 # The deployment files of a mode, as `<path in the repository>:<local path>` pairs.
-deployment_files() { # deployment_files <mode>
+deployment_files() { # deployment_files <mode> <iam>
   case "$1" in
     compose) printf '%s\n' "docker-compose.prod.yml:$COMPOSE_FILE" ;;
     full)
-      printf '%s\n' "docker-compose.prod.yml:$COMPOSE_FILE" "docker-compose.full.yml:docker-compose.full.yml" \
-        "keycloak/realm-export.json:keycloak/realm-export.json"
+      if [ "$2" = authentik ]; then
+        printf '%s\n' "docker-compose.prod.yml:$COMPOSE_FILE" \
+          "docker-compose.authentik.yml:docker-compose.authentik.yml" \
+          "authentik/quizdock.yaml:authentik/quizdock.yaml"
+      else
+        printf '%s\n' "docker-compose.prod.yml:$COMPOSE_FILE" "docker-compose.full.yml:docker-compose.full.yml" \
+          "keycloak/realm-export.json:keycloak/realm-export.json"
+      fi
       ;;
   esac
 }
@@ -116,20 +126,24 @@ check_secrets() {
   weak=""
   keys="POSTGRES_PASSWORD"
   [ -n "$(env_get QUIZDOCK_DB_USER)" ] && keys="$keys QUIZDOCK_DB_PASSWORD"
-  [ "$(mode)" = full ] && keys="$keys KEYCLOAK_ADMIN_PASSWORD KEYCLOAK_HOST_PASSWORD KEYCLOAK_PLAYER_PASSWORD"
-  [ "$(mode)" = full ] && [ -n "$(env_get KEYCLOAK_DB_USER)" ] && keys="$keys KEYCLOAK_DB_PASSWORD"
+  if [ "$(mode)" = full ] && [ "$(iam)" = authentik ]; then
+    keys="$keys AUTHENTIK_ADMIN_PASSWORD AUTHENTIK_HOST_PASSWORD AUTHENTIK_PLAYER_PASSWORD AUTHENTIK_DB_PASSWORD"
+  elif [ "$(mode)" = full ]; then
+    keys="$keys KEYCLOAK_ADMIN_PASSWORD KEYCLOAK_HOST_PASSWORD KEYCLOAK_PLAYER_PASSWORD"
+    [ -n "$(env_get KEYCLOAK_DB_USER)" ] && keys="$keys KEYCLOAK_DB_PASSWORD"
+  fi
   for key in $keys; do
     case "$(env_get "$key")" in
       "" | live | change-me | change-me-*) weak="$weak $key" ;;
     esac
   done
   [ "$(mode)" = standalone ] && return 0 # its database is reached from inside the container only
-  if [ "$(mode)" = full ] && [ -z "$(env_get KEYCLOAK_DB_USER)" ]; then
+  if [ "$(mode)" = full ] && [ "$(iam)" = keycloak ] && [ -z "$(env_get KEYCLOAK_DB_USER)" ]; then
     warn "Keycloak uses the database superuser (an install made before 0.13.2): \`$0 db:roles\` gives it a role of its own."
   fi
   if [ -n "$weak" ]; then
     warn "default or missing passwords in $ENV_FILE:$weak — set secrets of your own."
-    [ "$(mode)" = full ] && warn "  the Keycloak admin console is reachable from the network."
+    [ "$(mode)" = full ] && warn "  the $(iam_name) admin console is reachable from the network."
     return 0
   else
     info "passwords in $ENV_FILE: none left to a default"
@@ -140,7 +154,7 @@ check_secrets() {
 # host), the files in place are kept.
 refresh_files() { # refresh_files <mode> <image tag>
   base="$(files_url "$2")"
-  for pair in $(deployment_files "$1"); do
+  for pair in $(deployment_files "$1" "$(iam)"); do
     fetch_file "$base" "${pair%%:*}" "${pair#*:}" || {
       warn "could not download ${pair%%:*} from $base: the file in place is kept."
       return 0
@@ -154,13 +168,17 @@ need_init() {
     [ -f "$COMPOSE_FILE" ] || die "$COMPOSE_FILE not found — run \`$0 init\` again."
   fi
   if [ "$(mode)" = full ]; then
-    [ -f docker-compose.full.yml ] || die "docker-compose.full.yml not found — run init --full again."
-    [ -f keycloak/realm-export.json ] || die "keycloak/realm-export.json not found — run \`$0 init --full\` again."
+    for pair in $(deployment_files full "$(iam)"); do
+      [ -f "${pair#*:}" ] || die "${pair#*:} not found — run \`$0 init --full --iam=$(iam)\` again."
+    done
   fi
 }
 
 compose() {
-  if [ "$(mode)" = full ]; then docker compose -f "$COMPOSE_FILE" -f docker-compose.full.yml --profile keycloak "$@"
+  if [ "$(mode)" = full ] && [ "$(iam)" = authentik ]; then
+    docker compose -f "$COMPOSE_FILE" -f docker-compose.authentik.yml "$@"
+  elif [ "$(mode)" = full ]; then
+    docker compose -f "$COMPOSE_FILE" -f docker-compose.full.yml --profile keycloak "$@"
   else docker compose -f "$COMPOSE_FILE" "$@"; fi
 }
 
@@ -208,13 +226,14 @@ wait_healthy() { # wait_healthy <url> <seconds>
 
 cmd_init() {
   need_docker
-  want_mode=compose
+  want_mode=compose; want_iam=""
   for a in "$@"; do
     case "$a" in
       --standalone) want_mode=standalone ;;
       --compose) want_mode=compose ;;
       --full) want_mode=full ;;
-      *) die "unknown option $a (init [--compose|--full|--standalone])" ;;
+      --iam=*) want_mode=full; want_iam="${a#--iam=}" ;;
+      *) die "unknown option $a (init [--compose|--full [--iam=keycloak|authentik]|--standalone])" ;;
     esac
   done
   if [ -f "$ENV_FILE" ]; then
@@ -227,13 +246,17 @@ cmd_init() {
   ask port "HTTP port on this host" "18080"
   if [ "$want_mode" = full ]; then
     auth_mode=oidc
+    [ -n "$want_iam" ] || ask want_iam "Identity provider: keycloak or authentik" "keycloak"
+    case "$want_iam" in keycloak | authentik) ;; *) die "the identity provider must be keycloak or authentik" ;; esac
     ask public_host "Public hostname or LAN IP (used by browsers)" "localhost"
-    ask keycloak_port "Keycloak HTTP port on this host" "18081"
+    if [ "$want_iam" = authentik ]; then ask iam_port "Authentik HTTP port on this host" "18081"
+    else ask iam_port "Keycloak HTTP port on this host" "18081"; fi
   else
     ask auth_mode "Auth mode: none (local host seat) or oidc" "none"
   fi
   case "$auth_mode" in none | oidc) ;; *) die "AUTH_MODE must be none or oidc" ;; esac
-  issuer=""; client_id="quiz-dock-frontend"
+  issuer=""; client_id="quiz-dock-frontend"; client_secret=""
+  if [ "$want_iam" = authentik ]; then client_id="quiz-dock"; client_secret="$(random_secret)"; fi
   if [ "$auth_mode" = oidc ] && [ "$want_mode" != full ]; then
     ask issuer "OIDC issuer (exact \`iss\` of your tokens)" ""
     ask client_id "OIDC client id" "quiz-dock-frontend"
@@ -254,11 +277,26 @@ cmd_init() {
     say "APP_NAME=$app_name"
     say "APP_LANG=$app_lang"
     say "AUTH_MODE=$auth_mode"
-    if [ "$want_mode" = full ]; then
+    if [ "$want_iam" = authentik ]; then
+      say "QUIZDOCK_IAM=authentik"
+      say "# One public host for QuizDock and Authentik; use the same name on each browser."
+      say "PUBLIC_HOST=$public_host"
+      say "PUBLIC_SCHEME=http"
+      say "AUTHENTIK_PORT=$iam_port"
+      say "# Authentik's administrator is \`akadmin\`; host and player are QuizDock's demonstration accounts."
+      say "AUTHENTIK_ADMIN_PASSWORD=$(random_secret)"
+      say "AUTHENTIK_HOST_PASSWORD=$(random_secret)"
+      say "AUTHENTIK_PLAYER_PASSWORD=$(random_secret)"
+      say "AUTHENTIK_SECRET_KEY=$(random_secret)$(random_secret)"
+      say "# Authentik's own PostgreSQL role: it reaches its database only."
+      say "AUTHENTIK_DB_USER=authentik"
+      say "AUTHENTIK_DB_PASSWORD=$(random_secret)"
+    elif [ "$want_mode" = full ]; then
+      say "QUIZDOCK_IAM=keycloak"
       say "# One public host for QuizDock and Keycloak; use the same name on each browser."
       say "PUBLIC_HOST=$public_host"
       say "PUBLIC_SCHEME=http"
-      say "KEYCLOAK_PORT=$keycloak_port"
+      say "KEYCLOAK_PORT=$iam_port"
       say "KEYCLOAK_ADMIN=admin"
       say "KEYCLOAK_ADMIN_PASSWORD=$(random_secret)"
       say "KEYCLOAK_HOST_PASSWORD=$(random_secret)"
@@ -271,13 +309,15 @@ cmd_init() {
     say "OIDC_ISSUER=$issuer"
     say "OIDC_CLIENT_ID=$client_id"
     say "# Secret of a confidential client; empty = public client (PKCE)."
-    say "OIDC_CLIENT_SECRET="
+    say "OIDC_CLIENT_SECRET=$client_secret"
     say "# How the backend reaches the provider, when not at the issuer's address."
-    if [ "$want_mode" = full ]; then say "OIDC_INTERNAL_URL=http://keycloak:8080"
+    if [ "$want_iam" = authentik ]; then say "OIDC_INTERNAL_URL=http://authentik-server:9000"
+    elif [ "$want_mode" = full ]; then say "OIDC_INTERNAL_URL=http://keycloak:8080"
     else say "OIDC_INTERNAL_URL="; fi
     say "OIDC_AUDIENCE="
     say "# Scopes asked at sign-in; where the roles are in the ID token."
-    say "OIDC_SCOPE="
+    if [ "$want_iam" = authentik ]; then say "OIDC_SCOPE=openid profile email entitlements offline_access"
+    else say "OIDC_SCOPE="; fi
     say "OIDC_ROLES_CLAIM=roles"
     say "OIDC_NAME_CLAIM="
     say "# Proxies allowed to speak for the client (X-Forwarded-*); empty = private addresses."
@@ -308,7 +348,7 @@ cmd_init() {
   # The files of the release installed (the latest), not of the repository's main branch.
   if [ "$want_mode" != standalone ]; then
     base="$(files_url latest)"
-    for pair in $(deployment_files "$want_mode"); do
+    for pair in $(deployment_files "$want_mode" "$want_iam"); do
       info "fetching ${pair#*:}"
       fetch_file "$base" "${pair%%:*}" "${pair#*:}" || die "could not download ${pair%%:*} from $base"
     done
@@ -317,7 +357,10 @@ cmd_init() {
   if [ -n "$admin_token" ]; then
     say "The administration token (ADMIN_TOKEN) is in $ENV_FILE: give it to the administrators."
   fi
-  if [ "$want_mode" = full ]; then
+  if [ "$want_iam" = authentik ]; then
+    say "The passwords of host, player and Authentik's akadmin are in $ENV_FILE (mode 600)."
+    say "Next: $0 up    (then open http://$public_host:$port)"
+  elif [ "$want_mode" = full ]; then
     say "Temporary passwords for host, player and admin are in $ENV_FILE (mode 600)."
     say "Next: $0 up    (then open http://$public_host:$port)"
   else
@@ -346,7 +389,12 @@ cmd_up() {
   esac
   info "waiting for the app…"
   if wait_healthy "http://localhost:$(http_port)/health" 120; then
-    if [ "$(mode)" = full ]; then
+    if [ "$(mode)" = full ] && [ "$(iam)" = authentik ]; then
+      # Its first start prepares its database and loads authentik/quizdock.yaml: a few minutes.
+      info "waiting for Authentik…"
+      wait_healthy "http://localhost:$(env_get AUTHENTIK_PORT 18081)/application/o/quiz-dock/.well-known/openid-configuration" 300 \
+        || die "Authentik is not ready — check \`$0 logs authentik-server authentik-worker\`."
+    elif [ "$(mode)" = full ]; then
       info "waiting for Keycloak…"
       wait_healthy "http://localhost:$(env_get KEYCLOAK_PORT 18081)/realms/quiz-dock/.well-known/openid-configuration" 180 \
         || die "Keycloak is not ready — check \`$0 logs keycloak\`."
@@ -401,7 +449,7 @@ cmd_backup() {
       user="$(env_get POSTGRES_USER live)"; db="$(env_get POSTGRES_DB quizdock)"
       compose exec -T postgres pg_dump -U "$user" --clean --if-exists "$db" >"$dir/database.sql"
       if [ "$(mode)" = full ]; then
-        compose exec -T postgres pg_dump -U "$user" --clean --if-exists keycloak >"$dir/keycloak.sql"
+        compose exec -T postgres pg_dump -U "$user" --clean --if-exists "$(iam)" >"$dir/$(iam).sql"
       fi
       # `docker cp` needs no tar inside the (distroless) app container.
       compose cp quizdock:/data/media "$dir/media" 2>/dev/null || mkdir -p "$dir/media"
@@ -415,17 +463,17 @@ cmd_backup() {
       ;;
   esac
   cp "$ENV_FILE" "$dir/env" && chmod 600 "$dir/env"
-  info "done: $(du -sh "$dir" | cut -f1) — database.sql, media/, store/, env$( [ "$(mode)" = full ] && printf ', keycloak.sql' )"
+  info "done: $(du -sh "$dir" | cut -f1) — database.sql, media/, store/, env$( [ "$(mode)" = full ] && printf ', %s.sql' "$(iam)" )"
 }
 
 cmd_restore() {
   need_docker; need_init
   dir="${1:-}"
   [ -n "$dir" ] && [ -f "$dir/database.sql" ] || die "usage: $0 restore <backup-dir> (a directory written by \`$0 backup\`)"
-  if [ "$(mode)" = full ] && [ ! -f "$dir/keycloak.sql" ]; then
-    die "full mode restore needs $dir/keycloak.sql (accounts and OIDC configuration)."
+  if [ "$(mode)" = full ] && [ ! -f "$dir/$(iam).sql" ]; then
+    die "full mode restore needs $dir/$(iam).sql (accounts and OIDC configuration)."
   fi
-  warn "this REPLACES the current database, media and (in full mode) Keycloak data with $dir."
+  warn "this REPLACES the current database, media and (in full mode) $(iam_name) data with $dir."
   confirm "Continue?"
   case "$(mode)" in
     compose | full)
@@ -434,10 +482,13 @@ cmd_restore() {
       compose stop quizdock >/dev/null
       info "restoring the database"
       compose exec -T postgres psql -q -U "$user" -d "$db" <"$dir/database.sql" >/dev/null
-      if [ "$(mode)" = full ] && [ -f "$dir/keycloak.sql" ]; then
-        compose stop keycloak >/dev/null
-        compose exec -T postgres psql -q -U "$user" -d keycloak <"$dir/keycloak.sql" >/dev/null
-        compose up -d keycloak >/dev/null
+      if [ "$(mode)" = full ]; then
+        if [ "$(iam)" = authentik ]; then iam_services="authentik-server authentik-worker"; else iam_services=keycloak; fi
+        # shellcheck disable=SC2086 # one or two service names
+        compose stop $iam_services >/dev/null
+        compose exec -T postgres psql -q -U "$user" -d "$(iam)" <"$dir/$(iam).sql" >/dev/null
+        # shellcheck disable=SC2086
+        compose up -d $iam_services >/dev/null
       fi
       if [ -d "$dir/media" ]; then
         info "restoring media"
@@ -479,8 +530,9 @@ cmd_db_roles() {
   super="$(env_get POSTGRES_USER live)"; db="$(env_get POSTGRES_DB quizdock)"
   app=""; kc=""
   [ -z "$(env_get QUIZDOCK_DB_USER)" ] && app=quizdock
-  [ "$(mode)" = full ] && [ -z "$(env_get KEYCLOAK_DB_USER)" ] && kc=keycloak
-  [ -n "$app$kc" ] || { info "QuizDock$( [ "$(mode)" = full ] && printf ' and Keycloak') already have roles of their own: nothing to do."; return 0; }
+  # Authentik always had a role of its own.
+  [ "$(mode)" = full ] && [ "$(iam)" = keycloak ] && [ -z "$(env_get KEYCLOAK_DB_USER)" ] && kc=keycloak
+  [ -n "$app$kc" ] || { info "QuizDock$( [ "$(mode)" = full ] && printf ' and %s' "$(iam_name)") already have roles of their own: nothing to do."; return 0; }
   # Installs made by `init` named their superuser `quizdock`: the role takes another name.
   [ "$app" = "$super" ] && app=quizdock_app
   [ "$kc" = "$super" ] && kc=keycloak_app
@@ -590,8 +642,9 @@ QuizDock operator CLI
 Usage: $0 <command> [args]
 
 Install & run
-  init [--compose|--full|--standalone]
-                        Create $ENV_FILE (guided) and fetch the Compose/realm files
+  init [--compose|--full [--iam=keycloak|authentik]|--standalone]
+                        Create $ENV_FILE (guided) and fetch the Compose and identity
+                        provider files (--full asks which provider, --iam says it)
   up                    Start (compose stack or standalone container), wait for health
   down                  Stop
   status                Containers + health + version

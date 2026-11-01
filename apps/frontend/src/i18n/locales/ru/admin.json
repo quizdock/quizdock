@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Вне приложения",
-    "intro": "Их читают Docker Compose, скрипт quizdock, сборка образа или Keycloak, но не приложение: они меняются там, где читаются, а не здесь.",
+    "intro": "Их читают Docker Compose, скрипт quizdock, сборка образа, Keycloak или Authentik, но не приложение: они меняются там, где читаются, а не здесь.",
     "readBy": "Читает",
     "what": "Что",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Скрипт quizdock",
       "build": "Сборка образа",
       "dev": "Стек разработки",

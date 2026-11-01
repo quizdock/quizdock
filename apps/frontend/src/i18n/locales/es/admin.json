@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Fuera de la aplicación",
-    "intro": "Los leen Docker Compose, el script quizdock, la construcción de la imagen o Keycloak, nunca la aplicación: se cambian donde se leen, no aquí.",
+    "intro": "Los leen Docker Compose, el script quizdock, la construcción de la imagen, Keycloak o Authentik, nunca la aplicación: se cambian donde se leen, no aquí.",
     "readBy": "Lo lee",
     "what": "Qué",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Script quizdock",
       "build": "Construcción de la imagen",
       "dev": "Entorno de desarrollo",

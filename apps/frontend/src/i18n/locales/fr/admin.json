@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Hors de l’application",
-    "intro": "Lus par Docker Compose, le script quizdock, la construction de l’image ou Keycloak, jamais par l’application : ils se modifient là où ils sont lus, pas ici.",
+    "intro": "Lus par Docker Compose, le script quizdock, la construction de l’image, Keycloak ou Authentik, jamais par l’application : ils se modifient là où ils sont lus, pas ici.",
     "readBy": "Lu par",
     "what": "Rôle",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Script quizdock",
       "build": "Construction de l’image",
       "dev": "Pile de développement",

@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "アプリケーションの外部",
-    "intro": "Docker Compose、quizdock スクリプト、イメージのビルド、Keycloak が読み込むもので、アプリケーションは読み込みません。ここではなく、読み込まれる場所で変更してください。",
+    "intro": "Docker Compose、quizdock スクリプト、イメージのビルド、Keycloak、Authentik が読み込むもので、アプリケーションは読み込みません。ここではなく、読み込まれる場所で変更してください。",
     "readBy": "読み込み元",
     "what": "内容",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock スクリプト",
       "build": "イメージのビルド",
       "dev": "開発スタック",

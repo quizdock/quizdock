@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Outside the application",
-    "intro": "Read by Docker Compose, the quizdock script, the image build or Keycloak, never by the application: they are changed where they are read, not here.",
+    "intro": "Read by Docker Compose, the quizdock script, the image build, Keycloak or Authentik, never by the application: they are changed where they are read, not here.",
     "readBy": "Read by",
     "what": "What",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "quizdock script",
       "build": "Image build",
       "dev": "Development stack",
