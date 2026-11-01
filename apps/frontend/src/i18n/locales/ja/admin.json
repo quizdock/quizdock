@@ -780,7 +780,11 @@
     "discovery_failed": "ディスカバリー {{url}} に失敗しました（{{error}}）。サーバーから issuer に到達できない場合は、OIDC_INTERNAL_URL を設定してください。",
     "jwks_ok_one": "署名鍵に接続可能（{{count}}個の鍵）",
     "jwks_ok_other": "署名鍵に接続可能（{{count}}個の鍵）",
-    "jwks_failed": "署名鍵 {{url}}：{{error}}"
+    "jwks_failed": "署名鍵 {{url}}：{{error}}",
+    "deprecated": {
+      "roles-in-access-token": "ロールをアクセストークンから読み取りました。ID トークンにロールのクレームがありません（最終 {{last}}）。プロバイダーで ID トークンに含めてください。この読み取りは 1.0 で終了します。",
+      "bearer-unproven": "Bearer トークンをクレームだけで受け入れました（最終 {{last}}）。プロバイダーでアクセストークンに印を付ける（RFC 9068）か、QuizDock に機密クライアントを用意してください。これは 1.0 で終了します。"
+    }
   },
   "demoReadOnly": "公開デモ：管理画面はそのまま表示されていますが、ここからは何も変更できません。自分のインスタンスでは、自由に管理できます。",
   "branding": {

@@ -147,10 +147,19 @@
           "administration": false
         },
         {
+          "key": "OIDC_SCOPE",
+          "default": "`openid profile email`",
+          "level": "C1",
+          "description": "Scopes asked at sign-in, space-separated. Add the one that brings the roles if your provider needs it (Authentik: `entitlements`), and `offline_access` if it gives a refresh token only then (Authentik).",
+          "accepts": "scopes separated by spaces, `openid` among them",
+          "applies": "restart",
+          "administration": false
+        },
+        {
           "key": "OIDC_ROLES_CLAIM",
           "default": "`roles`",
           "level": "C1",
-          "description": "Dotted path to the roles array in the JWT (e.g. `groups`, `realm_access.roles`). A typo locks every administrator out.",
+          "description": "Dotted path to the roles array in the ID token (e.g. `roles`, `groups`). Read from the access token when the ID token lacks it — deprecated, removed in 1.0. A typo locks every administrator out.",
           "accepts": "a dotted path",
           "applies": "restart",
           "administration": false

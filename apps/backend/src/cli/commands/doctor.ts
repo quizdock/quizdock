@@ -9,6 +9,7 @@ import {
   oidcSettings,
   type OidcSettings,
 } from '../../auth/oidc/oidc-client';
+import { readAuthDeprecations, AUTH_DEPRECATIONS } from '../../auth/oidc/deprecations';
 import { migrationStatus } from './migrate-status';
 import { SETTING_LIST, SETTINGS } from '@quiz-dock/contracts';
 import type { SettingsService } from '../../admin/settings/settings.service';
@@ -21,6 +22,8 @@ export interface DoctorDeps {
   fetch: typeof fetch;
   /** Redis ping (injected for tests). */
   pingRedis: (url: string) => Promise<void>;
+  /** The deprecated ways of reading tokens used lately (injected for tests). */
+  authDeprecations: (url: string) => ReturnType<typeof readAuthDeprecations>;
   /** Write probe in the media dir (injected for tests). */
   probeWritable: (dir: string) => void;
   /** Shipped migrations folder; default `<cwd>/prisma/migrations`. */
@@ -40,6 +43,22 @@ export async function defaultPingRedis(url: string): Promise<void> {
   try {
     await client.connect();
     await client.ping();
+  } finally {
+    client.disconnect();
+  }
+}
+
+export async function defaultAuthDeprecations(
+  url: string,
+): ReturnType<typeof readAuthDeprecations> {
+  const client = new Redis(url, {
+    lazyConnect: true,
+    maxRetriesPerRequest: 1,
+    connectTimeout: 3000,
+  });
+  try {
+    await client.connect();
+    return await readAuthDeprecations(client);
   } finally {
     client.disconnect();
   }
@@ -215,6 +234,19 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
             params: { url: jwksUri, error: (err as Error).message },
           });
         }
+      }
+      // Ways of reading tokens that end in 1.0, if this instance still relies on them.
+      try {
+        for (const { kind, last } of await deps.authDeprecations(
+          settings.get(SETTINGS.REDIS_URL),
+        )) {
+          out.warn(`${AUTH_DEPRECATIONS[kind]} (last ${last})`, {
+            code: `doctor.deprecated.${kind}`,
+            params: { last },
+          });
+        }
+      } catch {
+        // Redis unreachable: already reported above.
       }
     }
   }

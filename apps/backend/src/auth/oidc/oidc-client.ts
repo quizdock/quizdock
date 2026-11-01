@@ -21,6 +21,8 @@ interface Endpoints {
   /** Back channel (the backend calls it). */
   token: string;
   jwks: string;
+  /** Token introspection (RFC 7662), when the provider publishes it. */
+  introspection: string | null;
 }
 
 /** What the token endpoint answers (RFC 6749 §5.1, OIDC Core §3.1.3.3). */
@@ -113,7 +115,7 @@ export function oidcSettings(from: SettingsService = settings): OidcSettings {
     audience: from.get(SETTINGS.OIDC_AUDIENCE) || null,
     internalUrl,
     jwksUri,
-    scope: 'openid profile email',
+    scope: from.get(SETTINGS.OIDC_SCOPE).trim().split(/\s+/).join(' '),
   };
 }
 
@@ -134,6 +136,7 @@ export class OidcClient {
   private readonly logger = new Logger(OidcClient.name);
   private endpoints: Promise<Endpoints> | null = null;
   private jwks: Promise<Jwks> | null = null;
+  private readonly introspected = new Map<string, { active: boolean; until: number }>();
 
   constructor(readonly settings: OidcSettings) {}
 
@@ -183,11 +186,13 @@ export class OidcClient {
     const mismatch = issuer && issuerMismatch(issuer, this.settings.issuer);
     if (mismatch) this.logger.warn(mismatch);
     const endSession = str('end_session_endpoint');
+    const introspection = str('introspection_endpoint');
     return {
       authorization: this.toPublic(authorization),
       endSession: endSession ? this.toPublic(endSession) : null,
       token: this.toInternal(token),
       jwks: this.settings.jwksUri ?? this.toInternal(jwks),
+      introspection: introspection ? this.toInternal(introspection) : null,
     };
   }
 
@@ -301,36 +306,96 @@ export class OidcClient {
   }
 
   /**
-   * Validates an access token: signature against the JWKS, `iss`, `exp`, and `aud`
-   * when configured. An ID token is refused: it is not meant to call an API, and
-   * ours travels in the browser (the logout's `id_token_hint`).
+   * A `Bearer` token, as a resource server checks it: signature against the
+   * JWKS, `iss`, `exp`, and `aud` when configured, then whether it is an access
+   * token at all — an ID token must not open the API (ours travels in the
+   * browser, in the logout's `id_token_hint`). The provider says so:
+   * - in the token itself, with the `typ` header of RFC 9068 (`at+jwt`);
+   * - else through introspection (RFC 7662), for a confidential client.
+   * Neither: `kind: 'unproven'`, and the caller decides.
    */
-  async verifyAccessToken(token: string): Promise<JWTPayload> {
-    const { payload } = await jwtVerify(token, await this.keys(), {
+  async verifyBearer(token: string): Promise<{ payload: JWTPayload; kind: BearerKind }> {
+    const { payload, protectedHeader } = await jwtVerify(token, await this.keys(), {
       issuer: this.settings.issuer,
       ...(this.settings.audience ? { audience: this.settings.audience } : {}),
     });
-    if (isIdToken(payload)) throw new Error('An ID token is not an access token.');
-    return payload;
+    if (isJwtAccessTokenType(protectedHeader.typ)) return { payload, kind: 'rfc9068' };
+    const active = await this.introspect(token, payload.exp);
+    if (active === null) return { payload, kind: 'unproven' };
+    if (!active)
+      throw new Error('The provider does not hold this token as an active access token.');
+    return { payload, kind: 'introspected' };
   }
 
-  /** Validates the ID token of a sign-in (OIDC Core §3.1.3.7): issuer, audience = us, nonce. */
-  async verifyIdToken(token: string, nonce: string): Promise<JWTPayload> {
+  /**
+   * Asks the provider whether a token is an active access token (RFC 7662), or
+   * null when it cannot be asked: no introspection endpoint, or a public client
+   * (the request authenticates with the secret). The answer is kept a minute at
+   * most, and never past the token's expiry.
+   */
+  private async introspect(token: string, exp: number | undefined): Promise<boolean | null> {
+    const { clientId, clientSecret } = this.settings;
+    if (!clientSecret) return null;
+    const endpoint = (await this.discover()).introspection;
+    if (!endpoint) return null;
+    const key = createHash('sha256').update(token).digest('base64url');
+    const known = this.introspected.get(key);
+    if (known && known.until > Date.now()) return known.active;
+    const pair = `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        accept: 'application/json',
+        authorization: `Basic ${Buffer.from(pair).toString('base64')}`,
+      },
+      body: new URLSearchParams({ token, token_type_hint: 'access_token' }),
+      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`OIDC introspection endpoint → HTTP ${res.status}`);
+    const json = (await res.json()) as Record<string, unknown>;
+    // `token_type`, when given, is an OAuth access token type (RFC 7662 §2.2):
+    // a provider that answers for an ID token says so there (Keycloak: `ID`).
+    const active =
+      json.active === true &&
+      (json.token_type === undefined || String(json.token_type).toLowerCase() === 'bearer');
+    for (const [k, v] of this.introspected) if (v.until <= Date.now()) this.introspected.delete(k);
+    const until = Math.min(Date.now() + INTROSPECTION_CACHE_MS, (exp ?? 0) * 1000);
+    this.introspected.set(key, { active, until });
+    return active;
+  }
+
+  /**
+   * Validates an ID token (OIDC Core §3.1.3.7): issuer, audience = us, and the
+   * nonce of the sign-in. A renewed one (§12.2) is checked without nonce.
+   */
+  async verifyIdToken(token: string, nonce: string | null): Promise<JWTPayload> {
     const { payload } = await jwtVerify(token, await this.keys(), {
       issuer: this.settings.issuer,
       audience: this.settings.clientId,
     });
-    if (payload.nonce !== nonce) throw new Error('ID token nonce mismatch.');
+    if (nonce !== null && payload.nonce !== nonce) throw new Error('ID token nonce mismatch.');
     return payload;
   }
 }
 
+/** How a `Bearer` token was shown to be an access token, if it was. */
+export type BearerKind = 'rfc9068' | 'introspected' | 'unproven';
+
+/** How long an introspection answer is kept. */
+const INTROSPECTION_CACHE_MS = 60_000;
+
+/** The `typ` header of a JWT access token (RFC 9068 §2.1), media type prefix optional. */
+const isJwtAccessTokenType = (typ: string | undefined): boolean =>
+  typeof typ === 'string' && /^(application\/)?at\+jwt$/i.test(typ);
+
 /**
- * An ID token, told from an access token by the claims only an ID token has
- * (OIDC Core §2, §3.1.3.6, §3.3.2.11): `nonce`, `at_hash`, `c_hash` (a renewed ID
- * token may lack the nonce, not the hash), or Keycloak's `typ: ID`.
+ * Deprecated — for a `Bearer` token the provider vouched for neither way. An
+ * ID token told by the claims only an ID token should have (OIDC Core §2,
+ * §3.1.3.6, §3.3.2.11): `nonce`, `at_hash`, `c_hash`, or Keycloak's `typ: ID`.
+ * A guess: Authentik copies `nonce` into its access tokens.
  */
-function isIdToken(payload: JWTPayload): boolean {
+export function looksLikeIdToken(payload: JWTPayload): boolean {
   return (
     payload.typ === 'ID' ||
     payload.nonce !== undefined ||

@@ -116,7 +116,7 @@ const DEV_VALUES: Record<string, string> = {
   OIDC_CLIENT_ID: 'quiz-dock-frontend',
   OIDC_CLIENT_SECRET: '',
   OIDC_AUDIENCE: '',
-  OIDC_ROLES_CLAIM: 'realm_access.roles',
+  OIDC_ROLES_CLAIM: 'roles',
   OIDC_NAME_CLAIM: '',
   MEDIA_MAX_BYTES: '10485760',
   MEDIA_MAX_VIDEO_MB: '50',

@@ -780,7 +780,11 @@
     "discovery_failed": "Discovery {{url}} failed ({{error}}): set OIDC_INTERNAL_URL if the issuer is not reachable from the server.",
     "jwks_ok_one": "Signing keys reachable ({{count}} key)",
     "jwks_ok_other": "Signing keys reachable ({{count}} keys)",
-    "jwks_failed": "Signing keys {{url}}: {{error}}"
+    "jwks_failed": "Signing keys {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Roles read from the access token: the ID token lacks the roles claim (last {{last}}). Have the provider put them in the ID token; this ends in 1.0.",
+      "bearer-unproven": "A Bearer token accepted on its claims alone (last {{last}}). Have the provider mark its access tokens (RFC 9068) or give QuizDock a confidential client; this ends in 1.0."
+    }
   },
   "demoReadOnly": "Public demo: the administration is shown as it is, and nothing can be changed from it. On your own instance, it is yours.",
   "branding": {

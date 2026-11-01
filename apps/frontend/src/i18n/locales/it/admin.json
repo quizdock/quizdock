@@ -802,7 +802,11 @@
     "jwks_ok_one": "Chiavi di firma raggiungibili ({{count}} chiave)",
     "jwks_ok_many": "Chiavi di firma raggiungibili ({{count}} chiavi)",
     "jwks_ok_other": "Chiavi di firma raggiungibili ({{count}} chiavi)",
-    "jwks_failed": "Chiavi di firma {{url}}: {{error}}"
+    "jwks_failed": "Chiavi di firma {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Ruoli letti dal token di accesso: l’ID token non ha il claim dei ruoli (ultima volta {{last}}). Fai inserire i ruoli nell’ID token dal provider; questo termina con la 1.0.",
+      "bearer-unproven": "Un token Bearer accettato solo in base ai suoi claim (ultima volta {{last}}). Fai marcare i token di accesso dal provider (RFC 9068) o dai a QuizDock un client confidenziale; questo termina con la 1.0."
+    }
   },
   "demoReadOnly": "Demo pubblica: l’amministrazione è mostrata così com’è, e da qui non si può modificare nulla. Sulla tua istanza, è tua.",
   "branding": {

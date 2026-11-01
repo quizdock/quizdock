@@ -3,7 +3,12 @@ import { Prisma, UserRole } from '@prisma/client';
 import type { MigrationsStatus } from '@quiz-dock/contracts';
 import { z } from 'zod';
 import { isManager } from '../../auth/roles';
-import { defaultPingRedis, defaultProbeWritable, doctor } from '../../cli/commands/doctor';
+import {
+  defaultAuthDeprecations,
+  defaultPingRedis,
+  defaultProbeWritable,
+  doctor,
+} from '../../cli/commands/doctor';
 import { migrationStatus } from '../../cli/commands/migrate-status';
 import { findUser, samplesLoad, userList, userSetRole } from '../../cli/commands/users';
 import { quizImport, quizList, quizTransfer } from '../../cli/commands/quiz';
@@ -73,6 +78,7 @@ export class CliCommandOperations {
               settings,
               fetch,
               pingRedis: defaultPingRedis,
+              authDeprecations: defaultAuthDeprecations,
               probeWritable: defaultProbeWritable,
             }),
           );

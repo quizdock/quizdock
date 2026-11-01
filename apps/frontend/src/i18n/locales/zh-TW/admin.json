@@ -780,7 +780,11 @@
     "discovery_failed": "探索 {{url}} 失敗（{{error}}）：若伺服器無法連線簽發者，請設定 OIDC_INTERNAL_URL。",
     "jwks_ok_one": "簽章金鑰可連線（{{count}} 個金鑰）",
     "jwks_ok_other": "簽章金鑰可連線（{{count}} 個金鑰）",
-    "jwks_failed": "簽章金鑰 {{url}}：{{error}}"
+    "jwks_failed": "簽章金鑰 {{url}}：{{error}}",
+    "deprecated": {
+      "roles-in-access-token": "從存取權杖讀取了角色：ID 權杖缺少角色宣告（最近一次 {{last}}）。請讓提供者將角色放入 ID 權杖；此讀取方式將在 1.0 取消。",
+      "bearer-unproven": "僅憑宣告接受了一個 Bearer 權杖（最近一次 {{last}}）。請讓提供者標記存取權杖（RFC 9068），或為 QuizDock 設定機密用戶端；此方式將在 1.0 取消。"
+    }
   },
   "demoReadOnly": "公開示範：管理介面依原樣展示，無法在此修改任何內容。在你自己的執行個體上，它完全由你掌控。",
   "branding": {

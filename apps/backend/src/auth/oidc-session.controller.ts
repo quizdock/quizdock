@@ -100,8 +100,8 @@ export class OidcSessionController {
 
   /**
    * Completes a sign-in: the state must be the one this browser started, the code
-   * is exchanged, the ID token checked (issuer, audience, nonce), and a fresh
-   * session opened.
+   * is exchanged, the ID token checked (issuer, audience, nonce) and the identity
+   * read from it, and a fresh session opened.
    */
   @Public()
   @Post('callback')
@@ -132,9 +132,9 @@ export class OidcSessionController {
     try {
       const tokens = await client.exchangeCode(dto.code, login.codeVerifier, login.redirectUri);
       if (!tokens.idToken) throw new Error('No ID token.');
-      await client.verifyIdToken(tokens.idToken, login.nonce);
-      const principal = provider.principalOf(await client.verifyAccessToken(tokens.accessToken));
-      if (!principal) throw new Error('No subject in the access token.');
+      const idClaims = await client.verifyIdToken(tokens.idToken, login.nonce);
+      const principal = provider.sessionPrincipal(idClaims, tokens.accessToken);
+      if (!principal) throw new Error('No subject in the ID token.');
       await this.users.upsertFromPrincipal(principal);
       // A new session on every sign-in, whatever the browser held before.
       const previous = readOurCookie(req.headers.cookie, SESSION_COOKIE);

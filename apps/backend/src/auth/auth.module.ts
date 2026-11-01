@@ -10,6 +10,7 @@ import { HostSeatController } from './host-seat.controller';
 import { NoAuthProvider } from './no-auth.provider';
 import { OidcSessionController } from './oidc-session.controller';
 import { OidcProvider } from './oidc.provider';
+import { AuthDeprecations } from './oidc/deprecations';
 import { OidcClient, oidcSettings } from './oidc/oidc-client';
 import { OidcSessions } from './oidc/oidc-sessions';
 
@@ -37,9 +38,13 @@ import { OidcSessions } from './oidc/oidc-sessions';
     },
     {
       provide: OidcProvider,
-      inject: [OidcClient, OidcSessions],
-      useFactory: (client: OidcClient | null, sessions: OidcSessions | null) =>
-        client && sessions ? new OidcProvider(client, sessions) : null,
+      inject: [OidcClient, OidcSessions, RedisService],
+      useFactory: (
+        client: OidcClient | null,
+        sessions: OidcSessions | null,
+        redis: RedisService,
+      ) =>
+        client && sessions ? new OidcProvider(client, sessions, new AuthDeprecations(redis)) : null,
     },
     {
       provide: AUTH_PROVIDER,

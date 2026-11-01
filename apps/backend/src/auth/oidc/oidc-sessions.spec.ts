@@ -40,10 +40,22 @@ const tokens = (over: Partial<TokenSet> = {}): TokenSet => ({
   ...over,
 });
 
-function setup(refresh: jest.Mock = jest.fn()) {
+/** The access token the session serves, or null. */
+const accessOf = async (sessions: OidcSessions, sid: string) =>
+  (await sessions.tokens(sid))?.accessToken ?? null;
+
+function setup(
+  refresh: jest.Mock = jest.fn(),
+  verifyIdToken: jest.Mock = jest.fn(async () => ({ sub: 'sub-1' })),
+) {
   const redis = fakeRedis();
-  const client = { refresh } as unknown as OidcClient;
-  return { redis, refresh, sessions: new OidcSessions(redis as unknown as RedisService, client) };
+  const client = { refresh, verifyIdToken } as unknown as OidcClient;
+  return {
+    redis,
+    refresh,
+    verifyIdToken,
+    sessions: new OidcSessions(redis as unknown as RedisService, client),
+  };
 }
 
 describe('OidcSessions', () => {
@@ -65,9 +77,9 @@ describe('OidcSessions', () => {
   it('serves the access token and restarts the idle timer', async () => {
     const { redis, sessions } = setup();
     const sid = await sessions.create('sub-1', tokens());
-    expect(await sessions.accessToken(sid)).toBe('at-1');
+    expect(await accessOf(sessions, sid)).toBe('at-1');
     expect(redis.expire).toHaveBeenCalledWith(expect.any(String), SESSION_IDLE_S);
-    expect(await sessions.accessToken('unknown')).toBeNull();
+    expect(await accessOf(sessions, 'unknown')).toBeNull();
   });
 
   it('renews a token about to expire, keeping the ID token when none comes back', async () => {
@@ -76,12 +88,36 @@ describe('OidcSessions', () => {
     );
     const { sessions } = setup(refresh);
     const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
-    expect(await sessions.accessToken(sid)).toBe('at-2');
+    expect(await accessOf(sessions, sid)).toBe('at-2');
     expect(refresh).toHaveBeenCalledWith('rt-1');
     // Now fresh: no second renewal.
-    expect(await sessions.accessToken(sid)).toBe('at-2');
+    expect(await accessOf(sessions, sid)).toBe('at-2');
     expect(refresh).toHaveBeenCalledTimes(1);
     expect((await sessions.destroy(sid))?.idToken).toBe('id-1');
+  });
+
+  it('checks a renewed ID token, without nonce, and keeps it', async () => {
+    const refresh = jest.fn(async () => tokens({ accessToken: 'at-2', idToken: 'id-2' }));
+    const { sessions, verifyIdToken } = setup(refresh);
+    const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
+    expect(await accessOf(sessions, sid)).toBe('at-2');
+    expect(verifyIdToken).toHaveBeenCalledWith('id-2', null);
+    expect((await sessions.tokens(sid))?.idToken).toBe('id-2');
+  });
+
+  it('ends the session when the renewed ID token is invalid or names another user', async () => {
+    const refresh = jest.fn(async () => tokens({ accessToken: 'at-2', idToken: 'id-2' }));
+    for (const verify of [
+      jest.fn(async () => ({ sub: 'sub-2' })),
+      jest.fn(async () => {
+        throw new Error('signature verification failed');
+      }),
+    ]) {
+      const { sessions } = setup(refresh, verify);
+      const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
+      expect(await accessOf(sessions, sid)).toBeNull();
+      expect(await sessions.tokens(sid)).toBeNull();
+    }
   });
 
   it('renews once when two requests of the same session need it together', async () => {
@@ -94,8 +130,8 @@ describe('OidcSessions', () => {
     );
     const { sessions } = setup(refresh);
     const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
-    const first = sessions.accessToken(sid);
-    const second = sessions.accessToken(sid);
+    const first = accessOf(sessions, sid);
+    const second = accessOf(sessions, sid);
     await new Promise((r) => setTimeout(r, 20));
     release();
     expect(await Promise.all([first, second])).toEqual(['at-2', 'at-2']);
@@ -114,7 +150,7 @@ describe('OidcSessions', () => {
     const { sessions, redis } = setup(refresh);
     holder.redis = redis;
     const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
-    expect(await sessions.accessToken(sid)).toBe('at-2');
+    expect(await accessOf(sessions, sid)).toBe('at-2');
     expect([...redis.store.values()]).toContain('another-renewal');
   });
 
@@ -124,8 +160,8 @@ describe('OidcSessions', () => {
     });
     const { sessions } = setup(refresh);
     const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
-    expect(await sessions.accessToken(sid)).toBeNull();
-    expect(await sessions.accessToken(sid)).toBeNull();
+    expect(await accessOf(sessions, sid)).toBeNull();
+    expect(await accessOf(sessions, sid)).toBeNull();
     expect(refresh).toHaveBeenCalledTimes(1);
   });
 
@@ -135,9 +171,9 @@ describe('OidcSessions', () => {
     });
     const { sessions } = setup(refresh);
     const sid = await sessions.create('sub-1', tokens({ expiresAt: Date.now() + 5_000 }));
-    expect(await sessions.accessToken(sid)).toBe('at-1');
+    expect(await accessOf(sessions, sid)).toBe('at-1');
     const gone = await sessions.create('sub-1', tokens({ expiresAt: Date.now() - 1 }));
-    expect(await sessions.accessToken(gone)).toBeNull();
+    expect(await accessOf(sessions, gone)).toBeNull();
   });
 
   it('ends a session without refresh token once its access token expires', async () => {
@@ -146,7 +182,7 @@ describe('OidcSessions', () => {
       'sub-1',
       tokens({ refreshToken: null, expiresAt: Date.now() }),
     );
-    expect(await sessions.accessToken(sid)).toBeNull();
+    expect(await accessOf(sessions, sid)).toBeNull();
   });
 
   it('gives a pending sign-in back once, for one callback', async () => {

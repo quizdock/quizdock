@@ -780,7 +780,11 @@
     "discovery_failed": "Discovery {{url}} fehlgeschlagen ({{error}}): Setzen Sie OIDC_INTERNAL_URL, wenn der Issuer vom Server aus nicht erreichbar ist.",
     "jwks_ok_one": "Signaturschlüssel erreichbar ({{count}} Schlüssel)",
     "jwks_ok_other": "Signaturschlüssel erreichbar ({{count}} Schlüssel)",
-    "jwks_failed": "Signaturschlüssel {{url}}: {{error}}"
+    "jwks_failed": "Signaturschlüssel {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Rollen aus dem Access-Token gelesen: dem ID-Token fehlt der Rollen-Claim (zuletzt {{last}}). Lassen Sie den Anbieter sie ins ID-Token schreiben; das endet mit 1.0.",
+      "bearer-unproven": "Ein Bearer-Token wurde allein anhand seiner Claims akzeptiert (zuletzt {{last}}). Lassen Sie den Anbieter Access-Tokens kennzeichnen (RFC 9068) oder geben Sie QuizDock einen vertraulichen Client; das endet mit 1.0."
+    }
   },
   "demoReadOnly": "Öffentliche Demo: Die Administration wird so gezeigt, wie sie ist, und nichts lässt sich darüber ändern. Auf Ihrer eigenen Instanz gehört sie Ihnen.",
   "branding": {

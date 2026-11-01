@@ -780,7 +780,11 @@
     "discovery_failed": "Keşif {{url}} başarısız ({{error}}): veren sunucudan erişilemiyorsa OIDC_INTERNAL_URL tanımlayın.",
     "jwks_ok_one": "İmza anahtarları erişilebilir ({{count}} anahtar)",
     "jwks_ok_other": "İmza anahtarları erişilebilir ({{count}} anahtar)",
-    "jwks_failed": "İmza anahtarları {{url}}: {{error}}"
+    "jwks_failed": "İmza anahtarları {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Roller erişim belirtecinden okundu: ID belirtecinde roller claim'i yok (son {{last}}). Sağlayıcının rolleri ID belirtecine koymasını sağlayın; bu 1.0'da sona erecek.",
+      "bearer-unproven": "Bir Bearer belirteci yalnızca claim'lerine göre kabul edildi (son {{last}}). Sağlayıcının erişim belirteçlerini işaretlemesini sağlayın (RFC 9068) veya QuizDock'a gizli bir istemci verin; bu 1.0'da sona erecek."
+    }
   },
   "demoReadOnly": "Herkese açık demo: yönetim olduğu gibi gösterilir ve buradan hiçbir şey değiştirilemez. Kendi kurulumunuzda tamamen sizindir.",
   "branding": {

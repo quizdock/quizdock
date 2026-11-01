@@ -455,10 +455,26 @@ export const SETTINGS = {
     applies: 'restart',
     overridable: false,
   }),
+  OIDC_SCOPE: define({
+    key: 'OIDC_SCOPE',
+    description:
+      'Scopes asked at sign-in, space-separated. Add the one that brings the roles if your provider needs it (Authentik: `entitlements`), and `offline_access` if it gives a refresh token only then (Authentik).',
+    category: 'access',
+    criticality: 'C1',
+    schema: text(),
+    bounds: z
+      .string()
+      .refine((v) => v.trim().split(/\s+/).includes('openid'), 'must include `openid`'),
+    accepts: 'scopes separated by spaces, `openid` among them',
+    default: 'openid profile email',
+    applies: 'restart',
+    overridable: false,
+    example: 'openid profile email entitlements offline_access',
+  }),
   OIDC_ROLES_CLAIM: define({
     key: 'OIDC_ROLES_CLAIM',
     description:
-      'Dotted path to the roles array in the JWT (e.g. `groups`, `realm_access.roles`). A typo locks every administrator out.',
+      'Dotted path to the roles array in the ID token (e.g. `roles`, `groups`). Read from the access token when the ID token lacks it — deprecated, removed in 1.0. A typo locks every administrator out.',
     category: 'access',
     criticality: 'C1',
     schema: text(),

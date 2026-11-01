@@ -237,6 +237,7 @@ services:
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-quiz-dock-frontend}
+      OIDC_SCOPE: ${OIDC_SCOPE:-}
       OIDC_ROLES_CLAIM: ${OIDC_ROLES_CLAIM:-roles}
       OIDC_NAME_CLAIM: ${OIDC_NAME_CLAIM:-}
       # Proxies allowed to speak for the client (X-Forwarded-For/-Proto); empty = private addresses.

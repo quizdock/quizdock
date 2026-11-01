@@ -802,7 +802,11 @@
     "jwks_ok_one": "Claves de firma accesibles ({{count}} clave)",
     "jwks_ok_many": "Claves de firma accesibles ({{count}} claves)",
     "jwks_ok_other": "Claves de firma accesibles ({{count}} claves)",
-    "jwks_failed": "Claves de firma {{url}}: {{error}}"
+    "jwks_failed": "Claves de firma {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Roles leídos del token de acceso: el ID token no tiene el claim de roles (última vez {{last}}). Haz que el proveedor los ponga en el ID token; esto termina en 1.0.",
+      "bearer-unproven": "Un token Bearer aceptado solo por sus claims (última vez {{last}}). Haz que el proveedor marque sus tokens de acceso (RFC 9068) o da a QuizDock un cliente confidencial; esto termina en 1.0."
+    }
   },
   "demoReadOnly": "Demo pública: la administración se muestra tal cual y no se puede cambiar nada desde ella. En tu propia instancia, es tuya.",
   "branding": {
