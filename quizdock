@@ -276,8 +276,9 @@ cmd_init() {
     if [ "$want_mode" = full ]; then say "OIDC_INTERNAL_URL=http://keycloak:8080"
     else say "OIDC_INTERNAL_URL="; fi
     say "OIDC_AUDIENCE="
-    if [ "$want_mode" = full ]; then say "OIDC_ROLES_CLAIM=realm_access.roles"
-    else say "OIDC_ROLES_CLAIM=roles"; fi
+    say "# Scopes asked at sign-in; where the roles are in the ID token."
+    say "OIDC_SCOPE="
+    say "OIDC_ROLES_CLAIM=roles"
     say "OIDC_NAME_CLAIM="
     say "# Proxies allowed to speak for the client (X-Forwarded-*); empty = private addresses."
     say "TRUST_PROXY="

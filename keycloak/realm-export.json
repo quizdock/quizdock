@@ -4,20 +4,25 @@
   "displayName": "QuizDock",
   "bruteForceProtected": true,
   "roles": {
-    "realm": [
-      {
-        "name": "host",
-        "description": "Animateur / cr\u00e9ateur de quiz"
-      },
-      {
-        "name": "player",
-        "description": "Participant connect\u00e9"
-      },
-      {
-        "name": "admin",
-        "description": "Administrateur (r\u00e9serv\u00e9 v1.1)"
-      }
-    ]
+    "client": {
+      "quiz-dock-frontend": [
+        {
+          "name": "host",
+          "description": "Hosts quizzes and creates them",
+          "clientRole": true
+        },
+        {
+          "name": "player",
+          "description": "Signed-in participant",
+          "clientRole": true
+        },
+        {
+          "name": "admin",
+          "description": "Administers the instance",
+          "clientRole": true
+        }
+      ]
+    }
   },
   "clients": [
     {
@@ -40,6 +45,24 @@
         "${KEYCLOAK_APP_URL:http://localhost:18081}",
         "${KEYCLOAK_DEV_URL:http://localhost:15173}",
         "http://localhost:15173"
+      ],
+      "protocolMappers": [
+        {
+          "name": "quizdock roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "usermodel.clientRoleMapping.clientId": "quiz-dock-frontend",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
       ]
     }
   ],
@@ -59,8 +82,10 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["host", "admin"],
-      "requiredActions": []
+      "requiredActions": [],
+      "clientRoles": {
+        "quiz-dock-frontend": ["host", "admin"]
+      }
     },
     {
       "id": "39b95ebf-1a3f-4b7f-a53e-105e57137962",
@@ -77,8 +102,10 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["player"],
-      "requiredActions": []
+      "requiredActions": [],
+      "clientRoles": {
+        "quiz-dock-frontend": ["player"]
+      }
     }
   ]
 }
