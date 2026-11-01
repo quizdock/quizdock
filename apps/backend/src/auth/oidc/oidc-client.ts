@@ -1,4 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import { Logger } from '@nestjs/common';
 import { createRemoteJWKSet, type JWTPayload, jwtVerify } from 'jose';
 import { SETTINGS } from '@quiz-dock/contracts';
@@ -12,6 +14,60 @@ type Jwks = ReturnType<typeof createRemoteJWKSet>;
  * renewal past its lock (`oidc-sessions.ts`).
  */
 export const IDP_TIMEOUT_MS = 5_000;
+
+/** A request on the back channel, as `fetch` takes it, plus the authority to name. */
+export interface BackChannelInit {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+  signal?: AbortSignal;
+  /**
+   * The `Host` to send (RFC 9110 §7.2): the provider's public authority while
+   * the connection goes to its internal address.
+   */
+  host?: string;
+}
+
+/** What the backend reads of an answer. */
+export interface BackChannelResponse {
+  ok: boolean;
+  status: number;
+  json(): Promise<unknown>;
+}
+
+export type BackChannel = (url: string, init?: BackChannelInit) => Promise<BackChannelResponse>;
+
+/**
+ * Sends a back-channel request. With a `host`, through `node:http(s)`: `fetch`
+ * sets `Host` from the URL and ignores the one given.
+ */
+export const backChannelFetch: BackChannel = (url, init = {}) => {
+  const { host, ...rest } = init;
+  if (!host) return fetch(url, rest);
+  const send = url.startsWith('https:') ? httpsRequest : httpRequest;
+  return new Promise((resolve, reject) => {
+    const req = send(
+      url,
+      { method: rest.method ?? 'GET', headers: { ...rest.headers, host }, signal: rest.signal },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on('data', (c: Buffer) => chunks.push(c));
+        res.on('error', reject);
+        res.on('end', () => {
+          const status = res.statusCode ?? 0;
+          const text = Buffer.concat(chunks).toString('utf8');
+          resolve({
+            ok: status >= 200 && status < 300,
+            status,
+            json: async () => JSON.parse(text) as unknown,
+          });
+        });
+      },
+    );
+    req.on('error', reject);
+    req.end(rest.body);
+  });
+};
 
 /** The provider's endpoints the backend uses, each on the side it is reached from. */
 interface Endpoints {
@@ -119,6 +175,15 @@ export function oidcSettings(from: SettingsService = settings): OidcSettings {
   };
 }
 
+/**
+ * The `Host` of a request to `url`: the issuer's authority when `url` is on
+ * `OIDC_INTERNAL_URL`, else none (the URL's own).
+ */
+export function backChannelHost(settings: OidcSettings, url: string): string | undefined {
+  const { internalUrl, issuer } = settings;
+  return internalUrl && url.startsWith(internalUrl) ? new URL(issuer).host : undefined;
+}
+
 /** A random URL-safe string (state, nonce, PKCE verifier, session id). */
 export const randomToken = (bytes = 32): string => randomBytes(bytes).toString('base64url');
 
@@ -138,7 +203,23 @@ export class OidcClient {
   private jwks: Promise<Jwks> | null = null;
   private readonly introspected = new Map<string, { active: boolean; until: number }>();
 
-  constructor(readonly settings: OidcSettings) {}
+  constructor(
+    readonly settings: OidcSettings,
+    private readonly transport: BackChannel = backChannelFetch,
+  ) {}
+
+  /**
+   * A request to the provider. On its internal address, it still names the
+   * provider by the issuer's authority: a provider that derives its issuer
+   * from the request (Authentik) then signs tokens with the public one.
+   */
+  private send(url: string, init: BackChannelInit = {}): Promise<BackChannelResponse> {
+    return this.transport(url, {
+      ...init,
+      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+      host: backChannelHost(this.settings, url),
+    });
+  }
 
   /** A URL on the provider's public address → the same on its internal one (back channel). */
   private toInternal(url: string): string {
@@ -172,7 +253,7 @@ export class OidcClient {
 
   private async fetchDiscovery(): Promise<Endpoints> {
     const url = this.toInternal(discoveryUrl(this.settings.issuer));
-    const res = await fetch(url, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+    const res = await this.send(url);
     if (!res.ok) throw new Error(`OIDC discovery failed: ${url} → HTTP ${res.status}`);
     const doc = (await res.json()) as Record<string, unknown>;
     const str = (key: string): string | null => (typeof doc[key] === 'string' ? doc[key] : null);
@@ -279,11 +360,10 @@ export class OidcClient {
     } else {
       body.set('client_id', clientId);
     }
-    const res = await fetch((await this.discover()).token, {
+    const res = await this.send((await this.discover()).token, {
       method: 'POST',
       headers,
-      body,
-      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+      body: body.toString(),
     });
     const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
     if (!res.ok) {
@@ -342,15 +422,14 @@ export class OidcClient {
     const known = this.introspected.get(key);
     if (known && known.until > Date.now()) return known.active;
     const pair = `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`;
-    const res = await fetch(endpoint, {
+    const res = await this.send(endpoint, {
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
         accept: 'application/json',
         authorization: `Basic ${Buffer.from(pair).toString('base64')}`,
       },
-      body: new URLSearchParams({ token, token_type_hint: 'access_token' }),
-      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+      body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString(),
     });
     if (!res.ok) throw new Error(`OIDC introspection endpoint → HTTP ${res.status}`);
     const json = (await res.json()) as Record<string, unknown>;

@@ -9,6 +9,7 @@ import {
   defaultProbeWritable,
   doctor,
 } from '../../cli/commands/doctor';
+import { backChannelFetch } from '../../auth/oidc/oidc-client';
 import { migrationStatus } from '../../cli/commands/migrate-status';
 import { findUser, samplesLoad, userList, userSetRole } from '../../cli/commands/users';
 import { quizImport, quizList, quizTransfer } from '../../cli/commands/quiz';
@@ -76,7 +77,7 @@ export class CliCommandOperations {
             doctor(out, {
               prisma,
               settings,
-              fetch,
+              fetch: backChannelFetch,
               pingRedis: defaultPingRedis,
               authDeprecations: defaultAuthDeprecations,
               probeWritable: defaultProbeWritable,

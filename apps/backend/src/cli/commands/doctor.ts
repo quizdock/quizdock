@@ -4,6 +4,8 @@ import Redis from 'ioredis';
 import type { PrismaService } from '../../prisma/prisma.service';
 import type { Output, Said } from '../output';
 import {
+  backChannelHost,
+  type BackChannel,
   discoveryUrl,
   issuerMismatch,
   oidcSettings,
@@ -19,7 +21,8 @@ export interface DoctorDeps {
   prisma: Pick<PrismaService, '$queryRaw'>;
   /** The configuration to check (the backend's, or a fixed one in tests). */
   settings: SettingsService;
-  fetch: typeof fetch;
+  /** The back channel to the provider (`backChannelFetch`; injected for tests). */
+  fetch: BackChannel;
   /** Redis ping (injected for tests). */
   pingRedis: (url: string) => Promise<void>;
   /** The deprecated ways of reading tokens used lately (injected for tests). */
@@ -198,7 +201,10 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
         });
       let jwksUri = oidc.jwksUri ?? undefined;
       try {
-        const res = await deps.fetch(url, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+        const res = await deps.fetch(url, {
+          signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+          host: backChannelHost(oidc, url),
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const doc = (await res.json()) as Record<string, unknown>;
         for (const key of ['authorization_endpoint', 'token_endpoint', 'jwks_uri']) {
@@ -220,7 +226,10 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
       }
       if (jwksUri) {
         try {
-          const res = await deps.fetch(jwksUri, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+          const res = await deps.fetch(jwksUri, {
+            signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+            host: backChannelHost(oidc, jwksUri),
+          });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const jwks = (await res.json()) as { keys?: unknown[] };
           if (!Array.isArray(jwks.keys) || jwks.keys.length === 0) throw new Error('no keys');
