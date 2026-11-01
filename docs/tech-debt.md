@@ -66,12 +66,18 @@ Three known gaps left by the review of the changes after v0.13.2, each rare or h
 
 What [the audit](security/audit-2026-10-03.md) found and did not close.
 
-- **Tokens not bound to the client** (S3) — `apps/backend/src/auth/oidc/oidc-client.ts`:
-  ID tokens are refused, but without `OIDC_AUDIENCE` an access token is not checked
-  against `OIDC_CLIENT_ID` (`azp` or `aud`). Why: requiring it would break Bearer clients
-  holding another `client_id`, which the documentation allows. Cost: in a shared realm,
-  another application's tokens are accepted. Way out: require the binding unless an
-  audience or a list of accepted clients is configured.
+- **Bearer tokens not bound to the client** (S3) — `apps/backend/src/auth/oidc/oidc-client.ts`:
+  a browser session takes its identity from the ID token, whose audience is
+  `OIDC_CLIENT_ID`; a `Bearer` token, without `OIDC_AUDIENCE`, is not checked against
+  any client (`azp` or `aud`). Why: requiring it would break Bearer clients holding
+  another `client_id`, which the documentation allows. Cost: in a shared realm, another
+  application's access tokens are accepted as Bearer. Way out: require the binding
+  unless an audience or a list of accepted clients is configured.
+- **Deprecated ways of reading tokens** — `apps/backend/src/auth/oidc/deprecations.ts`:
+  roles read from the access token when the ID token lacks them, and a `Bearer` token
+  neither marked `at+jwt` (RFC 9068) nor introspected, judged on its claims. Logged and
+  reported by `doctor` until 1.0. Way out, at 1.0: delete both paths and
+  `looksLikeIdToken`.
 - **A `closest` bonus overwritten** (B6, assumed) — `submit` in
   `apps/backend/src/game/game.engine.ts`: it writes back a score read before
   `ANSWER_ONCE_SCRIPT`, so a reveal settling the question in between (`settleClosest`)

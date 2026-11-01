@@ -1,4 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import { Logger } from '@nestjs/common';
 import { createRemoteJWKSet, type JWTPayload, jwtVerify } from 'jose';
 import { SETTINGS } from '@quiz-dock/contracts';
@@ -13,6 +15,60 @@ type Jwks = ReturnType<typeof createRemoteJWKSet>;
  */
 export const IDP_TIMEOUT_MS = 5_000;
 
+/** A request on the back channel, as `fetch` takes it, plus the authority to name. */
+export interface BackChannelInit {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+  signal?: AbortSignal;
+  /**
+   * The `Host` to send (RFC 9110 §7.2): the provider's public authority while
+   * the connection goes to its internal address.
+   */
+  host?: string;
+}
+
+/** What the backend reads of an answer. */
+export interface BackChannelResponse {
+  ok: boolean;
+  status: number;
+  json(): Promise<unknown>;
+}
+
+export type BackChannel = (url: string, init?: BackChannelInit) => Promise<BackChannelResponse>;
+
+/**
+ * Sends a back-channel request. With a `host`, through `node:http(s)`: `fetch`
+ * sets `Host` from the URL and ignores the one given.
+ */
+export const backChannelFetch: BackChannel = (url, init = {}) => {
+  const { host, ...rest } = init;
+  if (!host) return fetch(url, rest);
+  const send = url.startsWith('https:') ? httpsRequest : httpRequest;
+  return new Promise((resolve, reject) => {
+    const req = send(
+      url,
+      { method: rest.method ?? 'GET', headers: { ...rest.headers, host }, signal: rest.signal },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on('data', (c: Buffer) => chunks.push(c));
+        res.on('error', reject);
+        res.on('end', () => {
+          const status = res.statusCode ?? 0;
+          const text = Buffer.concat(chunks).toString('utf8');
+          resolve({
+            ok: status >= 200 && status < 300,
+            status,
+            json: async () => JSON.parse(text) as unknown,
+          });
+        });
+      },
+    );
+    req.on('error', reject);
+    req.end(rest.body);
+  });
+};
+
 /** The provider's endpoints the backend uses, each on the side it is reached from. */
 interface Endpoints {
   /** Front channel (the browser goes there). */
@@ -21,6 +77,8 @@ interface Endpoints {
   /** Back channel (the backend calls it). */
   token: string;
   jwks: string;
+  /** Token introspection (RFC 7662), when the provider publishes it. */
+  introspection: string | null;
 }
 
 /** What the token endpoint answers (RFC 6749 §5.1, OIDC Core §3.1.3.3). */
@@ -113,8 +171,17 @@ export function oidcSettings(from: SettingsService = settings): OidcSettings {
     audience: from.get(SETTINGS.OIDC_AUDIENCE) || null,
     internalUrl,
     jwksUri,
-    scope: 'openid profile email',
+    scope: from.get(SETTINGS.OIDC_SCOPE).trim().split(/\s+/).join(' '),
   };
+}
+
+/**
+ * The `Host` of a request to `url`: the issuer's authority when `url` is on
+ * `OIDC_INTERNAL_URL`, else none (the URL's own).
+ */
+export function backChannelHost(settings: OidcSettings, url: string): string | undefined {
+  const { internalUrl, issuer } = settings;
+  return internalUrl && url.startsWith(internalUrl) ? new URL(issuer).host : undefined;
 }
 
 /** A random URL-safe string (state, nonce, PKCE verifier, session id). */
@@ -134,8 +201,25 @@ export class OidcClient {
   private readonly logger = new Logger(OidcClient.name);
   private endpoints: Promise<Endpoints> | null = null;
   private jwks: Promise<Jwks> | null = null;
+  private readonly introspected = new Map<string, { active: boolean; until: number }>();
 
-  constructor(readonly settings: OidcSettings) {}
+  constructor(
+    readonly settings: OidcSettings,
+    private readonly transport: BackChannel = backChannelFetch,
+  ) {}
+
+  /**
+   * A request to the provider. On its internal address, it still names the
+   * provider by the issuer's authority: a provider that derives its issuer
+   * from the request (Authentik) then signs tokens with the public one.
+   */
+  private send(url: string, init: BackChannelInit = {}): Promise<BackChannelResponse> {
+    return this.transport(url, {
+      ...init,
+      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+      host: backChannelHost(this.settings, url),
+    });
+  }
 
   /** A URL on the provider's public address → the same on its internal one (back channel). */
   private toInternal(url: string): string {
@@ -169,7 +253,7 @@ export class OidcClient {
 
   private async fetchDiscovery(): Promise<Endpoints> {
     const url = this.toInternal(discoveryUrl(this.settings.issuer));
-    const res = await fetch(url, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+    const res = await this.send(url);
     if (!res.ok) throw new Error(`OIDC discovery failed: ${url} → HTTP ${res.status}`);
     const doc = (await res.json()) as Record<string, unknown>;
     const str = (key: string): string | null => (typeof doc[key] === 'string' ? doc[key] : null);
@@ -183,11 +267,13 @@ export class OidcClient {
     const mismatch = issuer && issuerMismatch(issuer, this.settings.issuer);
     if (mismatch) this.logger.warn(mismatch);
     const endSession = str('end_session_endpoint');
+    const introspection = str('introspection_endpoint');
     return {
       authorization: this.toPublic(authorization),
       endSession: endSession ? this.toPublic(endSession) : null,
       token: this.toInternal(token),
       jwks: this.settings.jwksUri ?? this.toInternal(jwks),
+      introspection: introspection ? this.toInternal(introspection) : null,
     };
   }
 
@@ -274,11 +360,10 @@ export class OidcClient {
     } else {
       body.set('client_id', clientId);
     }
-    const res = await fetch((await this.discover()).token, {
+    const res = await this.send((await this.discover()).token, {
       method: 'POST',
       headers,
-      body,
-      signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+      body: body.toString(),
     });
     const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
     if (!res.ok) {
@@ -301,36 +386,95 @@ export class OidcClient {
   }
 
   /**
-   * Validates an access token: signature against the JWKS, `iss`, `exp`, and `aud`
-   * when configured. An ID token is refused: it is not meant to call an API, and
-   * ours travels in the browser (the logout's `id_token_hint`).
+   * A `Bearer` token, as a resource server checks it: signature against the
+   * JWKS, `iss`, `exp`, and `aud` when configured, then whether it is an access
+   * token at all — an ID token must not open the API (ours travels in the
+   * browser, in the logout's `id_token_hint`). The provider says so:
+   * - in the token itself, with the `typ` header of RFC 9068 (`at+jwt`);
+   * - else through introspection (RFC 7662), for a confidential client.
+   * Neither: `kind: 'unproven'`, and the caller decides.
    */
-  async verifyAccessToken(token: string): Promise<JWTPayload> {
-    const { payload } = await jwtVerify(token, await this.keys(), {
+  async verifyBearer(token: string): Promise<{ payload: JWTPayload; kind: BearerKind }> {
+    const { payload, protectedHeader } = await jwtVerify(token, await this.keys(), {
       issuer: this.settings.issuer,
       ...(this.settings.audience ? { audience: this.settings.audience } : {}),
     });
-    if (isIdToken(payload)) throw new Error('An ID token is not an access token.');
-    return payload;
+    if (isJwtAccessTokenType(protectedHeader.typ)) return { payload, kind: 'rfc9068' };
+    const active = await this.introspect(token, payload.exp);
+    if (active === null) return { payload, kind: 'unproven' };
+    if (!active)
+      throw new Error('The provider does not hold this token as an active access token.');
+    return { payload, kind: 'introspected' };
   }
 
-  /** Validates the ID token of a sign-in (OIDC Core §3.1.3.7): issuer, audience = us, nonce. */
-  async verifyIdToken(token: string, nonce: string): Promise<JWTPayload> {
+  /**
+   * Asks the provider whether a token is an active access token (RFC 7662), or
+   * null when it cannot be asked: no introspection endpoint, or a public client
+   * (the request authenticates with the secret). The answer is kept a minute at
+   * most, and never past the token's expiry.
+   */
+  private async introspect(token: string, exp: number | undefined): Promise<boolean | null> {
+    const { clientId, clientSecret } = this.settings;
+    if (!clientSecret) return null;
+    const endpoint = (await this.discover()).introspection;
+    if (!endpoint) return null;
+    const key = createHash('sha256').update(token).digest('base64url');
+    const known = this.introspected.get(key);
+    if (known && known.until > Date.now()) return known.active;
+    const pair = `${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`;
+    const res = await this.send(endpoint, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        accept: 'application/json',
+        authorization: `Basic ${Buffer.from(pair).toString('base64')}`,
+      },
+      body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString(),
+    });
+    if (!res.ok) throw new Error(`OIDC introspection endpoint → HTTP ${res.status}`);
+    const json = (await res.json()) as Record<string, unknown>;
+    // `token_type`, when given, is an OAuth access token type (RFC 7662 §2.2):
+    // a provider that answers for an ID token says so there (Keycloak: `ID`).
+    const active =
+      json.active === true &&
+      (json.token_type === undefined || String(json.token_type).toLowerCase() === 'bearer');
+    for (const [k, v] of this.introspected) if (v.until <= Date.now()) this.introspected.delete(k);
+    const until = Math.min(Date.now() + INTROSPECTION_CACHE_MS, (exp ?? 0) * 1000);
+    this.introspected.set(key, { active, until });
+    return active;
+  }
+
+  /**
+   * Validates an ID token (OIDC Core §3.1.3.7): issuer, audience = us, and the
+   * nonce of the sign-in. A renewed one (§12.2) is checked without nonce.
+   */
+  async verifyIdToken(token: string, nonce: string | null): Promise<JWTPayload> {
     const { payload } = await jwtVerify(token, await this.keys(), {
       issuer: this.settings.issuer,
       audience: this.settings.clientId,
     });
-    if (payload.nonce !== nonce) throw new Error('ID token nonce mismatch.');
+    if (nonce !== null && payload.nonce !== nonce) throw new Error('ID token nonce mismatch.');
     return payload;
   }
 }
 
+/** How a `Bearer` token was shown to be an access token, if it was. */
+export type BearerKind = 'rfc9068' | 'introspected' | 'unproven';
+
+/** How long an introspection answer is kept. */
+const INTROSPECTION_CACHE_MS = 60_000;
+
+/** The `typ` header of a JWT access token (RFC 9068 §2.1), media type prefix optional. */
+const isJwtAccessTokenType = (typ: string | undefined): boolean =>
+  typeof typ === 'string' && /^(application\/)?at\+jwt$/i.test(typ);
+
 /**
- * An ID token, told from an access token by the claims only an ID token has
- * (OIDC Core §2, §3.1.3.6, §3.3.2.11): `nonce`, `at_hash`, `c_hash` (a renewed ID
- * token may lack the nonce, not the hash), or Keycloak's `typ: ID`.
+ * Deprecated — for a `Bearer` token the provider vouched for neither way. An
+ * ID token told by the claims only an ID token should have (OIDC Core §2,
+ * §3.1.3.6, §3.3.2.11): `nonce`, `at_hash`, `c_hash`, or Keycloak's `typ: ID`.
+ * A guess: Authentik copies `nonce` into its access tokens.
  */
-function isIdToken(payload: JWTPayload): boolean {
+export function looksLikeIdToken(payload: JWTPayload): boolean {
   return (
     payload.typ === 'ID' ||
     payload.nonce !== undefined ||

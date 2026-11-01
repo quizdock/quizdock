@@ -4,11 +4,14 @@ import Redis from 'ioredis';
 import type { PrismaService } from '../../prisma/prisma.service';
 import type { Output, Said } from '../output';
 import {
+  backChannelHost,
+  type BackChannel,
   discoveryUrl,
   issuerMismatch,
   oidcSettings,
   type OidcSettings,
 } from '../../auth/oidc/oidc-client';
+import { readAuthDeprecations, AUTH_DEPRECATIONS } from '../../auth/oidc/deprecations';
 import { migrationStatus } from './migrate-status';
 import { SETTING_LIST, SETTINGS } from '@quiz-dock/contracts';
 import type { SettingsService } from '../../admin/settings/settings.service';
@@ -18,9 +21,12 @@ export interface DoctorDeps {
   prisma: Pick<PrismaService, '$queryRaw'>;
   /** The configuration to check (the backend's, or a fixed one in tests). */
   settings: SettingsService;
-  fetch: typeof fetch;
+  /** The back channel to the provider (`backChannelFetch`; injected for tests). */
+  fetch: BackChannel;
   /** Redis ping (injected for tests). */
   pingRedis: (url: string) => Promise<void>;
+  /** The deprecated ways of reading tokens used lately (injected for tests). */
+  authDeprecations: (url: string) => ReturnType<typeof readAuthDeprecations>;
   /** Write probe in the media dir (injected for tests). */
   probeWritable: (dir: string) => void;
   /** Shipped migrations folder; default `<cwd>/prisma/migrations`. */
@@ -40,6 +46,22 @@ export async function defaultPingRedis(url: string): Promise<void> {
   try {
     await client.connect();
     await client.ping();
+  } finally {
+    client.disconnect();
+  }
+}
+
+export async function defaultAuthDeprecations(
+  url: string,
+): ReturnType<typeof readAuthDeprecations> {
+  const client = new Redis(url, {
+    lazyConnect: true,
+    maxRetriesPerRequest: 1,
+    connectTimeout: 3000,
+  });
+  try {
+    await client.connect();
+    return await readAuthDeprecations(client);
   } finally {
     client.disconnect();
   }
@@ -179,7 +201,10 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
         });
       let jwksUri = oidc.jwksUri ?? undefined;
       try {
-        const res = await deps.fetch(url, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+        const res = await deps.fetch(url, {
+          signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+          host: backChannelHost(oidc, url),
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const doc = (await res.json()) as Record<string, unknown>;
         for (const key of ['authorization_endpoint', 'token_endpoint', 'jwks_uri']) {
@@ -201,7 +226,10 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
       }
       if (jwksUri) {
         try {
-          const res = await deps.fetch(jwksUri, { signal: AbortSignal.timeout(IDP_TIMEOUT_MS) });
+          const res = await deps.fetch(jwksUri, {
+            signal: AbortSignal.timeout(IDP_TIMEOUT_MS),
+            host: backChannelHost(oidc, jwksUri),
+          });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const jwks = (await res.json()) as { keys?: unknown[] };
           if (!Array.isArray(jwks.keys) || jwks.keys.length === 0) throw new Error('no keys');
@@ -215,6 +243,19 @@ export async function doctor(out: Output, deps: DoctorDeps): Promise<boolean> {
             params: { url: jwksUri, error: (err as Error).message },
           });
         }
+      }
+      // Ways of reading tokens that end in 1.0, if this instance still relies on them.
+      try {
+        for (const { kind, last } of await deps.authDeprecations(
+          settings.get(SETTINGS.REDIS_URL),
+        )) {
+          out.warn(`${AUTH_DEPRECATIONS[kind]} (last ${last})`, {
+            code: `doctor.deprecated.${kind}`,
+            params: { last },
+          });
+        }
+      } catch {
+        // Redis unreachable: already reported above.
       }
     }
   }

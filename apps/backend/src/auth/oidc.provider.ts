@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { Request } from 'express';
-import type { JWTPayload } from 'jose';
+import { decodeJwt, type JWTPayload } from 'jose';
 import type { AuthPrincipal, AuthProvider } from './auth-provider';
-import type { OidcClient } from './oidc/oidc-client';
+import type { AuthDeprecations } from './oidc/deprecations';
+import { looksLikeIdToken, type OidcClient } from './oidc/oidc-client';
 import type { OidcSessions } from './oidc/oidc-sessions';
 import { readOurCookie, SESSION_COOKIE } from './oidc/session-cookie';
 import { SETTINGS } from '@quiz-dock/contracts';
@@ -20,23 +21,29 @@ function getByPath(obj: unknown, path: string): unknown {
 
 /**
  * `AUTH_MODE=oidc`: resolves the identity from the tokens of **any OpenID Connect
- * provider** — signature against the provider's JWKS, `iss`, `exp`, and `aud`
- * when configured. Nothing here is provider-specific; everything comes from the
- * standard (Discovery 1.0, Core 1.0 claims) plus environment variables (see
- * `oidcSettings`, and `OIDC_ROLES_CLAIM` / `OIDC_NAME_CLAIM` below).
+ * provider**. Nothing here is provider-specific: everything comes from the
+ * standards plus environment variables (see `oidcSettings`, and
+ * `OIDC_ROLES_CLAIM` / `OIDC_NAME_CLAIM` below).
  *
  * Two ways in:
- * - the browser's **session cookie** (Backend for Frontend): the tokens stay
- *   server-side, in `OidcSessions`, and are renewed there;
- * - a `Bearer` access token, for a client that is not a browser.
+ * - the browser's **session cookie** (Backend for Frontend), QuizDock being the
+ *   client: the tokens came from the token endpoint and stay server-side, in
+ *   `OidcSessions`. The identity is the ID token's (OIDC Core §2), validated
+ *   when it was received;
+ * - a `Bearer` access token, for a client that is not a browser, QuizDock being
+ *   the resource server: see `OidcClient.verifyBearer`.
  *
  * - `OIDC_ROLES_CLAIM` (optional): dotted path of the roles array claim. Default
- *   `roles`; adapt to your provider (`realm_access.roles`, `groups`, …).
+ *   `roles`; adapt to your provider (`groups`, …).
  * - `OIDC_NAME_CLAIM` (optional): dotted path of the display-name claim, symmetric
  *   with the roles one. Unset, the standard fallback chain below applies.
  *
  * Standard claims used: `sub` (identity), `preferred_username` / `name` / `email`
  * (display), and the roles claim above.
+ *
+ * Deprecated until 1.0 (`AuthDeprecations`): roles read from the access token
+ * when the ID token lacks them, and a `Bearer` token the provider vouched for
+ * neither way, judged on its claims.
  */
 @Injectable()
 export class OidcProvider implements AuthProvider {
@@ -46,30 +53,66 @@ export class OidcProvider implements AuthProvider {
   constructor(
     private readonly client: OidcClient,
     private readonly sessions: OidcSessions,
+    private readonly deprecations: AuthDeprecations,
   ) {
     this.rolesClaim = settings.get(SETTINGS.OIDC_ROLES_CLAIM);
   }
 
   async authenticate(req: Request): Promise<AuthPrincipal | null> {
     const header = req.headers.authorization;
-    let token: string | null = null;
-    if (header?.startsWith('Bearer ')) {
-      token = header.slice('Bearer '.length).trim();
-    } else {
-      const sid = readOurCookie(req.headers.cookie, SESSION_COOKIE);
-      if (sid) token = await this.sessions.accessToken(sid);
-    }
-    if (!token) return null;
     try {
-      return this.principalOf(await this.client.verifyAccessToken(token));
+      if (header?.startsWith('Bearer ')) {
+        return await this.bearerPrincipal(header.slice('Bearer '.length).trim());
+      }
+      const sid = readOurCookie(req.headers.cookie, SESSION_COOKIE);
+      const tokens = sid ? await this.sessions.tokens(sid) : null;
+      if (!tokens?.idToken) return null;
+      return this.sessionPrincipal(decodeJwt(tokens.idToken), tokens.accessToken);
     } catch (err) {
       this.logger.debug(`JWT rejected: ${(err as Error).message}`);
       return null;
     }
   }
 
+  private async bearerPrincipal(token: string): Promise<AuthPrincipal | null> {
+    const { payload, kind } = await this.client.verifyBearer(token);
+    if (kind === 'unproven') {
+      if (looksLikeIdToken(payload)) throw new Error('An ID token is not an access token.');
+      this.deprecations.note('bearer-unproven');
+    }
+    return this.principalOf(payload);
+  }
+
+  /**
+   * The identity of a browser session: the claims of its validated ID token.
+   * The roles come from there too; when they are missing, from the access
+   * token, as before (deprecated) — read without check, it came from the token
+   * endpoint with the ID token.
+   */
+  sessionPrincipal(idClaims: JWTPayload, accessToken: string): AuthPrincipal | null {
+    const principal = this.principalOf(idClaims);
+    if (!principal || getByPath(idClaims, this.rolesClaim) !== undefined) return principal;
+    let accessClaims: JWTPayload;
+    try {
+      accessClaims = decodeJwt(accessToken);
+    } catch {
+      return principal; // An opaque access token: nothing more to read.
+    }
+    const roles = this.rolesOf(accessClaims);
+    if (roles === null) return principal;
+    this.deprecations.note('roles-in-access-token');
+    return { ...principal, roles };
+  }
+
+  /** The roles at `OIDC_ROLES_CLAIM`, or null when the claim is absent. */
+  private rolesOf(payload: JWTPayload): string[] | null {
+    const raw = getByPath(payload, this.rolesClaim);
+    if (raw === undefined) return null;
+    return Array.isArray(raw) ? raw.filter((r): r is string => typeof r === 'string') : [];
+  }
+
   /** The identity carried by a validated token's claims. */
-  principalOf(payload: JWTPayload): AuthPrincipal | null {
+  private principalOf(payload: JWTPayload): AuthPrincipal | null {
     const sub = payload.sub;
     if (!sub) {
       return null;
@@ -83,7 +126,6 @@ export class OidcProvider implements AuthProvider {
     // Read at each sign-in: the administration may change it (live).
     const nameClaim = settings.get(SETTINGS.OIDC_NAME_CLAIM) || undefined;
     const configured = nameClaim ? getByPath(payload, nameClaim) : undefined;
-    const rolesRaw = getByPath(payload, this.rolesClaim);
     return {
       sub,
       displayName:
@@ -95,9 +137,7 @@ export class OidcProvider implements AuthProvider {
       // An address the provider says is not verified could be anyone's: not kept,
       // since accounts are found by it (`qd users.set-role user=<e-mail>`).
       email: typeof email === 'string' && payload['email_verified'] !== false ? email : null,
-      roles: Array.isArray(rolesRaw)
-        ? rolesRaw.filter((r): r is string => typeof r === 'string')
-        : [],
+      roles: this.rolesOf(payload) ?? [],
     };
   }
 }

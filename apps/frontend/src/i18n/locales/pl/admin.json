@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Poza aplikacją",
-    "intro": "Odczytywane przez Docker Compose, skrypt quizdock, budowanie obrazu lub Keycloak, nigdy przez aplikację: zmienia się je tam, gdzie są odczytywane, nie tutaj.",
+    "intro": "Odczytywane przez Docker Compose, skrypt quizdock, budowanie obrazu, Keycloak lub Authentik, nigdy przez aplikację: zmienia się je tam, gdzie są odczytywane, nie tutaj.",
     "readBy": "Odczytuje",
     "what": "Co",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Skrypt quizdock",
       "build": "Budowanie obrazu",
       "dev": "Stos deweloperski",
@@ -824,7 +825,11 @@
     "jwks_ok_few": "Klucze podpisujące osiągalne ({{count}} klucze)",
     "jwks_ok_many": "Klucze podpisujące osiągalne ({{count}} kluczy)",
     "jwks_ok_other": "Klucze podpisujące osiągalne ({{count}} klucza)",
-    "jwks_failed": "Klucze podpisujące {{url}}: {{error}}"
+    "jwks_failed": "Klucze podpisujące {{url}}: {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Role odczytane z tokenu dostępu: w ID tokenie brak claimu ról (ostatnio {{last}}). Niech dostawca umieszcza je w ID tokenie; to się skończy w 1.0.",
+      "bearer-unproven": "Token Bearer przyjęty wyłącznie na podstawie claimów (ostatnio {{last}}). Niech dostawca oznacza tokeny dostępu (RFC 9068) lub daj QuizDock klienta poufnego; to się skończy w 1.0."
+    }
   },
   "demoReadOnly": "Publiczne demo: administracja jest pokazywana taka, jaka jest, i nic nie można w niej zmienić. Na twojej własnej instancji należy do ciebie.",
   "branding": {

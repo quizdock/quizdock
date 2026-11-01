@@ -59,6 +59,8 @@ export interface SettingsData {
   compose: ReferenceEntry[];
   /** The `full` setup's bundled Keycloak. */
   keycloak: ReferenceEntry[];
+  /** The `full` setup's bundled Authentik. */
+  authentik: ReferenceEntry[];
 }
 
 const settingEntry = (def: SettingDefinition): ReferenceEntry => ({
@@ -96,6 +98,9 @@ export function settingsData(): SettingsData {
     keycloak: DEPLOYMENT_VARIABLES.filter(
       (v) => (v.readBy === 'keycloak' || own.includes(v.key)) && !v.internal,
     ).map(deploymentEntry),
+    authentik: DEPLOYMENT_VARIABLES.filter(
+      (v) => (v.readBy === 'authentik' || own.includes(v.key)) && !v.internal,
+    ).map(deploymentEntry),
   };
 }
 
@@ -116,7 +121,7 @@ const DEV_VALUES: Record<string, string> = {
   OIDC_CLIENT_ID: 'quiz-dock-frontend',
   OIDC_CLIENT_SECRET: '',
   OIDC_AUDIENCE: '',
-  OIDC_ROLES_CLAIM: 'realm_access.roles',
+  OIDC_ROLES_CLAIM: 'roles',
   OIDC_NAME_CLAIM: '',
   MEDIA_MAX_BYTES: '10485760',
   MEDIA_MAX_VIDEO_MB: '50',
@@ -185,7 +190,8 @@ export function envExampleText(): string {
     '# Development stack (docker-compose.yml + override): copy to `.env` and adjust.',
     '# Never commit the real `.env`.',
     '# Deploying QuizDock? Start from env/standalone.env.example, env/local.env.example',
-    '# or env/oidc.env.example instead; env/full.env.example bundles Keycloak.',
+    '# or env/oidc.env.example instead; env/full.env.example bundles Keycloak,',
+    '# env/authentik.env.example Authentik.',
     '#',
     '# Generated from the settings registry (pnpm generate:settings-docs): edit',
     '# packages/contracts/src/admin/settings.ts, not this file. Every variable is',

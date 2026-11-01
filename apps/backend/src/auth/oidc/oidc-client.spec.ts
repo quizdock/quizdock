@@ -1,4 +1,7 @@
+import { createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import {
+  backChannelFetch,
   discoveryUrl,
   issuerMismatch,
   OidcClient,
@@ -100,9 +103,12 @@ describe('OidcClient', () => {
     global.fetch = realFetch;
   });
 
+  /** The back channel goes to `fetchMock`, `Host` included. */
+  const transport = (url: string, init?: object) => fetchMock(url, init);
   const client = (env: NodeJS.ProcessEnv = {}) =>
     new OidcClient(
       oidcSettings(settingsFrom({ OIDC_ISSUER: ISSUER, OIDC_INTERNAL_URL: INTERNAL, ...env })),
+      transport,
     );
 
   it('fetches discovery on the internal address, sends the browser to the public one', async () => {
@@ -114,10 +120,11 @@ describe('OidcClient', () => {
         codeVerifier: 'verifier-verifier-verifier-verifier-verifier-00',
       }),
     );
-    // Within a deadline: a provider that hangs must not hold a sign-in for minutes.
+    // Within a deadline: a provider that hangs must not hold a sign-in for minutes. On
+    // the internal address, the request names the provider by its public authority.
     expect(fetchMock).toHaveBeenCalledWith(
       `${INTERNAL}/realms/quiz-dock/.well-known/openid-configuration`,
-      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      expect.objectContaining({ signal: expect.any(AbortSignal), host: 'localhost:18080' }),
     );
     expect(`${url.origin}${url.pathname}`).toBe(discovery.authorization_endpoint);
     expect(Object.fromEntries(url.searchParams)).toEqual({
@@ -135,7 +142,10 @@ describe('OidcClient', () => {
   it('finds the discovery of an issuer whose path ends in a slash, on either address', async () => {
     const slashed = 'https://idp.example.com/tenant/app/';
     fetchMock.mockImplementation(async () => json(200, { ...discovery, issuer: slashed }));
-    await new OidcClient(oidcSettings(settingsFrom({ OIDC_ISSUER: slashed }))).authorizationUrl({
+    await new OidcClient(
+      oidcSettings(settingsFrom({ OIDC_ISSUER: slashed })),
+      transport,
+    ).authorizationUrl({
       redirectUri: 'http://app/auth/callback',
       state: 'st',
       nonce: 'no',
@@ -143,6 +153,7 @@ describe('OidcClient', () => {
     });
     await new OidcClient(
       oidcSettings(settingsFrom({ OIDC_ISSUER: slashed, OIDC_INTERNAL_URL: 'http://idp:9000' })),
+      transport,
     ).authorizationUrl({
       redirectUri: 'http://app/auth/callback',
       state: 'st',
@@ -221,5 +232,35 @@ describe('OidcClient', () => {
     expect(`${url.origin}${url.pathname}`).toBe(discovery.end_session_endpoint);
     expect(url.searchParams.get('id_token_hint')).toBe('id-token');
     expect(url.searchParams.get('post_logout_redirect_uri')).toBe('http://app');
+  });
+});
+
+describe('backChannelFetch', () => {
+  it('sends the Host it is given, which fetch would not', async () => {
+    const seen: { host?: string; body: string }[] = [];
+    const server = createServer((req, res) => {
+      let body = '';
+      req.on('data', (c) => (body += c));
+      req.on('end', () => {
+        seen.push({ host: req.headers.host, body });
+        res.writeHead(201, { 'content-type': 'application/json' });
+        res.end('{"ok":true}');
+      });
+    });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    const { port } = server.address() as AddressInfo;
+    try {
+      const res = await backChannelFetch(`http://127.0.0.1:${port}/token`, {
+        method: 'POST',
+        body: 'a=1',
+        host: 'sso.example.org',
+      });
+      expect(res.ok).toBe(true);
+      expect(res.status).toBe(201);
+      expect(await res.json()).toEqual({ ok: true });
+      expect(seen).toEqual([{ host: 'sso.example.org', body: 'a=1' }]);
+    } finally {
+      server.close();
+    }
   });
 });

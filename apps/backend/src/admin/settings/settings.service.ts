@@ -210,9 +210,10 @@ const MB = 1024 * 1024;
 /**
  * The generation of deployment files this image expects (`QUIZDOCK_FILES` in its
  * Compose files). 2: the files `quizdock upgrade` keeps in step with the release
- * (Keycloak 26.7, the hardened migrations, /health/ready).
+ * (Keycloak 26.7, the hardened migrations, /health/ready). 3: `OIDC_SCOPE` passed
+ * on, and the full setup with Authentik.
  */
-export const DEPLOYMENT_FILES_EXPECTED = 2;
+export const DEPLOYMENT_FILES_EXPECTED = 3;
 
 /** Passwords the Compose files and the env examples ship with: fine to try, not to keep. */
 export const DEFAULT_PASSWORDS = ['live', 'change-me', 'change-me-database'];

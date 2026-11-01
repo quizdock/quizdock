@@ -35,3 +35,11 @@ Exact (within the tolerance) = full base points; otherwise 100 / 75 / 50 /
 30 % by rank, 10 % beyond the fourth. No speed bonus — precision is the
 game. The reveal shows the ranking (nickname, value, distance, points) and
 each participant sees their own rank and distance.
+
+## Ranking (`apps/backend/src/game/results.ts`, `rankPlayers`)
+
+A quiz's leaderboard, podium and archived `finalRank` order players by score,
+then by answer time saved (`answerTimeSavedMs`, the highest first: the shortest
+total answer time, an unanswered question saving nothing, questions before a
+late join included), then by arrival (`joinedAt`). The room's standings
+(`scoreTable`) add up the archived quizzes and break ties by arrival in the room.

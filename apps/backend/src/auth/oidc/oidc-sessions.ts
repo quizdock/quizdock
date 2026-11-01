@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { Logger } from '@nestjs/common';
+import type { JWTPayload } from 'jose';
 import type { RedisService } from '../../redis/redis.service';
 import { OidcGrantError, type OidcClient, randomToken, type TokenSet } from './oidc-client';
 
@@ -98,11 +99,11 @@ export class OidcSessions {
   }
 
   /**
-   * A valid access token for the session, renewed when it is about to expire;
-   * null when the session is unknown, or over (the provider refused to renew).
-   * The idle timer restarts on every use.
+   * The session's tokens, the access token valid and renewed when it is about
+   * to expire; null when the session is unknown, or over (the provider refused
+   * to renew). The idle timer restarts on every use.
    */
-  async accessToken(sid: string): Promise<string | null> {
+  async tokens(sid: string): Promise<TokenSet | null> {
     let session = await this.read(sid);
     if (!session) return null;
     if (session.expiresAt - Date.now() < RENEW_BEFORE_MS) {
@@ -110,7 +111,7 @@ export class OidcSessions {
       if (!session) return null;
     }
     await this.redis.expire(sessionKey(sid), SESSION_IDLE_S);
-    return session.accessToken;
+    return session;
   }
 
   /**
@@ -137,6 +138,7 @@ export class OidcSessions {
     }
     try {
       const tokens = await this.client.refresh(session.refreshToken);
+      if (tokens.idToken) await this.checkRenewedIdToken(tokens.idToken, session.sub);
       const renewed: StoredSession = {
         ...session,
         ...tokens,
@@ -157,5 +159,19 @@ export class OidcSessions {
       // Only our own lock: one taken over after ours ran out belongs to another renewal.
       await this.redis.eval(RELEASE_SCRIPT, 1, lockKey(sid), owner);
     }
+  }
+
+  /**
+   * A renewed ID token is validated as the first one was, and must name the
+   * same user (OIDC Core §12.2); otherwise the session ends.
+   */
+  private async checkRenewedIdToken(idToken: string, sub: string): Promise<void> {
+    let claims: JWTPayload;
+    try {
+      claims = await this.client.verifyIdToken(idToken, null);
+    } catch (err) {
+      throw new OidcGrantError(`renewed ID token rejected: ${(err as Error).message}`);
+    }
+    if (claims.sub !== sub) throw new OidcGrantError('renewed ID token names another user');
   }
 }

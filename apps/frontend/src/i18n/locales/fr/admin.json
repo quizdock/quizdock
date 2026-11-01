@@ -144,12 +144,13 @@
   },
   "outside": {
     "title": "Hors de l’application",
-    "intro": "Lus par Docker Compose, le script quizdock, la construction de l’image ou Keycloak, jamais par l’application : ils se modifient là où ils sont lus, pas ici.",
+    "intro": "Lus par Docker Compose, le script quizdock, la construction de l’image, Keycloak ou Authentik, jamais par l’application : ils se modifient là où ils sont lus, pas ici.",
     "readBy": "Lu par",
     "what": "Rôle",
     "readers": {
       "compose": "Compose",
       "keycloak": "Keycloak",
+      "authentik": "Authentik",
       "script": "Script quizdock",
       "build": "Construction de l’image",
       "dev": "Pile de développement",
@@ -802,7 +803,11 @@
     "jwks_ok_one": "Clés de signature joignables ({{count}} clé)",
     "jwks_ok_many": "Clés de signature joignables ({{count}} clés)",
     "jwks_ok_other": "Clés de signature joignables ({{count}} clés)",
-    "jwks_failed": "Clés de signature {{url}} : {{error}}"
+    "jwks_failed": "Clés de signature {{url}} : {{error}}",
+    "deprecated": {
+      "roles-in-access-token": "Rôles lus dans le jeton d’accès : l’ID token n’a pas le claim des rôles (dernière fois {{last}}). Faites-les mettre dans l’ID token par le fournisseur ; cette lecture cesse en 1.0.",
+      "bearer-unproven": "Un jeton Bearer accepté sur ses seuls claims (dernière fois {{last}}). Faites marquer les jetons d’accès par le fournisseur (RFC 9068) ou donnez à QuizDock un client confidentiel ; cela cesse en 1.0."
+    }
   },
   "demoReadOnly": "Démo publique : l’administration est montrée telle quelle, et rien ne peut y être modifié. Sur votre propre instance, elle est à vous.",
   "branding": {

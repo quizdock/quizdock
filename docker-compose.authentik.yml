@@ -1,0 +1,105 @@
+# The full setup with Authentik as identity provider (`quizdock init --full --iam=authentik`),
+# on top of docker-compose.prod.yml. Authentik loads authentik/quizdock.yaml on its
+# first start: the QuizDock application, its roles and two demonstration accounts.
+services:
+  quizdock:
+    environment:
+      AUTH_MODE: oidc
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-${PUBLIC_SCHEME:-http}://${PUBLIC_HOST:-localhost}:${HTTP_PORT:-18080}}
+      OIDC_ISSUER: ${OIDC_ISSUER:-${AUTHENTIK_PUBLIC_URL:-${PUBLIC_SCHEME:-http}://${PUBLIC_HOST:-localhost}:${AUTHENTIK_PORT:-18081}}/application/o/quiz-dock/}
+      # The backend reaches Authentik on the internal network, naming it by its public
+      # address: Authentik signs the tokens with the issuer it is called by.
+      OIDC_INTERNAL_URL: ${OIDC_INTERNAL_URL:-http://authentik-server:9000}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-quiz-dock}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?set OIDC_CLIENT_SECRET in .env}
+      # `entitlements` brings the roles, `offline_access` the refresh token.
+      OIDC_SCOPE: ${OIDC_SCOPE:-openid profile email entitlements offline_access}
+      OIDC_ROLES_CLAIM: ${OIDC_ROLES_CLAIM:-roles}
+    depends_on:
+      authentik-server:
+        condition: service_healthy
+
+  # Authentik's own role and database, created idempotently on the shared PostgreSQL.
+  authentik-db:
+    image: postgres:16-alpine
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER:-live}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-live}
+      AUTHENTIK_DB_USER: ${AUTHENTIK_DB_USER:-authentik}
+      AUTHENTIK_DB_PASSWORD: ${AUTHENTIK_DB_PASSWORD:?set AUTHENTIK_DB_PASSWORD in .env}
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        if ! psql -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname = '$$AUTHENTIK_DB_USER'" | grep -qx 1; then
+          # Read from stdin: psql substitutes :"name" and :'pass' there, quoted, not in -c.
+          psql -d postgres -v ON_ERROR_STOP=1 -v name="$$AUTHENTIK_DB_USER" -v pass="$$AUTHENTIK_DB_PASSWORD" <<'SQL'
+        CREATE ROLE :"name" LOGIN PASSWORD :'pass';
+        SQL
+        fi
+        if ! psql -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = 'authentik'" | grep -qx 1; then
+          createdb --owner="$$AUTHENTIK_DB_USER" authentik
+        fi
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+    networks: [internal]
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2026.8.5
+    command: server
+    environment: &authentik
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?set AUTHENTIK_SECRET_KEY in .env}
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASSWORD}
+      # The `akadmin` account, created on the first start.
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_ADMIN_PASSWORD:?set AUTHENTIK_ADMIN_PASSWORD in .env}
+      AUTHENTIK_BOOTSTRAP_EMAIL: ${AUTHENTIK_ADMIN_EMAIL:-admin@quiz-dock.test}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: 'false'
+    volumes:
+      - authentikdata:/data
+    ports:
+      - '${AUTHENTIK_PORT:-18081}:9000'
+    depends_on:
+      authentik-db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ['CMD', 'ak', 'healthcheck']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    restart: unless-stopped
+    networks: [internal, public]
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2026.8.5
+    command: worker
+    environment:
+      <<: *authentik
+      # Read by authentik/quizdock.yaml.
+      QUIZDOCK_APP_URL: ${APP_PUBLIC_URL:-${PUBLIC_SCHEME:-http}://${PUBLIC_HOST:-localhost}:${HTTP_PORT:-18080}}
+      QUIZDOCK_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      QUIZDOCK_HOST_PASSWORD: ${AUTHENTIK_HOST_PASSWORD:?set AUTHENTIK_HOST_PASSWORD in .env}
+      QUIZDOCK_PLAYER_PASSWORD: ${AUTHENTIK_PLAYER_PASSWORD:?set AUTHENTIK_PLAYER_PASSWORD in .env}
+    volumes:
+      - authentikdata:/data
+      - ./authentik/quizdock.yaml:/blueprints/quizdock/quizdock.yaml:ro
+    depends_on:
+      authentik-db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ['CMD', 'ak', 'healthcheck']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    restart: unless-stopped
+    networks: [internal, public]
+
+volumes:
+  authentikdata:

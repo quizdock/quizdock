@@ -96,6 +96,7 @@ describe('doctor', () => {
       }),
       fetch: jest.fn() as unknown as typeof fetch,
       pingRedis: jest.fn().mockResolvedValue(undefined),
+      authDeprecations: jest.fn().mockResolvedValue([]),
       probeWritable: jest.fn(),
       migrationsDir,
       ...over,
@@ -207,6 +208,23 @@ describe('doctor', () => {
     );
     expect(healthy).toBe(false);
     expect(text()).toMatch(/FAIL discovery .*HTTP 502.*set OIDC_INTERNAL_URL/);
+  });
+
+  it('in oidc mode warns of the deprecated ways of reading tokens still in use', async () => {
+    const { out, text } = memOutput();
+    const fetchMock = jest.fn(async () => ({ ok: false, status: 502, json: async () => ({}) }));
+    const authDeprecations = jest
+      .fn()
+      .mockResolvedValue([{ kind: 'roles-in-access-token', last: '2026-11-01' }]);
+    await doctor(
+      out,
+      deps(
+        { fetch: fetchMock as unknown as typeof fetch, authDeprecations },
+        { AUTH_MODE: 'oidc', OIDC_ISSUER: 'https://idp/x' },
+      ),
+    );
+    expect(authDeprecations).toHaveBeenCalledWith('redis://x');
+    expect(text()).toMatch(/WARN Roles read from the access token.*\(last 2026-11-01\)/);
   });
 });
 
