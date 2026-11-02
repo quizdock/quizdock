@@ -7,5 +7,30 @@
     "draft": "Kavand",
     "ready": "Valmis",
     "archived": "Arhiveeritud"
+  },
+  "markdownEditor": {
+    "source": "Markdown-märkekeel",
+    "bold": "Paks kiri",
+    "italic": "Kaldkiri",
+    "code": "Lähtekood",
+    "codeBlock": "Koodiplokk",
+    "bulletList": "Nummerdamata loend",
+    "orderedList": "Nummerdatud loend"
+  },
+  "titles": {
+    "admin": "Süsteemihaldus",
+    "setup": "Seadistamine",
+    "history": "Sessioonid",
+    "historyRoom": "Ooteruum",
+    "themes": "Kujundused",
+    "theme": "Kujundus",
+    "login": "Logi sisse",
+    "dashboard": "Minu viktoriinid",
+    "session": "Ooteruum",
+    "player": "Osaleja",
+    "control": "Konsool"
+  },
+  "draft": {
+    "discard": "Loobu kavandist"
   }
 }
