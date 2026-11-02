@@ -1,3 +1,83 @@
 {
-  "loading": "Laadin andmeid…"
+  "loading": "Laadin andmeid…",
+  "preview": {
+    "steps": "Sammud",
+    "backToEditor": "Tagasi muutmisvaatesse",
+    "previous": "Eelmine",
+    "next": "Järgmine",
+    "device": "Seade",
+    "questionPosition": "{{index}} / {{total}}",
+    "correctAnswer": "õige vastus",
+    "optionFallback": "Vali {{index}}"
+  },
+  "feedback": {
+    "backToEditor": "Tagasi muutmisvaatesse"
+  },
+  "questions": {
+    "formTitle": "Küsimus",
+    "empty": "Ühtegi küsimust pole. No lisa siis mõni!",
+    "add": "Lisa",
+    "moveUp": "Liiguta ülespoole",
+    "moveDown": "Liiguta allapoole",
+    "deleteQuestion": "Kustuta küsimus",
+    "dragHandle": "Järjekorra muutmiseks lohista",
+    "itemsCount_one": "{{count}} objekt",
+    "itemsCount_other": "{{count}} objekti"
+  },
+  "questionForm": {
+    "numericLegend": "Vastus",
+    "decimalsAllowed": "Komakohad sobivad ilusti: 3.14, 0.5…",
+    "timingSummary": "{{time}} sek",
+    "correct": "Õige",
+    "submitUpdate": "Salvesta",
+    "submitAdd": "Lisa",
+    "invalidError": "Vigane küsimus."
+  },
+  "media": {
+    "library": {
+      "loading": "Laadin andmeid…"
+    },
+    "kindImage": "Pilt",
+    "kindVideo": "Video",
+    "audioLabel": "Heliriba",
+    "none": "Puudub",
+    "addImage": "Lisa pilt",
+    "addVideo": "Lisa video",
+    "addAudio": "Lisa heliriba"
+  },
+  "settings": {
+    "title": "Seadistused",
+    "titleLabel": "Pealkiri",
+    "descriptionLabel": "Kirjeldus",
+    "descriptionPlaceholder": "Kirjeldus (kui tahad lisada)…",
+    "save": "Salvesta",
+    "soundLegend": "Heliriba"
+  },
+  "slideForm": {
+    "submitUpdate": "Salvesta",
+    "submitAdd": "Lisa",
+    "blocksLegend": "Sisu",
+    "block": {
+      "heading": "Päis",
+      "subheading": "Alapealkiri",
+      "text": "Tekst",
+      "image": "Pilt",
+      "columns2": "2 veergu",
+      "columns3": "3 veergu"
+    },
+    "videoSound": "Heliriba"
+  },
+  "publication": {
+    "kind": {
+      "image": "Pilt",
+      "video": "Video",
+      "audio": "Heliriba"
+    },
+    "slugLabel": "Lühinimi"
+  },
+  "background": {
+    "kind": {
+      "image": "Pilt"
+    }
+  }
 }
