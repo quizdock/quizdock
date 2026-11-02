@@ -31,16 +31,16 @@
   "deleteText": "",
   "copyName": "",
   "newName": "",
-  "name": "",
+  "name": "Nimi",
   "startsFrom": "",
   "startsFromHint": "",
   "cancel": "",
   "create": "",
   "close": "",
   "manage": "",
-  "loading": "",
+  "loading": "Laadin andmeid…",
   "builtin": {
-    "classic": "",
+    "classic": "Klassikaline",
     "sober": "",
     "kids": "",
     "festive": "",
@@ -88,9 +88,9 @@
     "phase": "",
     "device": "",
     "phases": {
-      "lobby": "",
-      "question": "",
-      "reveal": "",
+      "lobby": "Ooteruum",
+      "question": "Küsimus",
+      "reveal": "Vastus",
       "podium": ""
     },
     "devices": {
