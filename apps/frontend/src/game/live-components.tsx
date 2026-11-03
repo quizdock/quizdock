@@ -12,7 +12,15 @@ import type {
   SlideTextSize,
 } from '@quiz-dock/contracts';
 import { TILE_RATIO, fillSlideBlocks } from '@quiz-dock/contracts';
-import { type ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import {
+  type ReactNode,
+  type RefObject,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { usePodiumMotion, useRevealMotion, useStandingsMotion } from './motion/primitives';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -928,7 +936,6 @@ export function LeaderboardList({
   /** Which standings these are, for the rows to slide from their previous place. */
   track?: string;
 }) {
-  const { t } = useTranslation('live');
   const shown = rows.slice(0, max);
   const topScore = Math.max(0, ...shown.map((r) => r.score));
   const ref = useRef<HTMLOListElement>(null);
@@ -939,45 +946,183 @@ export function LeaderboardList({
       data-motion="own"
       className={cn('qd-leaderboard flex w-full flex-col gap-[0.4em]', BACKDROP_PANEL)}
     >
-      {shown.map((r) => {
-        const pct = topScore > 0 ? Math.round((r.score / topScore) * 100) : 0;
-        const me = r.rank === highlightRank;
-        return (
+      {shown.map((r) => (
+        <StandingsRow key={r.nickname} row={r} topScore={topScore} me={r.rank === highlightRank} />
+      ))}
+    </ol>
+  );
+}
+
+/** One player of a ranked list: rank, avatar, nickname, score, on a bar as long as the score. */
+function StandingsRow({
+  row,
+  topScore,
+  me,
+}: {
+  row: LeaderboardRow;
+  topScore: number;
+  me: boolean;
+}) {
+  const { t } = useTranslation('live');
+  const pct = topScore > 0 ? Math.round((row.score / topScore) * 100) : 0;
+  return (
+    <li
+      // A player keeps their row from one showing to the next: it slides to its new place.
+      data-row={row.nickname}
+      data-rank={row.rank}
+      data-you={me || undefined}
+      className={cn(
+        // Its own band under the score's bar: a row stays a row at 0 points, in either mode.
+        'qd-leaderboard-row bg-muted/50 relative flex items-center gap-[0.5em] overflow-hidden rounded-[0.3em] px-[0.75em] py-[0.4em]',
+        me ? 'ring-primary font-semibold ring-2' : '',
+      )}
+    >
+      {/* Barre de progression (fond) : largeur ∝ score / score du leader. */}
+      <div
+        className={cn('absolute inset-y-0 left-0', me ? 'bg-primary/25' : 'bg-primary/15')}
+        style={{ width: `${pct}%` }}
+        aria-hidden
+      />
+      <span className="text-muted-foreground relative tabular-nums">{row.rank}.</span>
+      <Avatar
+        name={row.avatar || row.nickname}
+        size="1.75em"
+        remote={row.remote ? t('control.remote') : undefined}
+      />
+      <span className="relative min-w-0 flex-1 truncate text-left" title={row.nickname}>
+        {row.nickname}
+      </span>
+      <span data-score className="relative tabular-nums">
+        {row.score}
+      </span>
+    </li>
+  );
+}
+
+/** Where each of the top three stands on its row: the leader in the middle, raised. */
+const LEADER_PLACE: Record<number, string> = {
+  1: 'col-start-2 pb-[1.2em] bg-podium-1',
+  2: 'col-start-1 bg-podium-2',
+  3: 'col-start-3 bg-podium-3',
+};
+
+/**
+ * The projection's standings between two questions (SPECIFICATIONS-LIVE §11.2): the top
+ * three apart, then the next ones as rows, down to the `max`th at most and as many as
+ * the screen's height holds — a row is never cut. A wide screen that cannot hold them in
+ * one column lays them in two, read down then across. It takes the height its parent gives.
+ */
+export function StandingsBoard({
+  rows,
+  max = 10,
+  track,
+}: {
+  rows: LeaderboardRow[];
+  max?: number;
+  /** Which standings these are, for the players to move from their previous place. */
+  track?: string;
+}) {
+  const { t } = useTranslation('live');
+  const shown = rows.slice(0, max);
+  const leaders = shown.slice(0, 3);
+  const ref = useRef<HTMLDivElement>(null);
+  const { fit, columns } = useRowsThatFit(ref, shown.length - leaders.length);
+  const listed = shown.slice(3, 3 + fit);
+  const topScore = Math.max(0, ...shown.map((r) => r.score));
+  useStandingsMotion(ref, [...leaders, ...listed], track);
+  return (
+    <div
+      ref={ref}
+      data-motion="own"
+      className="qd-standings flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-[1em]"
+    >
+      <ol className="qd-standings-top grid w-full max-w-[36em] shrink-0 grid-cols-3 items-end gap-[0.75em]">
+        {leaders.map((r) => (
           <li
-            // A player keeps their row from one showing to the next: it slides to its new place.
             key={r.nickname}
             data-row={r.nickname}
             data-rank={r.rank}
-            data-you={me || undefined}
+            data-place="top"
             className={cn(
-              // Its own band under the score's bar: a row stays a row at 0 points, in either mode.
-              'qd-leaderboard-row bg-muted/50 relative flex items-center gap-[0.5em] overflow-hidden rounded-[0.3em] px-[0.75em] py-[0.4em]',
-              me ? 'ring-primary font-semibold ring-2' : '',
+              'qd-standings-leader row-start-1 flex min-w-0 flex-col items-center gap-[0.2em] rounded-[0.6em] px-[0.6em] pt-[0.5em] pb-[0.5em] text-white shadow-lg [text-shadow:none]',
+              BACKDROP_EDGE,
+              LEADER_PLACE[r.rank],
             )}
           >
-            {/* Barre de progression (fond) : largeur ∝ score / score du leader. */}
-            <div
-              className={cn('absolute inset-y-0 left-0', me ? 'bg-primary/25' : 'bg-primary/15')}
-              style={{ width: `${pct}%` }}
-              aria-hidden
-            />
-            <span className="text-muted-foreground relative tabular-nums">{r.rank}.</span>
+            <span className="text-[1.2em] leading-none font-bold tabular-nums">{r.rank}</span>
             <Avatar
               name={r.avatar || r.nickname}
-              size="1.75em"
+              size={r.rank === 1 ? '3.25em' : '2.5em'}
               remote={r.remote ? t('control.remote') : undefined}
             />
-            <span className="relative min-w-0 flex-1 truncate text-left" title={r.nickname}>
+            <span className="max-w-full truncate font-semibold" title={r.nickname}>
               {r.nickname}
             </span>
-            <span data-score className="relative tabular-nums">
+            <span data-score className="text-[1.1em] leading-tight font-bold tabular-nums">
               {r.score}
             </span>
           </li>
-        );
-      })}
-    </ol>
+        ))}
+      </ol>
+      {listed.length ? (
+        <ol
+          data-columns={columns}
+          className={cn('qd-leaderboard grid w-full grid-flow-col gap-[0.4em]', BACKDROP_PANEL)}
+          style={{
+            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+            gridTemplateRows: `repeat(${Math.ceil(listed.length / columns)}, auto)`,
+          }}
+        >
+          {listed.map((r) => (
+            <StandingsRow key={r.nickname} row={r} topScore={topScore} me={false} />
+          ))}
+        </ol>
+      ) : null}
+    </div>
   );
+}
+
+/**
+ * How many of `count` rows the box's list (`.qd-leaderboard`) has the height for, under
+ * the box's other children, and in how many columns: all of them in one until the box is
+ * laid out; then two when one column does not hold them and the box is wider than tall.
+ */
+function useRowsThatFit(ref: RefObject<HTMLElement | null>, count: number) {
+  const [layout, setLayout] = useState({ fit: count, columns: 1 });
+  // A row's size, kept for when none is shown to measure.
+  const size = useRef({ row: 0, gap: 0, chrome: 0 });
+  useLayoutEffect(() => {
+    const box = ref.current;
+    const all = { fit: count, columns: 1 };
+    if (!box || typeof ResizeObserver === 'undefined') return setLayout(all);
+    const measure = () => {
+      const list = box.querySelector<HTMLElement>(':scope > .qd-leaderboard');
+      const items = list ? list.querySelectorAll<HTMLElement>('[data-row]') : [];
+      if (list && items.length) {
+        const row = items[0].offsetHeight;
+        const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+        const lines = Math.ceil(items.length / (Number(list.dataset.columns) || 1));
+        const chrome = list.offsetHeight - lines * row - (lines - 1) * gap;
+        size.current = { row, gap, chrome };
+      }
+      const { row, gap, chrome } = size.current;
+      if (!row) return setLayout(all);
+      const boxGap = parseFloat(getComputedStyle(box).rowGap) || 0;
+      const above = Array.from(box.children)
+        .filter((child) => child !== list)
+        .reduce((sum, child) => sum + (child as HTMLElement).offsetHeight + boxGap, 0);
+      const room = box.clientHeight - above - chrome;
+      const lines = Math.max(0, Math.floor((room + gap) / (row + gap)));
+      const columns = lines < count && box.clientWidth > box.clientHeight ? 2 : 1;
+      const fit = Math.min(count, lines * columns);
+      setLayout((was) => (was.fit === fit && was.columns === columns ? was : { fit, columns }));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    return () => observer.disconnect();
+  }, [ref, count]);
+  return { fit: Math.min(layout.fit, count), columns: layout.columns };
 }
 
 /** Podium top 3 (participant + projeté, §5.5). */
