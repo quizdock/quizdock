@@ -21,6 +21,7 @@ import {
   AnswerExplanation,
   AnswerRules,
   LeaderboardList,
+  StandingsBoard,
   OptionGrid,
   QuestionClockBar,
   Podium,
@@ -464,8 +465,8 @@ export function ScreenSurface({
         )
       : null;
   } else if (view.state === 'LEADERBOARD' && view.leaderboard && !reviewing) {
-    // A real leaderboard moment: the top eight, large, bars as long as the scores — as
-    // many as the 16:9 screen holds between its bands.
+    // A real leaderboard moment: the top three apart, then the next ones down to the
+    // tenth, as many as the screen holds between its bands.
     onBackground = !!view.question?.background;
     top = band(
       'top',
@@ -474,8 +475,8 @@ export function ScreenSurface({
       joinChip,
     );
     stage = (
-      <div className="w-full max-w-[48em] text-[1.25em]">
-        <LeaderboardList rows={view.leaderboard.top} max={8} />
+      <div className="flex min-h-0 w-full max-w-[48em] flex-1 flex-col text-[1.25em]">
+        <StandingsBoard rows={view.leaderboard.top} max={10} />
       </div>
     );
     bottom =

@@ -358,6 +358,36 @@ async function main() {
   await shot(screen, 'projection-standings-step');
   await shot(phone, 'phone-standings-step');
   check((await state(screen)) === 'LEADERBOARD' || true, 'projection: standings step shown');
+  // The top three apart, then rows down to the tenth: as many as the screen holds, none cut.
+  const standings = async (what) => {
+    const seen = await screen.evaluate(() => {
+      const board = document.querySelector('.qd-standings');
+      if (!board) return null;
+      const floor = Math.min(
+        board.getBoundingClientRect().bottom,
+        document.querySelector('[data-band="bottom"]')?.getBoundingClientRect().top ?? Infinity,
+        window.innerHeight,
+      );
+      const rows = [...board.querySelectorAll('.qd-leaderboard-row')];
+      return {
+        leaders: [...board.querySelectorAll('.qd-standings-leader')].map((el) => el.dataset.rank),
+        rows: rows.length,
+        cut: rows.some((el) => el.getBoundingClientRect().bottom > floor + 0.5),
+      };
+    });
+    check(
+      seen?.leaders.join() === '1,2,3' && !seen.cut && seen.rows <= 7,
+      `projection standings (${what}): top three apart, ${seen?.rows} rows under them, none cut`,
+    );
+  };
+  await standings('16:9');
+  await screen.setViewportSize({ width: 1400, height: 560 });
+  await shot(screen, 'projection-standings-short');
+  await standings('short window');
+  await screen.setViewportSize({ width: 768, height: 1024 });
+  await shot(screen, 'projection-standings-portrait');
+  await standings('portrait');
+  await screen.setViewportSize(SCREEN);
 
   // Sort by the room's total: a click on the header.
   await consolePage
