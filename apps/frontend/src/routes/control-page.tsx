@@ -90,6 +90,7 @@ import { type QuestionClock, useQuestionClock } from '../game/use-countdown';
 import { ChromiumNotice } from '@/components/chromium-notice';
 import { QuestionMediaStage } from '../game/media/question-media-stage';
 import { ParticipantPreview } from '../game/participant-preview';
+import { LiveThemeAnswers } from '../game/theme';
 import { InAudienceLanguage } from '../i18n/audience-language';
 import { ScaledStage } from '../game/slide-stage';
 import { joinBase, joinHostLabel, joinUrlFor } from '../game/join-url';
@@ -977,22 +978,24 @@ function HostConsole({
         <Markdown role="heading" aria-level={2} className="text-2xl font-semibold">
           {question.prompt}
         </Markdown>
-        {reveal && question.type === 'image_choice' ? (
-          <ImageChoiceGrid
-            options={question.options ?? []}
-            correctIds={correct}
-            counts={reveal.distribution}
-            className="max-w-xl"
-          />
-        ) : reveal && question.options?.length && question.type !== 'ordering' ? (
-          <OptionGrid
-            options={question.options}
-            correctIds={correct}
-            counts={reveal.distribution}
-          />
-        ) : reveal ? (
-          <RevealAnswer question={question} reveal={reveal} />
-        ) : null}
+        <LiveThemeAnswers theme={view.theme}>
+          {reveal && question.type === 'image_choice' ? (
+            <ImageChoiceGrid
+              options={question.options ?? []}
+              correctIds={correct}
+              counts={reveal.distribution}
+              className="max-w-xl"
+            />
+          ) : reveal && question.options?.length && question.type !== 'ordering' ? (
+            <OptionGrid
+              options={question.options}
+              correctIds={correct}
+              counts={reveal.distribution}
+            />
+          ) : reveal ? (
+            <RevealAnswer question={question} reveal={reveal} />
+          ) : null}
+        </LiveThemeAnswers>
         {reveal ? <AnswerExplanation reveal={reveal} /> : null}
         {view.leaderboard ? (
           <div className="flex flex-col gap-2">
@@ -1087,17 +1090,19 @@ function HostConsole({
         >
           {view.question?.prompt}
         </Markdown>
-        {view.question?.type === 'image_choice' ? (
-          <ImageChoiceGrid
-            options={view.question.options ?? []}
-            highlightIds={correctIds}
-            className="max-w-xl"
-          />
-        ) : view.question?.options?.length ? (
-          <OptionGrid options={view.question.options} highlightIds={correctIds} />
-        ) : (
-          <p className="text-muted-foreground text-sm">{t('control.freeAnswer')}</p>
-        )}
+        <LiveThemeAnswers theme={view.theme}>
+          {view.question?.type === 'image_choice' ? (
+            <ImageChoiceGrid
+              options={view.question.options ?? []}
+              highlightIds={correctIds}
+              className="max-w-xl"
+            />
+          ) : view.question?.options?.length ? (
+            <OptionGrid options={view.question.options} highlightIds={correctIds} />
+          ) : (
+            <p className="text-muted-foreground text-sm">{t('control.freeAnswer')}</p>
+          )}
+        </LiveThemeAnswers>
         {key.length ? (
           <p className="text-sm">
             <span className="text-muted-foreground">{t('control.answerKey')}</span>{' '}

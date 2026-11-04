@@ -1,4 +1,4 @@
-import { GameState } from '@quiz-dock/contracts';
+import { BUILTIN_THEME_VALUES, GameState } from '@quiz-dock/contracts';
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GameView } from '../game/use-game-session';
@@ -172,6 +172,43 @@ describe('ControlPage: the Projection tab (audit F9)', () => {
     fireEvent.click(await screen.findByRole('tab', { name: /Projection/ }));
     expect(await screen.findByRole('heading', { name: 'Capitale ?' })).toBeInTheDocument();
     expect([...hookState.roles]).toEqual(['host']);
+  });
+});
+
+describe('ControlPage: the answers in the quiz’s theme', () => {
+  afterEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it('shows the theme’s marks and colours on the answers, and nothing else of it', async () => {
+    localStorage.setItem('live.localUser', 'Animateur');
+    const theme = { ...BUILTIN_THEME_VALUES.classic, markers: 'letters' as const };
+    hookState.value = view({
+      state: GameState.Answering,
+      questionIndex: 0,
+      totalQuestions: 3,
+      question: {
+        questionIndex: 0,
+        type: 'single_choice',
+        prompt: 'Capitale ?',
+        options: [
+          { id: 'a', text: 'Paris', color: 'green', shape: 'circle' },
+          { id: 'b', text: 'Lyon', color: 'red', shape: 'square' },
+        ],
+        media: null,
+        startedAt: Date.now(),
+        endsAt: Date.now() + 20_000,
+      } as never,
+      answerCount: { answered: 0, total: 3 },
+      theme,
+    });
+    renderApp('/session/482913/console');
+    const mark = await screen.findByText('B');
+    const scope = mark.closest<HTMLElement>('.contents');
+    expect(scope?.style.getPropertyValue('--answer-red')).toBe(theme.slots.red.color);
+    expect(scope?.style.getPropertyValue('--primary')).toBe('');
   });
 });
 
