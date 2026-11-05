@@ -1,7 +1,7 @@
 {
   "newName": "Yeni seçki",
   "new": "Yeni seçki",
-  "intro": "Seçki, quizleri sıraya koyar ve bir odada tek seferde başlatır: her quizden sonra bekleme salonu sıradakini önerir. Paylaşılırsa diğer sunucular onu sunabilir veya ondan kendi seçkilerini oluşturabilir.",
+  "intro": "Seçki, quizleri sıraya koyar ve bir odada tek seferde başlatır: her quizden sonra oda sıradakini seçer. Paylaşılırsa diğer sunucular onu sunabilir veya ondan kendi seçkilerini oluşturabilir.",
   "emptyTitle": "Henüz seçki yok",
   "empty": "Bir oturumun quizlerini sıraya koymak için bir seçki oluşturun veya bir odayı konsolundan seçki olarak kaydedin.",
   "search": "Seçkilerde ara",
