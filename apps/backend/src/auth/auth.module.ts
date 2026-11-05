@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { SETTINGS } from '@quiz-dock/contracts';
+import { settings } from '../admin/settings/settings.service';
 import { RedisService } from '../redis/redis.service';
 import { UsersModule } from '../users/users.module';
 import { AuthConfigController } from './auth-config.controller';
@@ -34,7 +36,9 @@ import { OidcSessions } from './oidc/oidc-sessions';
       provide: OidcSessions,
       inject: [RedisService, OidcClient],
       useFactory: (redis: RedisService, client: OidcClient | null) =>
-        client ? new OidcSessions(redis, client) : null,
+        client
+          ? new OidcSessions(redis, client, settings.get(SETTINGS.OIDC_SESSION_LIFETIME_S))
+          : null,
     },
     {
       provide: OidcProvider,

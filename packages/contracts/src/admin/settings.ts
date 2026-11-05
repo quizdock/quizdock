@@ -502,6 +502,21 @@ export const SETTINGS = {
     applies: 'live',
     overridable: true,
   }),
+  OIDC_SESSION_LIFETIME_S: define({
+    key: 'OIDC_SESSION_LIFETIME_S',
+    description:
+      "How long a sign-in lasts, in seconds, counted from the sign-in: the browser keeps it across restarts until then, used or not. `0`: it ends with the browser, or after 24 hours unused. The provider's own limits still apply: set its session and refresh-token lifetimes at least as long, or the sign-in ends with them. The tokens stay in Redis that long, so Redis must keep its data across restarts (the standalone image's does not). Takes effect at the next sign-in.",
+    category: 'access',
+    criticality: 'C2',
+    schema: number(),
+    bounds: z.number().int().min(0).max(31_536_000),
+    accepts: '0 to 31536000 (s)',
+    default: 0,
+    unit: 's',
+    applies: 'restart',
+    overridable: false,
+    example: '2592000',
+  }),
   OIDC_SESSION_SCOPE: define({
     key: 'OIDC_SESSION_SCOPE',
     description: 'Ignored: the session is a cookie the tabs share, the tokens stay on the server.',

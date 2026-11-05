@@ -172,6 +172,15 @@
           "accepts": "a dotted path",
           "applies": "live",
           "administration": true
+        },
+        {
+          "key": "OIDC_SESSION_LIFETIME_S",
+          "default": "`0`",
+          "level": "C2",
+          "description": "How long a sign-in lasts, in seconds, counted from the sign-in: the browser keeps it across restarts until then, used or not. `0`: it ends with the browser, or after 24 hours unused. The provider's own limits still apply: set its session and refresh-token lifetimes at least as long, or the sign-in ends with them. The tokens stay in Redis that long, so Redis must keep its data across restarts (the standalone image's does not). Takes effect at the next sign-in.",
+          "accepts": "0 to 31536000 (s)",
+          "applies": "restart",
+          "administration": false
         }
       ]
     },

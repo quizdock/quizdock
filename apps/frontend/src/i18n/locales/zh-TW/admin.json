@@ -173,6 +173,7 @@
     "OIDC_AUDIENCE": "預期的對象",
     "OIDC_ROLES_CLAIM": "角色宣告",
     "OIDC_NAME_CLAIM": "顯示名稱宣告",
+    "OIDC_SESSION_LIFETIME_S": "登入有效期限",
     "OIDC_SESSION_SCOPE": "工作階段範圍（已忽略）",
     "PORT": "容器內的連接埠",
     "TRUST_PROXY": "受信任的 Proxy",

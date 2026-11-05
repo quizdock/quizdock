@@ -173,6 +173,7 @@
     "OIDC_AUDIENCE": "Audience attendue",
     "OIDC_ROLES_CLAIM": "Claim des rôles",
     "OIDC_NAME_CLAIM": "Claim du nom affiché",
+    "OIDC_SESSION_LIFETIME_S": "Durée de la connexion",
     "OIDC_SESSION_SCOPE": "Portée de session (ignorée)",
     "PORT": "Port dans le conteneur",
     "TRUST_PROXY": "Proxys de confiance",

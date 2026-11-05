@@ -173,6 +173,7 @@
     "OIDC_AUDIENCE": "预期受众",
     "OIDC_ROLES_CLAIM": "角色声明",
     "OIDC_NAME_CLAIM": "显示名称声明",
+    "OIDC_SESSION_LIFETIME_S": "登录有效期",
     "OIDC_SESSION_SCOPE": "会话范围（已忽略）",
     "PORT": "容器内端口",
     "TRUST_PROXY": "受信任的代理",

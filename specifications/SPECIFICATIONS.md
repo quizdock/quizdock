@@ -35,6 +35,8 @@ Full authentication is **optional**: the project must run in development or in a
 
 The backend exposes an **auth interface** (`AuthProvider`) with two implementations (`NoAuthProvider`, `OidcProvider`) selected by `AUTH_MODE`; the rest of the code does not depend on the provider. `OidcProvider` validates the JWTs (signature through JWKS, issuer, audience) of **any** compliant OIDC provider — Keycloak ships as the **reference OIDC IdP** for development and demos, behind a **Compose profile** (`--profile keycloak`) so it is never imposed; the dev override starts it always.
 
+**Browser sessions (`AUTH_MODE=oidc`)**: the backend keeps the tokens in Redis, the browser a cookie with a random id. By default the cookie ends with the browser, and a session unused for 24 hours ends. `OIDC_SESSION_LIFETIME_S` replaces both with a fixed time from the sign-in: the cookie carries it as `Max-Age`, the Redis record ends with it, and use does not extend it. Signing out ends the session at once either way, and the provider can end it sooner by refusing to renew the token.
+
 ### Out of scope for v1
 - Solo mode / asynchronous challenges.
 - A marketplace of public quizzes.

@@ -47,6 +47,7 @@ const accessOf = async (sessions: OidcSessions, sid: string) =>
 function setup(
   refresh: jest.Mock = jest.fn(),
   verifyIdToken: jest.Mock = jest.fn(async () => ({ sub: 'sub-1' })),
+  lifetimeS?: number,
 ) {
   const redis = fakeRedis();
   const client = { refresh, verifyIdToken } as unknown as OidcClient;
@@ -54,7 +55,7 @@ function setup(
     redis,
     refresh,
     verifyIdToken,
-    sessions: new OidcSessions(redis as unknown as RedisService, client),
+    sessions: new OidcSessions(redis as unknown as RedisService, client, lifetimeS),
   };
 }
 
@@ -191,5 +192,72 @@ describe('OidcSessions', () => {
     await sessions.savePendingLogin('state-1', login);
     expect(await sessions.takePendingLogin('state-1')).toEqual(login);
     expect(await sessions.takePendingLogin('state-1')).toBeNull();
+  });
+
+  describe('OIDC_SESSION_LIFETIME_S', () => {
+    const YEAR_S = 365 * 24 * 3600;
+    /** A session's record in Redis. */
+    const recordOf = (redis: ReturnType<typeof fakeRedis>) =>
+      JSON.parse([...redis.store.values()][0]!) as { endsAt?: number };
+    const verify = jest.fn(async () => ({ sub: 'sub-1' }));
+
+    afterEach(() => jest.useRealTimers());
+
+    it.each([undefined, 0, -5, 0.5])('%s: nothing changes', async (lifetimeS) => {
+      const { redis, sessions } = setup(jest.fn(), verify, lifetimeS);
+      const sid = await sessions.create('sub-1', tokens());
+      expect(sessions.lifetimeS).toBeUndefined();
+      expect(recordOf(redis).endsAt).toBeUndefined();
+      expect(redis.set).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        'EX',
+        SESSION_IDLE_S,
+      );
+      await sessions.tokens(sid);
+      expect(redis.expire).toHaveBeenCalledWith(expect.any(String), SESSION_IDLE_S);
+    });
+
+    it('keeps the session for the lifetime, and use does not extend it', async () => {
+      const { redis, sessions } = setup(jest.fn(), verify, YEAR_S);
+      const sid = await sessions.create('sub-1', tokens());
+      expect(sessions.lifetimeS).toBe(YEAR_S);
+      expect(redis.set).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'EX', YEAR_S);
+      expect(await accessOf(sessions, sid)).toBe('at-1');
+      expect(redis.expire).not.toHaveBeenCalled();
+    });
+
+    it('a renewal keeps the end of the session, not a fresh lifetime', async () => {
+      jest.useFakeTimers({ now: 1_000_000_000, doNotFake: ['setTimeout'] });
+      const refresh = jest.fn(async () => tokens({ accessToken: 'at-2' }));
+      const { redis, sessions } = setup(refresh, verify, YEAR_S);
+      const sid = await sessions.create(
+        'sub-1',
+        tokens({ expiresAt: Date.now() + 100 * 24 * 3600 * 1000 }),
+      );
+      const endsAt = recordOf(redis).endsAt;
+      jest.setSystemTime(Date.now() + 100 * 24 * 3600 * 1000);
+      expect(await accessOf(sessions, sid)).toBe('at-2');
+      expect(refresh).toHaveBeenCalledTimes(1);
+      expect(recordOf(redis).endsAt).toBe(endsAt);
+      expect(redis.set).toHaveBeenLastCalledWith(
+        expect.stringMatching(/^auth:session:/),
+        expect.any(String),
+        'EX',
+        YEAR_S - 100 * 24 * 3600,
+      );
+    });
+
+    it('a session opened before the setting keeps its idle timer', async () => {
+      const before = setup(jest.fn(), verify);
+      const sid = await before.sessions.create('sub-1', tokens());
+      const after = new OidcSessions(
+        before.redis as unknown as RedisService,
+        { refresh: jest.fn(), verifyIdToken: verify } as unknown as OidcClient,
+        YEAR_S,
+      );
+      expect((await after.tokens(sid))?.accessToken).toBe('at-1');
+      expect(before.redis.expire).toHaveBeenCalledWith(expect.any(String), SESSION_IDLE_S);
+    });
   });
 });

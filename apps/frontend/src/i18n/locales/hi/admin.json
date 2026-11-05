@@ -173,6 +173,7 @@
     "OIDC_AUDIENCE": "अपेक्षित ऑडियंस",
     "OIDC_ROLES_CLAIM": "भूमिकाओं का क्लेम",
     "OIDC_NAME_CLAIM": "दिखने वाले नाम का क्लेम",
+    "OIDC_SESSION_LIFETIME_S": "साइन-इन की अवधि",
     "OIDC_SESSION_SCOPE": "सत्र का स्कोप (अनदेखा)",
     "PORT": "कंटेनर में पोर्ट",
     "TRUST_PROXY": "भरोसेमंद प्रॉक्सी",

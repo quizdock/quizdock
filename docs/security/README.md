@@ -53,7 +53,12 @@ The backend is the OIDC client (Authorization Code + PKCE, `apps/backend/src/aut
 and keeps the tokens in Redis; the browser holds a random session id in an `httpOnly`,
 `SameSite=Lax` cookie (`Secure` over HTTPS), so a script injected in a page has no token
 to take away. Each sign-in gets a fresh id and Redis stores only its hash. The access
-token is renewed there, one renewal at a time per session. Requests that change
+token is renewed there, one renewal at a time per session. By default the cookie ends with
+the browser and a session unused for 24 hours is forgotten; `OIDC_SESSION_LIFETIME_S` makes
+both a fixed time from the sign-in instead, which use does not extend. A longer sign-in
+leaves a lost device signed in longer, and the tokens longer in Redis
+([tech debt](../tech-debt.md)); signing out still ends it at once, and the provider's own
+limits still bound it. Requests that change
 something, and the game socket, are accepted with the cookie only from the application's
 own pages (`Sec-Fetch-Site`, else `Origin` against the host). Which proxies may speak for
 the client is `TRUST_PROXY`.

@@ -142,7 +142,10 @@ export class OidcSessionController {
       const sid = await sessions.create(principal.sub, tokens);
       res.append(
         'Set-Cookie',
-        serializeCookie(cookieName(SESSION_COOKIE, req.secure), sid, { secure: req.secure }),
+        serializeCookie(cookieName(SESSION_COOKIE, req.secure), sid, {
+          secure: req.secure,
+          maxAgeS: sessions.lifetimeS,
+        }),
       );
       return { name: principal.displayName };
     } catch (err) {
