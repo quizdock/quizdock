@@ -196,7 +196,7 @@
     "GAME_READ_DELAY_MS": "Zamanlayıcıdan önce okuma süresi",
     "GAME_ALL_ANSWERED_DELAY_MS": "Herkes yanıtladıktan sonra duraklama",
     "GAME_AUTO_ADVANCE_MS": "Otomatik mod: adım başına süre",
-    "GAME_MEDIA_WAIT_S": "Ses ve videoları bekleme",
+    "GAME_MEDIA_WAIT_S": "Ses ve videolar için bekleme süresi",
     "LIVE_MOTION": "Canlı ekranlarda geçişler",
     "GAME_HOST_GRACE_MS": "Sunucunun ayrılmadan önceki ek süresi",
     "GAME_HOST_WINDOW_MS": "Sunucunun geri dönüş süresi",
