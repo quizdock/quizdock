@@ -1,1 +1,49 @@
-{}
+{
+  "detail": {
+    "room": {
+      "thQuizzes": "Viktoriinid",
+      "exportCsv": "Ekspordi viimane seis (CSV-failina)",
+      "csvFilename": "ooteruum"
+    },
+    "thQuestion": "Küsimus",
+    "csvGlobal": {
+      "answered": "Vastatud",
+      "nickname": "Hüüdnimi",
+      "score": "Tulemus",
+      "correct": "Õige"
+    },
+    "thNickname": "Hüüdnimi",
+    "thScore": "Tulemus",
+    "thCorrect": "Õige"
+  },
+  "gatherings": {
+    "thQuizzes": "Viktoriinid",
+    "thRoom": "Ooteruum"
+  },
+  "status": {
+    "lobby": "Ooteruum",
+    "in_progress": "Töös"
+  },
+  "player": {
+    "thQuestion": "Küsimus",
+    "csvPlayer": {
+      "question": "Küsimus",
+      "answer": "Vastus",
+      "correct": "Õige",
+      "number": "#"
+    },
+    "thAnswer": "Vastus",
+    "thCorrect": "Õige",
+    "correctAria": "õige",
+    "incorrectAria": "vale",
+    "noAnswers": "Salvestatud vastuseid pole."
+  },
+  "duration": {
+    "minutesSeconds": "{{minutes}} min {{seconds}} sek",
+    "seconds": "{{seconds}} sek"
+  },
+  "list": {
+    "title": "Sessiooni ajalugu",
+    "backToEditor": "Tagasi muutmisvaatesse"
+  }
+}
