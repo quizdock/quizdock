@@ -150,6 +150,8 @@ export * from './mediaUploadResultDto';
 export * from './mediaUploadResultDtoKind';
 export * from './meResponseDto';
 export * from './oidcCallbackDto';
+export * from './oidcSessionControllerLoginParams';
+export * from './oidcSessionControllerLoginPrompt';
 export * from './oidcSignedInDto';
 export * from './operationAnswerDto';
 export * from './operationAnswerDtoKind';

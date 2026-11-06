@@ -14,6 +14,27 @@ import { forgetItem, storeItem } from '@/lib/storage';
 
 const STORAGE_KEY = 'live.localUser';
 const AFTER_LOGIN_KEY = 'live.afterLogin';
+const SILENT_LOGIN_KEY = 'live.silentLoginState';
+const SIGNED_OUT_KEY = 'live.oidcSignedOut';
+
+export function canTrySilentLogin(): boolean {
+  try {
+    // If we cannot remember explicit sign-out or track the callback, use the button.
+    return !localStorage.getItem(SIGNED_OUT_KEY) && !!window.sessionStorage;
+  } catch {
+    return false;
+  }
+}
+
+export function takeSilentLogin(state: string | null): boolean {
+  try {
+    if (!state || sessionStorage.getItem(SILENT_LOGIN_KEY) !== state) return false;
+    sessionStorage.removeItem(SILENT_LOGIN_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export type AuthMode = 'none' | 'oidc';
 export type UserRole = 'host' | 'player' | 'admin';
@@ -189,7 +210,7 @@ interface AuthState {
   /** Abandonne l'identité locale sans passer par le backend (siège refusé / annulé). */
   dropLocal: () => void;
   /** Connexion mode OIDC (redirection vers le fournisseur, préparée par le backend). */
-  loginOidc: () => Promise<void>;
+  loginOidc: (prompt?: 'none') => Promise<void>;
   /** Finalise le retour du fournisseur (route /auth/callback) : le backend échange le code. */
   completeOidcLogin: (params: URLSearchParams) => Promise<void>;
   logout: () => void | Promise<void>;
@@ -246,9 +267,15 @@ export function AuthProvider({
     forgetReads();
   }, [forgetReads]);
 
-  const loginOidc = useCallback(async () => {
-    const { data } = await oidcSessionControllerLogin();
-    if (data.url) window.location.assign(data.url);
+  const loginOidc = useCallback(async (prompt?: 'none') => {
+    const { data } = await oidcSessionControllerLogin(prompt ? { prompt } : undefined);
+    if (!data.url) throw new Error('Missing provider authorization URL.');
+    if (prompt) {
+      const state = new URL(data.url).searchParams.get('state');
+      if (!state || !canTrySilentLogin()) throw new Error('Silent sign-in unavailable.');
+      sessionStorage.setItem(SILENT_LOGIN_KEY, state);
+    }
+    window.location.assign(data.url);
   }, []);
 
   const completeOidcLogin = useCallback(
@@ -259,6 +286,7 @@ export function AuthProvider({
         throw new Error(params.get('error_description') ?? params.get('error') ?? 'OIDC');
       const iss = params.get('iss') ?? undefined;
       const { data } = await oidcSessionControllerCallback({ code, state, iss });
+      forgetItem(SIGNED_OUT_KEY);
       oidcAuthed = true;
       setSessionAuthed(true);
       setUser(data && 'name' in data ? data.name : null);
@@ -269,6 +297,7 @@ export function AuthProvider({
 
   const logout = useCallback(async () => {
     if (mode === 'oidc') {
+      storeItem(SIGNED_OUT_KEY, '1');
       oidcAuthed = false;
       setSessionAuthed(false);
       setUser(null);

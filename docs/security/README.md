@@ -58,6 +58,12 @@ something, and the game socket, are accepted with the cookie only from the appli
 own pages (`Sec-Fetch-Site`, else `Origin` against the host). Which proxies may speak for
 the client is `TRUST_PROXY`.
 
+For sign-in to survive a browser restart, configure persistence at the OIDC provider.
+With Keycloak, enable **Remember Me**, choose suitable SSO Session Idle and Max limits
+for remembered sessions, and select **Remember Me** at sign-in. QuizDock can then
+open a fresh session on return through `/login` without asking for credentials.
+The QuizDock cookie remains a browser-session cookie and its idle limit is 24 hours.
+
 ## Reporting a vulnerability
 
 See [`SECURITY.md`](../../SECURITY.md) at the repository root.
