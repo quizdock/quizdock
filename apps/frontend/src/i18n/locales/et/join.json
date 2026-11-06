@@ -1,10 +1,10 @@
 {
-  "title": "Liitu mängutoaga",
+  "title": "Liitu ooteruumiga",
   "pinLabel": "PIN-kood, 6 numbrit",
   "continue": "Jätka",
   "hint": "Sisesta PIN-kood, mida näed suurel ekraanil",
-  "checking": "Otsin mängutuba…",
-  "notFound": "Selle PIN-koodi alusel ei leidu ühtegi avatud mängutuba. Vaata suurt ekraani.",
-  "locked": "See mängutuba on uustulijatele suleetud - tagasitulev osaleja aga saab veel siseneda.",
+  "checking": "Otsin ooteruumi…",
+  "notFound": "Selle PIN-koodi alusel ei leidu ühtegi avatud ooteruumi. Vaata suurt ekraani.",
+  "locked": "See ooteruum on uustulijatele suletud - tagasitulev osaleja aga saab veel siseneda.",
   "checkedAt6": "Kontrollitakse kohe peale kuuenda numbri sisestust."
 }

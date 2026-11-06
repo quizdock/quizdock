@@ -1,1 +1,54 @@
-{}
+{
+  "selection": {
+    "next": "järgmine"
+  },
+  "control": {
+    "phase": {
+      "lobby": "Ooteruum",
+      "media": "Laadin meediumit"
+    },
+    "columnActions": "Tegevused",
+    "sounds": {
+      "mediaLevel": "Meedium",
+      "media": "Meedium"
+    },
+    "tabs": {
+      "player": "Osaleja",
+      "control": "Konsool"
+    },
+    "columnParticipant": "Osaleja",
+    "types": {
+      "text_input": "Tekst",
+      "numeric": "Numbriline"
+    },
+    "columnReady": "Valmis",
+    "participantReady": "Valmis",
+    "participantLoading": "Valmis, laadin meediumi",
+    "columnQuiz": "Viktoriin",
+    "joinAddress": "Kutse aadress",
+    "joinAddressPublic": "serveri aadress",
+    "joinAddressThisPage": "see leht",
+    "joinAddressCustom": "Muu aadress…",
+    "joinAddressApply": "Rakenda",
+    "joinAddressHelpToggle": "Miks see aadress?",
+    "columnTotal": "Kokku"
+  },
+  "screen": {
+    "phaseLobby": "Ooteruum",
+    "answerLabel": "Vastus",
+    "answeredShort": "vastatud"
+  },
+  "room": {
+    "fallbackName": "Ooteruum"
+  },
+  "player": {
+    "joinFailed": "Ooteruumiga liitumine ei õnnestunud.",
+    "randomAvatar": "Juhuslik tunnuspilt",
+    "nickname": "Hüüdnimi",
+    "moveUp": "Liiguta ülespoole",
+    "moveDown": "Liiguta allapoole",
+    "unsupportedType": "Küsimuse tüüp pole toetatud.",
+    "leave": "Lahku",
+    "leaveConfirmTitle": "Kas lahkud ooteruumist?"
+  }
+}

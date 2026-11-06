@@ -1,0 +1,14 @@
+{
+  "name": "Nimi",
+  "loading": "Laadin andmeid…",
+  "builtin": {
+    "classic": "Klassikaline"
+  },
+  "preview": {
+    "phases": {
+      "lobby": "Ooteruum",
+      "question": "Küsimus",
+      "reveal": "Vastus"
+    }
+  }
+}
