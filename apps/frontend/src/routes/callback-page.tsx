@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiErrorText } from '../api/http';
-import { takeAfterLogin, useAuth } from '../auth/auth-context';
+import { takeAfterLogin, takeSilentLogin, useAuth } from '../auth/auth-context';
 
 /** One exchange per return from the provider: its code and state are good once. */
-let pending: { search: string; done: Promise<void> } | null = null;
+let pending: { search: string; silent: boolean; done: Promise<void> } | null = null;
 
 /**
  * Retour du fournisseur OIDC : le backend échange le code et ouvre la session
@@ -26,11 +26,32 @@ export function CallbackPage() {
     const search = window.location.search;
     // StrictMode runs effects twice: the second run waits for the first exchange.
     if (pending?.search !== search) {
-      pending = { search, done: completeOidcLogin(new URLSearchParams(search)) };
+      const params = new URLSearchParams(search);
+      pending = {
+        search,
+        silent: takeSilentLogin(params.get('state')),
+        done: completeOidcLogin(params),
+      };
     }
-    pending.done
-      .then(() => navigate({ to: (takeAfterLogin() ?? '/quizzes') as '/quizzes', replace: true }))
-      .catch((e: unknown) => setError(apiErrorText(e, t('callback.failed'))));
+    const { done, silent } = pending;
+    let active = true;
+    void done
+      .then(() => {
+        if (active) {
+          return navigate({ to: (takeAfterLogin() ?? '/quizzes') as '/quizzes', replace: true });
+        }
+      })
+      .catch((e: unknown) => {
+        if (!active) return;
+        if (silent) {
+          void navigate({ to: '/login', search: { interactive: true }, replace: true });
+        } else {
+          setError(apiErrorText(e, t('callback.failed')));
+        }
+      });
+    return () => {
+      active = false;
+    };
   }, [completeOidcLogin, navigate, t]);
 
   if (!error) {
