@@ -59,6 +59,8 @@ const indexRoute = createRoute({
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
+  validateSearch: (search: Record<string, unknown>): { interactive?: true } =>
+    search.interactive === true ? { interactive: true } : {},
   component: LoginPage,
 });
 

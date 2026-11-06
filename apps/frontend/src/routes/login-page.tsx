@@ -1,6 +1,6 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { ShowcaseBackdrop } from '@/components/showcase-backdrop';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { hostSeatControllerState, useHostSeatControllerState } from '../api/generated/auth/auth';
 import { ApiError, apiErrorText } from '../api/http';
-import { peekAfterLogin, useAuth } from '../auth/auth-context';
+import { canTrySilentLogin, peekAfterLogin, useAuth } from '../auth/auth-context';
 
 import { SEAT_DEFAULT_EXPIRY, SEAT_EXPIRY_OPTIONS } from '../auth/seat-options';
 import { getDemo } from '../config';
@@ -25,7 +25,16 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [seatTaken, setSeatTaken] = useState(false);
+  const { interactive } = useSearch({ from: '/login' });
   const [redirecting, setRedirecting] = useState(false);
+  const triedSilent = useRef(false);
+  useEffect(() => {
+    if (mode !== 'oidc' || user || interactive || triedSilent.current || !canTrySilentLogin())
+      return;
+    triedSilent.current = true;
+    setRedirecting(true);
+    void loginOidc('none').catch(() => setRedirecting(false));
+  }, [mode, user, interactive, loginOidc]);
   const [claiming, setClaiming] = useState(false);
   const [claimError, setClaimError] = useState<string | null>(null);
   const [expiry, setExpiry] = useState<number>(SEAT_DEFAULT_EXPIRY);

@@ -43,6 +43,11 @@ The backend exposes an **auth interface** (`AuthProvider`) with two implementati
 
 ---
 
+In OIDC mode, opening `/login` while signed out tries one top-level authorization request with
+`prompt=none`. A provider session opens a regular QuizDock session. If the attempt fails, the
+login page shows its usual button without trying again. Explicit sign-out suppresses silent
+sign-in in that browser until the next successful manual sign-in.
+
 ## 2. Technical stack
 
 | Layer | Choice | Notes |
