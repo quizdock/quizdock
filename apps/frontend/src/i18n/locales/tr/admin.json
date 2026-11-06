@@ -173,7 +173,6 @@
     "OIDC_AUDIENCE": "Beklenen hedef kitle",
     "OIDC_ROLES_CLAIM": "Rollerin claim alanı",
     "OIDC_NAME_CLAIM": "Görünen adın claim alanı",
-    "OIDC_SESSION_LIFETIME_S": "Oturum açma süresi",
     "OIDC_SESSION_SCOPE": "Oturum kapsamı (yok sayılır)",
     "PORT": "Konteyner içindeki port",
     "TRUST_PROXY": "Güvenilen proxy'ler",

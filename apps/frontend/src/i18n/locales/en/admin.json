@@ -173,7 +173,6 @@
     "OIDC_AUDIENCE": "Expected audience",
     "OIDC_ROLES_CLAIM": "Claim of the roles",
     "OIDC_NAME_CLAIM": "Claim of the display name",
-    "OIDC_SESSION_LIFETIME_S": "Sign-in lifetime",
     "OIDC_SESSION_SCOPE": "Session scope (ignored)",
     "PORT": "Port in the container",
     "TRUST_PROXY": "Trusted proxies",

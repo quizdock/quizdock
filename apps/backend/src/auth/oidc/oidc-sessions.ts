@@ -7,8 +7,6 @@ import { OidcGrantError, type OidcClient, randomToken, type TokenSet } from './o
 /** A signed-in browser, as kept server-side. */
 interface StoredSession extends TokenSet {
   sub: string;
-  /** When it ends (ms), under `OIDC_SESSION_LIFETIME_S`; without it, the idle timer rules. */
-  endsAt?: number;
 }
 
 /** A sign-in on its way to the provider and back (state, nonce, PKCE verifier). */
@@ -19,9 +17,8 @@ export interface PendingLogin {
 }
 
 /**
- * A session unused for this long is forgotten, unless `OIDC_SESSION_LIFETIME_S` sets
- * a lifetime instead. The provider bounds both: once its refresh token is refused,
- * the session ends whatever this says.
+ * A session unused for this long is forgotten. The provider bounds it too: once
+ * its refresh token is refused, the session ends whatever this says.
  */
 export const SESSION_IDLE_S = 24 * 3600;
 /** A sign-in not completed within ten minutes is dropped. */
@@ -48,10 +45,6 @@ const loginKey = (state: string) => `auth:login:${hashOf(state)}`;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** What a session has left in Redis: to its end when it has one, else the idle time. */
-const ttlOf = (session: StoredSession): number =>
-  session.endsAt ? Math.max(1, Math.ceil((session.endsAt - Date.now()) / 1000)) : SESSION_IDLE_S;
-
 /** Reads and deletes a key in one step, on any Redis version (GETDEL needs 6.2). */
 async function take(redis: RedisService, key: string): Promise<string | null> {
   const res = await redis.multi().get(key).del(key).exec();
@@ -71,16 +64,11 @@ const stillValid = (session: StoredSession): StoredSession | null =>
  */
 export class OidcSessions {
   private readonly logger = new Logger(OidcSessions.name);
-  /** Seconds a sign-in lasts, and its cookie; undefined: the idle timer, a browser-session cookie. */
-  readonly lifetimeS: number | undefined;
 
   constructor(
     private readonly redis: RedisService,
     private readonly client: OidcClient,
-    lifetimeS = 0,
-  ) {
-    this.lifetimeS = Math.floor(lifetimeS) > 0 ? Math.floor(lifetimeS) : undefined;
-  }
+  ) {}
 
   async savePendingLogin(state: string, login: PendingLogin): Promise<void> {
     await this.redis.set(loginKey(state), JSON.stringify(login), 'EX', LOGIN_TTL_S);
@@ -96,8 +84,7 @@ export class OidcSessions {
   async create(sub: string, tokens: TokenSet): Promise<string> {
     const sid = randomToken();
     const session: StoredSession = { sub, ...tokens };
-    if (this.lifetimeS) session.endsAt = Date.now() + this.lifetimeS * 1000;
-    await this.redis.set(sessionKey(sid), JSON.stringify(session), 'EX', ttlOf(session));
+    await this.redis.set(sessionKey(sid), JSON.stringify(session), 'EX', SESSION_IDLE_S);
     return sid;
   }
 
@@ -114,7 +101,7 @@ export class OidcSessions {
   /**
    * The session's tokens, the access token valid and renewed when it is about
    * to expire; null when the session is unknown, or over (the provider refused
-   * to renew). The idle timer restarts on every use; a session with an end keeps it.
+   * to renew). The idle timer restarts on every use.
    */
   async tokens(sid: string): Promise<TokenSet | null> {
     let session = await this.read(sid);
@@ -123,7 +110,7 @@ export class OidcSessions {
       session = await this.renew(sid, session);
       if (!session) return null;
     }
-    if (!session.endsAt) await this.redis.expire(sessionKey(sid), SESSION_IDLE_S);
+    await this.redis.expire(sessionKey(sid), SESSION_IDLE_S);
     return session;
   }
 
@@ -157,7 +144,7 @@ export class OidcSessions {
         ...tokens,
         idToken: tokens.idToken ?? session.idToken,
       };
-      await this.redis.set(sessionKey(sid), JSON.stringify(renewed), 'EX', ttlOf(renewed));
+      await this.redis.set(sessionKey(sid), JSON.stringify(renewed), 'EX', SESSION_IDLE_S);
       return renewed;
     } catch (err) {
       if (err instanceof OidcGrantError) {

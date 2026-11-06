@@ -173,7 +173,6 @@
     "OIDC_AUDIENCE": "想定するオーディエンス",
     "OIDC_ROLES_CLAIM": "ロールのクレーム",
     "OIDC_NAME_CLAIM": "表示名のクレーム",
-    "OIDC_SESSION_LIFETIME_S": "サインインの有効期間",
     "OIDC_SESSION_SCOPE": "セッションのスコープ（無視）",
     "PORT": "コンテナー内のポート",
     "TRUST_PROXY": "信頼するプロキシ",

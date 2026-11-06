@@ -173,7 +173,6 @@
     "OIDC_AUDIENCE": "Ожидаемая аудитория (audience)",
     "OIDC_ROLES_CLAIM": "Утверждение (claim) с ролями",
     "OIDC_NAME_CLAIM": "Утверждение (claim) с отображаемым именем",
-    "OIDC_SESSION_LIFETIME_S": "Срок действия входа",
     "OIDC_SESSION_SCOPE": "Область сеанса (игнорируется)",
     "PORT": "Порт в контейнере",
     "TRUST_PROXY": "Доверенные прокси",
