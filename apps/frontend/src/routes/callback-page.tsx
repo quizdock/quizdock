@@ -6,10 +6,18 @@ import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiErrorText } from '../api/http';
-import { takeAfterLogin, takeSilentLogin, useAuth } from '../auth/auth-context';
+import { signedOutHere, takeAfterLogin, takeSilentLogin, useAuth } from '../auth/auth-context';
 
 /** One exchange per return from the provider: its code and state are good once. */
-let pending: { search: string; silent: boolean; done: Promise<void> } | null = null;
+let pending: { search: string; declined: boolean; done: Promise<void> } | null = null;
+
+/** What a provider answers `prompt=none` when it needs the user (OIDC Core §3.1.2.6). */
+const NEEDS_THE_USER = new Set([
+  'login_required',
+  'interaction_required',
+  'consent_required',
+  'account_selection_required',
+]);
 
 /**
  * Retour du fournisseur OIDC : le backend échange le code et ouvre la session
@@ -27,13 +35,17 @@ export function CallbackPage() {
     // StrictMode runs effects twice: the second run waits for the first exchange.
     if (pending?.search !== search) {
       const params = new URLSearchParams(search);
+      const silent = takeSilentLogin(params.get('state'));
+      // A silent attempt the provider declines, or one the user signed out of
+      // meanwhile (another tab), ends on the sign-in button; any other failure says so.
+      const declined = silent && (NEEDS_THE_USER.has(params.get('error') ?? '') || signedOutHere());
       pending = {
         search,
-        silent: takeSilentLogin(params.get('state')),
-        done: completeOidcLogin(params),
+        declined,
+        done: declined ? Promise.reject(new Error('OIDC')) : completeOidcLogin(params),
       };
     }
-    const { done, silent } = pending;
+    const { done, declined } = pending;
     let active = true;
     void done
       .then(() => {
@@ -43,7 +55,7 @@ export function CallbackPage() {
       })
       .catch((e: unknown) => {
         if (!active) return;
-        if (silent) {
+        if (declined) {
           void navigate({ to: '/login', search: { interactive: true }, replace: true });
         } else {
           setError(apiErrorText(e, t('callback.failed')));

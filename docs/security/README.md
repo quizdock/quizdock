@@ -62,7 +62,15 @@ For sign-in to survive a browser restart, configure persistence at the OIDC prov
 With Keycloak, enable **Remember Me**, choose suitable SSO Session Idle and Max limits
 for remembered sessions, and select **Remember Me** at sign-in. QuizDock can then
 open a fresh session on return through `/login` without asking for credentials.
-The QuizDock cookie remains a browser-session cookie and its idle limit is 24 hours.
+With Authentik, set the **Session duration** of the flow's login stage
+(`default-authentication-login`), for example `days=8`. The QuizDock cookie remains a
+browser-session cookie and its idle limit is 24 hours.
+
+`/login` tries this silent return (`prompt=none`) once a minute at most for the whole
+browser, never after the user signed out there, and leaves the page it came from out of
+the history. A provider that declines it (`login_required` and the like) leaves the
+usual sign-in button; any other failure is shown. With Authentik's default flows, its
+session outlives a QuizDock sign-out: the button then signs in without a password.
 
 ## Reporting a vulnerability
 

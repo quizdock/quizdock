@@ -23,8 +23,10 @@ import type { QuizImportDtoImportReport } from './api/generated/model';
 // Loaded when first opened: the editor, the history, the catalogue and the
 // administration stay out of what a participant's phone downloads to join.
 
-const requireAuth = () => {
+/** A host signed in again through the provider comes back to the page they opened. */
+const requireAuth = ({ location }: { location: { href: string } }) => {
   if (!isAuthenticated()) {
+    if (getAuthMode() === 'oidc') rememberAfterLogin(location.href);
     throw redirect({ to: '/login' });
   }
 };
@@ -147,8 +149,8 @@ export const themeRoute = createRoute({
 export const communityRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/community',
-  beforeLoad: () => {
-    requireAuth();
+  beforeLoad: (ctx) => {
+    requireAuth(ctx);
     if (!hasCommunityStore()) throw redirect({ to: '/templates' });
   },
   component: lazyRouteComponent(() => import('./routes/community-page'), 'CommunityPage'),
@@ -157,8 +159,8 @@ export const communityRoute = createRoute({
 export const communityPreviewRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/community/$key',
-  beforeLoad: () => {
-    requireAuth();
+  beforeLoad: (ctx) => {
+    requireAuth(ctx);
     if (!hasCommunityStore()) throw redirect({ to: '/templates' });
   },
   component: lazyRouteComponent(

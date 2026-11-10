@@ -139,6 +139,19 @@ describe('OidcClient', () => {
     });
   });
 
+  it('asks for a silent sign-in only when told to (prompt=none)', async () => {
+    const params = {
+      redirectUri: 'http://localhost:15173/auth/callback',
+      state: 'st',
+      nonce: 'no',
+      codeVerifier: 'verifier-verifier-verifier-verifier-verifier-00',
+    };
+    const silent = new URL(await client().authorizationUrl({ ...params, prompt: 'none' }));
+    const usual = new URL(await client().authorizationUrl(params));
+    expect(silent.searchParams.get('prompt')).toBe('none');
+    expect(usual.searchParams.has('prompt')).toBe(false);
+  });
+
   it('finds the discovery of an issuer whose path ends in a slash, on either address', async () => {
     const slashed = 'https://idp.example.com/tenant/app/';
     fetchMock.mockImplementation(async () => json(200, { ...discovery, issuer: slashed }));

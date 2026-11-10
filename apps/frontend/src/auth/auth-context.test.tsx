@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   AuthProvider,
   bindOidcSession,
+  claimSilentLogin,
   configureAuth,
   forgetStoredTokens,
   getLocalUser,
@@ -195,6 +196,22 @@ describe('OIDC session lifecycle', () => {
     expect(headers.Authorization).toBeUndefined();
     expect(assign).toHaveBeenCalledWith('/login');
     expect(isAuthenticated()).toBe(false);
+    // The page left waits for the next sign-in.
+    expect(sessionStorage.getItem('live.afterLogin')).toBe('/dashboard');
+  });
+
+  it('a sign-in in another tab sends a tab waiting at the sign-in to its page', async () => {
+    authBackend({});
+    const assign = vi.fn();
+    vi.stubGlobal('location', { ...window.location, pathname: '/login', assign });
+    sessionStorage.setItem('live.afterLogin', '/quizzes/q1');
+    configureAuth('oidc', false);
+    bindOidcSession();
+
+    const other = new BroadcastChannel('quizdock-auth');
+    other.postMessage('signed-in');
+    other.close();
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/quizzes/q1'));
   });
 
   it('keeps the session alive while signed in, hidden tab or not', async () => {
@@ -246,5 +263,58 @@ describe('OIDC session lifecycle', () => {
     });
     expect(assign).toHaveBeenCalledWith('https://idp/logout?id_token_hint=x');
     expect(screen.getByText('∅')).toBeInTheDocument();
+  });
+});
+
+describe('Silent sign-in (#282)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    configureAuth('none');
+  });
+
+  it('one attempt a minute for the whole browser, whatever the tabs and reloads', () => {
+    expect(claimSilentLogin(1_000_000)).toBe(true);
+    expect(claimSilentLogin(1_030_000)).toBe(false);
+    expect(claimSilentLogin(1_061_000)).toBe(true);
+  });
+
+  it('none after a sign-out, nor when the storage keeps nothing', () => {
+    localStorage.setItem('live.oidcSignedOut', '1');
+    expect(claimSilentLogin()).toBe(false);
+    localStorage.clear();
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => undefined);
+    expect(claimSilentLogin()).toBe(false);
+  });
+
+  it('leaves for the provider out of the history, its state kept for the callback', async () => {
+    const fetchMock = authBackend({
+      '/api/v1/auth/login?prompt=none': [200, { url: 'https://idp/auth?state=s9' }],
+    });
+    const replace = vi.fn();
+    const assign = vi.fn();
+    vi.stubGlobal('location', { ...window.location, pathname: '/login', assign, replace });
+    configureAuth('oidc', false);
+    let login: ((prompt?: 'none') => Promise<void>) | undefined;
+    function Grab() {
+      login = useAuth().loginOidc;
+      return null;
+    }
+    render(
+      withQueries(
+        <AuthProvider mode="oidc">
+          <Grab />
+        </AuthProvider>,
+      ),
+    );
+    await act(() => login!('none'));
+    expect(fetchMock).toHaveBeenCalledWith('/api/v1/auth/login?prompt=none', expect.anything());
+    expect(replace).toHaveBeenCalledWith('https://idp/auth?state=s9');
+    expect(assign).not.toHaveBeenCalled();
+    expect(sessionStorage.getItem('live.silentLoginState')).toBe('s9');
   });
 });
