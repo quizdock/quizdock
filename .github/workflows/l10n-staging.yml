@@ -8,7 +8,8 @@ name: Translation staging
 #   2. `dev` merged with the fork's branch is built, unless that pair was built already.
 #      The fork may only change translation files: anything else stops the run.
 #   3. The images go to GHCR (`ghcr.io/quizdock/quizdock-l10n`, public), then the Railway
-#      service is pointed at them and deployed again.
+#      service, whose source is `ghcr.io/quizdock/quizdock-l10n:standalone` (set once in
+#      Railway: a project token may not change it), is deployed again.
 # Secrets: WEBLATE_TOKEN (optional), RAILWAY_TOKEN (project token), with the variables
 # RAILWAY_SERVICE_ID and RAILWAY_ENVIRONMENT_ID; without the Railway ones, no deploy.
 on:
@@ -141,22 +142,16 @@ jobs:
             echo "RAILWAY_TOKEN, RAILWAY_SERVICE_ID or RAILWAY_ENVIRONMENT_ID not set — not deployed."
             exit 0
           fi
-          railway() {
-            answer=$(curl -sS -X POST https://backboard.railway.com/graphql/v2 \
-              -H "Project-Access-Token: $TOKEN" -H 'content-type: application/json' -d "$1")
-            # GraphQL answers 200 with its errors in the body: read them.
-            if echo "$answer" | jq -e '.errors' >/dev/null; then
-              echo "::error::Railway answered: $(echo "$answer" | jq -c '.errors')"
-              exit 1
-            fi
-          }
-          # The service runs this image (idempotent), then a new deployment pulls it again.
-          railway "$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" --arg i "$IMAGE:standalone" '{
-            query: "mutation($s: String!, $e: String!, $i: String!) { serviceInstanceUpdate(serviceId: $s, environmentId: $e, input: { source: { image: $i } }) }",
-            variables: { s: $s, e: $e, i: $i }
-          }')"
-          railway "$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" '{
+          body=$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" '{
             query: "mutation($s: String!, $e: String!) { serviceInstanceDeployV2(serviceId: $s, environmentId: $e) }",
             variables: { s: $s, e: $e }
-          }')"
-          echo "Railway deploy triggered."
+          }')
+          answer=$(curl -sS -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Project-Access-Token: $TOKEN" -H 'content-type: application/json' -d "$body")
+          # GraphQL answers 200 with its errors in the body: read them.
+          if echo "$answer" | jq -e '.data.serviceInstanceDeployV2' >/dev/null; then
+            echo "Railway deploy triggered."
+          else
+            echo "::error::Railway answered: $(echo "$answer" | jq -c '.errors // .')"
+            exit 1
+          fi
