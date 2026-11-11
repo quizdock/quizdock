@@ -131,8 +131,9 @@ jobs:
           cache-from: type=gha,scope=l10n-standalone
           cache-to: type=gha,mode=max,scope=l10n-standalone
 
+      # Run by hand, it deploys even what was built already.
       - name: Deploy on Railway
-        if: steps.built.outputs.skip != 'true'
+        if: steps.built.outputs.skip != 'true' || github.event_name == 'workflow_dispatch'
         env:
           TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           SERVICE: ${{ vars.RAILWAY_SERVICE_ID }}
