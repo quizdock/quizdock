@@ -1,17 +1,16 @@
 name: Translation staging
 
-# The instance translators check their work on (Railway, `:standalone` + DEMO_MODE=true):
+# The instance translators check their work on (Render, `:standalone` + DEMO_MODE=true):
 # `dev` with the translations Weblate has not merged yet, at most an hour after they
 # were typed. Every hour:
 #   1. Weblate commits and pushes what is pending to its fork (WEBLATE_TOKEN, a project
 #      token; without it, Weblate pushes on its own, once a day).
 #   2. `dev` merged with the fork's branch is built, unless that pair was built already.
 #      The fork may only change translation files: anything else stops the run.
-#   3. The images go to GHCR (`ghcr.io/quizdock/quizdock-l10n`, public), then the Railway
-#      service, whose source is `ghcr.io/quizdock/quizdock-l10n:standalone` (set once in
-#      Railway: a project token may not change it), is deployed again.
-# Secrets: WEBLATE_TOKEN (optional), RAILWAY_TOKEN (project token), with the variables
-# RAILWAY_SERVICE_ID and RAILWAY_ENVIRONMENT_ID; without the Railway ones, no deploy.
+#   3. The images go to GHCR (`ghcr.io/quizdock/quizdock-l10n`, public), then the Render
+#      service running `ghcr.io/quizdock/quizdock-l10n:standalone` is deployed again (its
+#      deploy hook: Render does not watch the registry).
+# Secrets: WEBLATE_TOKEN (optional), RENDER_L10N_DEPLOY_HOOK (without it, no deploy).
 on:
   schedule:
     - cron: '17 * * * *'
@@ -132,27 +131,17 @@ jobs:
           cache-to: type=gha,mode=max,scope=l10n-standalone
 
       # Run by hand, it deploys even what was built already.
-      - name: Deploy on Railway
+      - name: Deploy on Render
         if: steps.built.outputs.skip != 'true' || github.event_name == 'workflow_dispatch'
         env:
-          TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          SERVICE: ${{ vars.RAILWAY_SERVICE_ID }}
-          ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT_ID }}
+          HOOK: ${{ secrets.RENDER_L10N_DEPLOY_HOOK }}
         run: |
-          if [ -z "$TOKEN" ] || [ -z "$SERVICE" ] || [ -z "$ENVIRONMENT" ]; then
-            echo "RAILWAY_TOKEN, RAILWAY_SERVICE_ID or RAILWAY_ENVIRONMENT_ID not set — not deployed."
+          if [ -z "$HOOK" ]; then
+            echo "RENDER_L10N_DEPLOY_HOOK not set — not deployed."
             exit 0
           fi
-          body=$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" '{
-            query: "mutation($s: String!, $e: String!) { serviceInstanceDeployV2(serviceId: $s, environmentId: $e) }",
-            variables: { s: $s, e: $e }
-          }')
-          answer=$(curl -sS -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Project-Access-Token: $TOKEN" -H 'content-type: application/json' -d "$body")
-          # GraphQL answers 200 with its errors in the body: read them.
-          if echo "$answer" | jq -e '.data.serviceInstanceDeployV2' >/dev/null; then
-            echo "Railway deploy triggered."
-          else
-            echo "::error::Railway answered: $(echo "$answer" | jq -c '.errors // .')"
-            exit 1
-          fi
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "$HOOK")
+          case "$code" in
+            2*) echo "Render deploy triggered (HTTP $code)." ;;
+            *) echo "::error::Render deploy hook answered HTTP $code."; exit 1 ;;
+          esac
