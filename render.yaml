@@ -1,0 +1,14 @@
+# The "Deploy to Render" button of https://quizdock.github.io/docs/try/: a trial
+# instance of the all-in-one image, on Render's free plan. No disk on that plan:
+# everything is lost when the service sleeps or restarts.
+services:
+  - type: web
+    name: quizdock
+    runtime: image
+    image:
+      url: docker.io/fchaussin/quizdock:standalone
+    plan: free
+    healthCheckPath: /health/ready
+    envVars:
+      - key: PORT
+        value: '3000'
