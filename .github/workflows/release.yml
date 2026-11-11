@@ -4,8 +4,7 @@ name: Release
 #   1. GitHub Release (source de vérité, canonique) — job `github-release`.
 #   2. Images Docker Hub qui en découlent — jobs `publish` + `standalone`.
 #   3. (Overview Docker Hub : workflow `dockerhub-readme.yml`, à chaque README poussé sur main.)
-#   4. Redéploiement des démos publiques (image :standalone) : Render — job `deploy-demo` ;
-#      Railway, la démo alternative — job `deploy-demo-railway`.
+#   4. Redéploiement de la démo publique (image :standalone) : Render — job `deploy-demo`.
 # Seul un tag strictement vX.Y.Z publie (job `gate`). Une pré-release (v1.2.0-rc.1,
 # tout tag avec - ou +) ne crée qu'une Release GitHub marquée pré-release : aucune
 # image, :latest intact, démo intacte. Idem pour un lancement manuel hors d'un tel tag.
@@ -14,8 +13,6 @@ name: Release
 #   DOCKERHUB_TOKEN    = access token Docker Hub (Read & Write)
 #   RENDER_DEPLOY_HOOK = Deploy Hook URL du service Render (optionnel : sans lui,
 #                        l'étape est sautée — Render ne surveille pas le registre).
-#   RAILWAY_TOKEN      = token de projet Railway (optionnel, même règle), avec les
-#                        variables RAILWAY_SERVICE_ID et RAILWAY_ENVIRONMENT_ID.
 on:
   push:
     tags: ['v*.*.*']
@@ -218,33 +215,3 @@ jobs:
             404) echo "::error::Render deploy hook answered 404 — the RENDER_DEPLOY_HOOK secret no longer matches the service. Copy the current Deploy Hook URL from Render → Settings, then: gh secret set RENDER_DEPLOY_HOOK && gh run rerun $GITHUB_RUN_ID --failed"; exit 1 ;;
             *) echo "::error::Render deploy hook answered HTTP $code."; exit 1 ;;
           esac
-
-  # The alternative demo (Railway, `:standalone` + DEMO_MODE=true): a new deployment of
-  # its service pulls the image again. A project token, so the job can touch nothing else.
-  deploy-demo-railway:
-    needs: standalone
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy the Railway service again
-        env:
-          TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          SERVICE: ${{ vars.RAILWAY_SERVICE_ID }}
-          ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT_ID }}
-        run: |
-          if [ -z "$TOKEN" ] || [ -z "$SERVICE" ] || [ -z "$ENVIRONMENT" ]; then
-            echo "RAILWAY_TOKEN, RAILWAY_SERVICE_ID or RAILWAY_ENVIRONMENT_ID not set — alternative demo not redeployed."
-            exit 0
-          fi
-          body=$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" '{
-            query: "mutation($s: String!, $e: String!) { serviceInstanceDeployV2(serviceId: $s, environmentId: $e) }",
-            variables: { s: $s, e: $e }
-          }')
-          answer=$(curl -sS -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Project-Access-Token: $TOKEN" -H 'content-type: application/json' -d "$body")
-          # GraphQL answers 200 with its errors in the body: read them.
-          if echo "$answer" | jq -e '.data.serviceInstanceDeployV2' >/dev/null; then
-            echo "Railway deploy triggered."
-          else
-            echo "::error::Railway answered: $(echo "$answer" | jq -c '.errors // .')"
-            exit 1
-          fi

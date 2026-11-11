@@ -1,0 +1,162 @@
+name: Translation staging
+
+# The instance translators check their work on (Railway, `:standalone` + DEMO_MODE=true):
+# `dev` with the translations Weblate has not merged yet, at most an hour after they
+# were typed. Every hour:
+#   1. Weblate commits and pushes what is pending to its fork (WEBLATE_TOKEN, a project
+#      token; without it, Weblate pushes on its own, once a day).
+#   2. `dev` merged with the fork's branch is built, unless that pair was built already.
+#      The fork may only change translation files: anything else stops the run.
+#   3. The images go to GHCR (`ghcr.io/quizdock/quizdock-l10n`, public), then the Railway
+#      service is pointed at them and deployed again.
+# Secrets: WEBLATE_TOKEN (optional), RAILWAY_TOKEN (project token), with the variables
+# RAILWAY_SERVICE_ID and RAILWAY_ENVIRONMENT_ID; without the Railway ones, no deploy.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: l10n-staging
+  cancel-in-progress: false
+
+env:
+  FORK: https://github.com/weblate/quiz-dock.git
+  FORK_BRANCH: weblate-quizdock-common
+  LOCALES: apps/frontend/src/i18n/locales/
+  IMAGE: ghcr.io/quizdock/quizdock-l10n
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Weblate pushes what is pending
+        env:
+          TOKEN: ${{ secrets.WEBLATE_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "WEBLATE_TOKEN not set — the fork is taken as Weblate left it."
+            exit 0
+          fi
+          api=https://hosted.weblate.org/api/projects/quizdock/repository/
+          status=$(curl -sSf -H "Authorization: Token $TOKEN" "$api")
+          if echo "$status" | jq -e '.needs_commit or .needs_push' >/dev/null; then
+            curl -sSf -X POST -H "Authorization: Token $TOKEN" -H 'content-type: application/json' \
+              -d '{"operation":"push"}' "$api" | jq -c .
+          else
+            echo "Nothing pending in Weblate."
+          fi
+
+      - name: Checkout dev
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: dev
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Merge the fork's translations
+        id: src
+        run: |
+          git fetch --no-tags "$FORK" "$FORK_BRANCH"
+          dev=$(git rev-parse HEAD)
+          fork=$(git rev-parse FETCH_HEAD)
+          base=$(git merge-base HEAD "$fork")
+          # Only translation files come from the fork: the rest is built from our dev.
+          other=$(git diff --name-only "$base" "$fork" | grep -v "^$LOCALES" || true)
+          if [ -n "$other" ]; then
+            echo "::error::The fork changes more than translations: $other"
+            exit 1
+          fi
+          git -c user.name=ci -c user.email=ci@localhost merge --no-edit "$fork"
+          key="dev-${dev:0:12}-wl-${fork:0:12}"
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+          echo "Building $key"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Built already?
+        id: built
+        run: |
+          if docker manifest inspect "$IMAGE:${{ steps.src.outputs.key }}" >/dev/null 2>&1; then
+            echo "Same dev, same translations: nothing to build."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Buildx
+        if: steps.built.outputs.skip != 'true'
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build & push the app
+        if: steps.built.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:app
+          build-args: |
+            APP_VERSION=${{ steps.src.outputs.key }}
+          cache-from: type=gha,scope=l10n
+          cache-to: type=gha,mode=max,scope=l10n
+
+      # Dockerfile.standalone starts FROM fchaussin/quizdock:<tag>: that name is given
+      # the app just built, nothing is read from Docker Hub.
+      - name: Build & push standalone
+        if: steps.built.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./Dockerfile.standalone
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:standalone
+            ${{ env.IMAGE }}:${{ steps.src.outputs.key }}
+          build-args: |
+            APP_VERSION=${{ steps.src.outputs.key }}
+            APP_IMAGE_TAG=l10n
+          build-contexts: |
+            fchaussin/quizdock:l10n=docker-image://${{ env.IMAGE }}:app
+          cache-from: type=gha,scope=l10n-standalone
+          cache-to: type=gha,mode=max,scope=l10n-standalone
+
+      - name: Deploy on Railway
+        if: steps.built.outputs.skip != 'true'
+        env:
+          TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          SERVICE: ${{ vars.RAILWAY_SERVICE_ID }}
+          ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT_ID }}
+        run: |
+          if [ -z "$TOKEN" ] || [ -z "$SERVICE" ] || [ -z "$ENVIRONMENT" ]; then
+            echo "RAILWAY_TOKEN, RAILWAY_SERVICE_ID or RAILWAY_ENVIRONMENT_ID not set — not deployed."
+            exit 0
+          fi
+          railway() {
+            answer=$(curl -sS -X POST https://backboard.railway.com/graphql/v2 \
+              -H "Project-Access-Token: $TOKEN" -H 'content-type: application/json' -d "$1")
+            # GraphQL answers 200 with its errors in the body: read them.
+            if echo "$answer" | jq -e '.errors' >/dev/null; then
+              echo "::error::Railway answered: $(echo "$answer" | jq -c '.errors')"
+              exit 1
+            fi
+          }
+          # The service runs this image (idempotent), then a new deployment pulls it again.
+          railway "$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" --arg i "$IMAGE:standalone" '{
+            query: "mutation($s: String!, $e: String!, $i: String!) { serviceInstanceUpdate(serviceId: $s, environmentId: $e, input: { source: { image: $i } }) }",
+            variables: { s: $s, e: $e, i: $i }
+          }')"
+          railway "$(jq -nc --arg s "$SERVICE" --arg e "$ENVIRONMENT" '{
+            query: "mutation($s: String!, $e: String!) { serviceInstanceDeployV2(serviceId: $s, environmentId: $e) }",
+            variables: { s: $s, e: $e }
+          }')"
+          echo "Railway deploy triggered."
