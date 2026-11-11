@@ -40,8 +40,8 @@
     "audioTargetLabel": "Sesi kim duyar",
     "audioTargetHelp": "Quizdeki ses ve videolar hangi cihazlarda oynatılsın? Mekândaki katılımcılar yansıtma ekranını görür. “Her cihaz” seçilmedikçe telefonları sessiz kalır; aynı ortamda birden fazla cihazdan ses çalmak yankıya neden olabilir. Sorular ve sunucu bu ayarı değiştirebilir.",
     "audioTarget": {
-      "projection": "Yalnızca projeksiyon",
-      "projection_remote": "Projeksiyon ve uzak katılımcılar",
+      "projection": "Yalnızca yansıtma ekranı",
+      "projection_remote": "Yansıtma ekranı ve uzak katılımcılar",
       "everyone": "Her cihaz"
     },
     "sharingLegend": "Dil ve paylaşım",
@@ -181,10 +181,10 @@
     "videoLoopHint": "Slayt gösterildiği sürece çalışır. Kapalı: bir kez oynatılır ve son karesinde kalır; slayt otomatik modda sonunu bekler.",
     "videoSound": "Ses",
     "videoSoundHint": "Videonun kendi sesini çalar. Kapalı: sessizdir ve slaytın kendine ait bir sesi olabilir.",
-    "audioExcludesVideoSound": "Slaytta zaten bir ses var: her seferinde bir ses. Videoyu açmak için onu kaldırın.",
+    "audioExcludesVideoSound": "Slaytta zaten bir ses var: aynı anda yalnızca biri çalabilir. Videonun sesini açmak için onu kaldırın.",
     "videoSoundExcludesAudio": "Video kendi sesini çalar: ekstra ses yoktur. Eklemek için videoyu sessize alın.",
     "variablesLegend": "Değişkenler",
-    "variablesHint": "Başlığa veya metne bir değişken ekleyin. Slayt gösterilirken gerçek değeriyle değiştirilir. Önizlemede örnek değerler görünür.",
+    "variablesHint": "Başlığa veya metne bir değişken yazın: slaytın gösterildiği her yerde değeriyle değiştirilir. Quizinkiler önizlemede, odanınkiler quiz oynatıldığında dolu görünür.",
     "variables": {
       "title": "Quizin başlığı",
       "description": "Quizin açıklaması",
@@ -248,9 +248,9 @@
     "audioTargetHint": "Bu sorunun sesini veya videosunu hangi cihazlarda oynatıyor? \"Her cihaz\", mekândaki telefonları içerir ve paylaştıkları takdirde yankılanır.",
     "audioTargetDefault": "Quizin odadaki ayarı",
     "waveformSizeLabel": "Dalga biçimi boyutu",
-    "waveformSizeHint": "Projeksiyon ve telefonlarda sesin dalga biçiminin ne kadar kalın çizildiği.",
+    "waveformSizeHint": "Yansıtma ekranı ve telefonlarda sesin dalga biçiminin ne kadar kalın çizildiği.",
     "waveformPreview": "Dalga formu önizlemesi",
-    "waveformHiddenNote": "Projeksiyonda ve telefonlarda gizli; ses hâlâ çalıyor ve konsolunuz onu hâlâ gösteriyor.",
+    "waveformHiddenNote": "Yansıtma ekranında ve telefonlarda gizli; ses hâlâ çalıyor ve konsolunuz onu hâlâ gösteriyor.",
     "waveformSize": {
       "S": "Küçük",
       "M": "Orta",
@@ -342,7 +342,7 @@
     "imageCountLabel": "Kaç tane",
     "multiSelectLabel": "Birkaç doğru cevap",
     "multiSelectHint": "Katılımcılar her doğru resmi işaretler ve çoktan seçmeli olarak puanlanarak gönderirler.",
-    "imageCropNote": "Her resim, projeksiyonun gösterdiği gibi, döşemesini dolduracak şekilde kırpılır.",
+    "imageCropNote": "Her resim, yansıtma ekranında göründüğü gibi, döşemesini dolduracak şekilde kırpılır.",
     "imageAdd": "Resim ekle",
     "imageRequired": "Bu cevap için bir resim seçin.",
     "imageAltLabel": "Alternatif metin",
@@ -378,10 +378,8 @@
     "revealDelayAuto": "yanıt gösterimi otomatik",
     "revealDelaySummary": "yanıt {{seconds}} sn gösterilir",
     "place_ordinal_one": "{{count}}.",
-    "place_ordinal_two": "{{count}}.",
-    "place_ordinal_few": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Projeksiyonda görsel",
+    "mediaPositionLabel": "Yansıtma ekranında görsel",
     "mediaPositionHint": "Görselin metne göre konumu; cevaplar altta kalır.",
     "mediaPosition": {
       "bottom": "Metnin altında",
@@ -410,7 +408,7 @@
     "steps": "Adımlar",
     "backToEditor": "Düzenleyiciye dön",
     "device": "Cihaz",
-    "projection": "Projeksiyon",
+    "projection": "Yansıtma ekranı",
     "phone": "Telefon",
     "showAnswer": "Yanıtı göster",
     "title": "Önizleme",
@@ -523,7 +521,7 @@
     "running_other": "{{count}} oda bunu oynuyor",
     "players_one": "{{count}} katılımcı",
     "players_other": "{{count}} katılımcı",
-    "liveEditsHint": "Düzen ve sunum düzenlemeleri (arka planlar, kontrast, açıklamalar, slaytlar) bir sonraki adımda oynatılan odalara ulaşır; sorular ve cevaplar başlatıldığı gibi kalır."
+    "liveEditsHint": "Düzen ve sunum düzenlemeleri (arka planlar, kontrast, açıklamalar, slaytlar) bunu oynatan odalara bir sonraki adımlarında ulaşır; sorular ve cevaplar başlatıldığı gibi kalır."
   },
   "publication": {
     "open": "Yayınlanmak üzere dışa aktar",
