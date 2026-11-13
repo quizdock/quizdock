@@ -34,7 +34,7 @@
     "@prisma/client": "^7.10.0",
     "@quiz-dock/contracts": "workspace:*",
     "dotenv": "^17.4.2",
-    "fast-xml-parser": "^5.11.1",
+    "fast-xml-parser": "^5.12.0",
     "fflate": "^0.8.2",
     "ioredis": "^5.11.1",
     "ipaddr.js": "^2.5.0",
