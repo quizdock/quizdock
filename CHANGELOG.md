@@ -4,6 +4,36 @@ All notable changes to QuizDock are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com); versions follow
 [Semantic Versioning](https://semver.org). Generated from conventional commits.
 
+## [0.17.2] - 2026-11-16
+
+### Bug Fixes
+
+- A silent return that cannot loop, across tabs, back to its page (#282) *(auth)*
+- The answers wear the quiz theme's marks and colours *(console)*
+
+### Dependencies
+
+- Bump the actions group with 2 updates (#289) *(deps)*
+- Bump the actions group with 2 updates *(deps)*
+
+### Features
+
+- A Render blueprint for a one-click trial instance
+- A Render blueprint for a one-click trial instance
+- Resume sign-in through the OIDC provider *(auth)*
+- The standings set the top three apart and fit the screen (#281) *(projection)*
+
+### Security
+
+- Hono, @hono/node-server, fast-xml-parser, glob, minimatch; nestjs-zod 5.6 *(security)*
+
+### Contributors
+
+- Francois Chaussin
+- dependabot[bot]
+- lutfullahkabalak
+- Lütfullah Kabalak
+
 ## [0.17.1] - 2026-11-01
 
 ### Bug Fixes
