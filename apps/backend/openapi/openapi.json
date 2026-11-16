@@ -228,7 +228,19 @@
     "/api/v1/auth/login": {
       "post": {
         "operationId": "OidcSessionController_login",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "prompt",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "none"
+              ],
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",

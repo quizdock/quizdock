@@ -58,7 +58,7 @@
 The live screens (projection, phones) move between steps; the rest of the app does not. Motion is a layer the game components do not know about, so a new screen or question type gets it for free.
 - **One place**: `game/motion/` is the only code importing Motion — its tokens (durations, easing, stagger), the root setting (the system's *reduce motion* honoured: movement off, fades kept) and the primitives below.
 - **Automatic, at the root of a live screen**: when the step changes, the previous background fades out over the new one (gradient, picture, video or none: nothing is duplicated), then the step's top-level elements come in one after the other.
-- **Two primitives where a component must say what moves**: a number that counts up (scores) and a list that reorders by sliding (the standings, keyed by player). The reveal's bars fill from zero; the podium's steps rise third, second, first.
+- **Two primitives where a component must say what moves**: a number that counts up (scores) and a list that reorders by sliding (the standings, keyed by player; the top three set apart rise into a place they have just taken). The reveal's bars fill from zero; the podium's steps rise third, second, first.
 - **Three levels**: the instance's default for new rooms (`LIVE_MOTION`), the room's switch in the console (*Animations*, at any time, every screen follows), and each device's *reduce motion* (fades only). No per-user setting: the system's does that job.
 - **Never in the way of the game**: purely visual, short (about half a second); no timer, sync or media start waits for an animation. Only opacity and position move, for the projectors and old phones. Animations are off in tests.
 
@@ -79,7 +79,7 @@ The live screens (projection, phones) move between steps; the rest of the app do
 - **Top band** (every phase): where the game is ("Question 1 / 10", room, quiz), the clock in the centre, the join reminder (address, PIN, small QR) on the right while the room is open to newcomers.
 - **Stage**: the prompt always at the top, same size at the question and the reveal; at the reveal **the tiles stay in place**, each filled in proportion to its answers with its count and percentage; wrong ones in low-contrast grey.
 - **Bottom band**: the room's status in large type ("12 / 14 answered", "9 / 14 found it", "11 ready", "Paused", "Waiting for the host").
-- A real **leaderboard** screen (top 10 with score bars); looking back and pause are visible to the room; *Waiting for the host…* is distinct from *Paused*.
+- A real **leaderboard** screen (the top three apart, then score bars down to the tenth, as many as the screen holds); looking back and pause are visible to the room; *Waiting for the host…* is distinct from *Paused*.
 - Only exception to the frame: a **slide** (the author's full-screen composition) keeps just a "Join · PIN" chip.
 - Corner buttons keep their two-tone edge.
 

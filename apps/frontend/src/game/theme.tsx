@@ -132,13 +132,19 @@ export function useFont(font: ThemeValues['font'] | undefined): string | undefin
   return family ? `'${family}', ${SYSTEM}` : undefined;
 }
 
-/** The tokens a theme sets on the subtree it wraps. */
-function themeVars(theme: ThemeValues, fontFamily: string | undefined): CSSProperties {
+/** The answers' colours in a theme, as tokens. */
+function answerVars(theme: ThemeValues): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const name of OPTION_COLORS) {
     const color = theme.slots[name].color;
     vars[`--answer-${name}`] = color;
   }
+  return vars;
+}
+
+/** The tokens a theme sets on the subtree it wraps. */
+function themeVars(theme: ThemeValues, fontFamily: string | undefined): CSSProperties {
+  const vars = answerVars(theme);
   vars['--primary'] = theme.accent;
   vars['--ring'] = theme.accent;
   vars['--primary-foreground'] = toHex(textOn(parseHex(theme.accent)));
@@ -162,6 +168,28 @@ export function LiveTheme({
   return (
     <LiveThemeContext.Provider value={theme}>
       <div className="contents" data-theme-scope style={themeVars(theme, fontFamily)}>
+        {children}
+      </div>
+    </LiveThemeContext.Provider>
+  );
+}
+
+/**
+ * Around the answers on the console: their marks and colours as the screens show them, so
+ * the host reads the same answers. Nothing else of the theme, the console keeps the
+ * instance's look (docs/themes.md).
+ */
+export function LiveThemeAnswers({
+  theme,
+  children,
+}: {
+  theme: ThemeValues | null | undefined;
+  children: ReactNode;
+}) {
+  if (!theme) return <>{children}</>;
+  return (
+    <LiveThemeContext.Provider value={theme}>
+      <div className="contents" style={answerVars(theme) as CSSProperties}>
         {children}
       </div>
     </LiveThemeContext.Provider>

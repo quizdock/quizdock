@@ -321,7 +321,12 @@ scores and ranks (`game:scores`) after each reveal and as the console (re)attach
 
 `LEADERBOARD` becomes a step of its own again (it is merged into `REVEAL` today, †):
 reveal, then the current quiz's standings on the projection, then the next question.
-The projection's screen for it exists (`screen-page`, the top ten).
+The projection's screen for it exists (`screen-page`): the top three apart, the leader in
+the middle and raised, each with their avatar, nickname, score and rank in the podium's
+colours; under them the next players as rows with their score bars, down to the tenth at
+most and as many as the screen's height holds, never a row cut; a screen wider than tall
+that cannot hold them in one column shows them in two, read down then across (#280). The
+console keeps its list.
 
 ### 11.3 The room's standings on the projection
 

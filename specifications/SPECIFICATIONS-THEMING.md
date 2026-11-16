@@ -13,7 +13,7 @@ Three needs, delivered in this order:
 3. **Lot 3 — Dark mode** for the interface (shipped).
 
 The two theme layers never mix: a **quiz theme** dresses the live game (projection and players); the **interface
-theme** dresses the application. The console, the editor and the back office never take a quiz theme.
+theme** dresses the application. The console, the editor and the back office never take a quiz theme, save the marks and colours of the console's answers.
 
 ---
 

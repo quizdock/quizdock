@@ -296,6 +296,7 @@ export class OidcClient {
     state: string;
     nonce: string;
     codeVerifier: string;
+    prompt?: 'none';
   }): Promise<string> {
     const url = new URL((await this.discover()).authorization);
     url.search = new URLSearchParams({
@@ -308,6 +309,7 @@ export class OidcClient {
       code_challenge: pkceChallenge(p.codeVerifier),
       code_challenge_method: 'S256',
     }).toString();
+    if (p.prompt) url.searchParams.set('prompt', p.prompt);
     return url.toString();
   }
 

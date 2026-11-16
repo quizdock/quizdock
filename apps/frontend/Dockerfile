@@ -6,7 +6,6 @@ RUN corepack enable
 WORKDIR /app
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc tsconfig.base.json ./
-COPY patches/ patches/
 COPY packages/contracts/package.json packages/contracts/
 COPY apps/frontend/package.json apps/frontend/
 RUN pnpm install --filter @quiz-dock/frontend... --frozen-lockfile

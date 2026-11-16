@@ -5,6 +5,7 @@ import { mockApi, renderApp } from '../test/harness';
 describe('LoginPage', () => {
   afterEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
     vi.unstubAllGlobals();
   });
 
@@ -109,5 +110,44 @@ describe('LoginPage', () => {
     fireEvent.change(await screen.findByLabelText('Votre nom'), { target: { value: 'Marie' } });
     fireEvent.click(screen.getByRole('button', { name: 'Prendre le siège d’animateur' }));
     expect(await screen.findByRole('alert')).toBeInTheDocument();
+  });
+
+  describe('OIDC: silent return through the provider (#282)', () => {
+    const provider = () =>
+      mockApi([
+        { method: 'POST', path: '/auth/login', body: { url: 'https://idp/auth?state=s1' } },
+      ]);
+    const leaving = () => {
+      const replace = vi.fn();
+      vi.stubGlobal('location', { ...window.location, replace, assign: vi.fn() });
+      return replace;
+    };
+
+    it('tries once, silently, then leaves the button to the user', async () => {
+      const fetchMock = provider();
+      const replace = leaving();
+      renderApp('/login', 'oidc');
+      await waitFor(() => expect(replace).toHaveBeenCalledWith('https://idp/auth?state=s1'));
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/auth/login?prompt=none'),
+        expect.anything(),
+      );
+    });
+
+    it('none on the way back from a declined attempt, nor after a sign-out', async () => {
+      const fetchMock = provider();
+      const replace = leaving();
+      renderApp('/login?interactive=true', 'oidc');
+      expect(await screen.findByRole('button', { name: /Se connecter/ })).toBeEnabled();
+
+      localStorage.setItem('live.oidcSignedOut', '1');
+      renderApp('/login', 'oidc');
+      await screen.findAllByRole('button', { name: /Se connecter/ });
+      expect(replace).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalledWith(
+        expect.stringContaining('/auth/login'),
+        expect.anything(),
+      );
+    });
   });
 });

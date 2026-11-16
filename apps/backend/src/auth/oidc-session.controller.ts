@@ -7,11 +7,12 @@ import {
   NotFoundException,
   Optional,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { SETTINGS } from '@quiz-dock/contracts';
 import type { Request, Response } from 'express';
 import { seen, settings } from '../admin/settings/settings.service';
@@ -72,9 +73,11 @@ export class OidcSessionController {
   @Post('login')
   @HttpCode(200)
   @ApiOkResponse({ type: AuthRedirectDto })
+  @ApiQuery({ name: 'prompt', required: false, enum: ['none'] })
   async login(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
+    @Query('prompt') prompt?: string,
   ): Promise<AuthRedirectDto> {
     const { client, sessions } = this.oidc();
     const state = randomToken();
@@ -95,7 +98,13 @@ export class OidcSessionController {
         maxAgeS: LOGIN_TTL_S,
       }),
     );
-    return { url: await client.authorizationUrl({ ...login, state }) };
+    return {
+      url: await client.authorizationUrl({
+        ...login,
+        state,
+        prompt: prompt === 'none' ? prompt : undefined,
+      }),
+    };
   }
 
   /**

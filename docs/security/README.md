@@ -20,6 +20,7 @@ How QuizDock is scanned, hardened and audited.
 
 | Date | Report |
 |---|---|
+| 2026-11-16 | [`cve-audit-2026-11-16.md`](cve-audit-2026-11-16.md) — fast-xml-parser, nestjs-zod 5.6 (patch dropped), hono, glob, minimatch |
 | 2026-10-31 | [`cve-audit-2026-10-31.md`](cve-audit-2026-10-31.md) — MCP SDK, Zod 4.6 (with a `nestjs-zod` patch), multer, body-parser, vite |
 | 2026-10-03 | [`audit-2026-10-03.md`](audit-2026-10-03.md) — global audit of `v0.13.1`: application, supply chain, robustness, accessibility, docs, dead code |
 | 2026-09-21 | [`cve-audit-2026-09-21.md`](cve-audit-2026-09-21.md) — `:latest` was the standalone image; Prisma 7.10 drops hono; non-root dev images |
@@ -57,6 +58,20 @@ token is renewed there, one renewal at a time per session. Requests that change
 something, and the game socket, are accepted with the cookie only from the application's
 own pages (`Sec-Fetch-Site`, else `Origin` against the host). Which proxies may speak for
 the client is `TRUST_PROXY`.
+
+For sign-in to survive a browser restart, configure persistence at the OIDC provider.
+With Keycloak, enable **Remember Me**, choose suitable SSO Session Idle and Max limits
+for remembered sessions, and select **Remember Me** at sign-in. QuizDock can then
+open a fresh session on return through `/login` without asking for credentials.
+With Authentik, set the **Session duration** of the flow's login stage
+(`default-authentication-login`), for example `days=8`. The QuizDock cookie remains a
+browser-session cookie and its idle limit is 24 hours.
+
+`/login` tries this silent return (`prompt=none`) once a minute at most for the whole
+browser, never after the user signed out there, and leaves the page it came from out of
+the history. A provider that declines it (`login_required` and the like) leaves the
+usual sign-in button; any other failure is shown. With Authentik's default flows, its
+session outlives a QuizDock sign-out: the button then signs in without a password.
 
 ## Reporting a vulnerability
 

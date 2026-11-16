@@ -226,6 +226,121 @@ describe('ScreenPage: the branding hooks (lot 5)', () => {
     expect($('.qd-roster')).toHaveTextContent('Ada');
   });
 
+  it('the standings after a question: the top three apart, then down to the tenth', async () => {
+    const top = Array.from({ length: 12 }, (_, i) => ({
+      nickname: `P${i + 1}`,
+      score: 1200 - i * 100,
+      rank: i + 1,
+    }));
+    hookState.value = view({
+      state: GameState.Leaderboard,
+      questionIndex: 0,
+      totalQuestions: 3,
+      leaderboard: { top },
+    });
+    const { container } = renderApp('/session/482913/projection');
+    await screen.findByText('P1');
+    const $$ = (sel: string) => [...container.querySelectorAll<HTMLElement>(sel)];
+    expect($$('.qd-standings-leader').map((el) => el.dataset.rank)).toEqual(['1', '2', '3']);
+    expect($$('.qd-standings-leader')[0]).toHaveTextContent('P1');
+    // Laid out without a height (no layout here), every row up to the tenth.
+    expect($$('.qd-leaderboard-row').map((el) => el.dataset.rank)).toEqual([
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+    ]);
+    expect(screen.queryByText('P11')).toBeNull();
+  });
+
+  it.each([
+    ['tall', 300, 1, ['4', '5', '6', '7', '8']],
+    ['wide', 1000, 2, ['4', '5', '6', '7', '8', '9', '10']],
+  ])(
+    'the standings on a %s screen keep the rows it has the height for, none cut',
+    async (_, width, columns, ranks) => {
+      // A board 400px high, its top three 200px, each row 40px: five rows under them, in
+      // one column; a wide board lays the seven in two.
+      vi.stubGlobal(
+        'ResizeObserver',
+        class {
+          observe() {}
+          disconnect() {}
+        },
+      );
+      const height = (el: HTMLElement) =>
+        el.classList.contains('qd-standings-top')
+          ? 200
+          : el.classList.contains('qd-leaderboard-row')
+            ? 40
+            : el.classList.contains('qd-leaderboard')
+              ? Math.ceil(el.children.length / Number(el.dataset.columns)) * 40
+              : 0;
+      const offset = vi
+        .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+        .mockImplementation(function (this: HTMLElement) {
+          return height(this);
+        });
+      const client = vi
+        .spyOn(HTMLElement.prototype, 'clientHeight', 'get')
+        .mockImplementation(function (this: HTMLElement) {
+          return this.classList.contains('qd-standings') ? 400 : 0;
+        });
+      const wide = vi
+        .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+        .mockImplementation(function (this: HTMLElement) {
+          return this.classList.contains('qd-standings') ? width : 0;
+        });
+      hookState.value = view({
+        state: GameState.Leaderboard,
+        questionIndex: 0,
+        totalQuestions: 3,
+        leaderboard: {
+          top: Array.from({ length: 10 }, (_, i) => ({
+            nickname: `P${i + 1}`,
+            score: 1000 - i * 50,
+            rank: i + 1,
+          })),
+        },
+      });
+      const { container } = renderApp('/session/482913/projection');
+      await screen.findByText('P1');
+      expect(
+        [...container.querySelectorAll<HTMLElement>('.qd-leaderboard-row')].map(
+          (el) => el.dataset.rank,
+        ),
+      ).toEqual(ranks);
+      expect(
+        container.querySelector<HTMLElement>('.qd-standings .qd-leaderboard')?.dataset.columns,
+      ).toBe(String(columns));
+      offset.mockRestore();
+      client.mockRestore();
+      wide.mockRestore();
+      vi.unstubAllGlobals();
+    },
+  );
+
+  it('the standings of two players: their cards alone', async () => {
+    hookState.value = view({
+      state: GameState.Leaderboard,
+      questionIndex: 0,
+      totalQuestions: 3,
+      leaderboard: {
+        top: [
+          { nickname: 'Ann', score: 900, rank: 1 },
+          { nickname: 'Bob', score: 700, rank: 2 },
+        ],
+      },
+    });
+    const { container } = renderApp('/session/482913/projection');
+    await screen.findByText('Ann');
+    expect(container.querySelectorAll('.qd-standings-leader')).toHaveLength(2);
+    expect(container.querySelector('.qd-standings .qd-leaderboard')).toBeNull();
+  });
+
   it('the podium, step by step', async () => {
     hookState.value = view({
       state: GameState.Podium,

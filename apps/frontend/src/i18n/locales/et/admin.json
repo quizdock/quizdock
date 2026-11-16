@@ -1,4 +1,143 @@
 {
   "loading": "Laadin andmeid…",
-  "title": "Haldus"
+  "title": "Haldus",
+  "setup": {
+    "signInLink": "Logi sisse",
+    "steps": "Sammud",
+    "previous": "Eelmine",
+    "next": "Järgmine",
+    "finish": "Lõpeta seadistamine",
+    "finished": "See server on seadistatud.",
+    "step": {
+      "health": {
+        "title": "Korrasolek"
+      },
+      "content": {
+        "title": "Sisu"
+      }
+    },
+    "phone": {
+      "add": "Lisa"
+    }
+  },
+  "look": {
+    "preview": {
+      "login": "Logi sisse",
+      "quizzes": "Minu viktoriinid",
+      "light": "Hele kujundus",
+      "dark": "Tume kujundus",
+      "notFound": "Ei leidunud"
+    }
+  },
+  "operations": {
+    "setup": {
+      "complete": "Lõpeta seadistamine",
+      "reopen": "Ava seadistus uuesti",
+      "first-admin": "Esimene peakasutaja"
+    },
+    "invite": {
+      "test": "Testi seda saiti telefonist",
+      "test-status": "Test telefonist"
+    },
+    "quizzes": {
+      "list": "Viktoriinid"
+    },
+    "settings": {
+      "list": "Seadistused",
+      "set": "Muuda seadistust",
+      "reset": "Pööra muudatus tagasi"
+    },
+    "users": {
+      "list": "Kasutajakontod"
+    }
+  },
+  "columns": {
+    "quizzes": "Viktoriinid",
+    "createdAt": "Loodud",
+    "title": "Pealkiri",
+    "name": "Nimi",
+    "owner": "Omanik",
+    "status": "Olek",
+    "questions": "Küsimused"
+  },
+  "domains": {
+    "quizzes": "Viktoriinid",
+    "media": "Meedium"
+  },
+  "sections": {
+    "quizzes": "Viktoriinid",
+    "media": "Meedium",
+    "statistics": "Statistika",
+    "settings": "Seadistused",
+    "health": "Korrasolek",
+    "accounts": "Kasutajakontod"
+  },
+  "accounts": {
+    "columns": {
+      "quizzes": "Viktoriinid",
+      "created": "Loodud",
+      "actions": "Tegevused"
+    },
+    "roles": {
+      "player": "Osaleja"
+    },
+    "save": "Salvesta"
+  },
+  "stats": {
+    "phase": {
+      "lobby": "Ooteruum",
+      "question": "Küsimus {{index}} / {{total}}"
+    },
+    "instance": {
+      "media": "Meedium",
+      "accounts": "Kasutajakontod",
+      "quizzes": "Mängimiseks valmis viktoriinid",
+      "mediaDetail_one": "{{count}} fail",
+      "mediaDetail_other": "{{count}} faili"
+    }
+  },
+  "edit": {
+    "kinds": {
+      "image": "Pildid",
+      "video": "Videod",
+      "audio": "Heliriba"
+    },
+    "save": "Salvesta",
+    "add": "Lisa",
+    "linkName": "Nimi",
+    "linkUrl": "Aadress"
+  },
+  "quizzes": {
+    "columns": {
+      "actions": "Tegevused",
+      "owner": "Omanik",
+      "updated": "Uuendatud"
+    },
+    "owner": "Omanik",
+    "everyone": "Kõik",
+    "status": "Olek",
+    "statuses": {
+      "ready": "Valmis",
+      "archived": "Arhiveeritud"
+    }
+  },
+  "doctor": {
+    "group": {
+      "media": "Meedium"
+    }
+  },
+  "settings": {
+    "list": "Seadistused",
+    "problem": "Probleem"
+  },
+  "params": {
+    "name": "Nimi",
+    "address": "Aadress",
+    "id": "Tunnus",
+    "internet": "Internet",
+    "accessibility": "Hõlbustus",
+    "q": "Otsi",
+    "status": "Olek",
+    "owner": "Omanik"
+  }
 }

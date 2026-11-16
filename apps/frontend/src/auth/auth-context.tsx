@@ -14,6 +14,51 @@ import { forgetItem, storeItem } from '@/lib/storage';
 
 const STORAGE_KEY = 'live.localUser';
 const AFTER_LOGIN_KEY = 'live.afterLogin';
+const SILENT_LOGIN_KEY = 'live.silentLoginState';
+const SILENT_LOGIN_AT_KEY = 'live.silentLoginAt';
+const SIGNED_OUT_KEY = 'live.oidcSignedOut';
+
+/**
+ * One silent attempt per browser in this window: every tab a restarted browser
+ * restores comes to `/login` at once, and a session refused right after a silent
+ * return must not send the page round again.
+ */
+const SILENT_LOGIN_EVERY_MS = 60_000;
+
+/** The user signed out here: no sign-in comes back without them. */
+export function signedOutHere(): boolean {
+  try {
+    return !!localStorage.getItem(SIGNED_OUT_KEY);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Takes this browser's silent attempt, if it may make one. The mark is read back:
+ * a storage that does not keep what it is given could not keep a sign-out either.
+ */
+export function claimSilentLogin(now = Date.now()): boolean {
+  try {
+    if (signedOutHere() || !window.sessionStorage) return false;
+    const last = Number(localStorage.getItem(SILENT_LOGIN_AT_KEY));
+    if (last && now - last < SILENT_LOGIN_EVERY_MS && last <= now) return false;
+    localStorage.setItem(SILENT_LOGIN_AT_KEY, String(now));
+    return localStorage.getItem(SILENT_LOGIN_AT_KEY) === String(now);
+  } catch {
+    return false;
+  }
+}
+
+export function takeSilentLogin(state: string | null): boolean {
+  try {
+    if (!state || sessionStorage.getItem(SILENT_LOGIN_KEY) !== state) return false;
+    sessionStorage.removeItem(SILENT_LOGIN_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export type AuthMode = 'none' | 'oidc';
 export type UserRole = 'host' | 'player' | 'admin';
@@ -32,13 +77,13 @@ export function configureAuth(mode: AuthMode, oidcUserAuthed = false): void {
 /** How often a signed-in page reminds the backend of its session (well under a provider's idle timeout). */
 const KEEP_ALIVE_MS = 4 * 60_000;
 
-/** Tells the other tabs of this browser that the session is over. */
+/** Tells the other tabs of this browser that the session began or is over. */
 const SIGN_OUT_CHANNEL = 'quizdock-auth';
 
-function broadcastSignOut(): void {
+function broadcast(message: 'signed-in' | 'signed-out'): void {
   try {
     const channel = new BroadcastChannel(SIGN_OUT_CHANNEL);
-    channel.postMessage('signed-out');
+    channel.postMessage(message);
     channel.close();
   } catch {
     // No BroadcastChannel: the other tabs find out at their next request (401).
@@ -48,13 +93,19 @@ function broadcastSignOut(): void {
 /**
  * Suit la session OIDC (mode oidc) : le backend la tient, le navigateur n'a qu'un
  * cookie `httpOnly`. Un 401 du backend (session finie ou refusée par le
- * fournisseur) ou une déconnexion dans un autre onglet ramène à la connexion.
+ * fournisseur) ou une déconnexion dans un autre onglet ramène à la connexion, et
+ * la page quittée attend la connexion suivante. Une connexion dans un autre onglet
+ * fait repartir celui qui attendait à la connexion vers sa page.
  */
 export function bindOidcSession(): void {
   const dropSession = () => {
     oidcAuthed = false;
     setSessionAuthed(false);
-    if (window.location.pathname !== '/login') window.location.assign('/login');
+    const { pathname, search, hash } = window.location;
+    if (pathname !== '/login') {
+      rememberAfterLogin(pathname + search + hash);
+      window.location.assign('/login');
+    }
   };
   setUnauthorizedHandler(dropSession);
   // The backend renews the tokens when a request comes: a console left in a
@@ -66,6 +117,9 @@ export function bindOidcSession(): void {
   try {
     new BroadcastChannel(SIGN_OUT_CHANNEL).onmessage = (e) => {
       if (e.data === 'signed-out' && oidcAuthed) dropSession();
+      if (e.data === 'signed-in' && !oidcAuthed && window.location.pathname === '/login') {
+        window.location.assign(takeAfterLogin() ?? '/quizzes');
+      }
     };
   } catch {
     // See broadcastSignOut.
@@ -113,8 +167,9 @@ export function getLocalUser(): string | null {
 
 /**
  * Page the sign-in was triggered from (a participant sent to `/login` by the
- * guard, RG-15). Kept for the round trip to the IdP only — the callback reads it
- * once and falls back to the dashboard, which is where an host lands.
+ * guard, RG-15, a host by a guarded page or an ended session). Kept for the round
+ * trip to the IdP only — the callback reads it once and falls back to the
+ * dashboard, which is where an host lands.
  */
 export function rememberAfterLogin(path: string): void {
   try {
@@ -189,7 +244,7 @@ interface AuthState {
   /** Abandonne l'identité locale sans passer par le backend (siège refusé / annulé). */
   dropLocal: () => void;
   /** Connexion mode OIDC (redirection vers le fournisseur, préparée par le backend). */
-  loginOidc: () => Promise<void>;
+  loginOidc: (prompt?: 'none') => Promise<void>;
   /** Finalise le retour du fournisseur (route /auth/callback) : le backend échange le code. */
   completeOidcLogin: (params: URLSearchParams) => Promise<void>;
   logout: () => void | Promise<void>;
@@ -246,9 +301,19 @@ export function AuthProvider({
     forgetReads();
   }, [forgetReads]);
 
-  const loginOidc = useCallback(async () => {
-    const { data } = await oidcSessionControllerLogin();
-    if (data.url) window.location.assign(data.url);
+  const loginOidc = useCallback(async (prompt?: 'none') => {
+    const { data } = await oidcSessionControllerLogin(prompt ? { prompt } : undefined);
+    if (!data.url) throw new Error('Missing provider authorization URL.');
+    if (prompt) {
+      const state = new URL(data.url).searchParams.get('state');
+      if (!state) throw new Error('Silent sign-in unavailable.');
+      sessionStorage.setItem(SILENT_LOGIN_KEY, state);
+      // Out of the history: Back from the provider (or its error page, unreachable)
+      // returns to where the user was, never to a page that leaves again.
+      window.location.replace(data.url);
+      return;
+    }
+    window.location.assign(data.url);
   }, []);
 
   const completeOidcLogin = useCallback(
@@ -259,20 +324,23 @@ export function AuthProvider({
         throw new Error(params.get('error_description') ?? params.get('error') ?? 'OIDC');
       const iss = params.get('iss') ?? undefined;
       const { data } = await oidcSessionControllerCallback({ code, state, iss });
+      forgetItem(SIGNED_OUT_KEY);
       oidcAuthed = true;
       setSessionAuthed(true);
       setUser(data && 'name' in data ? data.name : null);
       forgetReads();
+      broadcast('signed-in');
     },
     [forgetReads],
   );
 
   const logout = useCallback(async () => {
     if (mode === 'oidc') {
+      storeItem(SIGNED_OUT_KEY, '1');
       oidcAuthed = false;
       setSessionAuthed(false);
       setUser(null);
-      broadcastSignOut();
+      broadcast('signed-out');
       // The backend ends its session, then the provider's (RP-initiated logout,
       // when it has an end-session endpoint).
       const url = await oidcSessionControllerLogout()

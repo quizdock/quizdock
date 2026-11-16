@@ -32,7 +32,8 @@ const shownStandings = new Map<string, Map<string, { rank: number; score: number
  * A ranked list (`[data-row]` items keyed by player, `[data-score]` inside): each
  * row slides from its previous place to the new one and its score counts up. The
  * list is rebuilt at every step, so the previous standings are remembered here,
- * per `track`, from one showing to the next.
+ * per `track`, from one showing to the next. A leader set apart (`data-place="top"`)
+ * does not slide: it rises into its place when it has just taken it.
  */
 export function useStandingsMotion(
   ref: RefObject<HTMLElement | null>,
@@ -52,17 +53,41 @@ export function useStandingsMotion(
     const list = ref.current;
     if (!before || !list || reduced) return;
     const items = Array.from(list.querySelectorAll<HTMLElement>('[data-row]'));
+    const listed = items.filter((el) => el.dataset.place !== 'top');
     if (items.length < 2) return;
-    const pitch = items[1].offsetTop - items[0].offsetTop;
+    const pitch = listed.length > 1 ? listed[1].offsetTop - listed[0].offsetTop : 0;
     const last = rows.length;
+    // The rows' places by rank: in one column or several, a row moves from its old rank's.
+    const places = new Map(
+      listed.map((el) => [Number(el.dataset.rank), { x: el.offsetLeft, y: el.offsetTop }]),
+    );
     items.forEach((el) => {
       const row = rows.find((r) => r.nickname === el.dataset.row);
       if (!row) return;
       const was = before.get(row.nickname);
-      // A newcomer to the list comes from just below it.
-      const shift = (was ? Math.min(was.rank, last + 1) : last + 1) - row.rank;
-      if (shift !== 0 && pitch > 0) {
-        void animate(el, { y: [shift * pitch, 0] }, { duration: motion.move, ease: EASE_OUT });
+      if (el.dataset.place === 'top') {
+        if (was?.rank !== row.rank) {
+          void animate(
+            el,
+            { opacity: [0, 1], y: [motion.rise * 2, 0] },
+            { duration: motion.move, ease: EASE_OUT },
+          );
+        }
+      } else {
+        const from = was && places.get(was.rank);
+        if (from) {
+          const x = from.x - el.offsetLeft;
+          const y = from.y - el.offsetTop;
+          if (x || y) {
+            void animate(el, { x: [x, 0], y: [y, 0] }, { duration: motion.move, ease: EASE_OUT });
+          }
+        } else {
+          // A newcomer to the list comes from just below it; a former leader, from above.
+          const shift = (was ? Math.min(was.rank, last + 1) : last + 1) - row.rank;
+          if (shift !== 0 && pitch > 0) {
+            void animate(el, { y: [shift * pitch, 0] }, { duration: motion.move, ease: EASE_OUT });
+          }
+        }
       }
       const score = el.querySelector<HTMLElement>('[data-score]');
       if (score && was && was.score !== row.score) {

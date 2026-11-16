@@ -1,6 +1,6 @@
 {
   "title": "Temalar",
-  "intro": "Bir quizin projeksiyonda ve oyuncuların telefonlarında görünümü, bekleme salonundan podyuma kadar. Her sunucu her temayı kullanabilir; temayı yalnızca sahibi ve yöneticiler değiştirir.",
+  "intro": "Bir quizin yansıtma ekranında ve oyuncuların telefonlarında görünümü, bekleme salonundan podyuma kadar. Her sunucu her temayı kullanabilir; temayı yalnızca sahibi ve yöneticiler değiştirir.",
   "import": "İçe aktar",
   "new": "Yeni tema",
   "search": "Ada göre ara",
@@ -97,7 +97,7 @@
     },
     "devices": {
       "both": "İkisi",
-      "projection": "Projeksiyon",
+      "projection": "Yansıtma ekranı",
       "phone": "Telefon"
     }
   },

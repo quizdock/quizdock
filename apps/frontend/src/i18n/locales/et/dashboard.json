@@ -1,3 +1,27 @@
 {
-  "title": "Minu viktoriinid"
+  "title": "Minu viktoriinid",
+  "previous": "Eelmine",
+  "next": "Järgmine",
+  "pageOf": "Leht {{page}} / {{pages}}",
+  "stateLobby": "Ooteruum",
+  "mediaAdmin": {
+    "loading": "Laadin andmeid…",
+    "kind": {
+      "image": "Pildid",
+      "video": "Videod",
+      "audio": "Heliriba",
+      "icon": "Kujunduse ikoonid",
+      "font": "Kujunduse kirjatüübid"
+    },
+    "disk": {
+      "files_one": "{{count}} fail",
+      "files_other": "{{count}} faili",
+      "title": "Ketas"
+    },
+    "files": {
+      "owner": "Omanik",
+      "allOwners": "Kõik omanikud"
+    }
+  },
+  "filterOwner": "Omanik"
 }
