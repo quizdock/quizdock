@@ -4,6 +4,23 @@ All notable changes to QuizDock are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com); versions follow
 [Semantic Versioning](https://semver.org). Generated from conventional commits.
 
+## [0.17.1] - 2026-11-01
+
+### Bug Fixes
+
+- The full setup with Authentik, chosen at init *(setup)*
+- The back channel names the provider by its public address *(auth)*
+- Tokens told apart by the standards, not by their claims *(auth)*
+- The roles are the client's, in the ID token *(keycloak)*
+
+### Documentation
+
+- How players are ranked, ties included *(scoring)*
+
+### Contributors
+
+- Francois Chaussin
+
 ## [0.17.0] - 2026-10-31
 
 ### Bug Fixes
