@@ -4830,7 +4830,9 @@
                     "bottom",
                     "top",
                     "left",
-                    "right"
+                    "right",
+                    "behind",
+                    "alone"
                   ]
                 },
                 "timerAfterMedia": {
@@ -9369,7 +9371,9 @@
                     "bottom",
                     "top",
                     "left",
-                    "right"
+                    "right",
+                    "behind",
+                    "alone"
                   ]
                 },
                 "timerAfterMedia": {
@@ -10543,7 +10547,9 @@
                     "bottom",
                     "top",
                     "left",
-                    "right"
+                    "right",
+                    "behind",
+                    "alone"
                   ]
                 },
                 "timerAfterMedia": {
@@ -11550,7 +11556,9 @@
               "bottom",
               "top",
               "left",
-              "right"
+              "right",
+              "behind",
+              "alone"
             ]
           },
           "timeLimitS": {
@@ -12015,7 +12023,9 @@
               "bottom",
               "top",
               "left",
-              "right"
+              "right",
+              "behind",
+              "alone"
             ]
           },
           "timerAfterMedia": {
@@ -12481,7 +12491,9 @@
               "bottom",
               "top",
               "left",
-              "right"
+              "right",
+              "behind",
+              "alone"
             ]
           },
           "timeLimitS": {

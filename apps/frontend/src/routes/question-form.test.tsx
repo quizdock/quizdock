@@ -21,6 +21,16 @@ function renderForm(onClose = vi.fn(), quizLanguage?: string) {
   };
 }
 
+/** The question's own settings: the drawer of its timeline's time row. */
+const openTimeSettings = () =>
+  fireEvent.click(screen.getByRole('button', { name: /^Durée minimale/ }));
+
+/** The + of the timeline: its modal, to query within. */
+const openAdd = () => {
+  fireEvent.click(screen.getByRole('button', { name: 'Ajouter un élément' }));
+  return within(screen.getByRole('dialog', { name: 'Ajouter un élément' }));
+};
+
 const lastPost = (fetchMock: ReturnType<typeof mockApi>) => {
   const call = fetchMock.mock.calls.find(
     ([url, opts]) => String(url).includes('/quizzes/q1/questions') && opts?.method === 'POST',
@@ -118,7 +128,8 @@ describe('QuestionForm', () => {
   it('a time out of bounds becomes the nearest bound, with a note', () => {
     mockApi([]);
     renderForm();
-    const time = screen.getByLabelText('Temps (s)');
+    openTimeSettings();
+    const time = screen.getByLabelText('Durée minimale (s)');
     fireEvent.change(time, { target: { value: '500' } });
     fireEvent.blur(time);
     expect(time).toHaveValue(240);
@@ -200,7 +211,12 @@ describe('QuestionForm', () => {
       ).toBe(true),
     );
     // With a picture, where it sits on the big screen: below the text unless placed elsewhere.
-    fireEvent.click(await screen.findByRole('button', { name: 'À gauche du texte' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Mise en page' }));
+    const layouts = within(screen.getByRole('dialog', { name: 'Mise en page' }));
+    fireEvent.click(layouts.getByRole('button', { name: 'À gauche du texte' }));
+    // Picked, it says what it gives; applied, it is the question's.
+    expect(layouts.getByText(/L’image ou la vidéo à gauche, le texte à côté/)).toBeInTheDocument();
+    fireEvent.click(layouts.getByRole('button', { name: 'Appliquer' }));
     fireEvent.click(screen.getAllByRole('radio')[0]);
     fireEvent.click(screen.getByText('Ajouter'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -217,6 +233,7 @@ describe('QuestionForm', () => {
     const { onClose } = renderForm();
 
     setMarkdownField('Énoncé', 'Q ?');
+    openTimeSettings();
     fireEvent.change(screen.getByLabelText('Affichage de la réponse (s)'), {
       target: { value: '12' },
     });
@@ -414,6 +431,7 @@ describe('QuestionForm — media timing', () => {
     );
     mockApi([]);
     renderForm();
+    openTimeSettings();
     // 42 s of sound starting 3 s before the answers, + the default 1 s pause → 40 s.
     expect(await screen.findByRole('note', { name: '' })).toHaveTextContent(
       'Le média dure 42 s : la question durera 40 s',
@@ -454,6 +472,7 @@ describe('QuestionForm — media timing', () => {
     );
     mockApi([]);
     renderForm();
+    openTimeSettings();
     fireEvent.click(
       await screen.findByRole('checkbox', {
         name: /Lancer le chrono à la fin du média/,
@@ -462,6 +481,82 @@ describe('QuestionForm — media timing', () => {
     expect(screen.getByRole('note', { name: '' })).toHaveTextContent(
       'Le média joue 42 s, puis les 20 s de réponse commencent.',
     );
+  });
+});
+
+describe('QuestionForm — the timeline', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  const withSound = () =>
+    localStorage.setItem(
+      'draft:quiz:q1:question:new',
+      JSON.stringify({
+        type: 'poll',
+        prompt: 'Q ?',
+        media: {
+          visual: null,
+          audio: {
+            assetId: 'A'.repeat(26),
+            origin: 'upload',
+            durationMs: 42_000,
+            peaks: new Array(200).fill(0.5),
+          },
+        },
+        answerExplanation: '',
+        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        timeLimitS: 20,
+        revealDelayS: null,
+        pointsMode: 'none',
+        scoring: 'standard',
+        numericValue: 0,
+        numericTolerance: 0,
+        options: [],
+        acceptedAnswers: [],
+      }),
+    );
+
+  it('the + refuses a second sound and a video, and says why; a picture is fine', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    const modal = openAdd();
+    expect(modal.getByRole('button', { name: /^Audio/ })).toHaveTextContent(
+      'Un seul audio par question.',
+    );
+    expect(modal.getByRole('button', { name: /^Vidéo/ })).toHaveTextContent(
+      'Jamais une vidéo et un audio : la vidéo porte le sien.',
+    );
+    expect(modal.getByRole('button', { name: /^Image/ })).toBeEnabled();
+  });
+
+  it('the layouts wait for a picture or a video, and say so', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    const layout = screen.getByRole('button', {
+      name: 'Mise en page : ajoutez d’abord une image ou une vidéo.',
+    });
+    expect(layout).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(layout);
+    expect(screen.queryByRole('dialog', { name: 'Mise en page' })).toBeNull();
+  });
+
+  it('a sound opens its panel, with its waveform; clearing takes every media away', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Son, 42 s' }));
+    expect(screen.getByRole('region', { name: 'Audio' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Taille de la forme d’onde')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retirer tous les médias' }));
+    // Asked first: nothing goes yet.
+    expect(screen.getByRole('button', { name: 'Son, 42 s' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retirer' }));
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Audio' })).toBeNull();
   });
 });
 
@@ -557,8 +652,12 @@ describe('QuestionForm — image choice', () => {
     });
     expect(screen.getAllByLabelText(/Texte alternatif de l’image/)).toHaveLength(2);
     expect(screen.queryByLabelText('choix 1')).toBeNull();
-    // The media section keeps the sound only.
-    expect(screen.queryByText('Ajouter une vidéo')).toBeNull();
+    // The timeline offers the sound only, and says why.
+    const modal = openAdd();
+    const refused = modal.getByRole('button', { name: /^Vidéo/ });
+    expect(refused).toBeDisabled();
+    expect(refused).toHaveTextContent('Un choix d’images n’a pas d’image ni de vidéo propre.');
+    expect(modal.getByRole('button', { name: /^Audio/ })).toBeEnabled();
     fireEvent.click(screen.getByRole('button', { name: '4' }));
     expect(screen.getAllByLabelText(/Texte alternatif de l’image/)).toHaveLength(4);
     expect(screen.queryByRole('button', { name: '3' })).toBeNull();
@@ -612,6 +711,7 @@ describe('QuestionForm — image choice', () => {
       fetchMock.mock.calls.filter(
         ([url, opts]) => String(url).includes(path) && (opts as RequestInit)?.method === method,
       );
+    fireEvent.click(await screen.findByRole('button', { name: 'Image, toute la durée' }));
     const credit = await screen.findByLabelText(/^Crédit/);
     fireEvent.change(credit, { target: { value: 'Photo : Ana' } });
     fireEvent.blur(credit);
@@ -802,7 +902,8 @@ describe('QuestionForm — image choice', () => {
     const q = pictureQuestion({ type: 'single_choice' } as never);
     (q.options as unknown as { text: string | null }[]).forEach((o, i) => (o.text = `T${i}`));
     const onClose = renderEdit(q);
-    fireEvent.change(screen.getByLabelText('Temps (s)'), {
+    openTimeSettings();
+    fireEvent.change(screen.getByLabelText('Durée minimale (s)'), {
       target: { value: '30' },
     });
     fireEvent.click(screen.getByText('Enregistrer'));
@@ -1163,7 +1264,8 @@ describe('QuestionForm — a loaded question saves as it was', () => {
         />
       </QueryClientProvider>,
     );
-    const time = screen.getByLabelText('Temps (s)');
+    openTimeSettings();
+    const time = screen.getByLabelText('Durée minimale (s)');
     fireEvent.change(time, { target: { value: '21' } });
     fireEvent.blur(time);
     fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }));

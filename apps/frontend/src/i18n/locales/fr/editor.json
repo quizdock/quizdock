@@ -186,7 +186,6 @@
     "videoSound": "Audio",
     "videoSoundHint": "Joue l’audio de la vidéo. Désactivé : muette, et la slide peut avoir son propre audio.",
     "audioExcludesVideoSound": "La slide a déjà un audio : un seul à la fois. Retirez-le pour activer celui de la vidéo.",
-    "videoSoundExcludesAudio": "La vidéo joue son propre audio : pas d’audio en plus. Coupez le son de la vidéo pour en ajouter un.",
     "variablesLegend": "Variables",
     "variablesHint": "À écrire dans un titre ou un texte : elle est remplacée partout où la slide s’affiche. Celles du quiz apparaissent dans l’aperçu, celles du salon quand le quiz est joué.",
     "variables": {
@@ -239,12 +238,10 @@
     "typeLabel": "Type",
     "promptLabel": "Énoncé",
     "promptPlaceholder": "Votre question…",
-    "playbackLegend": "Lecture",
     "timingLegend": "Temps",
     "pointsLegend": "Points",
     "answerExplanationLabel": "Explication (montrée avec la bonne réponse)",
     "answerExplanationPlaceholder": "Pourquoi cette réponse est la bonne… (facultatif)",
-    "timeLimitLabel": "Temps (s)",
     "revealDelayLabel": "Affichage de la réponse (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "En mode auto : combien de temps la bonne réponse reste à l’écran avant la suite. Vide = réglage de l’instance.",
@@ -377,24 +374,19 @@
     "explanationEmpty": "Vide",
     "numericLegend": "Réponse",
     "decimalsAllowed": "Les décimales sont acceptées : 3,14, 0,5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s avec le média)",
-    "revealDelayAuto": "réponse affichée en auto",
-    "revealDelaySummary": "réponse affichée {{seconds}} s",
     "place_ordinal_one": "{{count}}er",
     "place_ordinal_two": "{{count}}e",
     "place_ordinal_few": "{{count}}e",
     "place_ordinal_other": "{{count}}e",
-    "mediaPositionLabel": "Photo sur la projection",
-    "mediaPositionHint": "Où se place la photo par rapport au texte ; les réponses restent en bas.",
     "mediaPosition": {
       "bottom": "Sous le texte",
       "top": "Au-dessus du texte",
       "left": "À gauche du texte",
-      "right": "À droite du texte"
+      "right": "À droite du texte",
+      "behind": "Derrière le texte",
+      "alone": "Média seul"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "réponse affichée {{seconds}} s (auto)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)"
   },
   "timeline": {
     "legend": "Timeline",
@@ -416,17 +408,54 @@
     },
     "element": {
       "image": "Image, toute la durée",
-      "background": "Image de fond, toute la durée",
       "video": "Vidéo, {{seconds}} s, avec son",
       "videoMuted": "Vidéo, {{seconds}} s, sans son",
-      "videoLoop": "Vidéo en boucle, toute la diapo",
+      "videoLoop": "Vidéo en boucle, toute la slide",
       "audio": "Son, {{seconds}} s",
       "unknown": "Durée pas encore connue"
     },
     "label": {
       "image": "Image",
-      "background": "Fond",
       "video": "Vidéo"
+    },
+    "add": "Ajouter un élément",
+    "clear": "Retirer tous les médias",
+    "questionSettings": "Déroulé de la question",
+    "slideSettings": "Déroulé de la slide",
+    "minimumLabel": "Durée minimale (s)",
+    "minimumHint": "Un minimum : un média plus long allonge la question.",
+    "choice": {
+      "image": "Image",
+      "imageHint": "Canal visuel, toute la durée",
+      "video": "Vidéo",
+      "videoHint": "Image et son, sur les deux canaux",
+      "audio": "Audio",
+      "audioHint": "Canal audio"
+    },
+    "refused": {
+      "imageChoice": "Un choix d’images n’a pas d’image ni de vidéo propre.",
+      "oneVisual": "Une question a une image ou une vidéo, pas les deux.",
+      "videoHasSound": "Jamais une vidéo et un audio : la vidéo porte le sien.",
+      "oneAudio": "Un seul audio par question.",
+      "oneVideo": "Une seule vidéo par slide.",
+      "oneSlideAudio": "Un seul audio par slide.",
+      "slideVideoSound": "La vidéo joue son propre son : coupez-le pour ajouter un audio."
+    },
+    "clearConfirm": {
+      "title": "Retirer tous les médias ?",
+      "description": "La timeline est vidée : ses images, vidéos et audios sont retirés de cette étape. Rien n’est perdu tant que vous n’enregistrez pas.",
+      "confirm": "Retirer"
+    },
+    "layout": "Mise en page",
+    "layoutNeedsVisual": "Mise en page : ajoutez d’abord une image ou une vidéo.",
+    "layoutApply": "Appliquer",
+    "layoutDescription": {
+      "bottom": "L’image ou la vidéo sous le texte, les réponses en dessous.",
+      "top": "L’image ou la vidéo au-dessus du texte, les réponses en dessous.",
+      "left": "L’image ou la vidéo à gauche, le texte à côté, les réponses en dessous.",
+      "right": "Le texte à gauche, l’image ou la vidéo à côté, les réponses en dessous.",
+      "behind": "Le texte posé sur l’image ou la vidéo, rendu lisible par la couleur et le contour du bloc Fond ; les réponses en dessous, hors du média.",
+      "alone": "L’image ou la vidéo à la place du texte : l’animateur lit la question. Les téléphones l’affichent toujours ; les réponses restent en dessous."
     }
   },
   "preview": {
@@ -466,7 +495,6 @@
     "altPlaceholder": "ex. Kylian Mbappé en maillot de l’équipe de France",
     "altHelp": "Lu par les lecteurs d’écran. Décrivez ce que montre l’image quand elle porte une partie de la question ; laissez vide si elle est décorative.",
     "slotsLegend": "Médias de la question",
-    "visualLabel": "Visuel",
     "audioLabel": "Audio",
     "kindImage": "Image",
     "kindVideo": "Vidéo",
@@ -474,8 +502,6 @@
     "addImage": "Ajouter une image",
     "addVideo": "Ajouter une vidéo",
     "addAudio": "Ajouter un audio",
-    "videoExcludesAudio": "La vidéo a déjà son propre audio : pas de piste audio en plus. Retirez la vidéo pour ajouter un audio.",
-    "audioExcludesVideo": "Une vidéo a déjà son propre audio : retirez l’audio pour pouvoir choisir une vidéo.",
     "converting": "Conversion…",
     "convertingPercent": "Conversion… {{percent}} %",
     "cancelConversion": "Annuler",

@@ -182,7 +182,6 @@
     "videoSound": "音声",
     "videoSoundHint": "動画自体の音声を再生します。オフ：ミュートになり、スライドに別の音声を設定できます。",
     "audioExcludesVideoSound": "スライドにはすでに音声があります。音声は一度に1つです。動画の音声をオンにするには、その音声を削除してください。",
-    "videoSoundExcludesAudio": "動画が自身の音声を再生するため、追加の音声は設定できません。追加するには動画をミュートしてください。",
     "variablesLegend": "変数",
     "variablesHint": "見出しやテキストに書くと、スライドが表示されるたびに置き換えられます。クイズの変数はプレビューで値が入り、ルームの変数はクイズの実施時に値が入ります。",
     "variables": {
@@ -235,12 +234,10 @@
     "typeLabel": "形式",
     "promptLabel": "問題文",
     "promptPlaceholder": "問題文を入力…",
-    "playbackLegend": "再生",
     "timingLegend": "時間",
     "pointsLegend": "得点",
     "answerExplanationLabel": "解説（正解と一緒に表示）",
     "answerExplanationPlaceholder": "これが正解である理由…（任意）",
-    "timeLimitLabel": "制限時間（秒）",
     "revealDelayLabel": "正解の表示時間（秒）",
     "revealDelayPlaceholder": "自動",
     "revealDelayHint": "自動進行モードで、次に進む前に正解を画面に表示しておく時間です。空欄の場合はインスタンスの設定に従います。",
@@ -373,24 +370,19 @@
     "explanationEmpty": "未記入",
     "numericLegend": "答え",
     "decimalsAllowed": "小数も使えます：3.14、0.5…",
-    "timingSummary": "{{time}}秒",
-    "timingSummaryStretched": "{{time}}秒（メディア込みで{{total}}秒）",
-    "revealDelayAuto": "正解の表示：自動",
-    "revealDelaySummary": "正解の表示：{{seconds}}秒",
     "place_ordinal_one": "{{count}}番目",
     "place_ordinal_two": "{{count}}番目",
     "place_ordinal_few": "{{count}}番目",
     "place_ordinal_other": "{{count}}番目",
-    "mediaPositionLabel": "大画面での画像の位置",
-    "mediaPositionHint": "テキストに対する画像の位置です。選択肢は常に下に表示されます。",
     "mediaPosition": {
       "bottom": "テキストの下",
       "top": "テキストの上",
       "left": "テキストの左",
-      "right": "テキストの右"
+      "right": "テキストの右",
+      "behind": "テキストの背後",
+      "alone": "メディアのみ"
     },
-    "revealDelayAutoValue": "自動（{{seconds}}秒）",
-    "revealDelaySummaryAuto": "正解の表示：{{seconds}}秒（自動）"
+    "revealDelayAutoValue": "自動（{{seconds}}秒）"
   },
   "timeline": {
     "legend": "タイムライン",
@@ -412,7 +404,6 @@
     },
     "element": {
       "image": "画像、全体を通して",
-      "background": "背景画像、全体を通して",
       "video": "動画、{{seconds}} 秒、音声あり",
       "videoMuted": "動画、{{seconds}} 秒、音声なし",
       "videoLoop": "ループ動画、スライド全体",
@@ -421,8 +412,46 @@
     },
     "label": {
       "image": "画像",
-      "background": "背景",
       "video": "動画"
+    },
+    "add": "要素を追加",
+    "clear": "すべてのメディアを削除",
+    "questionSettings": "問題の流れ",
+    "slideSettings": "スライドの流れ",
+    "minimumLabel": "最短時間（秒）",
+    "minimumHint": "最短の時間です。長いメディアがあると問題が延びます。",
+    "choice": {
+      "image": "画像",
+      "imageHint": "映像チャンネル、全時間",
+      "video": "動画",
+      "videoHint": "映像と音声、両方のチャンネル",
+      "audio": "音声",
+      "audioHint": "音声チャンネル"
+    },
+    "refused": {
+      "imageChoice": "画像選択問題には独自の画像や動画を付けられません。",
+      "oneVisual": "問題に付けられるのは画像か動画のどちらかです。",
+      "videoHasSound": "動画と音声は同時に使えません。動画には独自の音声があります。",
+      "oneAudio": "音声は問題ごとに1つです。",
+      "oneVideo": "動画はスライドごとに1つです。",
+      "oneSlideAudio": "音声はスライドごとに1つです。",
+      "slideVideoSound": "動画が独自の音声を再生します。音声を追加するには動画をミュートしてください。"
+    },
+    "clearConfirm": {
+      "title": "すべてのメディアを削除しますか？",
+      "description": "タイムラインが空になり、このステップの画像・動画・音声が外されます。保存するまでは何も失われません。",
+      "confirm": "削除"
+    },
+    "layout": "レイアウト",
+    "layoutNeedsVisual": "レイアウト：先に画像か動画を追加してください。",
+    "layoutApply": "適用",
+    "layoutDescription": {
+      "bottom": "画像や動画をテキストの下に、回答はその下に表示します。",
+      "top": "画像や動画をテキストの上に、回答はその下に表示します。",
+      "left": "画像や動画を左に、テキストをその横に、回答は下に表示します。",
+      "right": "テキストを左に、画像や動画をその横に、回答は下に表示します。",
+      "behind": "テキストを画像や動画の上に重ね、「背景」ブロックの色と縁取りで読みやすくします。回答はメディアの外、下に表示します。",
+      "alone": "テキストの代わりに画像や動画を表示し、司会者が問題を読み上げます。スマートフォンには問題が表示され、回答は下に残ります。"
     }
   },
   "preview": {
@@ -462,7 +491,6 @@
     "altPlaceholder": "例：フランス代表のユニフォームを着たキリアン・エムバペ",
     "altHelp": "スクリーンリーダーで読み上げられます。画像が問題の一部を担う場合は写っている内容を説明し、装飾の場合は空欄にしてください。",
     "slotsLegend": "問題のメディア",
-    "visualLabel": "ビジュアル",
     "audioLabel": "音声",
     "kindImage": "画像",
     "kindVideo": "動画",
@@ -470,8 +498,6 @@
     "addImage": "画像を追加",
     "addVideo": "動画を追加",
     "addAudio": "音声を追加",
-    "videoExcludesAudio": "動画にはすでに音声が含まれているため、追加の音声トラックは設定できません。音声を追加するには動画を削除してください。",
-    "audioExcludesVideo": "動画にはそれ自体の音声が含まれます。動画を選ぶには、音声を削除してください。",
     "converting": "変換中…",
     "convertingPercent": "変換中… {{percent}}%",
     "cancelConversion": "キャンセル",

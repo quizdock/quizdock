@@ -186,7 +186,6 @@
     "videoSound": "Audio",
     "videoSoundHint": "Riproduce l’audio del video stesso. Disattivato: muto, e la slide può avere un audio proprio.",
     "audioExcludesVideoSound": "La slide ha già un audio: uno alla volta. Rimuovilo per attivare quello del video.",
-    "videoSoundExcludesAudio": "Il video riproduce il proprio audio: nessun audio aggiuntivo. Silenzia il video per aggiungerne uno.",
     "variablesLegend": "Variabili",
     "variablesHint": "Scrivine una in un titolo o in un testo: viene sostituita ovunque la slide venga mostrata. Quelle del quiz appaiono compilate nell’anteprima, quelle della sala quando il quiz viene giocato.",
     "variables": {
@@ -239,12 +238,10 @@
     "typeLabel": "Tipo",
     "promptLabel": "Testo della domanda",
     "promptPlaceholder": "La tua domanda…",
-    "playbackLegend": "Riproduzione",
     "timingLegend": "Tempi",
     "pointsLegend": "Punti",
     "answerExplanationLabel": "Spiegazione della risposta (mostrata con la risposta corretta)",
     "answerExplanationPlaceholder": "Perché questa è la risposta corretta… (facoltativo)",
-    "timeLimitLabel": "Tempo (s)",
     "revealDelayLabel": "Risposta mostrata per (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "In modalità automatica: per quanto tempo la risposta corretta resta sullo schermo prima di andare avanti. Vuoto = l’impostazione dell’istanza.",
@@ -377,25 +374,20 @@
     "explanationEmpty": "Vuota",
     "numericLegend": "Risposta",
     "decimalsAllowed": "I decimali vanno bene: 3.14, 0.5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s con il media)",
-    "revealDelayAuto": "risposta mostrata auto",
-    "revealDelaySummary": "risposta mostrata {{seconds}} s",
     "place_ordinal_one": "{{count}}º",
     "place_ordinal_two": "{{count}}º",
     "place_ordinal_few": "{{count}}º",
     "place_ordinal_many": "{{count}}º",
     "place_ordinal_other": "{{count}}º",
-    "mediaPositionLabel": "Immagine sul grande schermo",
-    "mediaPositionHint": "Dove si trova l’immagine rispetto al testo; le risposte restano sotto.",
     "mediaPosition": {
       "bottom": "Sotto il testo",
       "top": "Sopra il testo",
       "left": "A sinistra del testo",
-      "right": "A destra del testo"
+      "right": "A destra del testo",
+      "behind": "Dietro il testo",
+      "alone": "Solo media"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "risposta mostrata {{seconds}} s (auto)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)"
   },
   "timeline": {
     "legend": "Timeline",
@@ -417,7 +409,6 @@
     },
     "element": {
       "image": "Immagine, per tutta la durata",
-      "background": "Immagine di sfondo, per tutta la durata",
       "video": "Video, {{seconds}} s, con audio",
       "videoMuted": "Video, {{seconds}} s, senza audio",
       "videoLoop": "Video in loop, per tutta la slide",
@@ -426,8 +417,46 @@
     },
     "label": {
       "image": "Immagine",
-      "background": "Sfondo",
       "video": "Video"
+    },
+    "add": "Aggiungi un elemento",
+    "clear": "Rimuovi tutti i media",
+    "questionSettings": "Svolgimento della domanda",
+    "slideSettings": "Svolgimento della slide",
+    "minimumLabel": "Durata minima (s)",
+    "minimumHint": "Un minimo: un media più lungo allunga la domanda.",
+    "choice": {
+      "image": "Immagine",
+      "imageHint": "Canale visivo, per tutta la durata",
+      "video": "Video",
+      "videoHint": "Immagine e suono, su entrambi i canali",
+      "audio": "Audio",
+      "audioHint": "Canale audio"
+    },
+    "refused": {
+      "imageChoice": "Una scelta di immagini non ha un'immagine né un video propri.",
+      "oneVisual": "Una domanda ha un'immagine o un video, non entrambi.",
+      "videoHasSound": "Mai un video e un audio: il video ha il suo.",
+      "oneAudio": "Un audio per domanda.",
+      "oneVideo": "Un video per slide.",
+      "oneSlideAudio": "Un audio per slide.",
+      "slideVideoSound": "Il video riproduce il proprio suono: disattivalo per aggiungere un audio."
+    },
+    "clearConfirm": {
+      "title": "Rimuovere tutti i media?",
+      "description": "La timeline viene svuotata: immagini, video e audio vengono tolti da questo passaggio. Non si perde nulla finché non salvi.",
+      "confirm": "Rimuovi"
+    },
+    "layout": "Layout",
+    "layoutNeedsVisual": "Layout: aggiungi prima un'immagine o un video.",
+    "layoutApply": "Applica",
+    "layoutDescription": {
+      "bottom": "L'immagine o il video sotto il testo, le risposte sotto.",
+      "top": "L'immagine o il video sopra il testo, le risposte sotto.",
+      "left": "L'immagine o il video a sinistra, il testo accanto, le risposte sotto.",
+      "right": "Il testo a sinistra, l'immagine o il video accanto, le risposte sotto.",
+      "behind": "Il testo sopra l'immagine o il video, reso leggibile dal colore e dal contorno del blocco Sfondo; le risposte sotto, fuori dal media.",
+      "alone": "L'immagine o il video al posto del testo: il conduttore legge la domanda. I telefoni la mostrano comunque; le risposte restano sotto."
     }
   },
   "preview": {
@@ -467,7 +496,6 @@
     "altPlaceholder": "es. Kylian Mbappé con la maglia della Francia",
     "altHelp": "Letto ad alta voce dagli screen reader. Descrivi cosa mostra l’immagine quando porta una parte della domanda; lascialo vuoto quando l’immagine è decorativa.",
     "slotsLegend": "Media della domanda",
-    "visualLabel": "Visuale",
     "audioLabel": "Audio",
     "kindImage": "Immagine",
     "kindVideo": "Video",
@@ -475,8 +503,6 @@
     "addImage": "Aggiungi un’immagine",
     "addVideo": "Aggiungi un video",
     "addAudio": "Aggiungi un audio",
-    "videoExcludesAudio": "Il video ha già il suo audio: nessuna traccia audio aggiuntiva. Rimuovi il video per aggiungere un audio.",
-    "audioExcludesVideo": "Un video ha già il suo audio: rimuovi l’audio per scegliere un video.",
     "converting": "Conversione…",
     "convertingPercent": "Conversione… {{percent}} %",
     "cancelConversion": "Annulla",

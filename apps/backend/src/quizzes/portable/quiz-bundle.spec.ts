@@ -327,6 +327,17 @@ describe('quiz bundle', () => {
     expect(ajv.compile(v5)(JSON.parse(JSON.stringify(bundle)))).toBe(false);
   });
 
+  it.each(['behind', 'alone'] as const)(
+    'stamps version 9 once a picture sits %s, and brings the place back',
+    (position) => {
+      const src = makeQuiz();
+      src.questions[0].mediaPosition = position;
+      const bundle = toBundle(src, pathFor);
+      expect(bundle.version).toBe(9);
+      expect(fromBundle(bundle, idFor).questions[0]).toMatchObject({ mediaPosition: position });
+    },
+  );
+
   it('stamps version 7 once a picture sits above or beside its text, and brings the place back', () => {
     const src = makeQuiz();
     expect(toBundle(src, pathFor).items.some((it) => 'mediaPosition' in it)).toBe(false);

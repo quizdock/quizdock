@@ -148,10 +148,12 @@ export const WAVEFORM_SIZE_DEFAULT: WaveformSize = 'M';
 
 /**
  * Where a question's picture or video sits against its text on the projection:
- * under it (the default), above it, or beside it. The answers stay below, as for
- * every question; a phone keeps the picture above them whatever the position.
+ * under it (the default), above it, beside it, behind it (the text laid over the
+ * media, the answers outside it), or alone (the media in the text's place: the host
+ * reads the question out). The answers stay below, as for every question; a phone
+ * keeps the picture above them, and its text, whatever the position.
  */
-export const MEDIA_POSITIONS = ['bottom', 'top', 'left', 'right'] as const;
+export const MEDIA_POSITIONS = ['bottom', 'top', 'left', 'right', 'behind', 'alone'] as const;
 export type MediaPosition = (typeof MEDIA_POSITIONS)[number];
 export const MEDIA_POSITION_DEFAULT: MediaPosition = 'bottom';
 

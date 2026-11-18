@@ -29,7 +29,6 @@ describe('StepTimeline', () => {
         model={slideTimeline({
           displayDelayS: 0,
           defaultS: 5,
-          background: false,
           video: null,
           audio: null,
           tailS: 1,

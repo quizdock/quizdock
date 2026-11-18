@@ -45,7 +45,7 @@ import { useQuestionClock } from '../game/use-countdown';
 import { joinHostLabel, joinUrlFor } from '../game/join-url';
 import { type GameView, useGameSession } from '../game/use-game-session';
 import type { GameSocket } from '../game/game-client';
-import { playsSound } from '@quiz-dock/contracts';
+import { type LiveQuestionMedia, playsSound } from '@quiz-dock/contracts';
 
 /**
  * The states where the question is on screen, drawn on its background. Not the wait
@@ -560,6 +560,9 @@ export function ScreenSurface({
     compact = visual;
     const position = (visual && view.question.media?.position) || 'bottom';
     const side = position === 'left' || position === 'right';
+    // Behind the text, or alone in its place: the media takes the text's whole area.
+    const behind = position === 'behind';
+    const alone = position === 'alone';
     // With a picture, the count joins the clock in the top band: the bottom one's room is the picture's.
     const count =
       visual && view.answerCount && view.state === 'ANSWERING' && !view.paused ? (
@@ -585,34 +588,40 @@ export function ScreenSurface({
       undefined,
       !!clock,
     );
-    const media = (
+    const { questionIndex, mediaStartAt } = view.question;
+    const stageOf = (
+      media: LiveQuestionMedia | null | undefined,
+      className: string,
+      boxClassName: string | undefined,
+      cover = false,
+    ) => (
       <QuestionMediaStage
-        key={view.question.questionIndex}
-        media={view.question.media}
+        key={questionIndex}
+        media={media}
+        cover={cover}
         mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
         // A copy plays the sound only when asked (a remote participant), and only
         // when the question's sound is for remote devices.
         audible={role !== 'follow' || copyHears}
-        className={!visual ? 'shrink-0' : side ? 'h-full min-h-0' : 'min-h-[6em] flex-1'}
-        boxClassName={visual ? 'aspect-auto h-full min-h-0 w-full flex-1' : undefined}
-        resumeKey={playMedia ? `${pin}:${view.question.questionIndex}` : null}
+        className={className}
+        boxClassName={boxClassName}
+        resumeKey={playMedia ? `${pin}:${questionIndex}` : null}
         // The projection plays on its own; the console's tab draws its position; a copy
         // that plays the sound starts on the common instant and catches up with it,
         // as a remote participant's phone does.
         follow={
-          playMedia || copyHears
-            ? undefined
-            : followed(view, { questionIndex: view.question.questionIndex })
+          playMedia || copyHears ? undefined : followed(view, { questionIndex: questionIndex })
         }
-        catchUp={
-          role === 'follow'
-            ? followed(view, { questionIndex: view.question.questionIndex })
-            : undefined
-        }
+        catchUp={role === 'follow' ? followed(view, { questionIndex: questionIndex }) : undefined}
         onPosition={playMedia ? sayPosition : undefined}
-        startAt={view.question.mediaStartAt ?? null}
-        anchor={anchorOf(view, { questionIndex: view.question.questionIndex })}
+        startAt={mediaStartAt ?? null}
+        anchor={anchorOf(view, { questionIndex: questionIndex })}
       />
+    );
+    const media = stageOf(
+      view.question.media,
+      !visual ? 'shrink-0' : side ? 'h-full min-h-0' : 'min-h-[6em] flex-1',
+      visual ? 'aspect-auto h-full min-h-0 w-full flex-1' : undefined,
     );
     // The text: the prompt, then how to answer. Beside a picture it reads from the left.
     const words = (
@@ -623,6 +632,8 @@ export function ScreenSurface({
           className={cn(
             'qd-prompt w-full leading-tight font-semibold',
             side ? 'text-[2.1em]' : 'text-[2em]',
+            // Alone, the media says it: the host reads the question out, a screen reader still finds it.
+            alone && 'sr-only',
           )}
         >
           {view.question.prompt}
@@ -654,7 +665,33 @@ export function ScreenSurface({
               </>
             )}
           </div>
-        ) : position === 'top' ? (
+        ) : behind && view.question.media ? (
+          <>
+            {/* The text over the media, made legible as on a background; its sound, if any, below. */}
+            <Surface
+              background={null}
+              backdrop={
+                <div className="absolute inset-0">
+                  {stageOf(
+                    { ...view.question.media, audio: null },
+                    'h-full',
+                    'aspect-auto h-full w-full',
+                    true,
+                  )}
+                </div>
+              }
+              textTone={view.question.textTone}
+              textOutline={view.question.textOutline}
+              className="min-h-[6em] w-full flex-1 rounded-[0.75em]"
+              contentClassName="items-center justify-center p-[1.5em]"
+            >
+              {words}
+            </Surface>
+            {view.question.media.audio
+              ? stageOf({ ...view.question.media, visual: null }, 'shrink-0', undefined)
+              : null}
+          </>
+        ) : position === 'top' || alone ? (
           <>
             {media}
             {words}

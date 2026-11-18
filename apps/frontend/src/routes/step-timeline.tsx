@@ -1,6 +1,17 @@
-import { Clock, Eye, Image as ImageIcon, Music, Video, Volume2 } from 'lucide-react';
+import {
+  Clock,
+  Eraser,
+  Eye,
+  Image as ImageIcon,
+  LayoutTemplate,
+  Music,
+  Plus,
+  Video,
+  Volume2,
+} from 'lucide-react';
 import { type CSSProperties, type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { mediaControllerDescribe } from '../api/generated/media/media';
@@ -16,16 +27,31 @@ const mix = (color: string, percent: number) =>
   `color-mix(in oklab, ${color} ${percent}%, var(--card))`;
 const round = (s: number) => Math.round(s);
 
+/** What the drawer shows: the step's own settings, or one of its elements (one of each kind). */
+export type TimelineSelection = 'time' | TimelineElement['kind'];
+
+/** The timeline as an editor: its elements and its time row open the drawer. */
+export interface TimelineEditing {
+  selected: TimelineSelection | null;
+  onSelect: (selection: TimelineSelection) => void;
+  onAdd: () => void;
+  /** Takes every element away; absent while there is none. */
+  onClear: (() => void) | null;
+  /** The ready-made layouts; `refused` says why they do not apply yet. */
+  layout?: { open: () => void; refused: string | null };
+}
+
 /**
  * The step's timeline (SPECIFICATIONS-QUESTION-TIMELINE): one row per channel — time,
- * picture, sound — and each element drawn once over the channels it has. Read-only:
- * the fields below still edit the step.
+ * picture, sound — and each element drawn once over the channels it has. With `edit`,
+ * it is where the step's media are added, picked and taken away.
  */
-export function StepTimeline({ model }: { model: Model }) {
+export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEditing }) {
   const { t } = useTranslation('editor');
   const T = model.totalS;
   const pct = (s: number) => `${(Math.min(s, T) / T) * 100}%`;
   const stretched = model.actualS !== null && model.actualS > model.minimumS;
+  const [confirmClear, setConfirmClear] = useState(false);
 
   let ticks: number[] = [];
   const step = T > 60 ? 10 : 5;
@@ -39,6 +65,7 @@ export function StepTimeline({ model }: { model: Model }) {
           {t('timeline.legend')}
         </span>
         <Chip
+          onClick={edit ? () => edit.onSelect('time') : undefined}
           tone={stretched ? 'warning' : undefined}
           tip={
             model.actualS === null
@@ -55,6 +82,26 @@ export function StepTimeline({ model }: { model: Model }) {
               : `${model.minimumS} s`}
         </Chip>
         <Chip tip={t('timeline.total', { seconds: round(T) })}>{round(T)} s</Chip>
+        {edit ? (
+          <span className="ml-auto flex items-center gap-0.5">
+            {edit.layout ? (
+              <Tool
+                icon={<LayoutTemplate />}
+                label={edit.layout.refused ?? t('timeline.layout')}
+                disabled={edit.layout.refused !== null}
+                onClick={edit.layout.open}
+              />
+            ) : null}
+            {edit.onClear ? (
+              <Tool
+                icon={<Eraser />}
+                label={t('timeline.clear')}
+                onClick={() => setConfirmClear(true)}
+              />
+            ) : null}
+            <Tool icon={<Plus />} label={t('timeline.add')} onClick={edit.onAdd} />
+          </span>
+        ) : null}
       </div>
 
       <div className="grid grid-cols-[22px_1fr] gap-x-1 select-none">
@@ -75,7 +122,16 @@ export function StepTimeline({ model }: { model: Model }) {
         </div>
 
         <Row color="var(--timeline-time)" icon={<Clock />} tip={t('timeline.timeRow')}>
-          <div className="relative overflow-hidden" style={{ height: ROW.time }}>
+          {/* The mouse's way to the step's settings; the keyboard's is the duration chip. */}
+          <div
+            className={cn(
+              'relative overflow-hidden',
+              edit && 'cursor-pointer',
+              edit?.selected === 'time' && 'ring-ring rounded-sm ring-2',
+            )}
+            style={{ height: ROW.time }}
+            onClick={edit ? () => edit.onSelect('time') : undefined}
+          >
             {model.phases.map((p) => (
               <Phase key={p.kind + p.from} phase={p} pct={pct} />
             ))}
@@ -94,28 +150,94 @@ export function StepTimeline({ model }: { model: Model }) {
               style={{ bottom: 0, height: ROW.channel * 2 + ROW.gap }}
             >
               {model.elements.map((e, i) => (
-                <Element key={e.kind + i} element={e} pct={pct} z={i + 1} />
+                <Element
+                  key={e.kind + i}
+                  element={e}
+                  pct={pct}
+                  z={i + 1}
+                  selected={edit?.selected === e.kind}
+                  onSelect={edit ? () => edit.onSelect(e.kind) : undefined}
+                />
               ))}
             </div>
           </div>
         </Row>
       </div>
+      {edit?.onClear ? (
+        <ConfirmDialog
+          open={confirmClear}
+          title={t('timeline.clearConfirm.title')}
+          description={t('timeline.clearConfirm.description')}
+          confirmLabel={t('timeline.clearConfirm.confirm')}
+          destructive
+          onCancel={() => setConfirmClear(false)}
+          onConfirm={() => {
+            setConfirmClear(false);
+            edit.onClear?.();
+          }}
+        />
+      ) : null}
     </section>
   );
 }
 
-function Chip({ children, tip, tone }: { children: ReactNode; tip: string; tone?: 'warning' }) {
+function Chip({
+  children,
+  tip,
+  tone,
+  onClick,
+}: {
+  children: ReactNode;
+  tip: string;
+  tone?: 'warning';
+  onClick?: () => void;
+}) {
+  const className = cn(
+    'rounded-full border px-2 py-px',
+    tone === 'warning' && 'border-warning text-warning-text',
+    onClick && 'hover:bg-accent',
+  );
   return (
     <Tooltip label={tip}>
-      <span
-        tabIndex={0}
+      {onClick ? (
+        <button type="button" aria-label={tip} className={className} onClick={onClick}>
+          {children}
+        </button>
+      ) : (
+        <span tabIndex={0} className={className}>
+          {children}
+        </span>
+      )}
+    </Tooltip>
+  );
+}
+
+function Tool({
+  icon,
+  label,
+  disabled = false,
+  onClick,
+}: {
+  icon: ReactNode;
+  label: string;
+  /** Still in sight and focusable, its tooltip saying why. */
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Tooltip label={label}>
+      <button
+        type="button"
+        aria-label={label}
+        aria-disabled={disabled || undefined}
         className={cn(
-          'rounded-full border px-2 py-px',
-          tone === 'warning' && 'border-warning text-warning-text',
+          'text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring grid size-6 place-items-center rounded focus-visible:ring-2 focus-visible:outline-none [&_svg]:size-4',
+          disabled && 'cursor-not-allowed opacity-50 hover:bg-transparent',
         )}
+        onClick={disabled ? undefined : onClick}
       >
-        {children}
-      </span>
+        {icon}
+      </button>
     </Tooltip>
   );
 }
@@ -195,10 +317,15 @@ function Element({
   element: e,
   pct,
   z,
+  selected,
+  onSelect,
 }: {
   element: TimelineElement;
   pct: (s: number) => string;
   z: number;
+  selected: boolean;
+  /** Absent, the element is only drawn. */
+  onSelect?: () => void;
 }) {
   const { t } = useTranslation('editor');
   const visual = e.visualTo !== null;
@@ -210,7 +337,7 @@ function Element({
   const height = bottom - top;
   // The split between the two rows, from the element's own top.
   const split = ROW.channel + ROW.gap / 2 - top;
-  const soft = e.kind === 'image' || e.kind === 'background';
+  const soft = e.kind === 'image';
   const fill = (color: string) => (soft ? mix(color, 28) : color);
   const background =
     visual && audio
@@ -221,17 +348,15 @@ function Element({
   const tip =
     e.kind === 'image'
       ? t('timeline.element.image')
-      : e.kind === 'background'
-        ? t('timeline.element.background')
-        : e.kind === 'video'
-          ? e.loop
-            ? t('timeline.element.videoLoop')
-            : seconds === null
-              ? t('timeline.element.unknown')
-              : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
+      : e.kind === 'video'
+        ? e.loop
+          ? t('timeline.element.videoLoop')
           : seconds === null
             ? t('timeline.element.unknown')
-            : t('timeline.element.audio', { seconds });
+            : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
+        : seconds === null
+          ? t('timeline.element.unknown')
+          : t('timeline.element.audio', { seconds });
   const Icon = e.kind === 'video' ? Video : e.kind === 'audio' ? Music : ImageIcon;
   const label =
     e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
@@ -246,12 +371,26 @@ function Element({
     <Tooltip label={tip} className="absolute" style={style}>
       <span
         tabIndex={0}
-        role="img"
+        role={onSelect ? 'button' : 'img'}
         aria-label={tip}
+        aria-pressed={onSelect ? selected : undefined}
+        onClick={onSelect}
+        onKeyDown={
+          onSelect
+            ? (ev) => {
+                if (ev.key !== 'Enter' && ev.key !== ' ') return;
+                ev.preventDefault();
+                onSelect();
+              }
+            : undefined
+        }
         className={cn(
           'relative flex size-full flex-col overflow-hidden rounded text-[11px]',
           soft ? 'text-foreground' : 'text-background',
           e.lowered && 'shadow-[0_-1px_3px_rgb(0_0_0/0.3)]',
+          onSelect &&
+            'focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none',
+          selected && 'ring-ring ring-2 ring-offset-1',
         )}
         style={{
           background,

@@ -2,14 +2,17 @@ import { REVEAL_DELAY_S, TIME_LIMIT_S } from '@quiz-dock/contracts';
 import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Disclosure } from '@/components/ui/disclosure';
+import { CheckboxField } from '@/components/ui/checkbox-field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { appConfig } from '../config';
 import { clampReveal, clampTime, type QuestionFormApi } from './question-form-model';
 
-/** The question's time and its reveal: folded, its summary says the time the room will really get. */
-export function QuestionTimingSection({
+/**
+ * The question's own settings, the drawer of its timeline's time row: its minimum
+ * duration, its reveal, listening first; under them, the time the room will really get.
+ */
+export function QuestionTimingFields({
   form,
   stretchedS,
   canListenFirst,
@@ -26,34 +29,16 @@ export function QuestionTimingSection({
 }) {
   const { t } = useTranslation(['editor', 'common']);
   const timeLimitS = useStore(form.store, (s) => s.values.timeLimitS);
-  const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
   const listenFirst = useStore(form.store, (s) => s.values.timerAfterMedia);
   // A time typed out of bounds was brought back to the nearest one: said once, under it.
   const [clamped, setClamped] = useState<'time' | 'reveal' | null>(null);
   return (
-    <Disclosure
-      title={t('questionForm.timingLegend')}
-      value={[
-        stretchedS > timeLimitS && !(canListenFirst && listenFirst)
-          ? t('questionForm.timingSummaryStretched', {
-              time: timeLimitS,
-              total: stretchedS,
-            })
-          : t('questionForm.timingSummary', { time: timeLimitS }),
-        revealDelayS == null
-          ? appConfig.autoAdvanceS
-            ? t('questionForm.revealDelaySummaryAuto', {
-                seconds: appConfig.autoAdvanceS,
-              })
-            : t('questionForm.revealDelayAuto')
-          : t('questionForm.revealDelaySummary', { seconds: revealDelayS }),
-      ].join(' · ')}
-    >
+    <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <form.Field name="timeLimitS">
           {(field) => (
             <Label>
-              {t('questionForm.timeLimitLabel')}
+              {t('timeline.minimumLabel')}
               <Input
                 type="number"
                 min={TIME_LIMIT_S.min}
@@ -99,6 +84,19 @@ export function QuestionTimingSection({
           )}
         </form.Field>
       </div>
+      {canListenFirst ? (
+        <form.Field name="timerAfterMedia">
+          {(field) => (
+            <CheckboxField
+              title={t('questionForm.listenFirstHint')}
+              checked={field.state.value}
+              onChange={field.handleChange}
+              label={t('questionForm.listenFirstLabel')}
+              hint={t('questionForm.listenFirstHint')}
+            />
+          )}
+        </form.Field>
+      ) : null}
       {clamped ? (
         <p className="text-muted-foreground text-sm" role="note">
           {clamped === 'time'
@@ -127,7 +125,9 @@ export function QuestionTimingSection({
             tail: mediaTailS,
           })}
         </p>
-      ) : null}
-    </Disclosure>
+      ) : (
+        <p className="text-muted-foreground text-sm">{t('timeline.minimumHint')}</p>
+      )}
+    </div>
   );
 }

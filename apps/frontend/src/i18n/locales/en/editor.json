@@ -182,7 +182,6 @@
     "videoSound": "Audio",
     "videoSoundHint": "Plays the video’s own audio. Off: muted, and the slide can have an audio of its own.",
     "audioExcludesVideoSound": "The slide already has an audio: one at a time. Remove it to turn the video’s on.",
-    "videoSoundExcludesAudio": "The video plays its own audio: no extra audio. Mute the video to add one.",
     "variablesLegend": "Variables",
     "variablesHint": "Write one in a heading or a text: it is replaced wherever the slide shows. The quiz’s appear filled in the preview, the lobby’s once the quiz is played.",
     "variables": {
@@ -235,12 +234,10 @@
     "typeLabel": "Type",
     "promptLabel": "Prompt",
     "promptPlaceholder": "Your question…",
-    "playbackLegend": "Playback",
     "timingLegend": "Timing",
     "pointsLegend": "Points",
     "answerExplanationLabel": "Answer explanation (shown with the right answer)",
     "answerExplanationPlaceholder": "Why this is the right answer… (optional)",
-    "timeLimitLabel": "Time (s)",
     "revealDelayLabel": "Answer shown for (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "In auto mode: how long the right answer stays on screen before moving on. Empty = the instance’s setting.",
@@ -373,24 +370,19 @@
     "explanationEmpty": "Empty",
     "numericLegend": "Answer",
     "decimalsAllowed": "Decimals are fine: 3.14, 0.5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s with the media)",
-    "revealDelayAuto": "answer shown auto",
-    "revealDelaySummary": "answer shown {{seconds}} s",
     "place_ordinal_one": "{{count}}st",
     "place_ordinal_two": "{{count}}nd",
     "place_ordinal_few": "{{count}}rd",
     "place_ordinal_other": "{{count}}th",
-    "mediaPositionLabel": "Picture on the big screen",
-    "mediaPositionHint": "Where the picture sits against the text; the answers stay below.",
     "mediaPosition": {
       "bottom": "Below the text",
       "top": "Above the text",
       "left": "Left of the text",
-      "right": "Right of the text"
+      "right": "Right of the text",
+      "behind": "Behind the text",
+      "alone": "Media alone"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "answer shown {{seconds}} s (auto)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)"
   },
   "timeline": {
     "legend": "Timeline",
@@ -412,7 +404,6 @@
     },
     "element": {
       "image": "Picture, the whole time",
-      "background": "Background picture, the whole time",
       "video": "Video, {{seconds}} s, with its sound",
       "videoMuted": "Video, {{seconds}} s, without sound",
       "videoLoop": "Looped video, the whole slide",
@@ -421,8 +412,46 @@
     },
     "label": {
       "image": "Picture",
-      "background": "Background",
       "video": "Video"
+    },
+    "add": "Add an element",
+    "clear": "Remove every media",
+    "questionSettings": "The question's flow",
+    "slideSettings": "The slide's flow",
+    "minimumLabel": "Minimum duration (s)",
+    "minimumHint": "A minimum: a longer media stretches the question.",
+    "choice": {
+      "image": "Picture",
+      "imageHint": "Visual channel, the whole time",
+      "video": "Video",
+      "videoHint": "Picture and sound, on both channels",
+      "audio": "Audio",
+      "audioHint": "Audio channel"
+    },
+    "refused": {
+      "imageChoice": "An image choice has no picture or video of its own.",
+      "oneVisual": "A question has a picture or a video, not both.",
+      "videoHasSound": "Never a video and an audio: the video carries its own.",
+      "oneAudio": "One audio per question.",
+      "oneVideo": "One video per slide.",
+      "oneSlideAudio": "One audio per slide.",
+      "slideVideoSound": "The video plays its own sound: mute it to add an audio."
+    },
+    "clearConfirm": {
+      "title": "Remove every media?",
+      "description": "The timeline is emptied: its pictures, videos and audios are taken off this step. Nothing is lost until you save.",
+      "confirm": "Remove"
+    },
+    "layout": "Layout",
+    "layoutNeedsVisual": "Layout: add a picture or a video first.",
+    "layoutApply": "Apply",
+    "layoutDescription": {
+      "bottom": "The picture or video under the text, the answers below.",
+      "top": "The picture or video above the text, the answers below.",
+      "left": "The picture or video on the left, the text beside it, the answers below.",
+      "right": "The text on the left, the picture or video beside it, the answers below.",
+      "behind": "The text laid over the picture or video, made legible by the colour and outline of the Background block; the answers below, outside it.",
+      "alone": "The picture or video in the text's place: the host reads the question out. The phones still show it; the answers stay below."
     }
   },
   "preview": {
@@ -462,7 +491,6 @@
     "altPlaceholder": "e.g. Kylian Mbappé in a France shirt",
     "altHelp": "Read aloud by screen readers. Describe what the image shows when it carries part of the question; leave it empty when the image is decoration.",
     "slotsLegend": "Question media",
-    "visualLabel": "Visual",
     "audioLabel": "Audio",
     "kindImage": "Image",
     "kindVideo": "Video",
@@ -470,8 +498,6 @@
     "addImage": "Add an image",
     "addVideo": "Add a video",
     "addAudio": "Add audio",
-    "videoExcludesAudio": "The video already has its own audio: no extra audio track. Remove the video to add audio.",
-    "audioExcludesVideo": "A video already has its own audio: remove the audio to choose a video.",
     "converting": "Converting…",
     "convertingPercent": "Converting… {{percent}} %",
     "cancelConversion": "Cancel",

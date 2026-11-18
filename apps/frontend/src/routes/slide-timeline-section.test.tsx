@@ -1,0 +1,98 @@
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import i18n from '../i18n';
+import { type SlideMediaValue, SlideTimelineSection } from './slide-timeline-section';
+
+// The upload itself has its own tests: here, a button standing for the pick.
+vi.mock('./media-upload', () => ({
+  MediaUpload: ({
+    kind,
+    value,
+    onChange,
+  }: {
+    kind: string;
+    value: string | null;
+    onChange: (id: string | null, uploaded?: { peaks?: number[] }) => void;
+  }) => (
+    <button type="button" data-testid={`upload-${kind}`} onClick={() => onChange(`${kind}-id`, {})}>
+      {value ?? 'empty'}
+    </button>
+  ),
+}));
+// Every media lasts 12 s.
+vi.mock('../api/generated/media/media', () => ({
+  mediaControllerDescribe: () => Promise.resolve({ data: { durationMs: 12_000 } }),
+}));
+
+afterEach(cleanup);
+
+const base: SlideMediaValue = {
+  videoMediaId: null,
+  videoLoop: true,
+  videoSound: true,
+  audioMediaId: null,
+  waveformSize: 'hidden',
+  audioTarget: null,
+  displayDelayS: null,
+};
+
+const open = (value: SlideMediaValue, onChange = vi.fn()) => {
+  render(
+    <SlideTimelineSection
+      value={value}
+      onChange={onChange}
+      peaks={null}
+      onPeaks={vi.fn()}
+      defaultS={5}
+      mediaTailS={1}
+    />,
+  );
+  return onChange;
+};
+/** The + of the timeline: its modal, to query within. */
+const add = () => {
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('editor:timeline.add') }));
+  return within(screen.getByRole('dialog', { name: i18n.t('editor:timeline.add') }));
+};
+
+describe('SlideTimelineSection (#125)', () => {
+  it('a video with its sound: the + refuses a sound, and says why', () => {
+    open({ ...base, videoMediaId: 'v' });
+    const modal = add();
+    const audio = modal.getByRole('button', { name: /^Audio/ });
+    expect(audio).toBeDisabled();
+    expect(audio).toHaveTextContent(i18n.t('editor:timeline.refused.slideVideoSound'));
+    expect(modal.getByRole('button', { name: /^Vidéo/ })).toBeDisabled();
+  });
+
+  it('a video picked next to a sound comes muted: one sound at a time', () => {
+    const onChange = open({ ...base, audioMediaId: 'a' });
+    fireEvent.click(add().getByRole('button', { name: /^Vidéo/ }));
+    fireEvent.click(screen.getByTestId('upload-video'));
+    expect(onChange).toHaveBeenCalledWith({ videoMediaId: 'video-id', videoSound: false });
+  });
+
+  it("a muted video's sound cannot be turned on while the slide has one", async () => {
+    open({ ...base, videoMediaId: 'v', videoLoop: false, videoSound: false, audioMediaId: 'a' });
+    fireEvent.click(await screen.findByRole('button', { name: 'Vidéo, 12 s, sans son' }));
+    const sound = screen.getByRole('checkbox', {
+      name: new RegExp(`^${i18n.t('editor:slideForm.videoSound')}`),
+    });
+    expect((sound as HTMLInputElement).disabled).toBe(true);
+  });
+
+  it('nothing to clear on an empty slide', () => {
+    open(base);
+    expect(screen.queryByRole('button', { name: i18n.t('editor:timeline.clear') })).toBeNull();
+  });
+
+  it('clearing, once confirmed, takes the video and the sound away', () => {
+    const onChange = open({ ...base, videoMediaId: 'v', audioMediaId: 'a' });
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('editor:timeline.clear') }));
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.click(
+      screen.getByRole('button', { name: i18n.t('editor:timeline.clearConfirm.confirm') }),
+    );
+    expect(onChange).toHaveBeenCalledWith({ videoMediaId: null, audioMediaId: null });
+  });
+});

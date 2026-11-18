@@ -54,7 +54,7 @@ import { SlideStage } from '../game/slide-stage';
 import { LiveTheme } from '../game/theme';
 import { useQuizTheme } from '@/lib/quiz-theme';
 import { BackgroundField } from './background-field';
-import { SlideMediaField, type SlideMediaValue } from './slide-media-field';
+import { SlideTimelineSection, type SlideMediaValue } from './slide-timeline-section';
 import { mediaUrl } from '@/lib/media-url';
 import { slideShowOf } from './quiz-stage-preview';
 import {
@@ -65,9 +65,6 @@ import {
   blockId,
   complete,
 } from './slide-blocks';
-import { DisplayTimeField } from './slide-display-time';
-import { StepTimeline, useAssetDurationMs } from './step-timeline';
-import { slideTimeline } from './step-timeline-model';
 import { appConfig } from '../config';
 
 /** The engine's display time of a slide in automatic mode, when the instance says none. */
@@ -80,7 +77,6 @@ interface FormValues extends SlideMediaValue {
   textTone: SlideTextTone;
   textOutline: boolean;
   backgroundStyle: BackgroundStyle | null;
-  displayDelayS: number | null;
 }
 
 function initialValues(s?: QuizDetailDtoSlidesItem): FormValues {
@@ -189,9 +185,6 @@ export function SlideForm({
   const patch = (p: Partial<FormValues>) => setValues((v) => ({ ...v, ...p }));
   // The sound's waveform, known once a sound is picked here (the size preview draws it).
   const [audioPeaks, setAudioPeaks] = useState<number[] | null>(null);
-  // The media's lengths, for the timeline.
-  const videoMs = useAssetDurationMs(values.videoMediaId);
-  const audioMs = useAssetDurationMs(values.audioMediaId);
 
   const cancel = () => {
     clearDraft(draftKey);
@@ -413,29 +406,16 @@ export function SlideForm({
           <AddBlockBar onAdd={addBlock} />
           <VariablesHelp />
         </fieldset>
-        <StepTimeline
-          model={slideTimeline({
-            displayDelayS: values.displayDelayS,
-            defaultS: appConfig.autoAdvanceS ?? AUTO_ADVANCE_DEFAULT_S,
-            background: !!values.mediaId,
-            video: values.videoMediaId
-              ? { lengthMs: videoMs, loop: values.videoLoop, sound: values.videoSound }
-              : null,
-            audio:
-              values.audioMediaId && !(values.videoMediaId && values.videoSound)
-                ? { lengthMs: audioMs, peaks: audioPeaks }
-                : null,
-            tailS: mediaTailS,
-          })}
-        />
         {/* Media refusals point at the video or the sound: both lead here. */}
         <div id="qf-videoMediaId">
           <div id="qf-audioMediaId" className="flex flex-col gap-1.5">
-            <SlideMediaField
+            <SlideTimelineSection
               value={values}
               onChange={(p) => patch(p)}
               peaks={audioPeaks}
               onPeaks={setAudioPeaks}
+              defaultS={appConfig.autoAdvanceS ?? AUTO_ADVANCE_DEFAULT_S}
+              mediaTailS={mediaTailS}
             />
             <FieldMessage issues={[...issuesAt('audioMediaId'), ...issuesAt('videoMediaId')]} />
           </div>
@@ -455,10 +435,6 @@ export function SlideForm({
           <FieldMessage issues={[...issuesAt('gradient'), ...issuesAt('mediaId')]} />
         </div>
 
-        <DisplayTimeField
-          value={values.displayDelayS}
-          onChange={(v) => patch({ displayDelayS: v })}
-        />
         <ConfirmDialog
           open={askDraft}
           title={t('slideForm.moveToDraft.title')}

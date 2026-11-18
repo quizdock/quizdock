@@ -39,8 +39,10 @@ export const BUNDLE_FORMAT = 'quizdock/quiz';
  * Version 6: image choice — answers that are pictures, each with its `alt`.
  * Version 7: a question's picture or video may sit above or beside its text (`mediaPosition`).
  * Version 8: the quiz's theme (`theme`), and a step's background laid by its style (`background`).
+ * Version 9: a question's picture or video may sit behind its text, or alone in its place
+ * (`mediaPosition` `behind`, `alone`).
  */
-export const BUNDLE_VERSION = 8;
+export const BUNDLE_VERSION = 9;
 
 /** Whether a slide item uses what version 5 brought: a video, a sound (#125). */
 function slideUsesMedia(it: SlideBundleItem): boolean {
@@ -53,6 +55,13 @@ function slideUsesMedia(it: SlideBundleItem): boolean {
  * that uses nothing newer.
  */
 export function bundleVersionOf(items: QuizBundle['items'], theme?: QuizBundle['theme']): number {
+  if (
+    items.some(
+      (it) =>
+        it.kind === 'question' && (it.mediaPosition === 'behind' || it.mediaPosition === 'alone'),
+    )
+  )
+    return 9;
   if (theme || items.some((it) => it.background)) return 8;
   if (
     items.some((it) => it.kind === 'question' && it.mediaPosition && it.mediaPosition !== 'bottom')

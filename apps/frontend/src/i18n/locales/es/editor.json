@@ -186,7 +186,6 @@
     "videoSound": "Audio",
     "videoSoundHint": "Reproduce el audio del vídeo. Desactivado: silenciado, y la diapositiva puede tener su propio audio.",
     "audioExcludesVideoSound": "La diapositiva ya tiene un audio: uno solo a la vez. Quítalo para activar el del vídeo.",
-    "videoSoundExcludesAudio": "El vídeo reproduce su propio audio: ningún audio más. Silencia el vídeo para añadir uno.",
     "variablesLegend": "Variables",
     "variablesHint": "Escríbela en un título o un texto: se sustituye allí donde se muestra la diapositiva. Las del quiz aparecen en la vista previa; las de la sala, al jugarlo.",
     "variables": {
@@ -239,12 +238,10 @@
     "typeLabel": "Tipo",
     "promptLabel": "Enunciado",
     "promptPlaceholder": "Tu pregunta…",
-    "playbackLegend": "Reproducción",
     "timingLegend": "Tiempo",
     "pointsLegend": "Puntos",
     "answerExplanationLabel": "Explicación (se muestra con la respuesta correcta)",
     "answerExplanationPlaceholder": "Por qué esta es la respuesta correcta… (opcional)",
-    "timeLimitLabel": "Tiempo (s)",
     "revealDelayLabel": "Respuesta visible durante (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "En modo automático: cuánto tiempo queda la respuesta correcta en pantalla antes de seguir. Vacío = ajuste de la instancia.",
@@ -377,24 +374,19 @@
     "explanationEmpty": "Vacía",
     "numericLegend": "Respuesta",
     "decimalsAllowed": "Se admiten decimales: 3,14, 0,5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s con el medio)",
-    "revealDelayAuto": "respuesta visible en auto",
-    "revealDelaySummary": "respuesta visible {{seconds}} s",
     "place_ordinal_one": "{{count}}.º",
     "place_ordinal_two": "{{count}}.º",
     "place_ordinal_few": "{{count}}.º",
     "place_ordinal_other": "{{count}}.º",
-    "mediaPositionLabel": "Imagen en la proyección",
-    "mediaPositionHint": "Dónde se coloca la imagen respecto al texto; las respuestas quedan abajo.",
     "mediaPosition": {
       "bottom": "Bajo el texto",
       "top": "Sobre el texto",
       "left": "A la izquierda del texto",
-      "right": "A la derecha del texto"
+      "right": "A la derecha del texto",
+      "behind": "Detrás del texto",
+      "alone": "Solo el medio"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "respuesta visible {{seconds}} s (auto)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)"
   },
   "timeline": {
     "legend": "Línea de tiempo",
@@ -416,7 +408,6 @@
     },
     "element": {
       "image": "Imagen, todo el tiempo",
-      "background": "Imagen de fondo, todo el tiempo",
       "video": "Vídeo, {{seconds}} s, con sonido",
       "videoMuted": "Vídeo, {{seconds}} s, sin sonido",
       "videoLoop": "Vídeo en bucle, toda la diapositiva",
@@ -425,8 +416,46 @@
     },
     "label": {
       "image": "Imagen",
-      "background": "Fondo",
       "video": "Vídeo"
+    },
+    "add": "Añadir un elemento",
+    "clear": "Quitar todos los medios",
+    "questionSettings": "Desarrollo de la pregunta",
+    "slideSettings": "Desarrollo de la diapositiva",
+    "minimumLabel": "Duración mínima (s)",
+    "minimumHint": "Un mínimo: un medio más largo alarga la pregunta.",
+    "choice": {
+      "image": "Imagen",
+      "imageHint": "Canal visual, todo el tiempo",
+      "video": "Vídeo",
+      "videoHint": "Imagen y sonido, en los dos canales",
+      "audio": "Audio",
+      "audioHint": "Canal de audio"
+    },
+    "refused": {
+      "imageChoice": "Una elección de imágenes no tiene imagen ni vídeo propios.",
+      "oneVisual": "Una pregunta tiene una imagen o un vídeo, no ambos.",
+      "videoHasSound": "Nunca un vídeo y un audio: el vídeo lleva el suyo.",
+      "oneAudio": "Un audio por pregunta.",
+      "oneVideo": "Un vídeo por diapositiva.",
+      "oneSlideAudio": "Un audio por diapositiva.",
+      "slideVideoSound": "El vídeo reproduce su propio sonido: siléncialo para añadir un audio."
+    },
+    "clearConfirm": {
+      "title": "¿Quitar todos los medios?",
+      "description": "La línea de tiempo se vacía: sus imágenes, vídeos y audios se quitan de este paso. No se pierde nada hasta que guardes.",
+      "confirm": "Quitar"
+    },
+    "layout": "Diseño",
+    "layoutNeedsVisual": "Diseño: añade primero una imagen o un vídeo.",
+    "layoutApply": "Aplicar",
+    "layoutDescription": {
+      "bottom": "La imagen o el vídeo bajo el texto, las respuestas debajo.",
+      "top": "La imagen o el vídeo sobre el texto, las respuestas debajo.",
+      "left": "La imagen o el vídeo a la izquierda, el texto al lado, las respuestas debajo.",
+      "right": "El texto a la izquierda, la imagen o el vídeo al lado, las respuestas debajo.",
+      "behind": "El texto sobre la imagen o el vídeo, legible gracias al color y al contorno del bloque Fondo; las respuestas debajo, fuera del medio.",
+      "alone": "La imagen o el vídeo en lugar del texto: el presentador lee la pregunta. Los móviles la siguen mostrando; las respuestas quedan debajo."
     }
   },
   "preview": {
@@ -466,7 +495,6 @@
     "altPlaceholder": "p. ej. Kylian Mbappé con la camiseta de Francia",
     "altHelp": "Lo leen los lectores de pantalla. Describe lo que muestra la imagen cuando forma parte de la pregunta; déjalo vacío si es decorativa.",
     "slotsLegend": "Medios de la pregunta",
-    "visualLabel": "Visual",
     "audioLabel": "Audio",
     "kindImage": "Imagen",
     "kindVideo": "Vídeo",
@@ -474,8 +502,6 @@
     "addImage": "Añadir una imagen",
     "addVideo": "Añadir un vídeo",
     "addAudio": "Añadir un audio",
-    "videoExcludesAudio": "El vídeo ya tiene su propio audio: no hay pista de audio adicional. Quita el vídeo para añadir un audio.",
-    "audioExcludesVideo": "Un vídeo ya tiene su propio audio: quita el audio para poder elegir un vídeo.",
     "converting": "Convirtiendo…",
     "convertingPercent": "Convirtiendo… {{percent}} %",
     "cancelConversion": "Cancelar",

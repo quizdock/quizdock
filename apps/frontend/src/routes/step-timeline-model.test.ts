@@ -81,7 +81,6 @@ describe('questionTimeline', () => {
 const slide = {
   displayDelayS: null,
   defaultS: 5,
-  background: false,
   video: null,
   audio: null,
   tailS: 1,
@@ -109,13 +108,11 @@ describe('slideTimeline', () => {
     const t = slideTimeline({
       ...slide,
       displayDelayS: 10,
-      background: true,
       video: { lengthMs: 30_000, loop: true, sound: false },
     });
     expect(t.totalS).toBe(10);
     expect(t.elements.map((e) => [e.kind, e.visualTo, e.audioTo, e.lowered])).toEqual([
-      ['background', 10, null, false],
-      ['video', 10, null, true],
+      ['video', 10, null, false],
     ]);
   });
 

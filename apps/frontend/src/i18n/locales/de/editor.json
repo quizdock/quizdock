@@ -182,7 +182,6 @@
     "videoSound": "Audio",
     "videoSoundHint": "Spielt das eigene Audio des Videos. Aus: stumm, und die Folie kann ein eigenes Audio haben.",
     "audioExcludesVideoSound": "Die Folie hat bereits ein Audio: jeweils nur eines. Entfernen Sie es, um das des Videos einzuschalten.",
-    "videoSoundExcludesAudio": "Das Video spielt sein eigenes Audio: kein zusätzliches Audio. Schalten Sie das Video stumm, um eines hinzuzufügen.",
     "variablesLegend": "Variablen",
     "variablesHint": "In eine Überschrift oder einen Text schreiben: Sie wird überall ersetzt, wo die Folie erscheint. Die des Quiz erscheinen in der Vorschau ausgefüllt, die des Raums, sobald das Quiz gespielt wird.",
     "variables": {
@@ -235,12 +234,10 @@
     "typeLabel": "Typ",
     "promptLabel": "Fragetext",
     "promptPlaceholder": "Ihre Frage…",
-    "playbackLegend": "Wiedergabe",
     "timingLegend": "Zeit",
     "pointsLegend": "Punkte",
     "answerExplanationLabel": "Erklärung zur Antwort (mit der richtigen Antwort angezeigt)",
     "answerExplanationPlaceholder": "Warum das die richtige Antwort ist… (optional)",
-    "timeLimitLabel": "Zeit (s)",
     "revealDelayLabel": "Antwort angezeigt für (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "Im automatischen Modus: wie lange die richtige Antwort auf dem Bildschirm bleibt, bevor es weitergeht. Leer = Einstellung der Instanz.",
@@ -373,24 +370,19 @@
     "explanationEmpty": "Leer",
     "numericLegend": "Antwort",
     "decimalsAllowed": "Dezimalzahlen sind möglich: 3.14, 0.5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s mit dem Medium)",
-    "revealDelayAuto": "Antwort angezeigt: auto",
-    "revealDelaySummary": "Antwort angezeigt: {{seconds}} s",
     "place_ordinal_one": "{{count}}.",
     "place_ordinal_two": "{{count}}.",
     "place_ordinal_few": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Bild auf der großen Leinwand",
-    "mediaPositionHint": "Wo das Bild im Verhältnis zum Text steht; die Antworten bleiben darunter.",
     "mediaPosition": {
       "bottom": "Unter dem Text",
       "top": "Über dem Text",
       "left": "Links vom Text",
-      "right": "Rechts vom Text"
+      "right": "Rechts vom Text",
+      "behind": "Hinter dem Text",
+      "alone": "Nur Medium"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "Antwort angezeigt: {{seconds}} s (auto)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)"
   },
   "timeline": {
     "legend": "Zeitleiste",
@@ -412,7 +404,6 @@
     },
     "element": {
       "image": "Bild, die ganze Zeit",
-      "background": "Hintergrundbild, die ganze Zeit",
       "video": "Video, {{seconds}} s, mit Ton",
       "videoMuted": "Video, {{seconds}} s, ohne Ton",
       "videoLoop": "Video in Schleife, die ganze Folie",
@@ -421,8 +412,46 @@
     },
     "label": {
       "image": "Bild",
-      "background": "Hintergrund",
       "video": "Video"
+    },
+    "add": "Element hinzufügen",
+    "clear": "Alle Medien entfernen",
+    "questionSettings": "Ablauf der Frage",
+    "slideSettings": "Ablauf der Folie",
+    "minimumLabel": "Mindestdauer (s)",
+    "minimumHint": "Ein Minimum: Ein längeres Medium verlängert die Frage.",
+    "choice": {
+      "image": "Bild",
+      "imageHint": "Bildkanal, die ganze Zeit",
+      "video": "Video",
+      "videoHint": "Bild und Ton, auf beiden Kanälen",
+      "audio": "Audio",
+      "audioHint": "Tonkanal"
+    },
+    "refused": {
+      "imageChoice": "Eine Bildauswahl hat kein eigenes Bild und kein eigenes Video.",
+      "oneVisual": "Eine Frage hat ein Bild oder ein Video, nicht beides.",
+      "videoHasSound": "Nie ein Video und ein Audio: Das Video bringt seinen eigenen Ton mit.",
+      "oneAudio": "Ein Audio pro Frage.",
+      "oneVideo": "Ein Video pro Folie.",
+      "oneSlideAudio": "Ein Audio pro Folie.",
+      "slideVideoSound": "Das Video spielt seinen eigenen Ton: Schalte ihn stumm, um ein Audio hinzuzufügen."
+    },
+    "clearConfirm": {
+      "title": "Alle Medien entfernen?",
+      "description": "Die Zeitleiste wird geleert: Bilder, Videos und Audios werden aus diesem Schritt entfernt. Nichts geht verloren, solange du nicht speicherst.",
+      "confirm": "Entfernen"
+    },
+    "layout": "Layout",
+    "layoutNeedsVisual": "Layout: Füge zuerst ein Bild oder ein Video hinzu.",
+    "layoutApply": "Anwenden",
+    "layoutDescription": {
+      "bottom": "Das Bild oder Video unter dem Text, die Antworten darunter.",
+      "top": "Das Bild oder Video über dem Text, die Antworten darunter.",
+      "left": "Das Bild oder Video links, der Text daneben, die Antworten darunter.",
+      "right": "Der Text links, das Bild oder Video daneben, die Antworten darunter.",
+      "behind": "Der Text liegt über dem Bild oder Video, lesbar durch Farbe und Kontur aus dem Block Hintergrund; die Antworten darunter, außerhalb.",
+      "alone": "Das Bild oder Video anstelle des Textes: Die Moderation liest die Frage vor. Die Handys zeigen sie weiterhin; die Antworten bleiben darunter."
     }
   },
   "preview": {
@@ -462,7 +491,6 @@
     "altPlaceholder": "z. B. Kylian Mbappé im Trikot der französischen Nationalmannschaft",
     "altHelp": "Wird von Screenreadern vorgelesen. Beschreiben Sie, was das Bild zeigt, wenn es einen Teil der Frage trägt; lassen Sie es leer, wenn das Bild nur Dekoration ist.",
     "slotsLegend": "Medien der Frage",
-    "visualLabel": "Bild/Video",
     "audioLabel": "Audio",
     "kindImage": "Bild",
     "kindVideo": "Video",
@@ -470,8 +498,6 @@
     "addImage": "Bild hinzufügen",
     "addVideo": "Video hinzufügen",
     "addAudio": "Audio hinzufügen",
-    "videoExcludesAudio": "Das Video hat bereits sein eigenes Audio: keine zusätzliche Audiospur. Entfernen Sie das Video, um ein Audio hinzuzufügen.",
-    "audioExcludesVideo": "Ein Video hat bereits sein eigenes Audio: Entfernen Sie das Audio, um ein Video zu wählen.",
     "converting": "Wird konvertiert…",
     "convertingPercent": "Wird konvertiert… {{percent}} %",
     "cancelConversion": "Abbrechen",

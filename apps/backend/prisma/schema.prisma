@@ -130,6 +130,8 @@ enum MediaPosition {
   top
   left
   right
+  behind
+  alone
 }
 
 /// Which devices play a question's sound (see AudioTarget in @quiz-dock/contracts).

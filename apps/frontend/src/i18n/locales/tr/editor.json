@@ -182,7 +182,6 @@
     "videoSound": "Ses",
     "videoSoundHint": "Videonun kendi sesini çalar. Kapalı: sessizdir ve slaytın kendine ait bir sesi olabilir.",
     "audioExcludesVideoSound": "Slaytta zaten bir ses var: aynı anda yalnızca biri çalabilir. Videonun sesini açmak için onu kaldırın.",
-    "videoSoundExcludesAudio": "Video kendi sesini çalar: ekstra ses yoktur. Eklemek için videoyu sessize alın.",
     "variablesLegend": "Değişkenler",
     "variablesHint": "Başlığa veya metne bir değişken yazın: slaytın gösterildiği her yerde değeriyle değiştirilir. Quizinkiler önizlemede, odanınkiler quiz oynatıldığında dolu görünür.",
     "variables": {
@@ -235,12 +234,10 @@
     "typeLabel": "Tür",
     "promptLabel": "Soru metni",
     "promptPlaceholder": "Sorunuz…",
-    "playbackLegend": "Oynatma",
     "timingLegend": "Zamanlama",
     "pointsLegend": "Puanlar",
     "answerExplanationLabel": "Yanıt açıklaması (doğru yanıtla birlikte görünür)",
     "answerExplanationPlaceholder": "Bu yanıt neden doğru? (isteğe bağlı)",
-    "timeLimitLabel": "Süre (sn)",
     "revealDelayLabel": "Yanıtın gösterim süresi (sn)",
     "revealDelayPlaceholder": "oto",
     "revealDelayHint": "Otomatik modda: doğru yanıtın sonraki adıma geçmeden önce ekranda kalma süresi. Boş = sunucunun ayarı.",
@@ -373,22 +370,17 @@
     "explanationEmpty": "Boş",
     "numericLegend": "Yanıt",
     "decimalsAllowed": "Ondalık sayılar kullanılabilir: 3.14, 0.5…",
-    "timingSummary": "{{time}} sn",
-    "timingSummaryStretched": "{{time}} sn (medyayla birlikte {{total}} sn)",
-    "revealDelayAuto": "yanıt gösterimi otomatik",
-    "revealDelaySummary": "yanıt {{seconds}} sn gösterilir",
     "place_ordinal_one": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Yansıtma ekranında görsel",
-    "mediaPositionHint": "Görselin metne göre konumu; cevaplar altta kalır.",
     "mediaPosition": {
       "bottom": "Metnin altında",
       "top": "Metnin üstünde",
       "left": "Metnin solunda",
-      "right": "Metnin sağında"
+      "right": "Metnin sağında",
+      "behind": "Metnin arkasında",
+      "alone": "Yalnızca medya"
     },
-    "revealDelayAutoValue": "oto ({{seconds}} sn)",
-    "revealDelaySummaryAuto": "yanıt {{seconds}} sn gösterilir (otomatik)"
+    "revealDelayAutoValue": "oto ({{seconds}} sn)"
   },
   "timeline": {
     "legend": "Zaman çizelgesi",
@@ -410,7 +402,6 @@
     },
     "element": {
       "image": "Görsel, tüm süre boyunca",
-      "background": "Arka plan görseli, tüm süre boyunca",
       "video": "Video, {{seconds}} sn, sesli",
       "videoMuted": "Video, {{seconds}} sn, sessiz",
       "videoLoop": "Döngüdeki video, tüm slayt boyunca",
@@ -419,8 +410,46 @@
     },
     "label": {
       "image": "Görsel",
-      "background": "Arka plan",
       "video": "Video"
+    },
+    "add": "Öğe ekle",
+    "clear": "Tüm medyaları kaldır",
+    "questionSettings": "Sorunun akışı",
+    "slideSettings": "Slaytın akışı",
+    "minimumLabel": "En kısa süre (sn)",
+    "minimumHint": "Bir alt sınır: daha uzun bir medya soruyu uzatır.",
+    "choice": {
+      "image": "Resim",
+      "imageHint": "Görsel kanal, tüm süre boyunca",
+      "video": "Video",
+      "videoHint": "Görüntü ve ses, iki kanalda",
+      "audio": "Ses",
+      "audioHint": "Ses kanalı"
+    },
+    "refused": {
+      "imageChoice": "Görsel seçimli bir sorunun kendi resmi veya videosu olmaz.",
+      "oneVisual": "Bir soruda resim ya da video olur, ikisi birden olmaz.",
+      "videoHasSound": "Video ile ses asla birlikte olmaz: videonun kendi sesi var.",
+      "oneAudio": "Soru başına bir ses.",
+      "oneVideo": "Slayt başına bir video.",
+      "oneSlideAudio": "Slayt başına bir ses.",
+      "slideVideoSound": "Video kendi sesini çalıyor: ses eklemek için videonun sesini kapatın."
+    },
+    "clearConfirm": {
+      "title": "Tüm medyalar kaldırılsın mı?",
+      "description": "Zaman çizelgesi boşaltılır: resimler, videolar ve sesler bu adımdan kaldırılır. Kaydetmediğiniz sürece hiçbir şey kaybolmaz.",
+      "confirm": "Kaldır"
+    },
+    "layout": "Yerleşim",
+    "layoutNeedsVisual": "Yerleşim: önce bir resim ya da video ekleyin.",
+    "layoutApply": "Uygula",
+    "layoutDescription": {
+      "bottom": "Resim ya da video metnin altında, cevaplar aşağıda.",
+      "top": "Resim ya da video metnin üstünde, cevaplar aşağıda.",
+      "left": "Resim ya da video solda, metin yanında, cevaplar aşağıda.",
+      "right": "Metin solda, resim ya da video yanında, cevaplar aşağıda.",
+      "behind": "Metin resmin ya da videonun üzerinde, Arka plan bloğunun rengi ve kenarlığıyla okunur; cevaplar aşağıda, medyanın dışında.",
+      "alone": "Metnin yerinde resim ya da video: soruyu sunucu okur. Telefonlar soruyu yine gösterir; cevaplar aşağıda kalır."
     }
   },
   "preview": {
@@ -460,7 +489,6 @@
     "altPlaceholder": "örneğin Kylian Mbappé Fransa formasıyla",
     "altHelp": "Görselin ne gösterdiğini açıklayın; ekran okuyucu bunu seslendirir. Görsel yalnızca dekor amaçlıysa boş bırakın.",
     "slotsLegend": "Soru medyası",
-    "visualLabel": "Görsel",
     "audioLabel": "Ses",
     "kindImage": "Resim",
     "kindVideo": "video",
@@ -468,8 +496,6 @@
     "addImage": "Resim ekle",
     "addVideo": "Video ekle",
     "addAudio": "Ses ekle",
-    "videoExcludesAudio": "Videonun zaten kendi sesi var: ekstra ses parçası yok. Ses eklemek için videoyu kaldırın.",
-    "audioExcludesVideo": "Bir videonun zaten kendi sesi vardır: Bir video seçmek için sesi kaldırın.",
     "converting": "Dönüştürülüyor…",
     "convertingPercent": "Dönüştürülüyor… %{{percent}}",
     "cancelConversion": "İptal",

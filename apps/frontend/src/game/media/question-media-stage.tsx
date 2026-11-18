@@ -597,8 +597,11 @@ export function QuestionMediaStage({
   startAt = null,
   zoomable = false,
   showHiddenWaveform = false,
+  cover = false,
 }: {
   media: LiveQuestionMedia | null | undefined;
+  /** The visual fills its box, cropped, rather than fitting in it: a media behind the text. */
+  cover?: boolean;
   /** A phone's picture: sized by `boxClassName`, a tap opens it over the whole screen. */
   zoomable?: boolean;
   /** The host's console: draws a waveform the author hid from the screens. */
@@ -648,7 +651,10 @@ export function QuestionMediaStage({
             <img
               src={visual.url}
               alt={visual.alt?.trim() || t('question.mediaAlt')}
-              className="absolute inset-0 h-full w-full rounded-lg object-contain"
+              className={cn(
+                'absolute inset-0 h-full w-full',
+                cover ? 'object-cover' : 'rounded-lg object-contain',
+              )}
             />
           </div>
         )
@@ -664,6 +670,7 @@ export function QuestionMediaStage({
           catchUp={catchUp}
           onPosition={onPosition}
           startAt={startAt}
+          cover={cover}
         />
       ) : null}
       {audio && (mode === 'still' || !audible) && follow !== undefined ? (

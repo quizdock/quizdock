@@ -2,7 +2,6 @@ import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/c
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import {
   MEDIA_TAIL_DEFAULT_S,
-  effectiveTimeLimitS,
   type QuestionMedia,
   OPTION_TYPES,
   type QuestionCompletenessInput,
@@ -37,7 +36,6 @@ import { ApiError, apiErrorText, apiFieldErrors } from '../api/http';
 import type { QuizDetailDtoQuestionsItem } from '../api/generated/model';
 import { BackgroundField } from './background-field';
 import { useContentT } from '../i18n/content-language';
-import { useMediaDurationMs } from './question-media-field';
 import {
   useQuestionsControllerAdd,
   useQuestionsControllerUpdate,
@@ -51,20 +49,16 @@ import {
   type OptionValue,
   PAIRS,
   type QType,
-  READ_DELAY_DEFAULT_MS,
   SINGLE_CORRECT,
   TYPES,
   buildPayload,
   initialValues,
-  mediaHasSound,
   newOption,
   rankPlaces,
   useQuestionFormApi,
   withDefaults,
 } from './question-form-model';
-import { QuestionMediaSection } from './question-media-section';
-import { StepTimeline } from './step-timeline';
-import { questionTimeline } from './step-timeline-model';
+import { QuestionTimelineSection } from './question-timeline-section';
 import {
   AcceptedAnswersSection,
   NumericSection,
@@ -73,7 +67,6 @@ import {
 } from './question-answer-sections';
 import { PromptImageNotice } from './prompt-image-notice';
 import { LivePreview } from './question-live-preview';
-import { QuestionTimingSection } from './question-timing-section';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 export function QuestionForm({
@@ -265,21 +258,11 @@ export function QuestionForm({
     onClose();
   };
   const media = useStore(form.store, (s) => s.values.media);
-  const timeLimitS = useStore(form.store, (s) => s.values.timeLimitS);
-  const mediaMs = useMediaDurationMs(media);
-  // What the session will give this question, estimated with the default read delay
-  // (the server uses the instance's GAME_READ_DELAY_MS).
-  const listenFirst = useStore(form.store, (s) => s.values.timerAfterMedia);
   // Read on the folded line of the points.
   const pointsMode = useStore(form.store, (s) => s.values.pointsMode);
   const scoring = useStore(form.store, (s) => s.values.scoring);
   const multiSelect = useStore(form.store, (s) => s.values.multiSelect);
   const scorings = scoringsFor(type, multiSelect);
-  const canListenFirst = mediaHasSound(media) && mediaMs !== null;
-  const stretchedS =
-    canListenFirst && listenFirst
-      ? timeLimitS
-      : effectiveTimeLimitS(timeLimitS, mediaMs, mediaTailS, READ_DELAY_DEFAULT_MS);
   const options = useStore(form.store, (s) => s.values.options);
   // Index of the option whose removal awaits confirmation.
   const [pendingRemoval, setPendingRemoval] = useState<number | null>(null);
@@ -483,29 +466,7 @@ export function QuestionForm({
         )}
         {type === 'numeric' && <NumericSection form={form} issues={issues} />}
 
-        <StepTimeline
-          model={questionTimeline({
-            timeLimitS,
-            listenFirst: canListenFirst && listenFirst,
-            visual: type === 'image_choice' ? null : (media.visual?.kind ?? null),
-            audio: media.audio ? { peaks: media.audio.peaks } : null,
-            mediaMs,
-            tailS: mediaTailS,
-            readMs: READ_DELAY_DEFAULT_MS,
-          })}
-        />
-        <QuestionMediaSection
-          form={form}
-          canListenFirst={canListenFirst}
-          issues={issuesAt('media')}
-        />
-        <QuestionTimingSection
-          form={form}
-          stretchedS={stretchedS}
-          canListenFirst={canListenFirst}
-          mediaMs={mediaMs}
-          mediaTailS={mediaTailS}
-        />
+        <QuestionTimelineSection form={form} mediaTailS={mediaTailS} issues={issuesAt('media')} />
 
         {/* Le barème par défaut convient presque toujours : il se lit replié. */}
         {type !== 'poll' && (

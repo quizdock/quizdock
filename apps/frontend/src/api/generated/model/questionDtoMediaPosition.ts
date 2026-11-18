@@ -14,4 +14,6 @@ export const QuestionDtoMediaPosition = {
   top: 'top',
   left: 'left',
   right: 'right',
+  behind: 'behind',
+  alone: 'alone',
 } as const;

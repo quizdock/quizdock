@@ -15,7 +15,7 @@ export interface TimelinePhase {
 
 /** One element, drawn once over the channels it has. */
 export interface TimelineElement {
-  kind: 'image' | 'background' | 'video' | 'audio';
+  kind: 'image' | 'video' | 'audio';
   from: number;
   /** Where it ends on the visual row; null when it shows nothing. */
   visualTo: number | null;
@@ -129,7 +129,6 @@ export function slideTimeline(s: {
   /** null = the instance's default, 0 = the host moves on by hand, n = n seconds. */
   displayDelayS: number | null;
   defaultS: number;
-  background: boolean;
   video: { lengthMs: number | null; loop: boolean; sound: boolean } | null;
   audio: { lengthMs: number | null; peaks: number[] | null } | null;
   tailS: number;
@@ -167,9 +166,6 @@ export function slideTimeline(s: {
   }
   const end = (ms: number | null) => (ms === null ? total : Math.min(ms / 1000, total));
   const elements: Omit<TimelineElement, 'lowered'>[] = [];
-  if (s.background) {
-    elements.push({ kind: 'background', from: 0, visualTo: total, audioTo: null, lengthS: null });
-  }
   if (s.video) {
     // A looped video is a decor: it plays the whole slide.
     const to = s.video.loop ? total : end(s.video.lengthMs);

@@ -17,6 +17,10 @@ function renderForm(quizStatus: 'draft' | 'ready' = 'draft', onClose = vi.fn()) 
   return onClose;
 }
 
+/** The slide's display time: the drawer of its timeline's time row. */
+const openTimeSettings = () =>
+  fireEvent.click(screen.getByRole('button', { name: /^Durée minimale|^Manuel/ }));
+
 const posted = (fetchMock: ReturnType<typeof mockApi>) =>
   fetchMock.mock.calls
     .filter(([url, o]) => String(url).includes('/quizzes/q1/slides') && o?.method === 'POST')
@@ -145,6 +149,7 @@ describe('SlideForm — media and display time', () => {
         displayDelayS: 12,
       } as Partial<QuizDetailDtoSlidesItem>),
     );
+    openTimeSettings();
     fireEvent.change(screen.getByLabelText('Durée (s)'), {
       target: { value: '13' },
     });
@@ -173,6 +178,7 @@ describe('SlideForm — media and display time', () => {
   it('a video playing its sound takes the place of a sound: only one is sent', async () => {
     const fetchMock = mockApi([{ method: 'PUT', path: '/slides/s1', status: 200, body: {} }]);
     renderSlide(slideWith({ videoMediaId: VIDEO, videoSound: true, audioMediaId: SOUND }));
+    openTimeSettings();
     fireEvent.change(screen.getByLabelText('Enchaînement (mode automatique)'), {
       target: { value: 'manual' },
     });
@@ -194,6 +200,7 @@ describe('SlideForm — media and display time', () => {
     const fetchMock = mockApi([{ method: 'PUT', path: '/slides/s1', status: 200, body: {} }]);
     // Start from another mode, so that choosing this one is a change.
     renderSlide(slideWith({ displayDelayS: mode === 'custom' ? null : 7 }));
+    openTimeSettings();
     fireEvent.change(screen.getByLabelText('Enchaînement (mode automatique)'), {
       target: { value: mode },
     });

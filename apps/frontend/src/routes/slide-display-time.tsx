@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { Disclosure } from '@/components/ui/disclosure';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 
-/** Auto-mode display time: null = engine default, 0 = manual override, N = custom seconds. */
-export function DisplayTimeField({
+/**
+ * Auto-mode display time, the drawer of a slide's time row: null = engine default,
+ * 0 = manual override, N = custom seconds.
+ */
+export function DisplayTimeFields({
   value,
   onChange,
 }: {
@@ -14,10 +16,7 @@ export function DisplayTimeField({
   const { t } = useTranslation('editor');
   const mode = value === null ? 'default' : value === 0 ? 'manual' : 'custom';
   return (
-    <Disclosure
-      title={t('slideForm.displayLegend')}
-      value={mode === 'custom' ? `${value} s` : t(`slideForm.display.${mode}`)}
-    >
+    <div className="flex flex-col gap-1.5">
       <div className="flex flex-wrap items-center gap-2">
         <Select
           aria-label={t('slideForm.displayLegend')}
@@ -44,6 +43,6 @@ export function DisplayTimeField({
         ) : null}
       </div>
       <p className="text-muted-foreground text-xs">{t('slideForm.displayHint')}</p>
-    </Disclosure>
+    </div>
   );
 }
