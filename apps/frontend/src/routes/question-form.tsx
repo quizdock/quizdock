@@ -7,7 +7,6 @@ import {
   useSensors,
   type DragEndEvent,
 } from '@dnd-kit/core';
-import { appConfig } from '../config';
 import {
   SortableContext,
   arrayMove,
@@ -17,30 +16,13 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
-  AUDIO_TARGETS,
-  type AudioTarget,
-  MEDIA_POSITIONS,
-  MEDIA_POSITION_DEFAULT,
-  type MediaPosition,
-  WAVEFORM_SIZES,
-  WAVEFORM_SIZE_DEFAULT,
-  type WaveformSize,
   MEDIA_TAIL_DEFAULT_S,
-  NO_QUESTION_MEDIA,
   effectiveTimeLimitS,
   type QuestionMedia,
-  type SlideGradient,
-  type SlideTextTone,
   ACCEPTED_ANSWERS_MAX,
-  OPTION_COLORS,
-  OPTION_ORDER,
-  OPTION_SHAPES,
   OPTION_TYPES,
   OPTIONS_MAX,
-  QUESTION_TYPES,
   type QuestionCompletenessInput,
-  type QuestionTypeName,
-  REVEAL_DELAY_S,
   type Scoring,
   TIME_LIMIT_S,
   type QuestionContent,
@@ -48,9 +30,8 @@ import {
   questionContentSchema,
   questionIssues,
   scoringsFor,
-  type BackgroundStyle,
 } from '@quiz-dock/contracts';
-import { useForm, useStore } from '@tanstack/react-form';
+import { useStore } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,12 +42,7 @@ import {
   EllipsisVertical,
   GripVertical,
   Image as ImageIcon,
-  type LucideIcon,
   Monitor,
-  PanelBottom,
-  PanelLeft,
-  PanelRight,
-  PanelTop,
   Pin,
   PinOff,
   Smartphone,
@@ -99,10 +75,9 @@ import {
 } from '@/lib/question-issues';
 import { ApiError, apiErrorText, apiFieldErrors } from '../api/http';
 import type { QuizDetailDtoQuestionsItem } from '../api/generated/model';
-import { BackgroundField, NO_BACKGROUND, type BackgroundValue } from './background-field';
-import { Waveform } from '../game/media/waveform';
+import { BackgroundField } from './background-field';
 import { useContentT } from '../i18n/content-language';
-import { QuestionMediaField, useMediaDurationMs } from './question-media-field';
+import { useMediaDurationMs } from './question-media-field';
 import {
   useQuestionsControllerAdd,
   useQuestionsControllerUpdate,
@@ -110,7 +85,6 @@ import {
 import { getQuizzesControllerGetQueryKey } from '../api/generated/quizzes/quizzes';
 import { ShapeIcon } from '@/components/shape-icon';
 import { ImageChoiceOptions } from './image-choice-options';
-import { CheckboxField } from '@/components/ui/checkbox-field';
 import { CorrectToggle } from '@/components/ui/correct-toggle';
 import { Notice } from '@/components/ui/notice';
 import { MenuItem } from '@/components/ui/menu-item';
@@ -119,135 +93,29 @@ import { Segmented } from '@/components/ui/segmented';
 import { Switch } from '@/components/ui/switch';
 import { useMediaUrl } from '@/lib/media-url';
 import { RoomScreen } from './quiz-steps-preview';
+import {
+  type FormValues,
+  INCOMPLETE_IN_READY,
+  type OptionValue,
+  PAIRS,
+  type QType,
+  READ_DELAY_DEFAULT_MS,
+  SINGLE_CORRECT,
+  TYPES,
+  buildPayload,
+  initialValues,
+  mediaHasSound,
+  newOption,
+  rankPlaces,
+  swapPlace,
+  useQuestionFormApi,
+  withDefaults,
+} from './question-form-model';
+import { QuestionMediaSection } from './question-media-section';
+import { QuestionTimingSection } from './question-timing-section';
 import { stepView } from './step-view';
 import { useQuizTheme } from '@/lib/quiz-theme';
 import { useHotkeys } from 'react-hotkeys-hook';
-
-type QType = QuestionTypeName;
-const TYPES = QUESTION_TYPES;
-// Eight distinct colour+shape pairs, one per position: no two options ever look alike (max 8).
-const PAIRS = OPTION_ORDER;
-const SINGLE_CORRECT: QType[] = ['single_choice', 'true_false'];
-
-interface OptionValue {
-  /** Client-only stable key (drag and drop); never sent. */
-  key: string;
-  text: string;
-  color: string;
-  shape: string;
-  isCorrect: boolean;
-  correctOrderIndex: number;
-  /** An answer's picture: an image choice's, or one kept from an import. */
-  mediaId: string | null;
-  /** Its alternative text, in the quiz's language (image choice). */
-  alt: string;
-}
-interface FormValues {
-  type: QType;
-  prompt: string;
-  /** Visual + audio slots, in the contract's shape (never a video with a sound). */
-  media: QuestionMedia;
-  answerExplanation: string;
-  background: BackgroundValue;
-  timeLimitS: number;
-  revealDelayS: number | null;
-  /** Which devices play its sound; null = the game's default. */
-  audioTarget: AudioTarget | null;
-  /** How thick the sound's waveform is drawn on the screens. */
-  waveformSize: WaveformSize;
-  mediaPosition: MediaPosition;
-  /** Listen first: the timer starts when the media ends. */
-  timerAfterMedia: boolean;
-  pointsMode: 'standard' | 'double' | 'none' | 'fixed';
-  scoring: Scoring;
-  /** Empty (null) until the author sets it: a draft may wait for it. */
-  numericValue: number | null;
-  numericTolerance: number | null;
-  /** Image choice: several pictures may be right. */
-  multiSelect: boolean;
-  options: OptionValue[];
-  acceptedAnswers: { text: string }[];
-}
-
-// Unique across page loads too: a restored draft keeps the keys of the previous load
-// (a counter alone starts over at each load and would hand one out again).
-let optionSeq = 0;
-const optionKey = () => `opt-${Date.now().toString(36)}-${++optionSeq}`;
-
-function newOption(i: number, text = '', isCorrect = false): OptionValue {
-  return {
-    key: optionKey(),
-    text,
-    color: PAIRS[i % PAIRS.length].color,
-    shape: PAIRS[i % PAIRS.length].shape,
-    isCorrect,
-    correctOrderIndex: i,
-    mediaId: null,
-    alt: '',
-  };
-}
-
-function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
-  if (!q) {
-    return {
-      type: 'single_choice',
-      prompt: '',
-      media: NO_QUESTION_MEDIA,
-      answerExplanation: '',
-      background: NO_BACKGROUND,
-      timeLimitS: 20,
-      revealDelayS: null,
-      audioTarget: null,
-      waveformSize: WAVEFORM_SIZE_DEFAULT,
-      mediaPosition: MEDIA_POSITION_DEFAULT,
-      timerAfterMedia: false,
-      pointsMode: 'standard',
-      scoring: 'standard',
-      numericValue: null,
-      numericTolerance: 0,
-      multiSelect: false,
-      options: [newOption(0), newOption(1)],
-      acceptedAnswers: [],
-    };
-  }
-  return {
-    type: q.type as QType,
-    prompt: q.prompt,
-    media: (q.media as QuestionMedia | undefined) ?? NO_QUESTION_MEDIA,
-    answerExplanation: q.answerExplanation ?? '',
-    background: {
-      mediaId: q.backgroundMediaId ?? null,
-      gradient: (q.backgroundGradient as SlideGradient | null | undefined) ?? null,
-      textTone: (q.textTone as SlideTextTone | undefined) ?? 'light',
-      textOutline: q.textOutline ?? true,
-      style: (q.backgroundStyle as BackgroundStyle | null | undefined) ?? null,
-    },
-    timeLimitS: q.timeLimitS,
-    revealDelayS: q.revealDelayS ?? null,
-    audioTarget: (q.audioTarget as AudioTarget | null | undefined) ?? null,
-    waveformSize: (q.waveformSize as WaveformSize | undefined) ?? WAVEFORM_SIZE_DEFAULT,
-    mediaPosition: (q.mediaPosition as MediaPosition | undefined) ?? MEDIA_POSITION_DEFAULT,
-    timerAfterMedia: q.timerAfterMedia ?? false,
-    // A poll is stored as 'none', which the menu does not offer: the poll's own
-    // setting stays out of the form, so a change of type starts from 'standard'.
-    pointsMode: (q.pointsMode === 'none' ? 'standard' : q.pointsMode) as FormValues['pointsMode'],
-    scoring: (q.scoring ?? 'standard') as Scoring,
-    numericValue: q.numericValue == null ? null : Number(q.numericValue),
-    numericTolerance: q.numericTolerance == null ? null : Number(q.numericTolerance),
-    multiSelect: q.multiSelect ?? false,
-    options: q.options.map((o, i) => ({
-      key: o.id,
-      text: o.text ?? '',
-      color: o.color,
-      shape: o.shape,
-      isCorrect: o.isCorrect,
-      correctOrderIndex: o.correctOrderIndex ?? i,
-      mediaId: o.mediaId ?? null,
-      alt: o.alt ?? '',
-    })),
-    acceptedAnswers: q.acceptedAnswers.map((a) => ({ text: a.text })),
-  };
-}
 
 export function QuestionForm({
   quizId,
@@ -293,8 +161,6 @@ export function QuestionForm({
   const [checked, setChecked] = useState(!!question);
   // A published quiz and an unfinished question: back to draft, or keep editing.
   const [askDraft, setAskDraft] = useState(false);
-  // A time typed out of bounds was brought back to the nearest one: said once, under it.
-  const [clamped, setClamped] = useState<'time' | 'reveal' | null>(null);
   // A type change took the right answers away: the author is told once.
   const [ticksCleared, setTicksCleared] = useState(false);
   // Computed once: option keys are generated, so a fresh copy per render would reset the form.
@@ -312,28 +178,25 @@ export function QuestionForm({
     return draft && 'media' in draft ? withDefaults(draft) : null;
   });
 
-  const form = useForm({
-    defaultValues: restored ?? initial,
-    onSubmit: async ({ value }) => {
-      savedOk.current = false;
-      setError(null);
-      setErrors([]);
-      setChecked(true);
-      const data = buildPayload(value);
-      // The server's own schema: what no question may break is said here, not after a round trip.
-      const parsed = questionContentSchema.safeParse(data);
-      if (!parsed.success) {
-        const found = issuesAsErrors(parsed.error.issues);
-        setErrors(found);
-        focusField(found[0].field);
-        return;
-      }
-      if (quizStatus === 'ready' && questionIssues(parsed.data).length > 0) {
-        setAskDraft(true);
-        return;
-      }
-      await save(data, value);
-    },
+  const form = useQuestionFormApi(restored ?? initial, async (value) => {
+    savedOk.current = false;
+    setError(null);
+    setErrors([]);
+    setChecked(true);
+    const data = buildPayload(value);
+    // The server's own schema: what no question may break is said here, not after a round trip.
+    const parsed = questionContentSchema.safeParse(data);
+    if (!parsed.success) {
+      const found = issuesAsErrors(parsed.error.issues);
+      setErrors(found);
+      focusField(found[0].field);
+      return;
+    }
+    if (quizStatus === 'ready' && questionIssues(parsed.data).length > 0) {
+      setAskDraft(true);
+      return;
+    }
+    await save(data, value);
   });
   const save = async (data: ReturnType<typeof buildPayload>, value: FormValues) => {
     try {
@@ -444,14 +307,11 @@ export function QuestionForm({
   };
   const media = useStore(form.store, (s) => s.values.media);
   const timeLimitS = useStore(form.store, (s) => s.values.timeLimitS);
-  const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
   const mediaMs = useMediaDurationMs(media);
   // What the session will give this question, estimated with the default read delay
   // (the server uses the instance's GAME_READ_DELAY_MS).
   const listenFirst = useStore(form.store, (s) => s.values.timerAfterMedia);
-  // Read on the folded lines (playback, points).
-  const audioTarget = useStore(form.store, (s) => s.values.audioTarget);
-  const waveformSize = useStore(form.store, (s) => s.values.waveformSize);
+  // Read on the folded line of the points.
   const pointsMode = useStore(form.store, (s) => s.values.pointsMode);
   const scoring = useStore(form.store, (s) => s.values.scoring);
   const multiSelect = useStore(form.store, (s) => s.values.multiSelect);
@@ -495,7 +355,9 @@ export function QuestionForm({
   };
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
   const onOptionDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
@@ -521,7 +383,10 @@ export function QuestionForm({
     }
     if (next !== 'image_choice') form.setFieldValue('multiSelect', false);
     if (next === 'image_choice') {
-      form.setFieldValue('media', { visual: null, audio: media.audio } as QuestionMedia);
+      form.setFieldValue('media', {
+        visual: null,
+        audio: media.audio,
+      } as QuestionMedia);
     }
     if (next === 'true_false') setOptions(trueFalse());
     // Text answers make no pictures, and pictures no text: both start afresh.
@@ -529,7 +394,13 @@ export function QuestionForm({
       setOptions(OPTION_TYPES.includes(next) ? [newOption(0), newOption(1)] : options);
     } else {
       // The texts stay; what was right under the old rules is chosen again under the new ones.
-      setOptions(options.map((o, i) => ({ ...o, isCorrect: false, correctOrderIndex: i })));
+      setOptions(
+        options.map((o, i) => ({
+          ...o,
+          isCorrect: false,
+          correctOrderIndex: i,
+        })),
+      );
     }
   };
 
@@ -668,26 +539,35 @@ export function QuestionForm({
                     </span>
                     <MarkdownEditor
                       profile="inline"
-                      aria-label={t('questionForm.optionAriaLabel', { index: i + 1 })}
+                      aria-label={t('questionForm.optionAriaLabel', {
+                        index: i + 1,
+                      })}
                       className="min-w-48 flex-1"
                       value={opt.text}
                       onChange={(text) =>
                         setOptions(options.map((o, idx) => (idx === i ? { ...o, text } : o)))
                       }
-                      placeholder={t('questionForm.optionPlaceholder', { index: i + 1 })}
+                      placeholder={t('questionForm.optionPlaceholder', {
+                        index: i + 1,
+                      })}
                     />
 
                     {type === 'ordering' ? (
                       // Its place in the right order, from 1: taking a place swaps with its holder.
                       <Select
-                        aria-label={t('questionForm.orderAriaLabel', { index: i + 1 })}
+                        aria-label={t('questionForm.orderAriaLabel', {
+                          index: i + 1,
+                        })}
                         className="w-24"
                         value={opt.correctOrderIndex}
                         onChange={(e) => setOptions(swapPlace(options, i, Number(e.target.value)))}
                       >
                         {options.map((_, place) => (
                           <option key={place} value={place}>
-                            {t('questionForm.place', { count: place + 1, ordinal: true })}
+                            {t('questionForm.place', {
+                              count: place + 1,
+                              ordinal: true,
+                            })}
                           </option>
                         ))}
                       </Select>
@@ -709,7 +589,9 @@ export function QuestionForm({
                           variant="ghost"
                           size="icon"
                           className="text-muted-foreground size-8"
-                          aria-label={t('questionForm.optionActions', { index: i + 1 })}
+                          aria-label={t('questionForm.optionActions', {
+                            index: i + 1,
+                          })}
                           aria-expanded={open}
                           onClick={toggle}
                         >
@@ -792,7 +674,9 @@ export function QuestionForm({
             {answers.map((a, i) => (
               <div key={i} className="flex items-center gap-2">
                 <Input
-                  aria-label={t('questionForm.answerAriaLabel', { index: i + 1 })}
+                  aria-label={t('questionForm.answerAriaLabel', {
+                    index: i + 1,
+                  })}
                   value={a.text}
                   onChange={(e) =>
                     form.setFieldValue(
@@ -888,228 +772,27 @@ export function QuestionForm({
           </fieldset>
         )}
 
-        {/* Les médias, repliés en un seul bloc ; écouter d'abord et la lecture ferment le
-          groupe du son. */}
-        <div id="qf-media" className="flex flex-col gap-1.5">
-          <QuestionMediaField
-            value={media}
-            onChange={(m) => form.setFieldValue('media', m)}
-            withVisual={type !== 'image_choice'}
-          >
-            {media.visual ? (
-              // Where the picture sits against the text on the big screen; the answers stay below.
-              <form.Field name="mediaPosition">
-                {(field) => (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-sm font-medium">
-                      {t('questionForm.mediaPositionLabel')}
-                    </span>
-                    <Segmented
-                      label={t('questionForm.mediaPositionLabel')}
-                      value={field.state.value}
-                      onChange={field.handleChange}
-                      options={MEDIA_POSITIONS.map((position) => ({
-                        value: position,
-                        label: t(`questionForm.mediaPosition.${position}`),
-                        icon: POSITION_ICON[position],
-                      }))}
-                    />
-                    <p className="text-muted-foreground text-xs">
-                      {t('questionForm.mediaPositionHint')}
-                    </p>
-                  </div>
-                )}
-              </form.Field>
-            ) : null}
-            {canListenFirst ? (
-              <form.Field name="timerAfterMedia">
-                {(field) => (
-                  <CheckboxField
-                    title={t('questionForm.listenFirstHint')}
-                    checked={field.state.value}
-                    onChange={field.handleChange}
-                    label={t('questionForm.listenFirstLabel')}
-                    hint={t('questionForm.listenFirstHint')}
-                  />
-                )}
-              </form.Field>
-            ) : null}
-            {mediaHasSound(media) ? (
-              <Disclosure
-                title={t('questionForm.playbackLegend')}
-                value={[
-                  audioTarget
-                    ? t(`settings.audioTarget.${audioTarget}`)
-                    : t('questionForm.audioTargetDefault'),
-                  media.audio ? t(`questionForm.waveformSize.${waveformSize}`) : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
-              >
-                <form.Field name="audioTarget">
-                  {(field) => (
-                    <Label title={t('questionForm.audioTargetHint')}>
-                      {t('questionForm.audioTargetLabel')}
-                      <Select
-                        value={field.state.value ?? ''}
-                        onChange={(e) =>
-                          field.handleChange(
-                            e.target.value === '' ? null : (e.target.value as AudioTarget),
-                          )
-                        }
-                      >
-                        <option value="">{t('questionForm.audioTargetDefault')}</option>
-                        {AUDIO_TARGETS.map((target) => (
-                          <option key={target} value={target}>
-                            {t(`settings.audioTarget.${target}`)}
-                          </option>
-                        ))}
-                      </Select>
-                    </Label>
-                  )}
-                </form.Field>
-                {media.audio ? (
-                  <form.Field name="waveformSize">
-                    {(field) => (
-                      <div className="flex flex-col gap-1.5">
-                        <Label title={t('questionForm.waveformSizeHint')}>
-                          {t('questionForm.waveformSizeLabel')}
-                          <Select
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value as WaveformSize)}
-                          >
-                            {WAVEFORM_SIZES.map((size) => (
-                              <option key={size} value={size}>
-                                {t(`questionForm.waveformSize.${size}`)}
-                              </option>
-                            ))}
-                          </Select>
-                        </Label>
-                        {/* As the screens will draw it, at their type size — or, hidden,
-                        the one place it still shows (faded, with why). */}
-                        {field.state.value === 'hidden' ? (
-                          <p className="text-muted-foreground text-xs">
-                            {t('questionForm.waveformHiddenNote')}
-                          </p>
-                        ) : null}
-                        <Waveform
-                          peaks={media.audio?.peaks ?? []}
-                          progress={0}
-                          size={field.state.value}
-                          className={cn(
-                            'text-base',
-                            field.state.value === 'hidden' && 'opacity-40',
-                          )}
-                          label={t('questionForm.waveformPreview')}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-                ) : null}
-              </Disclosure>
-            ) : null}
-          </QuestionMediaField>
-          <FieldMessage issues={issuesAt('media')} />
-        </div>
-
-        {/* Folded like every setting; its summary says the time the room will really get. */}
-        <Disclosure
-          title={t('questionForm.timingLegend')}
-          value={[
-            stretchedS > timeLimitS && !(canListenFirst && listenFirst)
-              ? t('questionForm.timingSummaryStretched', { time: timeLimitS, total: stretchedS })
-              : t('questionForm.timingSummary', { time: timeLimitS }),
-            revealDelayS == null
-              ? appConfig.autoAdvanceS
-                ? t('questionForm.revealDelaySummaryAuto', { seconds: appConfig.autoAdvanceS })
-                : t('questionForm.revealDelayAuto')
-              : t('questionForm.revealDelaySummary', { seconds: revealDelayS }),
-          ].join(' · ')}
-        >
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <form.Field name="timeLimitS">
-              {(field) => (
-                <Label>
-                  {t('questionForm.timeLimitLabel')}
-                  <Input
-                    type="number"
-                    min={TIME_LIMIT_S.min}
-                    max={TIME_LIMIT_S.max}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(Number(e.target.value))}
-                    // Out of bounds, the nearest bound — and a note, not an error.
-                    onBlur={() => {
-                      const next = clampTime(field.state.value);
-                      setClamped(next === field.state.value ? null : 'time');
-                      field.handleChange(next);
-                    }}
-                  />
-                </Label>
-              )}
-            </form.Field>
-            <form.Field name="revealDelayS">
-              {(field) => (
-                <Label title={t('questionForm.revealDelayHint')}>
-                  {t('questionForm.revealDelayLabel')}
-                  <Input
-                    type="number"
-                    min={REVEAL_DELAY_S.min}
-                    max={REVEAL_DELAY_S.max}
-                    placeholder={
-                      appConfig.autoAdvanceS
-                        ? t('questionForm.revealDelayAutoValue', {
-                            seconds: appConfig.autoAdvanceS,
-                          })
-                        : t('questionForm.revealDelayPlaceholder')
-                    }
-                    value={field.state.value ?? ''}
-                    onChange={(e) =>
-                      field.handleChange(e.target.value === '' ? null : Number(e.target.value))
-                    }
-                    onBlur={() => {
-                      const next = clampReveal(field.state.value);
-                      setClamped(next === field.state.value ? null : 'reveal');
-                      field.handleChange(next);
-                    }}
-                  />
-                </Label>
-              )}
-            </form.Field>
-          </div>
-          {clamped ? (
-            <p className="text-muted-foreground text-sm" role="note">
-              {clamped === 'time'
-                ? t('questionForm.clampedTime', { ...TIME_LIMIT_S, value: timeLimitS })
-                : t('questionForm.clampedReveal', {
-                    ...REVEAL_DELAY_S,
-                    value: form.getFieldValue('revealDelayS'),
-                  })}
-            </p>
-          ) : null}
-          {canListenFirst && listenFirst ? (
-            <p className="text-muted-foreground text-sm" role="note">
-              {t('questionForm.listenFirstTime', {
-                media: Math.ceil((mediaMs ?? 0) / 1000),
-                time: timeLimitS,
-              })}
-            </p>
-          ) : stretchedS > timeLimitS ? (
-            <p className="text-muted-foreground text-sm" role="note">
-              {t('questionForm.stretchedTime', {
-                media: Math.ceil((mediaMs ?? 0) / 1000),
-                total: stretchedS,
-                tail: mediaTailS,
-              })}
-            </p>
-          ) : null}
-        </Disclosure>
+        <QuestionMediaSection
+          form={form}
+          canListenFirst={canListenFirst}
+          issues={issuesAt('media')}
+        />
+        <QuestionTimingSection
+          form={form}
+          stretchedS={stretchedS}
+          canListenFirst={canListenFirst}
+          mediaMs={mediaMs}
+          mediaTailS={mediaTailS}
+        />
 
         {/* Le barème par défaut convient presque toujours : il se lit replié. */}
         {type !== 'poll' && (
           <Disclosure
             title={t('questionForm.pointsLegend')}
             value={[
-              t(`questionForm.pointsMode.${pointsMode}`, { defaultValue: pointsMode }),
+              t(`questionForm.pointsMode.${pointsMode}`, {
+                defaultValue: pointsMode,
+              }),
               scorings.length > 0
                 ? t(
                     `questionForm.scoring.${type}.${scorings.includes(scoring) ? scoring : 'standard'}`,
@@ -1236,151 +919,8 @@ export function QuestionForm({
   );
 }
 
-/** A draft saved before the image choice: its answers get no picture, it gets one right answer. */
-function withDefaults(draft: FormValues): FormValues {
-  return {
-    ...draft,
-    multiSelect: draft.multiSelect ?? false,
-    options: draft.options.map((o) => ({ ...o, mediaId: o.mediaId ?? null, alt: o.alt ?? '' })),
-  };
-}
-
-/** The server's refusal of a question saved unfinished in a published quiz. */
-const INCOMPLETE_IN_READY = 'question.incomplete_in_ready_quiz';
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, Math.round(value)));
-/** A time out of bounds (or unreadable) becomes the nearest bound, never an error. */
-const clampTime = (value: number) =>
-  Number.isFinite(value) ? clamp(value, TIME_LIMIT_S.min, TIME_LIMIT_S.max) : TIME_LIMIT_S.default;
-const clampReveal = (value: number | null) =>
-  value == null || !Number.isFinite(value)
-    ? null
-    : clamp(value, REVEAL_DELAY_S.min, REVEAL_DELAY_S.max);
-
-/** Each option's place in the right order, as 0..n-1 in the order of the places they had. */
-function rankPlaces(options: { correctOrderIndex: number }[]): number[] {
-  const byPlace = options
-    .map((o, i) => ({ place: o.correctOrderIndex, i }))
-    .sort((a, b) => a.place - b.place || a.i - b.i);
-  const places: number[] = [];
-  byPlace.forEach(({ i }, rank) => (places[i] = rank));
-  return places;
-}
-
-/** Option `index` takes `place`; the option that held it takes the old place of `index`. */
-export function swapPlace<T extends { correctOrderIndex: number }>(
-  options: T[],
-  index: number,
-  place: number,
-): T[] {
-  const from = options[index].correctOrderIndex;
-  return options.map((o, i) =>
-    i === index
-      ? { ...o, correctOrderIndex: place }
-      : o.correctOrderIndex === place
-        ? { ...o, correctOrderIndex: from }
-        : o,
-  );
-}
-
 /** Legend of a primary section of the form; secondary groups fold in a `Disclosure`. */
 const LEGEND = 'text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase';
-
-/** Whether the media play a sound: an MP3, or a video's own track. */
-function mediaHasSound(media: QuestionMedia): boolean {
-  return !!media.audio || media.visual?.kind === 'video';
-}
-
-/** The engine's default reading window before answers open (GAME_READ_DELAY_MS), for the hint. */
-const READ_DELAY_DEFAULT_MS = 3000;
-
-/** Each place of the picture, drawn as the screen it gives. */
-const POSITION_ICON: Record<MediaPosition, LucideIcon> = {
-  bottom: PanelBottom,
-  top: PanelTop,
-  left: PanelLeft,
-  right: PanelRight,
-};
-
-/** Construit le payload API en n'envoyant que les champs pertinents pour le type. */
-function buildPayload(v: FormValues) {
-  const base = {
-    type: v.type,
-    prompt: v.prompt,
-    // Saved before the field was left: the same bounds as on leaving it.
-    timeLimitS: clampTime(v.timeLimitS),
-    revealDelayS: clampReveal(v.revealDelayS),
-    // Nothing to hear, nothing to target: a removed sound takes its setting with it.
-    audioTarget: mediaHasSound(v.media) ? v.audioTarget : null,
-    waveformSize: v.waveformSize,
-    mediaPosition: v.mediaPosition,
-    // Only with a media to wait for; the server also falls back when its length is unknown.
-    timerAfterMedia: mediaHasSound(v.media) && v.timerAfterMedia,
-    // 'none' is a poll's: a restored draft may still carry it after a change of type.
-    pointsMode:
-      v.type === 'poll'
-        ? ('none' as const)
-        : v.pointsMode === 'none'
-          ? ('standard' as const)
-          : v.pointsMode,
-    scoring: scoringsFor(v.type, v.multiSelect).includes(v.scoring)
-      ? v.scoring
-      : ('standard' as const),
-    media: v.media,
-    answerExplanation: v.answerExplanation.trim() || null,
-    backgroundMediaId: v.background.mediaId,
-    backgroundGradient: v.background.gradient,
-    backgroundStyle: v.background.style,
-    textTone: v.background.textTone,
-    textOutline: v.background.textOutline,
-  };
-  if (v.type === 'image_choice') {
-    return {
-      ...base,
-      // The answers are the pictures: no visual of the question's own.
-      media: { visual: null, audio: v.media.audio } as QuestionMedia,
-      multiSelect: v.multiSelect,
-      options: v.options.map((o) => ({
-        mediaId: o.mediaId ?? undefined,
-        alt: o.alt.trim(),
-        color: o.color as (typeof OPTION_COLORS)[number],
-        shape: o.shape as (typeof OPTION_SHAPES)[number],
-        isCorrect: o.isCorrect,
-      })),
-    };
-  }
-  if (OPTION_TYPES.includes(v.type)) {
-    return {
-      ...base,
-      options: v.options.map((o) => ({
-        text: o.text || undefined,
-        // A picture an answer already holds (an imported quiz) is kept, not lost on save.
-        mediaId: o.mediaId ?? undefined,
-        color: o.color as (typeof OPTION_COLORS)[number],
-        shape: o.shape as (typeof OPTION_SHAPES)[number],
-        isCorrect: o.isCorrect,
-        correctOrderIndex: v.type === 'ordering' ? o.correctOrderIndex : undefined,
-      })),
-    };
-  }
-  if (v.type === 'text_input') {
-    return {
-      ...base,
-      acceptedAnswers: v.acceptedAnswers
-        .filter((a) => a.text.trim())
-        .map((a) => ({ text: a.text })),
-    };
-  }
-  if (v.type === 'numeric') {
-    return {
-      ...base,
-      numericValue: v.numericValue ?? undefined,
-      numericTolerance: v.numericTolerance == null ? undefined : Math.max(0, v.numericTolerance),
-    };
-  }
-  return base;
-}
 
 /** Sortable option row: grip handle on the left, keyboard-sortable too. */
 function SortableOption({ id, children }: { id: string; children: ReactNode }) {
@@ -1498,7 +1038,10 @@ function LivePreview({
       ...view,
       questionIndex: position.index,
       totalQuestions: position.total,
-      question: view.question && { ...view.question, questionIndex: position.index },
+      question: view.question && {
+        ...view.question,
+        questionIndex: position.index,
+      },
     };
   }, [values, url, answer, position.index, position.total, theme]);
   return (
@@ -1516,7 +1059,11 @@ function LivePreview({
             value={device}
             onChange={setDevice}
             options={[
-              { value: 'projection', label: t('preview.projection'), icon: Monitor },
+              {
+                value: 'projection',
+                label: t('preview.projection'),
+                icon: Monitor,
+              },
               { value: 'phone', label: t('preview.phone'), icon: Smartphone },
             ]}
           />
@@ -1550,11 +1097,19 @@ function LivePreview({
 }
 
 /** A preview has no quiz around it: no title, no variables. */
-const NO_QUIZ = { title: '', description: null, questionCount: 1, tags: [], license: null };
+const NO_QUIZ = {
+  title: '',
+  description: null,
+  questionCount: 1,
+  tags: [],
+  license: null,
+};
 
 /** The question being written, in the shape of a saved one, for the preview. */
 function previewQuestion(v: FormValues): QuizDetailDtoQuestionsItem {
-  const p = buildPayload(v) as Partial<QuestionContent> & { media: QuestionMedia };
+  const p = buildPayload(v) as Partial<QuestionContent> & {
+    media: QuestionMedia;
+  };
   return {
     id: 'preview',
     quizId: '',
