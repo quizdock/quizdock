@@ -1,55 +1,21 @@
-import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import {
   MEDIA_TAIL_DEFAULT_S,
   effectiveTimeLimitS,
   type QuestionMedia,
-  ACCEPTED_ANSWERS_MAX,
   OPTION_TYPES,
-  OPTIONS_MAX,
   type QuestionCompletenessInput,
   type Scoring,
-  TIME_LIMIT_S,
-  type QuestionContent,
-  normalizeAnswer,
   questionContentSchema,
   questionIssues,
   scoringsFor,
 } from '@quiz-dock/contracts';
 import { useStore } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MediaEditsContext, useMediaEdits } from '@/lib/media-edits';
-import {
-  ArrowDown,
-  ArrowUp,
-  EllipsisVertical,
-  GripVertical,
-  Image as ImageIcon,
-  Monitor,
-  Pin,
-  PinOff,
-  Smartphone,
-  Plus,
-  Trash2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Disclosure } from '@/components/ui/disclosure';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useFormDraft } from '@/lib/use-form-draft';
@@ -57,14 +23,8 @@ import { clearDraft, formDraftKey, loadDraft } from '@/lib/draft-store';
 import { FormActionBar } from '@/components/form-action-bar';
 import { DraftNotice } from '@/components/draft-notice';
 import { MarkdownEditor } from '@/components/markdown-editor';
-import { promptImage } from '@/lib/prompt-image';
-import { mediaControllerDescribe, mediaControllerSetAlt } from '../api/generated/media/media';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
-import { COLOR_BG, OPTION_BG_FALLBACK } from '@/lib/option-style';
-import { cn } from '@/lib/utils';
-import { useSessionState } from '@/lib/use-session-state';
 import { FieldMessage } from '@/components/ui/field-message';
 import {
   type FieldIssue,
@@ -83,16 +43,8 @@ import {
   useQuestionsControllerUpdate,
 } from '../api/generated/questions/questions';
 import { getQuizzesControllerGetQueryKey } from '../api/generated/quizzes/quizzes';
-import { ShapeIcon } from '@/components/shape-icon';
 import { ImageChoiceOptions } from './image-choice-options';
-import { CorrectToggle } from '@/components/ui/correct-toggle';
 import { Notice } from '@/components/ui/notice';
-import { MenuItem } from '@/components/ui/menu-item';
-import { Popover } from '@/components/ui/popover';
-import { Segmented } from '@/components/ui/segmented';
-import { Switch } from '@/components/ui/switch';
-import { useMediaUrl } from '@/lib/media-url';
-import { RoomScreen } from './quiz-steps-preview';
 import {
   type FormValues,
   INCOMPLETE_IN_READY,
@@ -107,14 +59,19 @@ import {
   mediaHasSound,
   newOption,
   rankPlaces,
-  swapPlace,
   useQuestionFormApi,
   withDefaults,
 } from './question-form-model';
 import { QuestionMediaSection } from './question-media-section';
+import {
+  AcceptedAnswersSection,
+  NumericSection,
+  SECTION_LEGEND as LEGEND,
+  TextOptionsSection,
+} from './question-answer-sections';
+import { PromptImageNotice } from './prompt-image-notice';
+import { LivePreview } from './question-live-preview';
 import { QuestionTimingSection } from './question-timing-section';
-import { stepView } from './step-view';
-import { useQuizTheme } from '@/lib/quiz-theme';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 export function QuestionForm({
@@ -359,12 +316,6 @@ export function QuestionForm({
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
-  const onOptionDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return;
-    const from = options.findIndex((o) => o.key === active.id);
-    const to = options.findIndex((o) => o.key === over.id);
-    if (from >= 0 && to >= 0) setOptions(arrayMove(options, from, to));
-  };
 
   // True or false starts with "True" ticked: the most common answer is one click away.
   // Both are written in the quiz's language, as any other answer: editable text.
@@ -515,262 +466,20 @@ export function QuestionForm({
         )}
 
         {OPTION_TYPES.includes(type) && type !== 'image_choice' && (
-          <fieldset id="qf-options" className="flex flex-col gap-2">
-            <legend className={LEGEND}>{t('questionForm.optionsLegend')}</legend>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={onOptionDragEnd}
-            >
-              <SortableContext
-                items={options.map((o) => o.key)}
-                strategy={verticalListSortingStrategy}
-              >
-                {options.map((opt, i) => (
-                  <SortableOption key={opt.key} id={opt.key}>
-                    <span
-                      aria-hidden
-                      className={cn(
-                        'flex size-9 shrink-0 items-center justify-center rounded-md text-lg text-white',
-                        COLOR_BG[opt.color] ?? OPTION_BG_FALLBACK,
-                      )}
-                    >
-                      <ShapeIcon shape={opt.shape} />
-                    </span>
-                    <MarkdownEditor
-                      profile="inline"
-                      aria-label={t('questionForm.optionAriaLabel', {
-                        index: i + 1,
-                      })}
-                      className="min-w-48 flex-1"
-                      value={opt.text}
-                      onChange={(text) =>
-                        setOptions(options.map((o, idx) => (idx === i ? { ...o, text } : o)))
-                      }
-                      placeholder={t('questionForm.optionPlaceholder', {
-                        index: i + 1,
-                      })}
-                    />
-
-                    {type === 'ordering' ? (
-                      // Its place in the right order, from 1: taking a place swaps with its holder.
-                      <Select
-                        aria-label={t('questionForm.orderAriaLabel', {
-                          index: i + 1,
-                        })}
-                        className="w-24"
-                        value={opt.correctOrderIndex}
-                        onChange={(e) => setOptions(swapPlace(options, i, Number(e.target.value)))}
-                      >
-                        {options.map((_, place) => (
-                          <option key={place} value={place}>
-                            {t('questionForm.place', {
-                              count: place + 1,
-                              ordinal: true,
-                            })}
-                          </option>
-                        ))}
-                      </Select>
-                    ) : type === 'poll' ? null : (
-                      <CorrectToggle
-                        single={SINGLE_CORRECT.includes(type)}
-                        checked={opt.isCorrect}
-                        label={t('questionForm.correct')}
-                        onChange={(checked) => setCorrect(i, checked)}
-                      />
-                    )}
-
-                    {/* Moving and removing, in reach without a mouse or a hover. */}
-                    <Popover
-                      align="end"
-                      trigger={({ open, toggle }) => (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="text-muted-foreground size-8"
-                          aria-label={t('questionForm.optionActions', {
-                            index: i + 1,
-                          })}
-                          aria-expanded={open}
-                          onClick={toggle}
-                        >
-                          <EllipsisVertical className="size-4" />
-                        </Button>
-                      )}
-                    >
-                      {(close) => (
-                        <div className="flex w-44 flex-col gap-0.5">
-                          <MenuItem
-                            disabled={i === 0}
-                            onClick={() => {
-                              close();
-                              setOptions(arrayMove(options, i, i - 1));
-                            }}
-                          >
-                            <ArrowUp className="size-4" />
-                            {t('questions.moveUp')}
-                          </MenuItem>
-                          <MenuItem
-                            disabled={i === options.length - 1}
-                            onClick={() => {
-                              close();
-                              setOptions(arrayMove(options, i, i + 1));
-                            }}
-                          >
-                            <ArrowDown className="size-4" />
-                            {t('questions.moveDown')}
-                          </MenuItem>
-                          {type !== 'true_false' ? (
-                            <MenuItem
-                              destructive
-                              disabled={options.length <= 2}
-                              onClick={() => {
-                                close();
-                                // An empty option goes without asking; a typed one is worth a confirmation.
-                                if ((opt.text ?? '').trim()) setPendingRemoval(i);
-                                else setOptions(options.filter((_, idx) => idx !== i));
-                              }}
-                            >
-                              <Trash2 className="size-4" />
-                              {t('questionForm.removeOptionShort')}
-                            </MenuItem>
-                          ) : null}
-                        </div>
-                      )}
-                    </Popover>
-                  </SortableOption>
-                ))}
-              </SortableContext>
-            </DndContext>
-            <FieldMessage issues={issuesAt('options')} />
-            {type !== 'true_false' && (
-              // At the limit the button stays, and says it.
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="self-start"
-                disabled={options.length >= OPTIONS_MAX}
-                onClick={() => setOptions([...options, newOption(options.length)])}
-              >
-                <Plus className="size-4" />
-                {options.length >= OPTIONS_MAX
-                  ? t('questionForm.addOptionMax', { max: OPTIONS_MAX })
-                  : t('questionForm.addOption')}
-              </Button>
-            )}
-          </fieldset>
+          <TextOptionsSection
+            type={type}
+            options={options}
+            setOptions={setOptions}
+            onCorrect={setCorrect}
+            onRemoveAsked={setPendingRemoval}
+            sensors={sensors}
+            issues={issuesAt('options')}
+          />
         )}
-
         {type === 'text_input' && (
-          <fieldset id="qf-acceptedAnswers" className="flex flex-col gap-2">
-            <legend className={LEGEND}>
-              {t('questionForm.acceptedAnswersLegend')}{' '}
-              <span className="tabular-nums">
-                {answers.length}/{ACCEPTED_ANSWERS_MAX}
-              </span>
-            </legend>
-            {answers.map((a, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input
-                  aria-label={t('questionForm.answerAriaLabel', {
-                    index: i + 1,
-                  })}
-                  value={a.text}
-                  onChange={(e) =>
-                    form.setFieldValue(
-                      'acceptedAnswers',
-                      answers.map((x, idx) => (idx === i ? { text: e.target.value } : x)),
-                    )
-                  }
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-destructive"
-                  aria-label={t('questionForm.removeAnswer', { index: i + 1 })}
-                  onClick={() =>
-                    form.setFieldValue(
-                      'acceptedAnswers',
-                      answers.filter((_, idx) => idx !== i),
-                    )
-                  }
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
-            ))}
-            <FieldMessage issues={issuesAt('acceptedAnswers')} />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="self-start"
-              disabled={answers.length >= ACCEPTED_ANSWERS_MAX}
-              onClick={() => form.setFieldValue('acceptedAnswers', [...answers, { text: '' }])}
-            >
-              <Plus className="size-4" />
-              {answers.length >= ACCEPTED_ANSWERS_MAX
-                ? t('questionForm.addAnswerMax', { max: ACCEPTED_ANSWERS_MAX })
-                : t('questionForm.addAnswer')}
-            </Button>
-          </fieldset>
+          <AcceptedAnswersSection form={form} issues={issuesAt('acceptedAnswers')} />
         )}
-
-        {type === 'numeric' && (
-          <fieldset className="flex flex-col gap-2">
-            <legend className={LEGEND}>{t('questionForm.numericLegend')}</legend>
-            <div className="flex flex-wrap gap-4">
-              <form.Field name="numericValue">
-                {(field) => (
-                  <div id="qf-numericValue" className="flex flex-col gap-1.5">
-                    <Label>
-                      {t('questionForm.numericValueLabel')}
-                      {/* Any number, decimals included. */}
-                      <Input
-                        type="number"
-                        step="any"
-                        className="w-32"
-                        value={field.state.value ?? ''}
-                        onChange={(e) =>
-                          field.handleChange(e.target.value === '' ? null : Number(e.target.value))
-                        }
-                      />
-                    </Label>
-                    <FieldMessage issues={issuesAt('numericValue')} />
-                  </div>
-                )}
-              </form.Field>
-              <form.Field name="numericTolerance">
-                {(field) => (
-                  <div id="qf-numericTolerance" className="flex flex-col gap-1.5">
-                    <Label>
-                      {t('questionForm.numericToleranceLabel')}
-                      <Input
-                        type="number"
-                        step="any"
-                        min={0}
-                        className="w-32"
-                        value={field.state.value ?? ''}
-                        onChange={(e) =>
-                          field.handleChange(e.target.value === '' ? null : Number(e.target.value))
-                        }
-                        // A tolerance below 0 means none: 0.
-                        onBlur={() => {
-                          if ((field.state.value ?? 0) < 0) field.handleChange(0);
-                        }}
-                      />
-                    </Label>
-                    <FieldMessage issues={issuesAt('numericTolerance')} />
-                  </div>
-                )}
-              </form.Field>
-            </div>
-            <p className="text-muted-foreground text-xs">{t('questionForm.decimalsAllowed')}</p>
-          </fieldset>
-        )}
+        {type === 'numeric' && <NumericSection form={form} issues={issues} />}
 
         <QuestionMediaSection
           form={form}
@@ -917,238 +626,4 @@ export function QuestionForm({
       </form>
     </MediaEditsContext.Provider>
   );
-}
-
-/** Legend of a primary section of the form; secondary groups fold in a `Disclosure`. */
-const LEGEND = 'text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase';
-
-/** Sortable option row: grip handle on the left, keyboard-sortable too. */
-function SortableOption({ id, children }: { id: string; children: ReactNode }) {
-  const { t } = useTranslation('editor');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-  return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn(
-        'flex flex-wrap items-center gap-2 rounded-md',
-        isDragging && 'bg-background relative z-10 shadow-md',
-      )}
-    >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        aria-label={t('questionForm.dragOption')}
-        className="text-muted-foreground hover:text-foreground cursor-grab touch-none rounded p-1 active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="size-4" />
-      </button>
-      {children}
-    </div>
-  );
-}
-
-/**
- * An image written in the prompt (images are no longer added there, one already
- * there still shows): while the question has no visual, the editor offers to move
- * it to the question's media — framed on every screen, zoomable on the phones and
- * fetched ahead. The author decides, sees the result, and can cancel before saving.
- */
-function PromptImageNotice({
-  prompt,
-  media,
-  onMove,
-}: {
-  prompt: string;
-  media: QuestionMedia;
-  onMove: (rest: string, media: QuestionMedia) => void;
-}) {
-  const { t } = useTranslation('editor');
-  const found = media.visual ? null : promptImage(prompt);
-  if (!found) return null;
-  const move = () => {
-    onMove(found.rest, {
-      visual: { kind: 'image', assetId: found.mediaId },
-      audio: media.audio,
-    } as QuestionMedia);
-    // Its description travels with it, when the media has none yet.
-    if (found.alt.trim()) {
-      void mediaControllerDescribe(found.mediaId)
-        .then((res) =>
-          res.data.alt ? null : mediaControllerSetAlt(found.mediaId, { alt: found.alt.trim() }),
-        )
-        .catch(() => undefined);
-    }
-  };
-  return (
-    <div
-      role="note"
-      className="bg-muted/50 flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm"
-    >
-      <ImageIcon className="text-muted-foreground size-4 shrink-0" aria-hidden />
-      <span className="min-w-0 flex-1">{t('questionForm.promptImageNotice')}</span>
-      <Button type="button" size="sm" variant="outline" onClick={move}>
-        {t('questionForm.promptImageMove')}
-      </Button>
-    </div>
-  );
-}
-
-/**
- * The question as the room will see it, while it is being written: the real
- * projection or phone (UI system §3), folded until asked for.
- */
-function LivePreview({
-  values,
-  position = { index: 0, total: 1 },
-}: {
-  values: FormValues;
-  position?: { index: number; total: number };
-}) {
-  const { t } = useTranslation('editor');
-  const url = useMediaUrl();
-  const [device, setDevice] = useState<'projection' | 'phone'>('projection');
-  const [answer, setAnswer] = useState(false);
-  // Pinned, it stays at the top while the form scrolls, from one question to the next.
-  const [pinned, setPinned] = useSessionState(
-    'editor:preview-pinned',
-    false,
-    (v): v is boolean => typeof v === 'boolean',
-  );
-  // In the quiz's theme, as the room will see it.
-  const theme = useQuizTheme();
-  const view = useMemo(() => {
-    const question = previewQuestion(values);
-    const view = stepView([{ kind: 'question', id: question.id, question }], 0, NO_QUIZ, url, {
-      reveal: answer,
-      theme,
-    });
-    // Where it stands in the quiz, as the room's band will say.
-    return {
-      ...view,
-      questionIndex: position.index,
-      totalQuestions: position.total,
-      question: view.question && {
-        ...view.question,
-        questionIndex: position.index,
-      },
-    };
-  }, [values, url, answer, position.index, position.total, theme]);
-  return (
-    <Disclosure
-      title={t('preview.title')}
-      value={t(`preview.${device}`)}
-      rememberAs="question-preview"
-      className={cn(pinned && 'bg-background sticky top-0 z-20 shadow-md')}
-    >
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Segmented
-            size="sm"
-            label={t('preview.device')}
-            value={device}
-            onChange={setDevice}
-            options={[
-              {
-                value: 'projection',
-                label: t('preview.projection'),
-                icon: Monitor,
-              },
-              { value: 'phone', label: t('preview.phone'), icon: Smartphone },
-            ]}
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <Switch
-              checked={answer}
-              onCheckedChange={setAnswer}
-              aria-label={t('preview.showAnswer')}
-            />
-            {t('preview.showAnswer')}
-          </label>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="ml-auto"
-            aria-pressed={pinned}
-            onClick={() => setPinned(!pinned)}
-          >
-            {pinned ? <PinOff /> : <Pin />}
-            {pinned ? t('preview.unpin') : t('preview.pin')}
-          </Button>
-        </div>
-        {/* Pinned, it leaves the form most of the screen. */}
-        <div className={cn(pinned && 'mx-auto w-full max-w-[calc(40dvh*16/9)]')}>
-          <RoomScreen view={view} device={device} />
-        </div>
-      </div>
-    </Disclosure>
-  );
-}
-
-/** A preview has no quiz around it: no title, no variables. */
-const NO_QUIZ = {
-  title: '',
-  description: null,
-  questionCount: 1,
-  tags: [],
-  license: null,
-};
-
-/** The question being written, in the shape of a saved one, for the preview. */
-function previewQuestion(v: FormValues): QuizDetailDtoQuestionsItem {
-  const p = buildPayload(v) as Partial<QuestionContent> & {
-    media: QuestionMedia;
-  };
-  return {
-    id: 'preview',
-    quizId: '',
-    orderIndex: 0,
-    type: v.type,
-    prompt: v.prompt,
-    media: p.media,
-    answerExplanation: p.answerExplanation ?? null,
-    backgroundMediaId: v.background.mediaId,
-    backgroundGradient: v.background.gradient,
-    backgroundStyle: v.background.style,
-    textTone: v.background.textTone,
-    textOutline: v.background.textOutline,
-    timeLimitS: p.timeLimitS ?? TIME_LIMIT_S.default,
-    revealDelayS: p.revealDelayS ?? null,
-    audioTarget: p.audioTarget ?? null,
-    waveformSize: v.waveformSize,
-    mediaPosition: v.mediaPosition,
-    timerAfterMedia: p.timerAfterMedia ?? false,
-    pointsMode: p.pointsMode ?? 'standard',
-    scoring: p.scoring ?? 'standard',
-    numericValue: v.numericValue == null ? null : String(v.numericValue),
-    numericTolerance: v.numericTolerance == null ? null : String(v.numericTolerance),
-    multiSelect: v.type === 'image_choice' && v.multiSelect,
-    options: (p.options ?? []).map((o, i) => ({
-      id: v.options[i]?.key ?? String(i),
-      orderIndex: i,
-      text: o.text ?? null,
-      mediaId: o.mediaId ?? null,
-      alt: o.alt ?? null,
-      color: o.color,
-      shape: o.shape,
-      isCorrect: o.isCorrect ?? false,
-      correctOrderIndex: o.correctOrderIndex ?? null,
-    })),
-    acceptedAnswers: (p.acceptedAnswers ?? []).map((a, i) => ({
-      id: String(i),
-      text: a.text,
-      normalized: normalizeAnswer(a.text),
-    })),
-  } as QuizDetailDtoQuestionsItem;
 }
