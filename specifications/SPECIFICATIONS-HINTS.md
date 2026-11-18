@@ -2,7 +2,7 @@
 
 > A **hint**: a clue revealed during a question, which costs part of its points. Asked for in
 > [discussion #288](https://github.com/orgs/quizdock/discussions/288). Hints are a track on the question timeline
-> ([SPECIFICATIONS-TIMELINE.md](./SPECIFICATIONS-TIMELINE.md)), which comes first.
+> ([SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)), which comes first.
 
 Status: **draft** — decisions of 2026-11-18, nothing built.
 
@@ -29,13 +29,16 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
   question only.
 - **The 50:50 strikes the answers the author chose** (2026-11-18); a random mode, drawn by the server, may come
   later. Either way the server sends only the struck options, never the right answer before the reveal.
-- **The author decides, the engine does not arbitrate.** The timeline flags overlaps with a warning (TIMELINE §3).
+- **The author decides, the engine does not arbitrate.** The timeline flags overlaps on the hint itself (QUESTION-TIMELINE §3).
   In play, **the hint wins**: its sound takes over the question's.
 - **The host's switch**: hints can be turned on and off live from the console. When the current question carries a
   hint and hints are off, a small visual reminder says so. Turned on late, the hint plays late and, like a
   question's media, **stretches the question** to the end of its sound plus `mediaTailS`, never cut: the host's
   responsibility.
 - **Concise**: a hint must be readable or audible before the time runs out. The builder warns, it does not block.
+- **When it can start**: never before the answers open; it needs no media, the prompt is content enough.
+- **Its channels**: a visual (a text or an image), a sound, or both; it sits only in the channels it has
+  (QUESTION-TIMELINE §2).
 
 ## 3. Lots
 
