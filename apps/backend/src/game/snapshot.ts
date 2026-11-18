@@ -22,7 +22,7 @@ import {
   resolveAudioTarget,
   slideHasPlayback,
   slideSoundMedia,
-  slideTimedMs,
+  slideMediaHoldMs,
   SETTINGS,
 } from '@quiz-dock/contracts';
 import { QUESTION_MEDIA_INCLUDE, liveMediaOf } from '../questions/question-media';
@@ -242,7 +242,6 @@ function snapshotSlide(
         size: slide.waveformSize,
       }
     : null;
-  const timedMs = slideTimedMs({ video, audio });
   return {
     id: slide.id,
     beforeQuestionIndex: anchor,
@@ -251,7 +250,7 @@ function snapshotSlide(
     video,
     audio,
     audioTarget: slide.audioTarget ?? null,
-    mediaHoldMs: timedMs === null ? null : timedMs + mediaTailS * 1000,
+    mediaHoldMs: slideMediaHoldMs({ video, audio }, mediaTailS),
     textTone: slide.textTone as SlideTextTone,
     textOutline: slide.textOutline,
     displayDelayS: slide.displayDelayS,

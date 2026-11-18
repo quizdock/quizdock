@@ -62,6 +62,16 @@ export function slideTimedMs(slide: LiveSlideMedia): number | null {
   return lengths.length ? Math.max(...lengths) : null;
 }
 
+/**
+ * How long the slide is held for its timed media, in ms: their length plus the
+ * quiz's pause after them (`mediaTailS`). Null when nothing holds it. The room counts
+ * it from the media's common start; the editor's timeline from the slide's display.
+ */
+export function slideMediaHoldMs(slide: LiveSlideMedia, tailS: number): number | null {
+  const timed = slideTimedMs(slide);
+  return timed === null ? null : timed + tailS * 1000;
+}
+
 /** A media step: a question, or the slide `slideIndex` shown before question `questionIndex`. */
 export interface MediaStepRef {
   questionIndex: number;
