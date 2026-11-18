@@ -396,6 +396,39 @@
     "revealDelayAutoValue": "auto ({{seconds}} s)",
     "revealDelaySummaryAuto": "réponse affichée {{seconds}} s (auto)"
   },
+  "timeline": {
+    "legend": "Timeline",
+    "timeRow": "Déroulé : lecture, réponses, allongement",
+    "visualRow": "Canal visuel",
+    "audioRow": "Canal audio",
+    "minimum": "Durée minimale {{seconds}} s",
+    "stretched": "Durée minimale {{minimum}} s, allongée à {{actual}} s par les médias",
+    "total": "Total {{seconds}} s",
+    "manualShort": "Manuel",
+    "phase": {
+      "reading": "Lecture : {{seconds}} s (réglage global)",
+      "listen": "Le média joue, pas encore de réponse : {{seconds}} s",
+      "answers": "Réponses : durée minimale {{seconds}} s",
+      "display": "Affichage : {{seconds}} s",
+      "manual": "Manuel : l’animateur passe à la suite",
+      "stretch": "Allongement par le média : +{{seconds}} s",
+      "tail": "Pause après le média : {{seconds}} s (réglage du quiz)"
+    },
+    "element": {
+      "image": "Image, toute la durée",
+      "background": "Image de fond, toute la durée",
+      "video": "Vidéo, {{seconds}} s, avec son",
+      "videoMuted": "Vidéo, {{seconds}} s, sans son",
+      "videoLoop": "Vidéo en boucle, toute la diapo",
+      "audio": "Son, {{seconds}} s",
+      "unknown": "Durée pas encore connue"
+    },
+    "label": {
+      "image": "Image",
+      "background": "Fond",
+      "video": "Vidéo"
+    }
+  },
   "preview": {
     "view": "Aperçu (vue participant)",
     "exitFullscreen": "Quitter le plein écran",

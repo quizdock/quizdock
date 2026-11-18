@@ -393,6 +393,39 @@
     "revealDelayAutoValue": "ऑटो ({{seconds}} से.)",
     "revealDelaySummaryAuto": "उत्तर {{seconds}} से. दिखेगा (ऑटो)"
   },
+  "timeline": {
+    "legend": "टाइमलाइन",
+    "timeRow": "क्रम: पढ़ना, उत्तर, विस्तार",
+    "visualRow": "दृश्य चैनल",
+    "audioRow": "ध्वनि चैनल",
+    "minimum": "न्यूनतम अवधि {{seconds}} से.",
+    "stretched": "न्यूनतम अवधि {{minimum}} से., मीडिया से {{actual}} से. तक बढ़ी",
+    "total": "कुल {{seconds}} से.",
+    "manualShort": "मैन्युअल",
+    "phase": {
+      "reading": "पढ़ना: {{seconds}} से. (सामान्य सेटिंग)",
+      "listen": "मीडिया चल रहा है, अभी उत्तर नहीं: {{seconds}} से.",
+      "answers": "उत्तर: न्यूनतम अवधि {{seconds}} से.",
+      "display": "प्रदर्शन: {{seconds}} से.",
+      "manual": "मैन्युअल: होस्ट आगे बढ़ाता है",
+      "stretch": "मीडिया से बढ़ा: +{{seconds}} से.",
+      "tail": "मीडिया के बाद विराम: {{seconds}} से. (क्विज़ सेटिंग)"
+    },
+    "element": {
+      "image": "चित्र, पूरे समय",
+      "background": "पृष्ठभूमि चित्र, पूरे समय",
+      "video": "वीडियो, {{seconds}} से., ध्वनि सहित",
+      "videoMuted": "वीडियो, {{seconds}} से., बिना ध्वनि",
+      "videoLoop": "लूप वीडियो, पूरी स्लाइड",
+      "audio": "ध्वनि, {{seconds}} से.",
+      "unknown": "अवधि अभी ज्ञात नहीं"
+    },
+    "label": {
+      "image": "चित्र",
+      "background": "पृष्ठभूमि",
+      "video": "वीडियो"
+    }
+  },
   "preview": {
     "view": "प्रीव्यू (प्रतिभागी का व्यू)",
     "exitFullscreen": "फ़ुलस्क्रीन से बाहर निकलें",

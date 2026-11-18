@@ -455,6 +455,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
       />
     ) : editing === 'new-slide' ? (
       <SlideForm
+        mediaTailS={quiz.mediaTailS}
         key="new-slide"
         quizId={quiz.id}
         quizStatus={quiz.status}
@@ -480,6 +481,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
       />
     ) : editingItem?.kind === 'slide' ? (
       <SlideForm
+        mediaTailS={quiz.mediaTailS}
         key={editingItem.id}
         quizId={quiz.id}
         slide={editingItem.slide}

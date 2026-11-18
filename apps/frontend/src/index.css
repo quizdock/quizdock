@@ -46,6 +46,11 @@
      stars; `--warning-text` for words in it on a light ground. */
   --warning: oklch(76.9% 0.188 70.08);
   --warning-text: oklch(53% 0.163 48.998);
+  /* The editor's timeline: one colour per channel (time, picture, sound), on its row,
+     its icon and its elements. */
+  --timeline-time: oklch(0.55 0.16 300);
+  --timeline-visual: oklch(0.55 0.2 255);
+  --timeline-audio: oklch(0.55 0.14 155);
   /* An answer's colour, as its author picked it: its identity on every screen. */
   --answer-red: oklch(57.7% 0.245 27.325);
   --answer-blue: oklch(54.6% 0.245 262.881);
@@ -104,6 +109,9 @@
   --success-text: oklch(0.75 0.15 150);
   /* Amber words on a dark ground: the light one would sink into it. */
   --warning-text: oklch(0.82 0.15 75);
+  --timeline-time: oklch(0.72 0.14 300);
+  --timeline-visual: oklch(0.72 0.15 255);
+  --timeline-audio: oklch(0.75 0.14 155);
 }
 
 /*
@@ -181,6 +189,9 @@
   --color-link: var(--link);
   --color-warning: var(--warning);
   --color-warning-text: var(--warning-text);
+  --color-timeline-time: var(--timeline-time);
+  --color-timeline-visual: var(--timeline-visual);
+  --color-timeline-audio: var(--timeline-audio);
   --color-answer-red: var(--answer-red);
   --color-answer-blue: var(--answer-blue);
   --color-answer-yellow: var(--answer-yellow);

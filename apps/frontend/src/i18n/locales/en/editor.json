@@ -392,6 +392,39 @@
     "revealDelayAutoValue": "auto ({{seconds}} s)",
     "revealDelaySummaryAuto": "answer shown {{seconds}} s (auto)"
   },
+  "timeline": {
+    "legend": "Timeline",
+    "timeRow": "Flow: reading, answers, stretch",
+    "visualRow": "Picture channel",
+    "audioRow": "Sound channel",
+    "minimum": "Minimum duration {{seconds}} s",
+    "stretched": "Minimum duration {{minimum}} s, stretched to {{actual}} s by the media",
+    "total": "Total {{seconds}} s",
+    "manualShort": "By hand",
+    "phase": {
+      "reading": "Reading: {{seconds}} s (global setting)",
+      "listen": "The media plays, no answers yet: {{seconds}} s",
+      "answers": "Answers: minimum duration {{seconds}} s",
+      "display": "Display: {{seconds}} s",
+      "manual": "By hand: the host moves on",
+      "stretch": "Stretched by the media: +{{seconds}} s",
+      "tail": "Pause after the media: {{seconds}} s (quiz setting)"
+    },
+    "element": {
+      "image": "Picture, the whole time",
+      "background": "Background picture, the whole time",
+      "video": "Video, {{seconds}} s, with its sound",
+      "videoMuted": "Video, {{seconds}} s, without sound",
+      "videoLoop": "Looped video, the whole slide",
+      "audio": "Sound, {{seconds}} s",
+      "unknown": "Length not known yet"
+    },
+    "label": {
+      "image": "Picture",
+      "background": "Background",
+      "video": "Video"
+    }
+  },
   "preview": {
     "view": "Preview (player view)",
     "exitFullscreen": "Exit fullscreen",

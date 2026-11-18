@@ -400,6 +400,39 @@
     "revealDelayAutoValue": "авто ({{seconds}} с)",
     "revealDelaySummaryAuto": "показ ответа {{seconds}} с (авто)"
   },
+  "timeline": {
+    "legend": "Шкала времени",
+    "timeRow": "Ход: чтение, ответы, продление",
+    "visualRow": "Визуальный канал",
+    "audioRow": "Звуковой канал",
+    "minimum": "Минимальная длительность {{seconds}} с",
+    "stretched": "Минимальная длительность {{minimum}} с, продлена медиа до {{actual}} с",
+    "total": "Всего {{seconds}} с",
+    "manualShort": "Вручную",
+    "phase": {
+      "reading": "Чтение: {{seconds}} с (общая настройка)",
+      "listen": "Медиа воспроизводится, ответов пока нет: {{seconds}} с",
+      "answers": "Ответы: минимальная длительность {{seconds}} с",
+      "display": "Показ: {{seconds}} с",
+      "manual": "Вручную: ведущий переходит дальше",
+      "stretch": "Продлено медиа: +{{seconds}} с",
+      "tail": "Пауза после медиа: {{seconds}} с (настройка квиза)"
+    },
+    "element": {
+      "image": "Изображение, всё время",
+      "background": "Фоновое изображение, всё время",
+      "video": "Видео, {{seconds}} с, со звуком",
+      "videoMuted": "Видео, {{seconds}} с, без звука",
+      "videoLoop": "Зацикленное видео, весь слайд",
+      "audio": "Звук, {{seconds}} с",
+      "unknown": "Длительность пока неизвестна"
+    },
+    "label": {
+      "image": "Изображение",
+      "background": "Фон",
+      "video": "Видео"
+    }
+  },
   "preview": {
     "view": "Предпросмотр (вид участника)",
     "exitFullscreen": "Выйти из полноэкранного режима",

@@ -400,6 +400,39 @@
     "revealDelayAutoValue": "auto ({{seconds}} s)",
     "revealDelaySummaryAuto": "wyświetlanie odpowiedzi: {{seconds}} s (auto)"
   },
+  "timeline": {
+    "legend": "Oś czasu",
+    "timeRow": "Przebieg: czytanie, odpowiedzi, wydłużenie",
+    "visualRow": "Kanał obrazu",
+    "audioRow": "Kanał dźwięku",
+    "minimum": "Minimalny czas {{seconds}} s",
+    "stretched": "Minimalny czas {{minimum}} s, wydłużony przez media do {{actual}} s",
+    "total": "Razem {{seconds}} s",
+    "manualShort": "Ręcznie",
+    "phase": {
+      "reading": "Czytanie: {{seconds}} s (ustawienie globalne)",
+      "listen": "Media grają, jeszcze bez odpowiedzi: {{seconds}} s",
+      "answers": "Odpowiedzi: minimalny czas {{seconds}} s",
+      "display": "Wyświetlanie: {{seconds}} s",
+      "manual": "Ręcznie: prowadzący przechodzi dalej",
+      "stretch": "Wydłużone przez media: +{{seconds}} s",
+      "tail": "Przerwa po mediach: {{seconds}} s (ustawienie quizu)"
+    },
+    "element": {
+      "image": "Obraz, przez cały czas",
+      "background": "Obraz tła, przez cały czas",
+      "video": "Wideo, {{seconds}} s, z dźwiękiem",
+      "videoMuted": "Wideo, {{seconds}} s, bez dźwięku",
+      "videoLoop": "Wideo w pętli, przez cały slajd",
+      "audio": "Dźwięk, {{seconds}} s",
+      "unknown": "Długość jeszcze nieznana"
+    },
+    "label": {
+      "image": "Obraz",
+      "background": "Tło",
+      "video": "Wideo"
+    }
+  },
   "preview": {
     "view": "Podgląd (widok uczestnika)",
     "exitFullscreen": "Zamknij pełny ekran",

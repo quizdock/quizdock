@@ -390,6 +390,39 @@
     "revealDelayAutoValue": "oto ({{seconds}} sn)",
     "revealDelaySummaryAuto": "yanıt {{seconds}} sn gösterilir (otomatik)"
   },
+  "timeline": {
+    "legend": "Zaman çizelgesi",
+    "timeRow": "Akış: okuma, cevaplar, uzatma",
+    "visualRow": "Görsel kanal",
+    "audioRow": "Ses kanalı",
+    "minimum": "En kısa süre {{seconds}} sn",
+    "stretched": "En kısa süre {{minimum}} sn, medya tarafından {{actual}} sn'ye uzatıldı",
+    "total": "Toplam {{seconds}} sn",
+    "manualShort": "Elle",
+    "phase": {
+      "reading": "Okuma: {{seconds}} sn (genel ayar)",
+      "listen": "Medya oynuyor, henüz cevap yok: {{seconds}} sn",
+      "answers": "Cevaplar: en kısa süre {{seconds}} sn",
+      "display": "Gösterim: {{seconds}} sn",
+      "manual": "Elle: sunucu devam eder",
+      "stretch": "Medya ile uzatıldı: +{{seconds}} sn",
+      "tail": "Medyadan sonra ara: {{seconds}} sn (quiz ayarı)"
+    },
+    "element": {
+      "image": "Görsel, tüm süre boyunca",
+      "background": "Arka plan görseli, tüm süre boyunca",
+      "video": "Video, {{seconds}} sn, sesli",
+      "videoMuted": "Video, {{seconds}} sn, sessiz",
+      "videoLoop": "Döngüdeki video, tüm slayt boyunca",
+      "audio": "Ses, {{seconds}} sn",
+      "unknown": "Süre henüz bilinmiyor"
+    },
+    "label": {
+      "image": "Görsel",
+      "background": "Arka plan",
+      "video": "Video"
+    }
+  },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",
     "exitFullscreen": "Tam ekrandan çık",

@@ -392,6 +392,39 @@
     "revealDelayAutoValue": "自動（{{seconds}}秒）",
     "revealDelaySummaryAuto": "正解の表示：{{seconds}}秒（自動）"
   },
+  "timeline": {
+    "legend": "タイムライン",
+    "timeRow": "流れ：読む時間、回答、延長",
+    "visualRow": "映像チャンネル",
+    "audioRow": "音声チャンネル",
+    "minimum": "最短時間 {{seconds}} 秒",
+    "stretched": "最短時間 {{minimum}} 秒、メディアにより {{actual}} 秒に延長",
+    "total": "合計 {{seconds}} 秒",
+    "manualShort": "手動",
+    "phase": {
+      "reading": "読む時間：{{seconds}} 秒（全体設定）",
+      "listen": "メディア再生中、まだ回答できません：{{seconds}} 秒",
+      "answers": "回答：最短時間 {{seconds}} 秒",
+      "display": "表示：{{seconds}} 秒",
+      "manual": "手動：司会者が次へ進めます",
+      "stretch": "メディアによる延長：+{{seconds}} 秒",
+      "tail": "メディア後の間：{{seconds}} 秒（クイズの設定）"
+    },
+    "element": {
+      "image": "画像、全体を通して",
+      "background": "背景画像、全体を通して",
+      "video": "動画、{{seconds}} 秒、音声あり",
+      "videoMuted": "動画、{{seconds}} 秒、音声なし",
+      "videoLoop": "ループ動画、スライド全体",
+      "audio": "音声、{{seconds}} 秒",
+      "unknown": "長さはまだ不明です"
+    },
+    "label": {
+      "image": "画像",
+      "background": "背景",
+      "video": "動画"
+    }
+  },
   "preview": {
     "view": "プレビュー（参加者の表示）",
     "exitFullscreen": "全画面表示を終了",

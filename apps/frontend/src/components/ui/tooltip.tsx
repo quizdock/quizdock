@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -14,11 +14,14 @@ export function Tooltip({
   children,
   side = 'top',
   className,
+  style,
 }: {
   label: string;
   children: ReactNode;
   side?: 'top' | 'bottom';
   className?: string;
+  /** Placement of the wrapper, for a tooltip on an element laid out absolutely. */
+  style?: CSSProperties;
 }) {
   const [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -39,6 +42,7 @@ export function Tooltip({
   return (
     <span
       className={cn('relative inline-flex', className)}
+      style={style}
       onMouseEnter={show}
       onMouseLeave={hide}
       onPointerDown={hide}

@@ -392,6 +392,39 @@
     "revealDelayAutoValue": "自动（{{seconds}} 秒）",
     "revealDelaySummaryAuto": "答案显示 {{seconds}} 秒（自动）"
   },
+  "timeline": {
+    "legend": "时间轴",
+    "timeRow": "流程：阅读、作答、延长",
+    "visualRow": "画面通道",
+    "audioRow": "声音通道",
+    "minimum": "最短时长 {{seconds}} 秒",
+    "stretched": "最短时长 {{minimum}} 秒，因媒体延长至 {{actual}} 秒",
+    "total": "总计 {{seconds}} 秒",
+    "manualShort": "手动",
+    "phase": {
+      "reading": "阅读：{{seconds}} 秒（全局设置）",
+      "listen": "媒体播放中，尚不能作答：{{seconds}} 秒",
+      "answers": "作答：最短时长 {{seconds}} 秒",
+      "display": "显示：{{seconds}} 秒",
+      "manual": "手动：由主持人继续",
+      "stretch": "因媒体延长：+{{seconds}} 秒",
+      "tail": "媒体后的停顿：{{seconds}} 秒（测验设置）"
+    },
+    "element": {
+      "image": "图片，全程",
+      "background": "背景图片，全程",
+      "video": "视频，{{seconds}} 秒，有声音",
+      "videoMuted": "视频，{{seconds}} 秒，无声音",
+      "videoLoop": "循环视频，整张幻灯片",
+      "audio": "声音，{{seconds}} 秒",
+      "unknown": "时长尚未知"
+    },
+    "label": {
+      "image": "图片",
+      "background": "背景",
+      "video": "视频"
+    }
+  },
   "preview": {
     "view": "预览（玩家视图）",
     "exitFullscreen": "退出全屏",

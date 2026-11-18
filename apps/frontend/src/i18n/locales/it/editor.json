@@ -397,6 +397,39 @@
     "revealDelayAutoValue": "auto ({{seconds}} s)",
     "revealDelaySummaryAuto": "risposta mostrata {{seconds}} s (auto)"
   },
+  "timeline": {
+    "legend": "Timeline",
+    "timeRow": "Svolgimento: lettura, risposte, prolungamento",
+    "visualRow": "Canale visivo",
+    "audioRow": "Canale audio",
+    "minimum": "Durata minima {{seconds}} s",
+    "stretched": "Durata minima {{minimum}} s, prolungata a {{actual}} s dai media",
+    "total": "Totale {{seconds}} s",
+    "manualShort": "Manuale",
+    "phase": {
+      "reading": "Lettura: {{seconds}} s (impostazione globale)",
+      "listen": "Il media è in riproduzione, ancora nessuna risposta: {{seconds}} s",
+      "answers": "Risposte: durata minima {{seconds}} s",
+      "display": "Visualizzazione: {{seconds}} s",
+      "manual": "Manuale: chi conduce va avanti",
+      "stretch": "Prolungato dal media: +{{seconds}} s",
+      "tail": "Pausa dopo il media: {{seconds}} s (impostazione del quiz)"
+    },
+    "element": {
+      "image": "Immagine, per tutta la durata",
+      "background": "Immagine di sfondo, per tutta la durata",
+      "video": "Video, {{seconds}} s, con audio",
+      "videoMuted": "Video, {{seconds}} s, senza audio",
+      "videoLoop": "Video in loop, per tutta la slide",
+      "audio": "Audio, {{seconds}} s",
+      "unknown": "Durata non ancora nota"
+    },
+    "label": {
+      "image": "Immagine",
+      "background": "Sfondo",
+      "video": "Video"
+    }
+  },
   "preview": {
     "view": "Anteprima (vista del partecipante)",
     "exitFullscreen": "Esci da schermo intero",

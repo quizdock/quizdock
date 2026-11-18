@@ -63,6 +63,8 @@ import {
   withDefaults,
 } from './question-form-model';
 import { QuestionMediaSection } from './question-media-section';
+import { StepTimeline } from './step-timeline';
+import { questionTimeline } from './step-timeline-model';
 import {
   AcceptedAnswersSection,
   NumericSection,
@@ -481,6 +483,17 @@ export function QuestionForm({
         )}
         {type === 'numeric' && <NumericSection form={form} issues={issues} />}
 
+        <StepTimeline
+          model={questionTimeline({
+            timeLimitS,
+            listenFirst: canListenFirst && listenFirst,
+            visual: type === 'image_choice' ? null : (media.visual?.kind ?? null),
+            audio: media.audio ? { peaks: media.audio.peaks } : null,
+            mediaMs,
+            tailS: mediaTailS,
+            readMs: READ_DELAY_DEFAULT_MS,
+          })}
+        />
         <QuestionMediaSection
           form={form}
           canListenFirst={canListenFirst}

@@ -21,7 +21,12 @@ import type {
   SlideTextTone,
   BackgroundStyle,
 } from '@quiz-dock/contracts';
-import { type quizVariables, slideContentSchema, slideIssues } from '@quiz-dock/contracts';
+import {
+  MEDIA_TAIL_DEFAULT_S,
+  type quizVariables,
+  slideContentSchema,
+  slideIssues,
+} from '@quiz-dock/contracts';
 import { useQueryClient } from '@tanstack/react-query';
 import { Eye, EyeOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -61,6 +66,12 @@ import {
   complete,
 } from './slide-blocks';
 import { DisplayTimeField } from './slide-display-time';
+import { StepTimeline, useAssetDurationMs } from './step-timeline';
+import { slideTimeline } from './step-timeline-model';
+import { appConfig } from '../config';
+
+/** The engine's display time of a slide in automatic mode, when the instance says none. */
+const AUTO_ADVANCE_DEFAULT_S = 5;
 
 interface FormValues extends SlideMediaValue {
   blocks: SlideBlock[];
@@ -110,6 +121,7 @@ export function SlideForm({
   onMoveToDraft,
   onClose,
   onDirtyChange,
+  mediaTailS = MEDIA_TAIL_DEFAULT_S,
 }: {
   quizId: string;
   slide?: QuizDetailDtoSlidesItem;
@@ -120,6 +132,8 @@ export function SlideForm({
   quizFields?: Parameters<typeof quizVariables>[0];
   onClose: () => void;
   onDirtyChange?: (dirty: boolean) => void;
+  /** The quiz's pause after a media: a longer media holds the slide. */
+  mediaTailS?: number;
 }) {
   const { t } = useTranslation(['editor', 'common']);
   const queryClient = useQueryClient();
@@ -175,6 +189,9 @@ export function SlideForm({
   const patch = (p: Partial<FormValues>) => setValues((v) => ({ ...v, ...p }));
   // The sound's waveform, known once a sound is picked here (the size preview draws it).
   const [audioPeaks, setAudioPeaks] = useState<number[] | null>(null);
+  // The media's lengths, for the timeline.
+  const videoMs = useAssetDurationMs(values.videoMediaId);
+  const audioMs = useAssetDurationMs(values.audioMediaId);
 
   const cancel = () => {
     clearDraft(draftKey);
@@ -396,6 +413,21 @@ export function SlideForm({
           <AddBlockBar onAdd={addBlock} />
           <VariablesHelp />
         </fieldset>
+        <StepTimeline
+          model={slideTimeline({
+            displayDelayS: values.displayDelayS,
+            defaultS: appConfig.autoAdvanceS ?? AUTO_ADVANCE_DEFAULT_S,
+            background: !!values.mediaId,
+            video: values.videoMediaId
+              ? { lengthMs: videoMs, loop: values.videoLoop, sound: values.videoSound }
+              : null,
+            audio:
+              values.audioMediaId && !(values.videoMediaId && values.videoSound)
+                ? { lengthMs: audioMs, peaks: audioPeaks }
+                : null,
+            tailS: mediaTailS,
+          })}
+        />
         {/* Media refusals point at the video or the sound: both lead here. */}
         <div id="qf-videoMediaId">
           <div id="qf-audioMediaId" className="flex flex-col gap-1.5">

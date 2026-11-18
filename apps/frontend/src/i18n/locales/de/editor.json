@@ -392,6 +392,39 @@
     "revealDelayAutoValue": "auto ({{seconds}} s)",
     "revealDelaySummaryAuto": "Antwort angezeigt: {{seconds}} s (auto)"
   },
+  "timeline": {
+    "legend": "Zeitleiste",
+    "timeRow": "Ablauf: Lesen, Antworten, Verlängerung",
+    "visualRow": "Bildkanal",
+    "audioRow": "Tonkanal",
+    "minimum": "Mindestdauer {{seconds}} s",
+    "stretched": "Mindestdauer {{minimum}} s, durch die Medien auf {{actual}} s verlängert",
+    "total": "Gesamt {{seconds}} s",
+    "manualShort": "Manuell",
+    "phase": {
+      "reading": "Lesen: {{seconds}} s (globale Einstellung)",
+      "listen": "Das Medium läuft, noch keine Antworten: {{seconds}} s",
+      "answers": "Antworten: Mindestdauer {{seconds}} s",
+      "display": "Anzeige: {{seconds}} s",
+      "manual": "Manuell: die Moderation geht weiter",
+      "stretch": "Durch das Medium verlängert: +{{seconds}} s",
+      "tail": "Pause nach dem Medium: {{seconds}} s (Quiz-Einstellung)"
+    },
+    "element": {
+      "image": "Bild, die ganze Zeit",
+      "background": "Hintergrundbild, die ganze Zeit",
+      "video": "Video, {{seconds}} s, mit Ton",
+      "videoMuted": "Video, {{seconds}} s, ohne Ton",
+      "videoLoop": "Video in Schleife, die ganze Folie",
+      "audio": "Ton, {{seconds}} s",
+      "unknown": "Länge noch unbekannt"
+    },
+    "label": {
+      "image": "Bild",
+      "background": "Hintergrund",
+      "video": "Video"
+    }
+  },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",
     "exitFullscreen": "Vollbild beenden",
