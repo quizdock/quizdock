@@ -55,7 +55,9 @@ when.
 
 ## 4. Editing
 
-- **Defaults per step type**: each question type and the slide start from their own prefilled values.
+- **Defaults per step type** (2026-11-18): each question type and the slide start from their own prefilled values.
+  Durations: true/false 10 s, single choice 20 s, text input 30 s, slide 5 s of display. The other types keep 20 s
+  until decided otherwise.
 - **Clear and reset**: the timeline can be emptied, or brought back to its type's defaults.
 - **A + button** opens a modal to choose the kind of element. The kinds the format refuses stay visible, disabled,
   with the reason: an image or a video, not both; never a video and an audio on a question; one audio at most on a
@@ -66,13 +68,15 @@ when.
 - **Media start at 0**, their length comes from the file; only a hint moves, dragged by one-second steps. **A hint
   never starts before the answers open**, and needs no media: the prompt is content enough.
 - **Waveforms are the real ones** (`peaks` from the media library), in the timeline and in the drawer.
+- **An accessible alternative view** (2026-11-18): a classic list of the elements (kind, channels, start, length,
+  conflict in words), editable with the keyboard, a second view of the same data. It shares as much UI as possible
+  with the timeline: the same + and modal, the same drawer, clear and reset. The timeline is the default view; the
+  toggle is kept in the user's preferences (`users.preferences`, `/me/preferences`). The timeline's small hit areas
+  are then not the only way in.
 
 ## 5. Open questions
 
-- What each step type prefills: today every question starts from 20 s and a slide from the 5 s automatic pace; per
-  type values do not exist yet.
-- Hit areas and keyboard access: a lowered element is about 15 px high; it needs a wider invisible hit area, and every
-  element must take the focus and show its tooltip.
+- The durations of the other question types (multiple choice, numeric, ordering, poll, image choice), 20 s meanwhile.
 
 ## 6. Method
 
