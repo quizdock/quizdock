@@ -507,7 +507,14 @@
         "visual": "映像",
         "audio": "音声"
       }
-    }
+    },
+    "reset": "既定値に戻す：{{type}}",
+    "resetConfirm": {
+      "title": "「{{type}}」の既定値に戻しますか？",
+      "description": "メディアが外され、長さは {{seconds}} 秒に、流れは既定の設定に戻ります。保存するまでは何も失われません。",
+      "confirm": "元に戻す"
+    },
+    "slideKind": "スライド"
   },
   "preview": {
     "view": "プレビュー（参加者の表示）",

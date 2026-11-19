@@ -507,7 +507,14 @@
         "visual": "Visual",
         "audio": "Audio"
       }
-    }
+    },
+    "reset": "Back to the defaults: {{type}}",
+    "resetConfirm": {
+      "title": "Back to the defaults of “{{type}}”?",
+      "description": "The media are removed, the duration goes back to {{seconds}} s and the flow to its default settings. Nothing is lost until you save.",
+      "confirm": "Reset"
+    },
+    "slideKind": "Slide"
   },
   "preview": {
     "view": "Preview (player view)",

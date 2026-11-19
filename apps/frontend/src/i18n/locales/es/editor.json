@@ -511,7 +511,14 @@
         "visual": "Visual",
         "audio": "Audio"
       }
-    }
+    },
+    "reset": "Volver a los valores por defecto: {{type}}",
+    "resetConfirm": {
+      "title": "¿Volver a los valores por defecto de «{{type}}»?",
+      "description": "Se quitan los medios, la duración vuelve a {{seconds}} s y el desarrollo a sus ajustes por defecto. No se pierde nada hasta que guardes.",
+      "confirm": "Restablecer"
+    },
+    "slideKind": "Diapositiva"
   },
   "preview": {
     "view": "Vista previa (vista del jugador)",

@@ -507,7 +507,14 @@
         "visual": "视觉",
         "audio": "音频"
       }
-    }
+    },
+    "reset": "恢复默认值：{{type}}",
+    "resetConfirm": {
+      "title": "恢复“{{type}}”的默认值？",
+      "description": "媒体将被移除，时长恢复为 {{seconds}} 秒，流程恢复默认设置。保存之前不会丢失任何内容。",
+      "confirm": "恢复"
+    },
+    "slideKind": "幻灯片"
   },
   "preview": {
     "view": "预览（玩家视图）",

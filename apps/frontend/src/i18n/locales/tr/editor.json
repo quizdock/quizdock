@@ -505,7 +505,14 @@
         "visual": "Görsel",
         "audio": "Ses"
       }
-    }
+    },
+    "reset": "Varsayılan değerlere dön: {{type}}",
+    "resetConfirm": {
+      "title": "“{{type}}” için varsayılan değerlere dönülsün mü?",
+      "description": "Medyalar kaldırılır, süre {{seconds}} sn’ye ve akış varsayılan ayarlarına döner. Kaydetmediğiniz sürece hiçbir şey kaybolmaz.",
+      "confirm": "Sıfırla"
+    },
+    "slideKind": "Slayt"
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",

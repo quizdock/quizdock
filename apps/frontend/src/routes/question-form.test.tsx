@@ -554,6 +554,35 @@ describe('QuestionForm — the timeline', () => {
     );
   });
 
+  it('back to the type’s defaults, once confirmed: no media, its time', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Revenir aux valeurs par défaut : Sondage' }),
+    );
+    expect(screen.getByRole('button', { name: 'Son, 42 s' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Rétablir' }));
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    // At its defaults, nothing to bring back.
+    expect(screen.queryByRole('button', { name: /^Revenir aux valeurs par défaut/ })).toBeNull();
+  });
+
+  it('a time left at its type’s default follows the type; one set by hand stays', () => {
+    mockApi([]);
+    renderForm();
+    openTimeSettings();
+    const time = () => screen.getByLabelText('Durée minimale (s)');
+    expect(time()).toHaveValue(20);
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'true_false' } });
+    expect(time()).toHaveValue(10);
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'text_input' } });
+    expect(time()).toHaveValue(30);
+    fireEvent.change(time(), { target: { value: '25' } });
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'single_choice' } });
+    expect(time()).toHaveValue(25);
+  });
+
   it('the layouts wait for a picture or a video, and say so', () => {
     withSound();
     mockApi([]);

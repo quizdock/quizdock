@@ -2,6 +2,7 @@ import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/c
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import {
   MEDIA_TAIL_DEFAULT_S,
+  TIME_LIMIT_BY_TYPE,
   type QuestionMedia,
   OPTION_TYPES,
   type QuestionCompletenessInput,
@@ -313,6 +314,10 @@ export function QuestionForm({
     // What was ticked is chosen again under the new rules: said, not silently lost.
     setTicksCleared(options.some((o) => o.isCorrect) && next !== 'poll' && next !== type);
     form.setFieldValue('type', next);
+    // A time left at its type's default follows the new type's; one the author set stays.
+    if (form.getFieldValue('timeLimitS') === TIME_LIMIT_BY_TYPE[type]) {
+      form.setFieldValue('timeLimitS', TIME_LIMIT_BY_TYPE[next]);
+    }
     // A typed answer starts with one line to fill.
     if (next === 'text_input' && answers.length === 0) {
       form.setFieldValue('acceptedAnswers', [{ text: '' }]);

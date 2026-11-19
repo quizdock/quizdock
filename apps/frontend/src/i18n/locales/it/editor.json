@@ -512,7 +512,14 @@
         "visual": "Visivo",
         "audio": "Audio"
       }
-    }
+    },
+    "reset": "Torna ai valori predefiniti: {{type}}",
+    "resetConfirm": {
+      "title": "Tornare ai valori predefiniti di «{{type}}»?",
+      "description": "I media vengono rimossi, la durata torna a {{seconds}} s e lo svolgimento alle impostazioni predefinite. Non si perde nulla finché non salvi.",
+      "confirm": "Ripristina"
+    },
+    "slideKind": "Slide"
   },
   "preview": {
     "view": "Anteprima (vista del partecipante)",

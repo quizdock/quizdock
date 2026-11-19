@@ -515,7 +515,14 @@
         "visual": "Obraz",
         "audio": "Dźwięk"
       }
-    }
+    },
+    "reset": "Przywróć wartości domyślne: {{type}}",
+    "resetConfirm": {
+      "title": "Przywrócić wartości domyślne dla „{{type}}”?",
+      "description": "Media zostaną usunięte, czas wróci do {{seconds}} s, a przebieg do ustawień domyślnych. Nic nie przepada, dopóki nie zapiszesz.",
+      "confirm": "Przywróć"
+    },
+    "slideKind": "Slajd"
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",

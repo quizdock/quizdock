@@ -507,7 +507,14 @@
         "visual": "Bild",
         "audio": "Ton"
       }
-    }
+    },
+    "reset": "Zurück zu den Standardwerten: {{type}}",
+    "resetConfirm": {
+      "title": "Zurück zu den Standardwerten von „{{type}}“?",
+      "description": "Die Medien werden entfernt, die Dauer kehrt zu {{seconds}} s zurück und der Ablauf zu seinen Standardeinstellungen. Nichts geht verloren, solange du nicht speicherst.",
+      "confirm": "Zurücksetzen"
+    },
+    "slideKind": "Folie"
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

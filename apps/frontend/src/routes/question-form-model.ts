@@ -20,6 +20,7 @@ import {
   WAVEFORM_SIZE_DEFAULT,
   type WaveformSize,
   scoringsFor,
+  TIME_LIMIT_BY_TYPE,
 } from '@quiz-dock/contracts';
 import { useForm } from '@tanstack/react-form';
 import type { QuizDetailDtoQuestionsItem } from '../api/generated/model';
@@ -99,7 +100,7 @@ export function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
       media: NO_QUESTION_MEDIA,
       answerExplanation: '',
       background: NO_BACKGROUND,
-      timeLimitS: 20,
+      timeLimitS: TIME_LIMIT_BY_TYPE.single_choice,
       revealDelayS: null,
       audioTarget: null,
       waveformSize: WAVEFORM_SIZE_DEFAULT,

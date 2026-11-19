@@ -84,9 +84,28 @@ describe('SlideTimelineSection (#125)', () => {
     expect((sound as HTMLInputElement).disabled).toBe(true);
   });
 
-  it('nothing to clear on an empty slide', () => {
+  it('back to the slide’s defaults, once confirmed: no media, the default display', () => {
+    const onChange = open({ ...base, audioMediaId: 'a', displayDelayS: 12 });
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: i18n.t('editor:timeline.reset', { type: i18n.t('editor:timeline.slideKind') }),
+      }),
+    );
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.click(
+      screen.getByRole('button', { name: i18n.t('editor:timeline.resetConfirm.confirm') }),
+    );
+    expect(onChange).toHaveBeenCalledWith({
+      videoMediaId: null,
+      audioMediaId: null,
+      displayDelayS: null,
+    });
+  });
+
+  it('nothing to clear nor reset on an empty slide', () => {
     open(base);
     expect(screen.queryByRole('button', { name: i18n.t('editor:timeline.clear') })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Revenir aux valeurs par défaut/ })).toBeNull();
   });
 
   it('clearing, once confirmed, takes the video and the sound away', () => {

@@ -507,7 +507,14 @@
         "visual": "視覺",
         "audio": "音訊"
       }
-    }
+    },
+    "reset": "恢復預設值：{{type}}",
+    "resetConfirm": {
+      "title": "恢復「{{type}}」的預設值？",
+      "description": "媒體將被移除，時長恢復為 {{seconds}} 秒，流程恢復預設設定。儲存之前不會遺失任何內容。",
+      "confirm": "恢復"
+    },
+    "slideKind": "簡報"
   },
   "preview": {
     "view": "預覽（玩家視角）",

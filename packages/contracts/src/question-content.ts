@@ -84,6 +84,22 @@ export const ACCEPTED_ANSWER_MAX = 200;
 export const EXPLANATION_MAX = 2000;
 /** A question's answering time, and the auto mode's pause on its answer (SQL CHECKs). */
 export const TIME_LIMIT_S = { min: 5, max: 240, default: 20 } as const;
+
+/**
+ * The answer time a new question starts from, by type (SPECIFICATIONS-QUESTION-TIMELINE
+ * §4): a true or false reads at a glance, a typed answer takes longer. The builder's
+ * starting point only; a question stored without one keeps {@link TIME_LIMIT_S.default}.
+ */
+export const TIME_LIMIT_BY_TYPE: Record<QuestionTypeName, number> = {
+  true_false: 10,
+  single_choice: 20,
+  multiple_choice: 20,
+  text_input: 30,
+  numeric: 20,
+  ordering: 20,
+  poll: 20,
+  image_choice: 20,
+};
 export const REVEAL_DELAY_S = { min: 1, max: 300 } as const;
 
 export const POINTS_MODES = ['standard', 'double', 'none', 'fixed'] as const;

@@ -3,6 +3,7 @@ import {
   type Audio,
   type AudioTarget,
   effectiveTimeLimitS,
+  TIME_LIMIT_BY_TYPE,
   MEDIA_POSITIONS,
   type QuestionMedia,
   WAVEFORM_SIZES,
@@ -92,6 +93,24 @@ export function QuestionTimelineSection({
         : null;
     setMedia({ visual: hasVideo ? null : visual, audio: track } as QuestionMedia);
   };
+  const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
+  const defaultS = TIME_LIMIT_BY_TYPE[type];
+  // Already at its type's defaults: nothing to bring back.
+  const atDefaults =
+    !visual &&
+    !audio &&
+    timeLimitS === defaultS &&
+    !listenFirst &&
+    revealDelayS === null &&
+    Object.keys(mediaStyle).length === 0;
+  const reset = () => {
+    form.setFieldValue('media', { visual: null, audio: null });
+    form.setFieldValue('mediaStyle', {});
+    form.setFieldValue('timerAfterMedia', false);
+    form.setFieldValue('timeLimitS', defaultS);
+    form.setFieldValue('revealDelayS', null);
+    setSelected(null);
+  };
   const clear = () => {
     form.setFieldValue('media', { visual: null, audio: null });
     form.setFieldValue('mediaStyle', {});
@@ -149,6 +168,9 @@ export function QuestionTimelineSection({
           onAdd: () => setAdding(true),
           view: { value: view, onChange: setView },
           onClear: visual || audio ? clear : null,
+          reset: atDefaults
+            ? null
+            : { type: t(`questionType.${type}`), seconds: defaultS, run: reset },
           layout: {
             open: () => setLayingOut(true),
             refused: !withVisual

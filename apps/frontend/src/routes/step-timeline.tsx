@@ -8,6 +8,7 @@ import {
   List,
   Music,
   Plus,
+  RotateCcw,
   Sparkles,
   Video,
   Volume2,
@@ -42,6 +43,11 @@ export interface TimelineEditing {
   onAdd: () => void;
   /** Takes every element away; absent while there is none. */
   onClear: (() => void) | null;
+  /**
+   * Back to the step type's defaults (no media, its duration, its flow); absent while it
+   * is there. `type` names it, `seconds` is its duration.
+   */
+  reset?: { type: string; seconds: number; run: () => void } | null;
   /** The ready-made layouts; `refused` says why they do not apply yet. */
   layout?: { open: () => void; refused: string | null };
   /** Timeline or list, the account's choice: the same elements, the same panel. */
@@ -59,6 +65,7 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
   const pct = (s: number) => `${(Math.min(s, T) / T) * 100}%`;
   const stretched = model.actualS !== null && model.actualS > model.minimumS;
   const [confirmClear, setConfirmClear] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   let ticks: number[] = [];
   const step = T > 60 ? 10 : 5;
@@ -123,6 +130,13 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
                 label={edit.layout.refused ?? t('timeline.layout')}
                 disabled={edit.layout.refused !== null}
                 onClick={edit.layout.open}
+              />
+            ) : null}
+            {edit.reset ? (
+              <Tool
+                icon={<RotateCcw />}
+                label={t('timeline.reset', { type: edit.reset.type })}
+                onClick={() => setConfirmReset(true)}
               />
             ) : null}
             {edit.onClear ? (
@@ -200,6 +214,19 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
           </Row>
         </div>
       )}
+      {edit?.reset ? (
+        <ConfirmDialog
+          open={confirmReset}
+          title={t('timeline.resetConfirm.title', { type: edit.reset.type })}
+          description={t('timeline.resetConfirm.description', { seconds: edit.reset.seconds })}
+          confirmLabel={t('timeline.resetConfirm.confirm')}
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={() => {
+            setConfirmReset(false);
+            edit.reset?.run();
+          }}
+        />
+      ) : null}
       {edit?.onClear ? (
         <ConfirmDialog
           open={confirmClear}

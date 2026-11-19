@@ -511,7 +511,14 @@
         "visual": "Visuel",
         "audio": "Audio"
       }
-    }
+    },
+    "reset": "Revenir aux valeurs par défaut : {{type}}",
+    "resetConfirm": {
+      "title": "Revenir aux valeurs par défaut de « {{type}} » ?",
+      "description": "Les médias sont retirés, la durée revient à {{seconds}} s et le déroulé à ses réglages par défaut. Rien n’est perdu tant que vous n’enregistrez pas.",
+      "confirm": "Rétablir"
+    },
+    "slideKind": "Slide"
   },
   "preview": {
     "view": "Aperçu (vue participant)",

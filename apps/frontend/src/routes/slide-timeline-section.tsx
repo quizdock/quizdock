@@ -90,6 +90,18 @@ export function SlideTimelineSection({
           onSelect: setSelected,
           onAdd: () => setAdding(true),
           view: { value: view, onChange: setView },
+          reset:
+            videoMediaId || audioMediaId || value.displayDelayS !== null
+              ? {
+                  type: t('timeline.slideKind'),
+                  seconds: defaultS,
+                  run: () => {
+                    onChange({ videoMediaId: null, audioMediaId: null, displayDelayS: null });
+                    onPeaks(null);
+                    close();
+                  },
+                }
+              : null,
           onClear:
             videoMediaId || audioMediaId
               ? () => {
