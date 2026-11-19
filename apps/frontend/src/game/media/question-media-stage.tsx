@@ -215,8 +215,11 @@ function usePlayback(
       // heard on the common instant, whatever its output (a Bluetooth headset, a phone).
       // A silent one is only seen: it keeps the instant itself.
       const ahead = startAt - serverNow() - (silent ? 0 : outputLatencyS() * 1000);
-      if (ahead > 0) wait = ahead;
-      else seekTo(el, -ahead / 1000);
+      // A start still to come plays it from its beginning (a hint played again).
+      if (ahead > 0) {
+        wait = ahead;
+        if (el.currentTime > 0) seekTo(el, 0);
+      } else seekTo(el, -ahead / 1000);
     }
     const start = async () => {
       if (silent) el.muted = true;

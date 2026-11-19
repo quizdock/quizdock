@@ -540,6 +540,7 @@
     "fold": "Einklappen",
     "label": "Hinweis",
     "penaltyApplied": "Hinweis: −{{penalty}} % ({{lost}} Punkte weniger)",
-    "imageAlt": "Das Bild des Hinweises"
+    "imageAlt": "Das Bild des Hinweises",
+    "replay": "Erneut abspielen"
   }
 }

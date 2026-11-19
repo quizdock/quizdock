@@ -536,7 +536,13 @@
       "afterS": "After the opening (s)",
       "penalty": "Penalty (%)",
       "rule": "The answers given after the hint lose {{penalty}} % of the question's points; the streak is untouched. The host can turn hints off.",
-      "image": "Picture (optional if there is a text)"
+      "image": "Picture (optional if there is a text)",
+      "video": "Video",
+      "audio": "Sound",
+      "videoExcludesImage": "A video takes the picture's place.",
+      "videoExcluded": "A picture or a sound already: a video brings both.",
+      "videoHasSound": "The video brings its own sound.",
+      "soundRule": "Its sound plays once at its reveal and takes over the question's; longer than the answers, it stretches the question."
     },
     "removeElement": "Remove this element",
     "embeddedVideo": "An embedded video: it can only be removed.",
@@ -547,7 +553,9 @@
       "right": "The blocks on the left, the picture or video beside it.",
       "behind": "The picture or video fills the slide, the blocks laid over it (a slide's video until now).",
       "alone": "The picture or video alone, in the blocks' place."
-    }
+    },
+    "conflicts": "Conflicts: {{n}}",
+    "conflictTip": "The hint's sound covers the question's: in play, the hint's takes over."
   },
   "preview": {
     "view": "Preview (player view)",

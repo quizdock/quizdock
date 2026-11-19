@@ -540,7 +540,13 @@
       "afterS": "Tras la apertura (s)",
       "penalty": "Penalización (%)",
       "rule": "Las respuestas dadas tras la pista pierden un {{penalty}} % de los puntos de la pregunta; la racha no se toca. El presentador puede desactivar las pistas.",
-      "image": "Imagen (opcional si hay texto)"
+      "image": "Imagen (opcional si hay texto)",
+      "video": "Vídeo",
+      "audio": "Sonido",
+      "videoExcludesImage": "Un vídeo ocupa el lugar de la imagen.",
+      "videoExcluded": "Ya hay una imagen o un sonido: un vídeo aporta ambos.",
+      "videoHasSound": "El vídeo trae su propio sonido.",
+      "soundRule": "Su sonido suena una vez al revelarse y se impone al de la pregunta; más largo que las respuestas, alarga la pregunta."
     },
     "removeElement": "Quitar este elemento",
     "embeddedVideo": "Un vídeo incrustado: solo se puede quitar.",
@@ -551,7 +557,9 @@
       "right": "Los bloques a la izquierda, la imagen o el vídeo al lado.",
       "behind": "La imagen o el vídeo llena la diapositiva, los bloques encima (el vídeo de una diapositiva hasta ahora).",
       "alone": "La imagen o el vídeo solo, en lugar de los bloques."
-    }
+    },
+    "conflicts": "Conflictos: {{n}}",
+    "conflictTip": "El sonido de la pista cubre el de la pregunta: en juego, el de la pista se impone."
   },
   "preview": {
     "view": "Vista previa (vista del jugador)",

@@ -1,6 +1,5 @@
 import { type MediaAsset, Prisma } from '@prisma/client';
 import type {
-  QuestionHint,
   LiveQuestionMedia,
   OptionColor,
   OptionShape,
@@ -32,7 +31,7 @@ import { QUESTION_MEDIA_INCLUDE, liveMediaOf } from '../questions/question-media
 import { MEDIA_LEAD_MS } from './game.keys';
 import { settings } from '../admin/settings/settings.service';
 import { basePointsFor } from './scoring';
-import type { QuizSnapshot, SnapshotQuestion, SnapshotSlide } from './game.types';
+import type { QuizSnapshot, SnapshotHint, SnapshotQuestion, SnapshotSlide } from './game.types';
 import type {
   SlideBlock,
   SlideGradient,
@@ -127,7 +126,11 @@ const readDelayMs = () => settings.get(SETTINGS.GAME_READ_DELAY_MS);
  * (secret serveur) et les réponses texte normalisées. La boucle live ne touche
  * plus la base après cet appel.
  */
-export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
+export function buildSnapshot(
+  quiz: QuizWithContent,
+  /** The media its hints hold, by id (they live in the hints, not in a relation). */
+  hintMedia: Map<string, MediaAsset> = new Map(),
+): QuizSnapshot {
   return {
     quizId: quiz.id,
     title: quiz.title,
@@ -164,7 +167,7 @@ export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
               readDelayMs() - MEDIA_LEAD_MS,
             ),
         timerAfterMedia: listensFirst,
-        ...hintOf(q.hint),
+        ...hintOf(q.hint, hintMedia, quiz.loudnessTargetLufs, quiz.mediaTailS),
         revealDelayS: q.revealDelayS ?? null,
         audioTarget: q.audioTarget ?? null,
         basePoints: basePointsFor(q.pointsMode as PointsMode),
@@ -469,10 +472,59 @@ export function slideTitle(blocks: SlideBlock[]): string {
   return '';
 }
 
-/** A stored hint as the game plays it, its picture's address resolved: none when unreadable. */
-function hintOf(stored: unknown): { hint?: QuestionHint & { imageUrl?: string } } {
+/** The ids of the media a stored hint holds: loaded with the quiz for its snapshot. */
+export function hintMediaIds(stored: unknown): string[] {
+  const parsed = questionHintSchema.safeParse(stored);
+  if (!parsed.success) return [];
+  const { imageMediaId, videoMediaId, audioMediaId } = parsed.data;
+  return [imageMediaId, videoMediaId, audioMediaId].filter((id): id is string => !!id);
+}
+
+/**
+ * A stored hint as the game plays it (SPECIFICATIONS-HINTS): its picture's address, its
+ * video and sound as the screens play them, and how long its sound holds the question
+ * (its length, then the quiz's pause). None when unreadable.
+ */
+function hintOf(
+  stored: unknown,
+  media: Map<string, MediaAsset>,
+  targetLufs: number,
+  tailS: number,
+): { hint?: SnapshotHint } {
   const parsed = questionHintSchema.safeParse(stored);
   if (!parsed.success) return {};
-  const id = parsed.data.imageMediaId;
-  return { hint: { ...parsed.data, ...(id ? { imageUrl: mediaUrl(id) } : {}) } };
+  const h = parsed.data;
+  const gain = (m: MediaAsset) => playbackGainDb(m.loudnessLufs, m.peakDbfs, targetLufs);
+  const video = h.videoMediaId ? media.get(h.videoMediaId) : undefined;
+  const audio = h.audioMediaId ? media.get(h.audioMediaId) : undefined;
+  const v = video?.kind === 'video' ? video : null;
+  const a = audio?.kind === 'audio' ? audio : null;
+  const soundMs = (v ?? a)?.durationMs ?? null;
+  return {
+    hint: {
+      ...h,
+      ...(h.imageMediaId ? { imageUrl: mediaUrl(h.imageMediaId) } : {}),
+      ...(v
+        ? {
+            video: {
+              url: v.url,
+              gainDb: gain(v),
+              ...(v.durationMs ? { durationMs: v.durationMs } : {}),
+            },
+          }
+        : {}),
+      ...(a
+        ? {
+            audio: {
+              url: a.url,
+              durationMs: a.durationMs ?? 0,
+              peaks: a.peaks,
+              gainDb: gain(a),
+              size: 'hidden' as const,
+            },
+          }
+        : {}),
+      ...(soundMs ? { holdMs: soundMs + tailS * 1000 } : {}),
+    },
+  };
 }

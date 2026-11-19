@@ -218,11 +218,15 @@ export const questionBundleSchema = z.object({
   mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
   /** How its picture or video is framed and revealed (version 9); absent = as its file is. */
   mediaStyle: mediaStyleSchema.optional(),
-  /** Its hint (version 9): a text and/or a picture, its start after the answers open, its penalty. */
+  /** Its hint (version 9): a text, a picture or a video, a sound; its start after the answers open, its penalty. */
   hint: z
     .object({
       text: z.string().max(HINT_TEXT_MAX).default(''),
       image: mediaPathSchema.optional(),
+      /** A video in the picture's place, with its own sound. */
+      video: mediaPathSchema.optional(),
+      /** A sound, alone or with a text or a picture. */
+      audio: mediaPathSchema.optional(),
       afterS: z.number().int().min(0).max(240),
       penaltyPct: z.number().int().min(0).max(100),
     })

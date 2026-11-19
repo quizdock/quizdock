@@ -540,6 +540,7 @@
     "fold": "समेटें",
     "label": "संकेत",
     "penaltyApplied": "संकेत: −{{penalty}} % ({{lost}} अंक कम)",
-    "imageAlt": "संकेत की इमेज"
+    "imageAlt": "संकेत की इमेज",
+    "replay": "फिर से चलाएँ"
   }
 }

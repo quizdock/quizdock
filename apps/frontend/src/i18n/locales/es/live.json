@@ -552,6 +552,7 @@
     "fold": "Plegar",
     "label": "Pista",
     "penaltyApplied": "Pista: −{{penalty}} % ({{lost}} puntos menos)",
-    "imageAlt": "La imagen de la pista"
+    "imageAlt": "La imagen de la pista",
+    "replay": "Repetir"
   }
 }

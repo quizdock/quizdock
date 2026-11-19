@@ -75,6 +75,7 @@ import { RoomVariables } from '../game/slide-variables';
 import { anchorOf, followed } from '../game/media/followed';
 import { revealOf } from '../game/media/media-frame';
 import { PhoneHint } from '../game/phone-hint';
+import { HintMedia, useHintSounding } from '../game/hint-media';
 import { RatingPanel } from '../game/rating-panel';
 import { setDeviceMuted, useDeviceSound } from '../game/media/audio-mixer';
 import { SoundButton } from '../game/media/sound-button';
@@ -485,6 +486,11 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   // unless the sound is meant for it too.
   const hears = !!question?.audioTarget && playsSound(question.audioTarget, presence);
   const playsHere = remote || hears;
+  // The hint's sound plays where the question's does, and takes over meanwhile.
+  const hintSounding = useHintSounding(
+    view.hint && question && view.hint.questionIndex === question.questionIndex ? view.hint : null,
+    !!view.paused,
+  );
 
   const participantTop =
     topbarSlot && view.status === 'ready' && view.state !== 'ENDED' && !view.kicked
@@ -988,7 +994,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               mode={view.paused ? 'pause' : 'play'}
               reveal={revealOf(question, !!view.paused)}
               audible={hears}
-              muted={muted}
+              muted={muted || hintSounding}
               follow={hears ? undefined : followed(view, { questionIndex: question.questionIndex })}
               catchUp={followed(view, { questionIndex: question.questionIndex })}
               startAt={question.mediaStartAt ?? null}
@@ -1027,7 +1033,22 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         >
           {/* The hint, attached on top of the tiles: it unfolds upwards, over the question. */}
           {view.hint?.questionIndex === question.questionIndex ? (
-            <PhoneHint key={question.questionIndex} text={view.hint.text} image={view.hint.image} />
+            <PhoneHint
+              key={question.questionIndex}
+              text={view.hint.text}
+              image={view.hint.image}
+              media={
+                playsHere ? (
+                  <HintMedia
+                    hint={view.hint}
+                    mode={view.paused ? 'pause' : 'play'}
+                    audible={hears}
+                    muted={muted}
+                    boxClassName="w-full max-h-[25dvh]"
+                  />
+                ) : null
+              }
+            />
           ) : null}
           <AnswerRules question={question} />
           {reading ? (

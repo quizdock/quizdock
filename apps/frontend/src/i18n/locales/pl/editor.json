@@ -544,7 +544,13 @@
       "afterS": "Po otwarciu (s)",
       "penalty": "Kara (%)",
       "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi.",
-      "image": "Obraz (opcjonalny, jeśli jest tekst)"
+      "image": "Obraz (opcjonalny, jeśli jest tekst)",
+      "video": "Wideo",
+      "audio": "Dźwięk",
+      "videoExcludesImage": "Wideo zajmuje miejsce obrazu.",
+      "videoExcluded": "Jest już obraz lub dźwięk: wideo daje jedno i drugie.",
+      "videoHasSound": "Wideo ma własny dźwięk.",
+      "soundRule": "Jego dźwięk gra raz przy odsłonięciu i ma pierwszeństwo przed dźwiękiem pytania; dłuższy niż czas odpowiedzi, wydłuża pytanie."
     },
     "removeElement": "Usuń ten element",
     "embeddedVideo": "Osadzone wideo: można je tylko usunąć.",
@@ -555,7 +561,9 @@
       "right": "Bloki po lewej, obraz lub wideo obok.",
       "behind": "Obraz lub wideo wypełnia slajd, bloki na nim (dotąd wideo slajdu).",
       "alone": "Sam obraz lub wideo, zamiast bloków."
-    }
+    },
+    "conflicts": "Konflikty: {{n}}",
+    "conflictTip": "Dźwięk podpowiedzi zagłusza dźwięk pytania: w grze pierwszeństwo ma podpowiedź."
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",

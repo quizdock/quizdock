@@ -540,6 +540,7 @@
     "fold": "收起",
     "label": "提示",
     "penaltyApplied": "提示：−{{penalty}}%（少 {{lost}} 分）",
-    "imageAlt": "提示图片"
+    "imageAlt": "提示图片",
+    "replay": "重新播放"
   }
 }

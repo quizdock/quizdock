@@ -4912,6 +4912,18 @@
                       "maxLength": 26,
                       "nullable": true
                     },
+                    "videoMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
+                    "audioMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
                     "afterS": {
                       "type": "integer",
                       "minimum": 0,
@@ -9568,6 +9580,18 @@
                       "maxLength": 26,
                       "nullable": true
                     },
+                    "videoMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
+                    "audioMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
                     "afterS": {
                       "type": "integer",
                       "minimum": 0,
@@ -10859,6 +10883,18 @@
                       "maxLength": 26,
                       "nullable": true
                     },
+                    "videoMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
+                    "audioMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
+                    },
                     "afterS": {
                       "type": "integer",
                       "minimum": 0,
@@ -11983,6 +12019,18 @@
                 "maxLength": 26,
                 "nullable": true
               },
+              "videoMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
+              "audioMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
               "afterS": {
                 "type": "integer",
                 "minimum": 0,
@@ -12508,6 +12556,18 @@
                 "maxLength": 140
               },
               "imageMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
+              "videoMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
+              "audioMediaId": {
                 "type": "string",
                 "minLength": 26,
                 "maxLength": 26,
@@ -13041,6 +13101,18 @@
                 "maxLength": 140
               },
               "imageMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
+              "videoMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
+              },
+              "audioMediaId": {
                 "type": "string",
                 "minLength": 26,
                 "maxLength": 26,

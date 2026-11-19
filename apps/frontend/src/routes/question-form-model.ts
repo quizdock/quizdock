@@ -237,10 +237,17 @@ export function buildPayload(v: FormValues) {
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
     mediaStyle: styleToSend(v),
-    // A hint without words nor picture is none.
+    // A hint with nothing to show nor play is none.
     hint:
-      v.hint && (v.hint.text.trim() || v.hint.imageMediaId)
-        ? { ...v.hint, text: v.hint.text.trim(), imageMediaId: v.hint.imageMediaId ?? null }
+      v.hint &&
+      (v.hint.text.trim() || v.hint.imageMediaId || v.hint.videoMediaId || v.hint.audioMediaId)
+        ? {
+            ...v.hint,
+            text: v.hint.text.trim(),
+            imageMediaId: v.hint.imageMediaId ?? null,
+            videoMediaId: v.hint.videoMediaId ?? null,
+            audioMediaId: v.hint.audioMediaId ?? null,
+          }
         : null,
     // Only with a media to wait for; the server also falls back when its length is unknown.
     timerAfterMedia: mediaHasSound(v.media) && v.timerAfterMedia,

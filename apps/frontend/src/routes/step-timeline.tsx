@@ -69,6 +69,7 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
   const [confirmClear, setConfirmClear] = useState(false);
   // A reveal the host ends by hand: the step's length is known up to it.
   const knownEnd = model.phases.find((p) => p.kind === 'answerManual')?.from;
+  const conflicts = model.elements.filter((e) => e.conflict);
   const [confirmReset, setConfirmReset] = useState(false);
 
   let ticks: number[] = [];
@@ -99,6 +100,15 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
               ? `${model.minimumS} s → ${model.actualS} s`
               : `${model.minimumS} s`}
         </Chip>
+        {conflicts.length > 0 ? (
+          <Chip
+            tone="warning"
+            tip={t('timeline.conflictTip')}
+            onClick={edit ? () => edit.onSelect(conflicts[0].kind) : undefined}
+          >
+            {t('timeline.conflicts', { n: conflicts.length })}
+          </Chip>
+        ) : null}
         {knownEnd === undefined ? (
           <Chip tip={t('timeline.total', { seconds: round(T) })}>{round(T)} s</Chip>
         ) : (
@@ -484,6 +494,8 @@ function Element({
           onSelect &&
             'focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none',
           selected && 'ring-ring ring-2 ring-offset-1',
+          // Its sound covers another's: flagged on it, never on the other (identify, not arbitrate).
+          e.conflict && 'outline-warning outline-2 outline-offset-1 outline-dashed',
         )}
         style={{
           background,

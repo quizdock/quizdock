@@ -36,6 +36,8 @@ export interface TimelineElement {
   peaks?: number[] | null;
   /** It collides with an earlier element and sits over it, a little lower. */
   lowered: boolean;
+  /** Its sound covers another's (a hint's over the question's): flagged on it, never fixed. */
+  conflict?: boolean;
 }
 
 export interface StepTimeline {
@@ -94,8 +96,11 @@ export function questionTimeline(q: {
   answerShownS?: number | null;
   /** An explanation goes with the right answer. */
   explanation?: boolean;
-  /** A text hint, `afterS` after the answers open (SPECIFICATIONS-HINTS). */
-  hint?: { afterS: number } | null;
+  /**
+   * A hint, `afterS` after the answers open (SPECIFICATIONS-HINTS): whether it shows
+   * something (a text, a picture, a video), and its sound's length, if it has one.
+   */
+  hint?: { afterS: number; visual: boolean; soundMs: number | null } | null;
 }): StepTimeline {
   const sounding = q.visual === 'video' || !!q.audio;
   const mediaS = q.mediaMs === null ? null : q.mediaMs / 1000;
@@ -112,13 +117,23 @@ export function questionTimeline(q: {
     answers = effectiveTimeLimitS(q.timeLimitS, sounding ? q.mediaMs : null, q.tailS, q.readMs);
     phases.push({ kind: 'reading', from: 0, to: open });
   }
-  // The answers close here; the media stop with them.
-  const closed = open + answers;
+  // The answers close here, the media stop with them — unless a hint's sound holds them.
+  const mediaClosed = open + answers;
   phases.push({ kind: 'answers', from: open, to: open + q.timeLimitS });
   if (answers > q.timeLimitS) {
-    const mediaEnd = Math.min(closed, Math.max(open + q.timeLimitS, mediaS ?? 0));
+    const mediaEnd = Math.min(mediaClosed, Math.max(open + q.timeLimitS, mediaS ?? 0));
     phases.push({ kind: 'stretch', from: open + q.timeLimitS, to: mediaEnd });
-    if (closed > mediaEnd) phases.push({ kind: 'tail', from: mediaEnd, to: closed });
+    if (mediaClosed > mediaEnd) phases.push({ kind: 'tail', from: mediaEnd, to: mediaClosed });
+  }
+  const hintFrom = q.hint ? Math.min(open + q.hint.afterS, mediaClosed) : 0;
+  const hintSoundS = q.hint?.soundMs ? q.hint.soundMs / 1000 : 0;
+  // A hint's sound outlasting the answers stretches the question, as a question's media does.
+  const hintHeld = hintSoundS ? hintFrom + hintSoundS + q.tailS : 0;
+  const closed = Math.max(mediaClosed, hintHeld);
+  if (closed > mediaClosed) {
+    const soundEnd = Math.max(mediaClosed, hintFrom + hintSoundS);
+    if (soundEnd > mediaClosed) phases.push({ kind: 'stretch', from: mediaClosed, to: soundEnd });
+    phases.push({ kind: 'tail', from: soundEnd, to: closed });
   }
   const shown = q.answerShownS === undefined ? 0 : (q.answerShownS ?? OPEN_END_S);
   const total = closed + shown;
@@ -159,9 +174,18 @@ export function questionTimeline(q: {
     });
   }
   if (q.hint) {
-    // Shown from its time until the answers close; it comes later, over what is there.
-    const from = Math.min(open + q.hint.afterS, closed);
-    elements.push({ kind: 'hint', from, visualTo: closed, audioTo: null, lengthS: null });
+    // Shown from its time until the answers close, its sound its own length; it comes
+    // later, over what is there. Its sound over the question's is flagged on it.
+    const soundTo = hintSoundS ? hintFrom + hintSoundS : null;
+    const questionSoundTo = sounding ? end(mediaS) : 0;
+    elements.push({
+      kind: 'hint',
+      from: hintFrom,
+      visualTo: q.hint.visual || !soundTo ? closed : null,
+      audioTo: soundTo,
+      lengthS: hintSoundS || null,
+      ...(soundTo && questionSoundTo > hintFrom ? { conflict: true } : {}),
+    });
   }
   if (q.explanation && shown > 0) {
     elements.push({
@@ -175,7 +199,7 @@ export function questionTimeline(q: {
   return {
     totalS: total,
     minimumS: q.timeLimitS,
-    actualS: answers,
+    actualS: closed - open,
     phases,
     elements: lower(elements),
     milestones: [open, closed],

@@ -851,6 +851,8 @@ export class GameEngine {
         pausedRemainingMs: null,
         hintRevealedAt: 0,
         hintHidden: false,
+        hintHiddenAt: 0,
+        hintMediaShiftMs: 0,
       }),
     );
 
@@ -1917,13 +1919,37 @@ export class GameEngine {
     if (!hint) return;
     const revealedAt = Date.now();
     await this.redis.hset(gameKeys.game(meta.id), gameHash({ hintRevealedAt: revealedAt }));
-    this.server.to(ref.pin).emit('question:hint', {
-      questionIndex: index,
-      text: hint.text,
-      ...(hint.imageUrl ? { image: { url: hint.imageUrl } } : {}),
-      penaltyPct: hint.penaltyPct,
-      revealedAt,
-      shown: true,
+    meta.hintRevealedAt = revealedAt;
+    meta.hintHidden = false;
+    meta.hintMediaShiftMs = 0;
+    await this.stretchForHint(ref, meta, hint);
+    const snapshot = await this.game.getSnapshot(meta.id);
+    const payload = snapshot ? this.hintPayload(meta, snapshot) : null;
+    if (payload) this.server.to(ref.pin).emit('question:hint', payload);
+  }
+
+  /** When the hint's sound starts (server ms epoch): a moment after its reveal, moved by hiding or a replay. */
+  private hintMediaStart(meta: GameMeta): number {
+    return meta.hintRevealedAt! + MEDIA_LEAD_MS + (meta.hintMediaShiftMs ?? 0);
+  }
+
+  /** A hint's sound outlasting the answers stretches the question, as a question's media does. */
+  private async stretchForHint(
+    ref: GameRef,
+    meta: GameMeta,
+    hint: { holdMs?: number },
+  ): Promise<void> {
+    if (!hint.holdMs || !meta.hintRevealedAt) return;
+    const soundEnd = this.hintMediaStart(meta) + hint.holdMs;
+    if (soundEnd <= meta.questionEndsAt) return;
+    await this.redis.hset(gameKeys.game(meta.id), gameHash({ questionEndsAt: soundEnd }));
+    meta.questionEndsAt = soundEnd;
+    this.scheduleReveal(ref, meta.currentIndex, soundEnd + GRACE_MS - Date.now());
+    this.server.to(ref.pin).emit('question:time', {
+      questionIndex: meta.currentIndex,
+      startedAt: meta.questionStartedAt,
+      endsAt: soundEnd,
+      ...mediaStartOf(meta.mediaLeadMs, meta.questionStartedAt),
     });
   }
 
@@ -1935,6 +1961,10 @@ export class GameEngine {
       questionIndex: meta.currentIndex,
       text: hint.text,
       ...(hint.imageUrl ? { image: { url: hint.imageUrl } } : {}),
+      ...(hint.video ? { video: hint.video } : {}),
+      ...(hint.audio ? { audio: hint.audio } : {}),
+      // Every device starts its sound on one instant, a moment after it is out.
+      ...(hint.video || hint.audio ? { mediaStartAt: this.hintMediaStart(meta) } : {}),
       penaltyPct: hint.penaltyPct,
       revealedAt: meta.hintRevealedAt,
       shown: !meta.hintHidden,
@@ -1951,13 +1981,54 @@ export class GameEngine {
     else this.timers.cancel('hint', pin);
   }
 
-  /** `host:hint-shown`: the revealed hint shown or hidden on the projection; its penalty stays. */
+  /**
+   * `host:hint-shown`: the revealed hint shown or hidden; its penalty stays. Hidden, its
+   * sound is paused; shown again, it goes on where it stopped — its start moved by the
+   * time it was hidden, the question stretched if it now outlasts the answers.
+   */
   async setHintShown(pin: string, hostUserId: string, shown: boolean): Promise<void> {
     const meta = await this.requireHost(pin, hostUserId);
     const snapshot = await this.game.getSnapshot(meta.id);
-    if (!snapshot || !meta.hintRevealedAt) return;
-    await this.redis.hset(gameKeys.game(meta.id), gameHash({ hintHidden: !shown }));
+    if (!snapshot || !meta.hintRevealedAt || meta.hintHidden === !shown) return;
+    const now = Date.now();
+    if (shown) {
+      meta.hintMediaShiftMs =
+        (meta.hintMediaShiftMs ?? 0) + (meta.hintHiddenAt ? now - meta.hintHiddenAt : 0);
+      meta.hintHiddenAt = 0;
+    } else {
+      meta.hintHiddenAt = now;
+    }
     meta.hintHidden = !shown;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({
+        hintHidden: meta.hintHidden,
+        hintHiddenAt: meta.hintHiddenAt,
+        hintMediaShiftMs: meta.hintMediaShiftMs,
+      }),
+    );
+    const hint = snapshot.questions[meta.currentIndex]?.hint;
+    if (shown && hint) await this.stretchForHint(refOf(pin, meta), meta, hint);
+    const payload = this.hintPayload(meta, snapshot);
+    if (payload) this.server.to(pin).emit('question:hint', payload);
+  }
+
+  /** `host:hint-replay`: the revealed hint's video or sound again from its beginning, shown. */
+  async replayHint(pin: string, hostUserId: string): Promise<void> {
+    const meta = await this.requireHost(pin, hostUserId);
+    const snapshot = await this.game.getSnapshot(meta.id);
+    const hint = snapshot?.questions[meta.currentIndex]?.hint;
+    if (!snapshot || !hint || !meta.hintRevealedAt || meta.state !== GameState.Answering) return;
+    if (!hint.video && !hint.audio) return;
+    // Its start, now: a moment ahead, as at its reveal.
+    meta.hintMediaShiftMs = Date.now() - meta.hintRevealedAt;
+    meta.hintHidden = false;
+    meta.hintHiddenAt = 0;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({ hintHidden: false, hintHiddenAt: 0, hintMediaShiftMs: meta.hintMediaShiftMs }),
+    );
+    await this.stretchForHint(refOf(pin, meta), meta, hint);
     const payload = this.hintPayload(meta, snapshot);
     if (payload) this.server.to(pin).emit('question:hint', payload);
   }
@@ -2330,6 +2401,11 @@ export class GameEngine {
     if (!meta.clockFrozen) return null;
     const now = Date.now();
     const { startedAt, endsAt } = resumeQuestionWindow(meta, now);
+    // A hint out already moves with the clock: its sound resumes where it was paused.
+    const moved = startedAt - meta.questionStartedAt;
+    const hintRevealedAt = meta.hintRevealedAt ? meta.hintRevealedAt + moved : 0;
+    // Hidden through the pause: the time hidden counts from where the clock stands.
+    const hintHiddenAt = meta.hintHiddenAt ? meta.hintHiddenAt + moved : 0;
     await this.redis.hset(
       gameKeys.game(meta.id),
       gameHash({
@@ -2337,14 +2413,24 @@ export class GameEngine {
         pausedRemainingMs: null,
         questionStartedAt: startedAt,
         questionEndsAt: endsAt,
+        hintRevealedAt,
+        hintHiddenAt,
       }),
     );
+    meta.hintRevealedAt = hintRevealedAt;
+    meta.hintHiddenAt = hintHiddenAt;
     meta.clockFrozen = false;
     meta.pausedRemainingMs = undefined;
     meta.questionStartedAt = startedAt;
     meta.questionEndsAt = endsAt;
     this.scheduleReveal(refOf(pin, meta), meta.currentIndex, endsAt + GRACE_MS - now);
     await this.armHint(refOf(pin, meta), meta);
+    if (meta.hintRevealedAt) {
+      // A hint out: its sound's start moved with the clock, the screens follow it.
+      const snapshot = await this.game.getSnapshot(meta.id);
+      const hint = snapshot ? this.hintPayload(meta, snapshot) : null;
+      if (hint?.mediaStartAt) this.server.to(pin).emit('question:hint', hint);
+    }
     await this.reanchor(pin, meta, 'thaw');
     return { startedAt, endsAt };
   }

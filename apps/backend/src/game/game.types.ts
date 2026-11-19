@@ -54,7 +54,7 @@ export interface SnapshotQuestion {
   revealDelayS: number | null;
   /** Listen first: the answers open when the media ends (frozen with the substance). */
   /** Its hint (SPECIFICATIONS-HINTS); absent = none. Its text never leaves before it is revealed. */
-  hint?: QuestionHint & { imageUrl?: string };
+  hint?: SnapshotHint;
   timerAfterMedia?: boolean;
   /** Which devices play its sound; null (or absent, older snapshots) = the game's default. */
   audioTarget?: AudioTarget | null;
@@ -340,8 +340,15 @@ export interface GameMeta {
   hintsOff?: boolean;
   /** When the current question's hint was revealed (ms epoch), 0 while it is not. */
   hintRevealedAt?: number;
-  /** The revealed hint is hidden from the projection by the host (visual only). */
+  /** The revealed hint is hidden by the host: its sound paused meanwhile. */
   hintHidden?: boolean;
+  /** When the host hid it (ms epoch), 0 while shown: its sound waits from then. */
+  hintHiddenAt?: number;
+  /**
+   * How much later than its reveal its sound starts (ms): the time it was hidden, or a
+   * replay. Apart from `hintRevealedAt`, which the points are reckoned from.
+   */
+  hintMediaShiftMs?: number;
   /** État figé avant `HOST_DISCONNECTED` (pour la reprise §7.3). */
   prevState?: string;
   /** ms de question restantes, figées quand `clockFrozen` (pause ou §7.1). */
@@ -362,6 +369,15 @@ export interface GameMeta {
 
 /** The fields of the game hash (`game:{id}`): everything in `GameMeta` the room does not hold. */
 export type GameFields = Omit<GameMeta, 'id' | 'roomName' | (typeof ROOM_FIELDS)[number]>;
+
+/** A hint as the game plays it: its media resolved, and how long its sound holds the question. */
+export type SnapshotHint = QuestionHint & {
+  imageUrl?: string;
+  video?: { url: string; gainDb: number; durationMs?: number };
+  audio?: LiveAudio;
+  /** Its sound's length, then the quiz's pause (ms): the question lasts at least that from it. */
+  holdMs?: number;
+};
 
 /** Réponse gradée stockée au submit (Redis hash `:answers:{idx}`) — REVEAL la relit. */
 export interface AnswerRecord {

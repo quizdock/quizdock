@@ -19,6 +19,18 @@ export type CommunityPreviewDtoQuestionsItemHint = {
      */
   imageMediaId?: string | null;
   /**
+     * @minLength 26
+     * @maxLength 26
+     * @nullable
+     */
+  videoMediaId?: string | null;
+  /**
+     * @minLength 26
+     * @maxLength 26
+     * @nullable
+     */
+  audioMediaId?: string | null;
+  /**
      * @minimum 0
      * @maximum 240
      */

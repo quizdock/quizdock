@@ -540,7 +540,13 @@
       "afterS": "Après l’ouverture (s)",
       "penalty": "Pénalité (%)",
       "rule": "Les réponses données après l’indice perdent {{penalty}} % des points de la question ; la série n’est pas touchée. L’animateur peut couper les indices.",
-      "image": "Image (facultative s’il y a un texte)"
+      "image": "Image (facultative s’il y a un texte)",
+      "video": "Vidéo",
+      "audio": "Son",
+      "videoExcludesImage": "Une vidéo prend la place de l’image.",
+      "videoExcluded": "Il y a déjà une image ou un son : une vidéo apporte les deux.",
+      "videoHasSound": "La vidéo apporte son propre son.",
+      "soundRule": "Son son joue une fois à sa révélation et prend le pas sur celui de la question ; plus long que les réponses, il allonge la question."
     },
     "removeElement": "Retirer cet élément",
     "embeddedVideo": "Une vidéo intégrée : elle peut seulement être retirée.",
@@ -551,7 +557,9 @@
       "right": "Les blocs à gauche, l’image ou la vidéo à côté.",
       "behind": "L’image ou la vidéo remplit la slide, les blocs posés dessus (la vidéo d’une slide jusqu’ici).",
       "alone": "L’image ou la vidéo seule, à la place des blocs."
-    }
+    },
+    "conflicts": "Conflits : {{n}}",
+    "conflictTip": "Le son de l’indice couvre celui de la question : en jeu, celui de l’indice passe devant."
   },
   "preview": {
     "view": "Aperçu (vue participant)",

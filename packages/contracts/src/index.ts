@@ -161,6 +161,12 @@ export interface QuestionHintPayload {
   text: string;
   /** Its picture, when it has one. */
   image?: { url: string };
+  /** Its video, in the picture's place, with its own sound. */
+  video?: { url: string; gainDb: number; durationMs?: number };
+  /** Its sound, alone or with its words or picture. */
+  audio?: LiveAudio;
+  /** When every device starts its video or sound (server ms epoch): it takes over the question's. */
+  mediaStartAt?: number;
   penaltyPct: number;
   /** When it was revealed (server ms epoch): the answers after it lose `penaltyPct` %. */
   revealedAt: number;
@@ -713,8 +719,10 @@ export interface ClientToServerEvents {
   'host:pause': (p: { pin: string; paused: boolean }) => void;
   /** Turns the game's hints on or off; on late, the current question's hint comes at once. */
   'host:hints': (p: { pin: string; enabled: boolean }) => void;
-  /** Shows or hides the revealed hint on the projection: visual only, its penalty stays. */
+  /** Shows or hides the revealed hint: hidden, its sound is paused; its penalty stays. */
   'host:hint-shown': (p: { pin: string; shown: boolean }) => void;
+  /** Plays the revealed hint's video or sound again from its beginning, shown. */
+  'host:hint-replay': (p: { pin: string }) => void;
   /** Steer the current step's sound or video (a question's, a slide's) on every device that plays it: restart, play, pause, seek. */
   'host:media': (p: HostMediaCommand) => void;
   /** Ajoute/retire `deltaS` secondes au chrono de la question courante. */

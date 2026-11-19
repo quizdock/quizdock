@@ -1,5 +1,5 @@
 import type { QuestionHintPayload, QuestionStartPayload } from '@quiz-dock/contracts';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -7,7 +7,8 @@ import { Switch } from '@/components/ui/switch';
 /**
  * The host's hand on the current question's hint (SPECIFICATIONS-HINTS): the game's
  * switch, when it comes and what it costs, a reminder when hints are off on a question
- * that has one, and once it is out, its text and whether the projection shows it.
+ * that has one, and once it is out, its text, whether it is shown (hidden, its sound
+ * waits) and, when it has a sound, playing it again from its beginning.
  */
 export function HintControls({
   question,
@@ -15,12 +16,14 @@ export function HintControls({
   enabled,
   onEnabled,
   onShown,
+  onReplay,
 }: {
   question: QuestionStartPayload | null;
   hint: QuestionHintPayload | null;
   enabled: boolean;
   onEnabled: (enabled: boolean) => void;
   onShown: (shown: boolean) => void;
+  onReplay: () => void;
 }) {
   const { t } = useTranslation('live');
   const planned = question?.hint;
@@ -68,6 +71,12 @@ export function HintControls({
             <img src={out.image.url} alt="" className="h-12 w-auto rounded object-contain" />
           ) : null}
           <p className="min-w-0 flex-1 font-medium">{out.text}</p>
+          {out.video || out.audio ? (
+            <Button type="button" size="sm" variant="outline" className="h-7" onClick={onReplay}>
+              <RotateCcw className="size-3.5" aria-hidden />
+              {t('hint.replay')}
+            </Button>
+          ) : null}
           <label className="text-muted-foreground flex items-center gap-2 text-xs">
             <Switch
               checked={out.shown}

@@ -126,7 +126,14 @@ export function collectMediaIds(quiz: ExportableQuiz): Set<string> {
     add(q.visualMediaId);
     add(q.audioMediaId);
     add(q.backgroundMediaId);
-    add((q.hint as { imageMediaId?: string } | null)?.imageMediaId);
+    const hint = q.hint as {
+      imageMediaId?: string;
+      videoMediaId?: string;
+      audioMediaId?: string;
+    } | null;
+    add(hint?.imageMediaId);
+    add(hint?.videoMediaId);
+    add(hint?.audioMediaId);
     scan(q.prompt);
     scan(q.answerExplanation);
     for (const o of q.options) {
@@ -235,8 +242,13 @@ function questionOut(
   const hint = questionHintSchema.safeParse(q.hint);
   if (hint.success) {
     // Its picture as a file of the bundle, as every other media.
-    const { imageMediaId, ...rest } = hint.data;
-    item.hint = { ...rest, ...(imageMediaId ? { image: pathFor(imageMediaId) } : {}) };
+    const { imageMediaId, videoMediaId, audioMediaId, ...rest } = hint.data;
+    item.hint = {
+      ...rest,
+      ...(imageMediaId ? { image: pathFor(imageMediaId) } : {}),
+      ...(videoMediaId ? { video: pathFor(videoMediaId) } : {}),
+      ...(audioMediaId ? { audio: pathFor(audioMediaId) } : {}),
+    };
   }
   if (q.timerAfterMedia) item.timerAfterMedia = true;
   if (q.numericValue !== null) item.numericValue = Number(q.numericValue);
@@ -443,6 +455,8 @@ export function collectMediaPaths(bundle: QuizBundle): Set<string> {
       add(it.media);
       add(it.audio);
       add(it.hint?.image);
+      add(it.hint?.video);
+      add(it.hint?.audio);
       scan(it.prompt);
       scan(it.answerExplanation);
       for (const o of it.options ?? []) {
@@ -575,6 +589,8 @@ export function fromBundle(
                 afterS: it.hint.afterS,
                 penaltyPct: it.hint.penaltyPct,
                 imageMediaId: it.hint.image ? idFor(it.hint.image) : null,
+                videoMediaId: it.hint.video ? idFor(it.hint.video) : null,
+                audioMediaId: it.hint.audio ? idFor(it.hint.audio) : null,
               }
             : null,
           timerAfterMedia: it.timerAfterMedia,

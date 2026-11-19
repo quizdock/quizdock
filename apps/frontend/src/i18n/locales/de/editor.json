@@ -536,7 +536,13 @@
       "afterS": "Nach dem Öffnen (s)",
       "penalty": "Abzug (%)",
       "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten.",
-      "image": "Bild (optional, wenn es einen Text gibt)"
+      "image": "Bild (optional, wenn es einen Text gibt)",
+      "video": "Video",
+      "audio": "Ton",
+      "videoExcludesImage": "Ein Video nimmt den Platz des Bildes ein.",
+      "videoExcluded": "Schon ein Bild oder ein Ton: Ein Video bringt beides.",
+      "videoHasSound": "Das Video bringt seinen eigenen Ton.",
+      "soundRule": "Sein Ton spielt einmal beim Aufdecken und hat Vorrang vor dem der Frage; länger als die Antwortzeit, verlängert er die Frage."
     },
     "removeElement": "Dieses Element entfernen",
     "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden.",
@@ -547,7 +553,9 @@
       "right": "Die Blöcke links, das Bild oder Video daneben.",
       "behind": "Das Bild oder Video füllt die Folie, die Blöcke liegen darüber (bisher das Video einer Folie).",
       "alone": "Das Bild oder Video allein, anstelle der Blöcke."
-    }
+    },
+    "conflicts": "Konflikte: {{n}}",
+    "conflictTip": "Der Ton des Hinweises überdeckt den der Frage: Im Spiel hat der Hinweis Vorrang."
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

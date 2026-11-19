@@ -144,7 +144,9 @@
     "true_false": {
       "two_options": "Prawda/fałsz przyjmuje dokładnie 2 odpowiedzi."
     },
-    "hint_empty": "Podpowiedź potrzebuje tekstu lub obrazu."
+    "hint_empty": "Podpowiedź potrzebuje tekstu lub obrazu.",
+    "hint_two_visuals": "Podpowiedź pokazuje obraz albo wideo, nie oba naraz.",
+    "hint_two_sounds": "Wideo podpowiedzi ma własny dźwięk: bez innego nagrania."
   },
   "validation": "Niektóre pola są nieprawidłowe.",
   "internal": "Błąd wewnętrzny.",

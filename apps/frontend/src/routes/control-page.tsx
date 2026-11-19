@@ -1061,6 +1061,7 @@ function HostConsole({
           enabled={view.hintsEnabled}
           onEnabled={(enabled) => socket?.emit('host:hints', { pin, enabled })}
           onShown={(shown) => socket?.emit('host:hint-shown', { pin, shown })}
+          onReplay={() => socket?.emit('host:hint-replay', { pin })}
         />
         {/* Shown still: the projection is the one place that plays the sound; its
             waveform follows where the projection is in it. While the question runs,

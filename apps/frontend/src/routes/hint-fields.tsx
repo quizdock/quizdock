@@ -41,16 +41,57 @@ export function HintFields({
             <p className="text-muted-foreground -mt-2 text-xs">
               {t('timeline.hint.textHint', { n: hint.text.length, max: HINT_TEXT_MAX })}
             </p>
-            {/* A picture of the library, with or without words. */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium">{t('timeline.hint.image')}</span>
-              <MediaUpload
-                value={hint.imageMediaId ?? null}
-                onChange={(id) => set({ imageMediaId: id })}
-                kind="image"
-                label={t('media.addImage')}
-              />
+            {/* A picture or a video, and a sound — one visual, one sound, as a question's. */}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-sm font-medium">{t('timeline.hint.image')}</span>
+                {hint.videoMediaId ? (
+                  <p className="text-muted-foreground text-xs">
+                    {t('timeline.hint.videoExcludesImage')}
+                  </p>
+                ) : (
+                  <MediaUpload
+                    value={hint.imageMediaId ?? null}
+                    onChange={(id) => set({ imageMediaId: id })}
+                    kind="image"
+                    label={t('media.addImage')}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-sm font-medium">{t('timeline.hint.video')}</span>
+                {hint.imageMediaId || hint.audioMediaId ? (
+                  <p className="text-muted-foreground text-xs">
+                    {t('timeline.hint.videoExcluded')}
+                  </p>
+                ) : (
+                  <MediaUpload
+                    value={hint.videoMediaId ?? null}
+                    onChange={(id) => set({ videoMediaId: id })}
+                    kind="video"
+                    label={t('media.addVideo')}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-sm font-medium">{t('timeline.hint.audio')}</span>
+                {hint.videoMediaId ? (
+                  <p className="text-muted-foreground text-xs">
+                    {t('timeline.hint.videoHasSound')}
+                  </p>
+                ) : (
+                  <MediaUpload
+                    value={hint.audioMediaId ?? null}
+                    onChange={(id) => set({ audioMediaId: id })}
+                    kind="audio"
+                    label={t('media.addAudio')}
+                  />
+                )}
+              </div>
             </div>
+            {hint.videoMediaId || hint.audioMediaId ? (
+              <p className="text-muted-foreground text-xs">{t('timeline.hint.soundRule')}</p>
+            ) : null}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <Label>
                 {t('timeline.hint.afterS')}

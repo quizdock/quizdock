@@ -51,6 +51,7 @@ import type {
 import {
   QUIZ_SNAPSHOT_INCLUDE,
   buildSnapshot,
+  hintMediaIds,
   refreshSnapshotForm,
   snapshotHasSound,
 } from './snapshot';
@@ -406,7 +407,17 @@ export class GameService {
     if (quiz.questions.length < 1) {
       throw new BadRequestException('quiz.empty');
     }
-    const snapshot = buildSnapshot(quiz);
+    // The media its hints hold (in the hints, not a relation): read with it.
+    const hintIds = quiz.questions.flatMap((q) => hintMediaIds(q.hint));
+    const hintMedia = new Map(
+      hintIds.length > 0
+        ? (await this.prisma.mediaAsset.findMany({ where: { id: { in: hintIds } } })).map((m) => [
+            m.id,
+            m,
+          ])
+        : [],
+    );
+    const snapshot = buildSnapshot(quiz, hintMedia);
     if (quiz.ownerId !== hostUserId) snapshot.borrowed = true;
     // Frozen with the rest: a licence's attribution is owed for what was played.
     const credits = (await this.mediaLibrary?.creditsOf(quiz.id)) ?? [];

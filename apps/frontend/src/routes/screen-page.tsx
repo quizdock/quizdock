@@ -41,6 +41,7 @@ import { SoundUnlockOverlay } from '../game/media/sound-unlock-overlay';
 import { BACKDROP_EDGE, Surface } from '../game/surface';
 import { revealOf } from '../game/media/media-frame';
 import { HintOverlay } from '../game/hint-overlay';
+import { HintMedia, useHintSounding } from '../game/hint-media';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { ImageChoiceGrid } from '../game/image-choice';
 import { useQuestionClock } from '../game/use-countdown';
@@ -192,6 +193,13 @@ export function ScreenSurface({
   );
   const soundUnlocked = useAudioUnlocked();
   const deviceSound = useDeviceSound();
+  // The current question's hint sound playing: its own steps aside (SPECIFICATIONS-HINTS).
+  const hintSounding = useHintSounding(
+    view.hint && view.question && view.hint.questionIndex === view.question.questionIndex
+      ? view.hint
+      : null,
+    !!view.paused,
+  );
   // The game's sounds (#93): the projection, and a copy that plays the sound for a
   // remote participant when the room's sound reaches remote devices.
   const soundsOn = hasGameSounds(view.sounds);
@@ -593,6 +601,8 @@ export function ScreenSurface({
     const { questionIndex, mediaStartAt } = view.question;
     // A picture revealed progressively: blurred, it sharpens from the answers' opening.
     const revealing = revealOf(view.question, !!view.paused);
+    // The hint out, shown or hidden by the host: its sound, if any, takes over the question's.
+    const hintOut = view.hint?.questionIndex === questionIndex ? view.hint : null;
     const stageOf = (
       media: LiveQuestionMedia | null | undefined,
       className: string,
@@ -603,6 +613,8 @@ export function ScreenSurface({
         key={questionIndex}
         media={media}
         cover={cover}
+        // The hint's sound plays: the question's steps aside meanwhile.
+        muted={hintSounding}
         reveal={revealing}
         mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
         // A copy plays the sound only when asked (a remote participant), and only
@@ -650,14 +662,23 @@ export function ScreenSurface({
     // their room and the picture takes what is left (#92) — below the text, above it,
     // or beside it, as the author placed it; the answers stay at the bottom.
     // The hint, once out and as the host left it: over the stage, under the text.
-    const hint =
-      view.hint?.questionIndex === view.question.questionIndex && view.hint.shown
-        ? view.hint
-        : null;
     stage = (
       <div className="relative flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
-        {hint ? (
-          <HintOverlay text={hint.text} image={hint.image} penaltyPct={hint.penaltyPct} />
+        {hintOut ? (
+          <HintOverlay
+            text={hintOut.text}
+            image={hintOut.image}
+            hidden={!hintOut.shown}
+            penaltyPct={hintOut.penaltyPct}
+            media={
+              <HintMedia
+                hint={hintOut}
+                mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
+                audible={role !== 'follow' || copyHears}
+                boxClassName="max-h-[10em] aspect-video"
+              />
+            }
+          />
         ) : null}
         {side ? (
           <div

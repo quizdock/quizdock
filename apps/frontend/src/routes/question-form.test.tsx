@@ -628,6 +628,8 @@ describe('QuestionForm — the timeline', () => {
     expect(lastPost(fetchMock).hint).toEqual({
       text: 'Elle a été choisie en 1923',
       imageMediaId: null,
+      videoMediaId: null,
+      audioMediaId: null,
       afterS: 12,
       penaltyPct: 40,
     });
@@ -1241,7 +1243,14 @@ describe('QuestionForm — a loaded question saves as it was', () => {
         audioTarget: 'everyone',
         waveformSize: 'L',
         mediaPosition: 'left',
-        hint: { text: 'Un hymne de 1921', imageMediaId: null, afterS: 8, penaltyPct: 30 },
+        hint: {
+          text: 'Un hymne de 1921',
+          imageMediaId: null,
+          videoMediaId: null,
+          audioMediaId: null,
+          afterS: 8,
+          penaltyPct: 30,
+        },
         timerAfterMedia: true,
         pointsMode: 'double',
         scoring: 'standard',
