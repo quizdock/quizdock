@@ -381,6 +381,8 @@ describe('GameEngine (characterization)', () => {
         players: expect.arrayContaining([{ playerId: 'p1', ready: true, pressed: true }]),
       });
       expect(await engine.setReady(pin, 'p1', false)).toBe(true);
+      // Within the readiness window (performance roadmap 3.3): at its end.
+      await eventually(async () => ann.of<{ ready: number }>('lobby:count').at(-1)?.ready === 0);
       expect(ann.of('lobby:count').at(-1)).toEqual({ ready: 0, total: 2 });
       await engine.start(pin, HOST);
       expect(await engine.setReady(pin, 'p1', true)).toBe(false);
@@ -1386,6 +1388,55 @@ describe('GameEngine (characterization)', () => {
   });
 
   /** Bugs found by the audit (docs/dev/audit-2026-09.md), each reproduced before its fix. */
+  describe('the readiness (performance roadmap 3.3)', () => {
+    it('a lobby getting ready at once gets one count per window, the last one always', async () => {
+      const ann = join('p1');
+      const console = join();
+      const players = Object.fromEntries(
+        ['p1', 'p2', 'p3', 'p4'].map((id, i) => [id, player(`P${i}`)]),
+      );
+      await seed(snapshotOf([question()]), {}, players);
+      const counts = () => ann.of<{ ready: number; total: number }>('lobby:count');
+      const before = counts().length;
+      // All four within one window whatever the machine's speed: the clock held still.
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now);
+      try {
+        for (const id of ['p1', 'p2', 'p3', 'p4']) await engine.setReady(pin, id, true);
+      } finally {
+        clock.mockRestore();
+      }
+      // One at most at once (the first, in a quiet moment), then the rest together.
+      expect(counts().length - before).toBeLessThanOrEqual(1);
+      await eventually(async () => counts().at(-1)?.ready === 4);
+      expect(counts().length - before).toBeLessThanOrEqual(2);
+      expect(counts().at(-1)).toEqual({ ready: 4, total: 4 });
+      expect(console.of('media:readiness').at(-1)).toMatchObject({ ready: 4, total: 4 });
+    });
+
+    it('a lobby count still waiting when the game starts never goes out after it', async () => {
+      const console = join();
+      await seed(snapshotOf([question(), question()]), {}, { p1: player('Ann') });
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now);
+      try {
+        await engine.setReady(pin, 'p1', true);
+        await engine.setReady(pin, 'p1', false); // waits for the end of the window
+        await engine.start(pin, HOST);
+      } finally {
+        clock.mockRestore();
+      }
+      const lobby = console
+        .of<{ lobby?: boolean; ready: number }>('media:readiness')
+        .filter((p) => p.lobby);
+      // The waiting lobby count never goes out after the start.
+      await new Promise((r) => setTimeout(r, 150));
+      expect(
+        console.of<{ lobby?: boolean }>('media:readiness').filter((p) => p.lobby),
+      ).toHaveLength(lobby.length);
+    });
+  });
+
   describe('the answer count (performance roadmap 3.0)', () => {
     it('answers pouring in go out as one count, the last one always, before the reveal', async () => {
       const players = Object.fromEntries(
