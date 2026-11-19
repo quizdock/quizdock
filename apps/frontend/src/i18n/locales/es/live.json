@@ -538,5 +538,17 @@
     "played": "jugado",
     "save": "Guardar como selección",
     "saved": "Guardada como selección: abrirla"
+  },
+  "hint": {
+    "consoleLabel": "Pista",
+    "switch": "Pistas",
+    "planned": "Pista a los {{seconds}} s · −{{penalty}} %",
+    "revealed": "Pista mostrada · −{{penalty}} %",
+    "reminder": "Esta pregunta tiene una pista y las pistas están desactivadas.",
+    "enable": "Activar",
+    "onProjection": "En la proyección",
+    "costs": "Pista: las respuestas desde ahora pierden un {{penalty}} % de los puntos de la pregunta",
+    "show": "Pista",
+    "fold": "Plegar la pista"
   }
 }

@@ -526,5 +526,17 @@
     "played": "played",
     "save": "Save as a selection",
     "saved": "Saved as a selection: open it"
+  },
+  "hint": {
+    "consoleLabel": "Hint",
+    "switch": "Hints",
+    "planned": "Hint at {{seconds}} s · −{{penalty}} %",
+    "revealed": "Hint out · −{{penalty}} %",
+    "reminder": "This question has a hint, and hints are off.",
+    "enable": "Turn on",
+    "onProjection": "On the projection",
+    "costs": "Hint — the answers from now on lose {{penalty}} % of the question's points",
+    "show": "Hint",
+    "fold": "Fold the hint"
   }
 }

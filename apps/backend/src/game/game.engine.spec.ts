@@ -711,6 +711,54 @@ describe('GameEngine (characterization)', () => {
     });
   });
 
+  describe('hints (SPECIFICATIONS-HINTS)', () => {
+    const hinted = (afterS: number) =>
+      snapshotOf([question({ hint: { text: 'Choisie en 1923', afterS, penaltyPct: 25 } })]);
+
+    it('comes at its time; the answers after it lose its share, not those before', async () => {
+      const t0 = await startedAt(hinted(0), {
+        p1: player('Ann'),
+        p2: player('Bob'),
+        p3: player('Cy'),
+      });
+      // Its text only goes out with it: the question carries when, not what.
+      expect(roomOf<{ hint?: unknown }>('question:start')[0].hint).toEqual({
+        afterS: 0,
+        penaltyPct: 25,
+      });
+      const right = await rightOption();
+      expect((await engine.submit(pin, 'p1', 0, right, t0)).accepted).toBe(true);
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ text: string; revealedAt: number; shown: boolean }>('question:hint')[0];
+      expect(hint).toMatchObject({ text: 'Choisie en 1923', shown: true });
+      await engine.submit(pin, 'p2', 0, right, hint.revealedAt + 1);
+      const answers = await game.answers(gameId, 0);
+      // Same speed for both (instant): the one after the hint gets 75 %.
+      expect(answers.get('p1')!.hinted).toBeUndefined();
+      expect(answers.get('p2')).toMatchObject({ hinted: true });
+      expect(answers.get('p2')!.pointsAwarded).toBe(
+        Math.round(answers.get('p1')!.pointsAwarded * 0.75),
+      );
+    });
+
+    it('off, it waits; on late, it comes at once', async () => {
+      const host = join();
+      await seed(hinted(0), {}, { p1: player('Ann') });
+      await engine.setHints(pin, HOST, false);
+      await engine.start(pin, HOST);
+      await new Promise((r) => setTimeout(r, 50));
+      expect(roomOf('question:hint')).toHaveLength(0);
+      expect(roomOf('game:hints')).toEqual([{ enabled: false }]);
+      await engine.setHints(pin, HOST, true);
+      await eventually(async () => roomOf('question:hint').length > 0);
+      // A screen (re)attaching sees it, as the host left it on the projection.
+      await engine.setHintShown(pin, HOST, false);
+      await engine.sendStateTo(host as never, pin);
+      expect(host.of<{ shown: boolean }>('question:hint').at(-1)).toMatchObject({ shown: false });
+      expect(host.of('game:hints').at(-1)).toEqual({ enabled: true });
+    });
+  });
+
   describe('players leaving', () => {
     it('host:ban kicks the player’s sockets and reveals if they were the last one awaited', async () => {
       const bob = join('p2');

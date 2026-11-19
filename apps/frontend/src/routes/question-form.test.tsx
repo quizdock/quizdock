@@ -602,6 +602,36 @@ describe('QuestionForm — the timeline', () => {
     expect(lastPost(fetchMock).answerExplanation).toBe('Parce que.');
   });
 
+  it('a hint from the +: its text, its time, its penalty; drawn from its time', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    setMarkdownField('Énoncé', 'Q ?');
+    fireEvent.click(openAdd().getByRole('button', { name: /^Indice/ }));
+    const panel = within(screen.getByRole('region', { name: 'Indice' }));
+    fireEvent.change(panel.getByLabelText('Texte de l’indice'), {
+      target: { value: 'Elle a été choisie en 1923' },
+    });
+    fireEvent.change(panel.getByLabelText('Après l’ouverture (s)'), { target: { value: '12' } });
+    fireEvent.change(panel.getByLabelText('Pénalité (%)'), { target: { value: '40' } });
+    // 3 s of reading, then 12 s.
+    expect(screen.getByRole('button', { name: 'Indice, à partir de 15 s' })).toBeInTheDocument();
+    // One per question.
+    expect(openAdd().getByRole('button', { name: /^Indice/ })).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('dialog', { name: 'Ajouter un élément' }), {
+      key: 'Escape',
+    });
+    fireEvent.click(screen.getAllByRole('radio')[0]);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).hint).toEqual({
+      text: 'Elle a été choisie en 1923',
+      afterS: 12,
+      penaltyPct: 40,
+    });
+  });
+
   it('the layouts wait for a picture or a video, and say so', () => {
     withSound();
     mockApi([]);
@@ -1151,6 +1181,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
     waveformSize: 'M',
     mediaPosition: 'bottom',
     mediaStyle: null,
+    hint: null,
     timerAfterMedia: false,
     pointsMode: 'standard',
     scoring: 'standard',
@@ -1167,6 +1198,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
     backgroundGradient: null,
     backgroundStyle: null,
     mediaStyle: null,
+    hint: null,
   };
 
   const cases: [string, Record<string, unknown>, Record<string, unknown>][] = [
@@ -1178,6 +1210,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
         audioTarget: 'everyone',
         waveformSize: 'L',
         mediaPosition: 'left',
+        hint: { text: 'Un hymne de 1921', afterS: 8, penaltyPct: 30 },
         timerAfterMedia: true,
         revealDelayS: 7,
         pointsMode: 'double',
@@ -1193,6 +1226,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
         audioTarget: 'everyone',
         waveformSize: 'L',
         mediaPosition: 'left',
+        hint: { text: 'Un hymne de 1921', afterS: 8, penaltyPct: 30 },
         timerAfterMedia: true,
         pointsMode: 'double',
         scoring: 'standard',

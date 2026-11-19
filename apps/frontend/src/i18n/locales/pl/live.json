@@ -550,5 +550,17 @@
     "played": "rozegrany",
     "save": "Zapisz jako zestaw",
     "saved": "Zapisano jako zestaw: otwórz"
+  },
+  "hint": {
+    "consoleLabel": "Podpowiedź",
+    "switch": "Podpowiedzi",
+    "planned": "Podpowiedź po {{seconds}} s · −{{penalty}} %",
+    "revealed": "Podpowiedź pokazana · −{{penalty}} %",
+    "reminder": "To pytanie ma podpowiedź, a podpowiedzi są wyłączone.",
+    "enable": "Włącz",
+    "onProjection": "Na projekcji",
+    "costs": "Podpowiedź – odpowiedzi od teraz tracą {{penalty}} % punktów za pytanie",
+    "show": "Podpowiedź",
+    "fold": "Zwiń podpowiedź"
   }
 }

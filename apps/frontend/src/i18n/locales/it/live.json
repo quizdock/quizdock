@@ -538,5 +538,17 @@
     "played": "giocato",
     "save": "Salva come selezione",
     "saved": "Salvata come selezione: aprila"
+  },
+  "hint": {
+    "consoleLabel": "Indizio",
+    "switch": "Indizi",
+    "planned": "Indizio a {{seconds}} s · −{{penalty}} %",
+    "revealed": "Indizio mostrato · −{{penalty}} %",
+    "reminder": "Questa domanda ha un indizio, e gli indizi sono disattivati.",
+    "enable": "Attiva",
+    "onProjection": "Sulla proiezione",
+    "costs": "Indizio — le risposte da ora perdono il {{penalty}} % dei punti della domanda",
+    "show": "Indizio",
+    "fold": "Chiudi l'indizio"
   }
 }

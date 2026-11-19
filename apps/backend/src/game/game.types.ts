@@ -1,4 +1,5 @@
 import type {
+  QuestionHint,
   AnswerValue,
   AudioTarget,
   PlayerPresence,
@@ -50,6 +51,8 @@ export interface SnapshotQuestion {
   /** Auto-mode delay on this REVEAL in seconds (#6); null = engine default. */
   revealDelayS: number | null;
   /** Listen first: the answers open when the media ends (frozen with the substance). */
+  /** Its hint (SPECIFICATIONS-HINTS); absent = none. Its text never leaves before it is revealed. */
+  hint?: QuestionHint;
   timerAfterMedia?: boolean;
   /** Which devices play its sound; null (or absent, older snapshots) = the game's default. */
   audioTarget?: AudioTarget | null;
@@ -327,6 +330,12 @@ export interface GameMeta {
   slidePausedAt?: number;
   /** Duration (ms) of the auto-next countdown armed at `autoNextAt` (#6). */
   autoNextMs?: number;
+  /** The host turned the game's hints off (SPECIFICATIONS-HINTS); on by default. */
+  hintsOff?: boolean;
+  /** When the current question's hint was revealed (ms epoch), 0 while it is not. */
+  hintRevealedAt?: number;
+  /** The revealed hint is hidden from the projection by the host (visual only). */
+  hintHidden?: boolean;
   /** État figé avant `HOST_DISCONNECTED` (pour la reprise §7.3). */
   prevState?: string;
   /** ms de question restantes, figées quand `clockFrozen` (pause ou §7.1). */
@@ -361,6 +370,8 @@ export interface AnswerRecord {
   /** Temps de réponse serveur compensé, en ms (§6). */
   tMs: number;
   receivedAt: number;
+  /** Given after the question's hint was revealed: its points lost the hint's share. */
+  hinted?: boolean;
 }
 
 /** Résultat de notation d'une soumission (sortie de la fonction pure §5). */

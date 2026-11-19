@@ -40,6 +40,7 @@ import { anchorOf, followed } from '../game/media/followed';
 import { SoundUnlockOverlay } from '../game/media/sound-unlock-overlay';
 import { BACKDROP_EDGE, Surface } from '../game/surface';
 import { revealOf } from '../game/media/media-frame';
+import { HintOverlay } from '../game/hint-overlay';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { ImageChoiceGrid } from '../game/image-choice';
 import { useQuestionClock } from '../game/use-countdown';
@@ -648,8 +649,14 @@ export function ScreenSurface({
     // Nobody scrolls a projector: the stage is the screen's height, the answers keep
     // their room and the picture takes what is left (#92) — below the text, above it,
     // or beside it, as the author placed it; the answers stay at the bottom.
+    // The hint, once out and as the host left it: over the stage, under the text.
+    const hint =
+      view.hint?.questionIndex === view.question.questionIndex && view.hint.shown
+        ? view.hint
+        : null;
     stage = (
-      <div className="flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
+      <div className="relative flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
+        {hint ? <HintOverlay text={hint.text} penaltyPct={hint.penaltyPct} /> : null}
         {side ? (
           <div
             className={cn(

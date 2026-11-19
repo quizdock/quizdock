@@ -410,13 +410,15 @@
       "audio": "声音，{{seconds}} 秒",
       "unknown": "时长尚未知",
       "reveal": "逐步显现：{{seconds}} 秒",
-      "explanation": "解析，与正确答案一同显示"
+      "explanation": "解析，与正确答案一同显示",
+      "hint": "提示，从 {{seconds}} 秒起"
     },
     "label": {
       "image": "图片",
       "video": "视频",
       "reveal": "显现",
-      "explanation": "解析"
+      "explanation": "解析",
+      "hint": "提示"
     },
     "add": "添加元素",
     "clear": "移除所有媒体",
@@ -434,7 +436,9 @@
       "reveal": "逐步显现",
       "revealHint": "全场作答时图片逐渐清晰",
       "explanation": "解析",
-      "explanationHint": "与正确答案一同显示"
+      "explanationHint": "与正确答案一同显示",
+      "hint": "提示",
+      "hintHint": "答题过程中的线索，代价是本题部分分数"
     },
     "refused": {
       "imageChoice": "图片选择题不能有自己的图片或视频。",
@@ -447,7 +451,8 @@
       "revealNeedsImage": "逐步显现：请先添加图片。",
       "oneReveal": "每张图片只能有一个逐步显现。",
       "pollExplanation": "投票没有需要解析的正确答案。",
-      "oneExplanation": "每道题一个解析。"
+      "oneExplanation": "每道题一个解析。",
+      "oneHint": "每道题一个提示。"
     },
     "clearConfirm": {
       "title": "移除所有媒体？",
@@ -522,7 +527,16 @@
     },
     "slideKind": "幻灯片",
     "totalOpen": "{{seconds}} 秒，然后由主持人继续",
-    "explanationHint": "在正确答案显示期间，与其一同显示在屏幕上。"
+    "explanationHint": "在正确答案显示期间，与其一同显示在屏幕上。",
+    "hint": {
+      "text": "提示内容",
+      "textPlaceholder": "它是在 1923 年被选定的",
+      "textHint": "{{n}} / {{max}} 个字符",
+      "afterS": "开放作答后（秒）",
+      "penalty": "扣分（%）",
+      "rule": "在提示之后作答，将失去本题 {{penalty}}% 的分数；连对奖励不受影响。主持人可以关闭提示。",
+      "remove": "移除提示"
+    }
   },
   "preview": {
     "view": "预览（玩家视图）",

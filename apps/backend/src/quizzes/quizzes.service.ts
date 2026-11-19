@@ -473,6 +473,7 @@ export class QuizzesService {
               waveformSize: q.waveformSize,
               mediaPosition: q.mediaPosition,
               mediaStyle: q.mediaStyle ?? Prisma.JsonNull,
+              hint: q.hint ?? Prisma.JsonNull,
               timerAfterMedia: q.timerAfterMedia,
               numericValue: q.numericValue,
               numericTolerance: q.numericTolerance,

@@ -408,13 +408,15 @@
       "audio": "Ses, {{seconds}} sn",
       "unknown": "Süre henüz bilinmiyor",
       "reveal": "Kademeli gösterim: {{seconds}} sn",
-      "explanation": "Açıklama, doğru cevapla gösterilir"
+      "explanation": "Açıklama, doğru cevapla gösterilir",
+      "hint": "İpucu, {{seconds}} sn’den itibaren"
     },
     "label": {
       "image": "Görsel",
       "video": "Video",
       "reveal": "Gösterim",
-      "explanation": "Açıklama"
+      "explanation": "Açıklama",
+      "hint": "İpucu"
     },
     "add": "Öğe ekle",
     "clear": "Tüm medyaları kaldır",
@@ -432,7 +434,9 @@
       "reveal": "Kademeli gösterim",
       "revealHint": "Salon cevaplarken resim netleşir",
       "explanation": "Açıklama",
-      "explanationHint": "Doğru cevapla gösterilir"
+      "explanationHint": "Doğru cevapla gösterilir",
+      "hint": "İpucu",
+      "hintHint": "Soru sırasında, puanının bir kısmı karşılığında bir yardım"
     },
     "refused": {
       "imageChoice": "Görsel seçimli bir sorunun kendi resmi veya videosu olmaz.",
@@ -445,7 +449,8 @@
       "revealNeedsImage": "Kademeli gösterim: önce bir resim ekleyin.",
       "oneReveal": "Resim başına bir gösterim.",
       "pollExplanation": "Bir ankette açıklanacak doğru cevap yoktur.",
-      "oneExplanation": "Soru başına bir açıklama."
+      "oneExplanation": "Soru başına bir açıklama.",
+      "oneHint": "Soru başına bir ipucu."
     },
     "clearConfirm": {
       "title": "Tüm medyalar kaldırılsın mı?",
@@ -520,7 +525,16 @@
     },
     "slideKind": "Slayt",
     "totalOpen": "{{seconds}} sn, sonra sunucu devam eder",
-    "explanationHint": "Doğru cevap ekranda kaldıkça, onunla birlikte gösterilir."
+    "explanationHint": "Doğru cevap ekranda kaldıkça, onunla birlikte gösterilir.",
+    "hint": {
+      "text": "İpucu metni",
+      "textPlaceholder": "1923’te seçildi",
+      "textHint": "{{n}} / {{max}} karakter",
+      "afterS": "Açılıştan sonra (sn)",
+      "penalty": "Ceza (%)",
+      "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir.",
+      "remove": "İpucunu kaldır"
+    }
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",

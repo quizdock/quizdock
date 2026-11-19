@@ -24,7 +24,7 @@ export interface TimelinePhase {
 
 /** One element, drawn once over the channels it has. */
 export interface TimelineElement {
-  kind: 'image' | 'video' | 'audio' | 'reveal' | 'explanation';
+  kind: 'image' | 'video' | 'audio' | 'reveal' | 'explanation' | 'hint';
   from: number;
   /** Where it ends on the visual row; null when it shows nothing. */
   visualTo: number | null;
@@ -94,6 +94,8 @@ export function questionTimeline(q: {
   answerShownS?: number | null;
   /** An explanation goes with the right answer. */
   explanation?: boolean;
+  /** A text hint, `afterS` after the answers open (SPECIFICATIONS-HINTS). */
+  hint?: { afterS: number } | null;
 }): StepTimeline {
   const sounding = q.visual === 'video' || !!q.audio;
   const mediaS = q.mediaMs === null ? null : q.mediaMs / 1000;
@@ -155,6 +157,11 @@ export function questionTimeline(q: {
       lengthS: mediaS,
       peaks: q.audio.peaks,
     });
+  }
+  if (q.hint) {
+    // Shown from its time until the answers close; it comes later, over what is there.
+    const from = Math.min(open + q.hint.afterS, closed);
+    elements.push({ kind: 'hint', from, visualTo: closed, audioTo: null, lengthS: null });
   }
   if (q.explanation && shown > 0) {
     elements.push({

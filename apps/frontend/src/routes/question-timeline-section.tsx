@@ -3,6 +3,7 @@ import {
   type Audio,
   type AudioTarget,
   effectiveTimeLimitS,
+  HINT_PENALTY_DEFAULT,
   TIME_LIMIT_BY_TYPE,
   MEDIA_POSITIONS,
   type QuestionMedia,
@@ -23,6 +24,7 @@ import { appConfig } from '../config';
 import { Waveform } from '../game/media/waveform';
 import { MediaDetailsFields, MediaUpload, type UploadedMedia } from './media-upload';
 import { mediaHasSound, type QuestionFormApi, READ_DELAY_DEFAULT_MS } from './question-form-model';
+import { HintFields } from './hint-fields';
 import { PictureStyleFields, REVEAL_DEFAULT_S } from './picture-style-fields';
 import { QuestionTimingFields } from './question-timing-section';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
@@ -98,6 +100,7 @@ export function QuestionTimelineSection({
   const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
   const explanation = useStore(form.store, (s) => s.values.answerExplanation);
   const explains = type !== 'poll' && explanation.trim() !== '';
+  const hint = useStore(form.store, (s) => s.values.hint);
   const defaultS = TIME_LIMIT_BY_TYPE[type];
   // Already at its type's defaults: nothing to bring back.
   const atDefaults =
@@ -106,6 +109,7 @@ export function QuestionTimelineSection({
     timeLimitS === defaultS &&
     !listenFirst &&
     revealDelayS === null &&
+    !hint &&
     Object.keys(mediaStyle).length === 0;
   const reset = () => {
     form.setFieldValue('media', { visual: null, audio: null });
@@ -113,6 +117,7 @@ export function QuestionTimelineSection({
     form.setFieldValue('timerAfterMedia', false);
     form.setFieldValue('timeLimitS', defaultS);
     form.setFieldValue('revealDelayS', null);
+    form.setFieldValue('hint', null);
     setSelected(null);
   };
   const clear = () => {
@@ -142,6 +147,7 @@ export function QuestionTimelineSection({
             ? t('timeline.refused.oneReveal')
             : null,
     },
+    { kind: 'hint', refused: hint ? t('timeline.refused.oneHint') : null },
     {
       kind: 'explanation',
       refused:
@@ -172,6 +178,7 @@ export function QuestionTimelineSection({
           // In auto mode, the question's own time, else the instance's; without one, by hand.
           answerShownS: revealDelayS ?? appConfig.autoAdvanceS ?? null,
           explanation: explains,
+          hint: hint ? { afterS: hint.afterS } : null,
           audio: audio ? { peaks: audio.peaks } : null,
           mediaMs,
           tailS: mediaTailS,
@@ -217,7 +224,15 @@ export function QuestionTimelineSection({
         choices={choices}
         onPick={(kind) => {
           setAdding(false);
-          if (kind === 'reveal') {
+          if (kind === 'hint') {
+            // Halfway through the answers, at the default penalty: a starting point.
+            form.setFieldValue('hint', {
+              text: '',
+              afterS: Math.floor(timeLimitS / 2),
+              penaltyPct: HINT_PENALTY_DEFAULT,
+            });
+            setSelected('hint');
+          } else if (kind === 'reveal') {
             form.setFieldValue('mediaStyle', {
               ...mediaStyle,
               revealS: Math.min(REVEAL_DEFAULT_S, timeLimitS),
@@ -236,6 +251,10 @@ export function QuestionTimelineSection({
             mediaMs={mediaMs}
             mediaTailS={mediaTailS}
           />
+        </ElementPanel>
+      ) : selected === 'hint' && hint ? (
+        <ElementPanel title={t('timeline.choice.hint')} onClose={() => setSelected(null)}>
+          <HintFields form={form} timeLimitS={timeLimitS} onRemove={() => setSelected(null)} />
         </ElementPanel>
       ) : selected === 'explanation' ? (
         <ElementPanel title={t('timeline.choice.explanation')} onClose={() => setSelected(null)}>

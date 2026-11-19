@@ -4883,6 +4883,32 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "hint": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 140
+                    },
+                    "afterS": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 240
+                    },
+                    "penaltyPct": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "afterS",
+                    "penaltyPct"
+                  ],
+                  "nullable": true
+                },
                 "timerAfterMedia": {
                   "type": "boolean"
                 },
@@ -5031,6 +5057,7 @@
                 "waveformSize",
                 "mediaPosition",
                 "mediaStyle",
+                "hint",
                 "timerAfterMedia",
                 "pointsMode",
                 "scoring",
@@ -9457,6 +9484,32 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "hint": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 140
+                    },
+                    "afterS": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 240
+                    },
+                    "penaltyPct": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "afterS",
+                    "penaltyPct"
+                  ],
+                  "nullable": true
+                },
                 "timerAfterMedia": {
                   "type": "boolean"
                 },
@@ -9605,6 +9658,7 @@
                 "waveformSize",
                 "mediaPosition",
                 "mediaStyle",
+                "hint",
                 "timerAfterMedia",
                 "pointsMode",
                 "scoring",
@@ -10666,6 +10720,32 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "hint": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 140
+                    },
+                    "afterS": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 240
+                    },
+                    "penaltyPct": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "afterS",
+                    "penaltyPct"
+                  ],
+                  "nullable": true
+                },
                 "timerAfterMedia": {
                   "type": "boolean"
                 },
@@ -10814,6 +10894,7 @@
                 "waveformSize",
                 "mediaPosition",
                 "mediaStyle",
+                "hint",
                 "timerAfterMedia",
                 "pointsMode",
                 "scoring",
@@ -11708,6 +11789,32 @@
             "additionalProperties": false,
             "nullable": true
           },
+          "hint": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 140
+              },
+              "afterS": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 240
+              },
+              "penaltyPct": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "text",
+              "afterS",
+              "penaltyPct"
+            ],
+            "nullable": true
+          },
           "timeLimitS": {
             "default": 20,
             "type": "integer",
@@ -12207,6 +12314,32 @@
             "additionalProperties": false,
             "nullable": true
           },
+          "hint": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 140
+              },
+              "afterS": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 240
+              },
+              "penaltyPct": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "text",
+              "afterS",
+              "penaltyPct"
+            ],
+            "nullable": true
+          },
           "timerAfterMedia": {
             "type": "boolean"
           },
@@ -12355,6 +12488,7 @@
           "waveformSize",
           "mediaPosition",
           "mediaStyle",
+          "hint",
           "timerAfterMedia",
           "pointsMode",
           "scoring",
@@ -12706,6 +12840,32 @@
               }
             },
             "additionalProperties": false,
+            "nullable": true
+          },
+          "hint": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 140
+              },
+              "afterS": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 240
+              },
+              "penaltyPct": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "text",
+              "afterS",
+              "penaltyPct"
+            ],
             "nullable": true
           },
           "timeLimitS": {

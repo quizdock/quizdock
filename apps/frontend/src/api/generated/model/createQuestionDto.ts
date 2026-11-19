@@ -9,6 +9,7 @@ import type { CreateQuestionDtoAcceptedAnswersItem } from './createQuestionDtoAc
 import type { CreateQuestionDtoAudioTarget } from './createQuestionDtoAudioTarget';
 import type { CreateQuestionDtoBackgroundGradient } from './createQuestionDtoBackgroundGradient';
 import type { CreateQuestionDtoBackgroundStyle } from './createQuestionDtoBackgroundStyle';
+import type { CreateQuestionDtoHint } from './createQuestionDtoHint';
 import type { CreateQuestionDtoMedia } from './createQuestionDtoMedia';
 import type { CreateQuestionDtoMediaPosition } from './createQuestionDtoMediaPosition';
 import type { CreateQuestionDtoMediaStyle } from './createQuestionDtoMediaStyle';
@@ -44,6 +45,8 @@ export interface CreateQuestionDto {
   mediaPosition?: CreateQuestionDtoMediaPosition;
   /** @nullable */
   mediaStyle?: CreateQuestionDtoMediaStyle;
+  /** @nullable */
+  hint?: CreateQuestionDtoHint;
   /**
      * @minimum 5
      * @maximum 240

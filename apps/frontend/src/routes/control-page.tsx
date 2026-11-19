@@ -88,6 +88,7 @@ import {
 } from '../game/live-components';
 import { type QuestionClock, useQuestionClock } from '../game/use-countdown';
 import { ChromiumNotice } from '@/components/chromium-notice';
+import { HintControls } from '../game/hint-controls';
 import { QuestionMediaStage } from '../game/media/question-media-stage';
 import { ParticipantPreview } from '../game/participant-preview';
 import { LiveThemeAnswers } from '../game/theme';
@@ -1054,6 +1055,13 @@ function HostConsole({
           <ChronoControls clock={clock} onAdjust={adjustTime} />
         </div>
         <ProgressBar pct={timePct} barClassName={tone} label={t('control.timeRemaining')} />
+        <HintControls
+          question={view.question}
+          hint={view.hint}
+          enabled={view.hintsEnabled}
+          onEnabled={(enabled) => socket?.emit('host:hints', { pin, enabled })}
+          onShown={(shown) => socket?.emit('host:hint-shown', { pin, shown })}
+        />
         {/* Shown still: the projection is the one place that plays the sound; its
             waveform follows where the projection is in it. While the question runs,
             the sound is the transport's to draw, with the host's hand on it. */}

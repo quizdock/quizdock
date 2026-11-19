@@ -4,6 +4,7 @@ import {
   MEDIA_POSITION_DEFAULT,
   type MediaPosition,
   type MediaStyle,
+  type QuestionHint,
   NO_QUESTION_MEDIA,
   OPTION_COLORS,
   OPTION_ORDER,
@@ -61,6 +62,8 @@ export interface FormValues {
   mediaPosition: MediaPosition;
   /** How the visual is framed and revealed; empty = as its file is. */
   mediaStyle: MediaStyle;
+  /** A clue revealed during the question, for part of its points (SPECIFICATIONS-HINTS). */
+  hint: QuestionHint | null;
   /** Listen first: the timer starts when the media ends. */
   timerAfterMedia: boolean;
   pointsMode: 'standard' | 'double' | 'none' | 'fixed';
@@ -106,6 +109,7 @@ export function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
       waveformSize: WAVEFORM_SIZE_DEFAULT,
       mediaPosition: MEDIA_POSITION_DEFAULT,
       mediaStyle: {},
+      hint: null,
       timerAfterMedia: false,
       pointsMode: 'standard',
       scoring: 'standard',
@@ -134,6 +138,7 @@ export function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
     waveformSize: (q.waveformSize as WaveformSize | undefined) ?? WAVEFORM_SIZE_DEFAULT,
     mediaPosition: (q.mediaPosition as MediaPosition | undefined) ?? MEDIA_POSITION_DEFAULT,
     mediaStyle: (q.mediaStyle as MediaStyle | null | undefined) ?? {},
+    hint: (q.hint as QuestionHint | null | undefined) ?? null,
     timerAfterMedia: q.timerAfterMedia ?? false,
     // A poll is stored as 'none', which the menu does not offer: the poll's own
     // setting stays out of the form, so a change of type starts from 'standard'.
@@ -163,6 +168,7 @@ export function withDefaults(draft: FormValues): FormValues {
     multiSelect: draft.multiSelect ?? false,
     // A draft from before the picture's options.
     mediaStyle: draft.mediaStyle ?? {},
+    hint: draft.hint ?? null,
     options: draft.options.map((o) => ({
       ...o,
       mediaId: o.mediaId ?? null,
@@ -231,6 +237,8 @@ export function buildPayload(v: FormValues) {
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
     mediaStyle: styleToSend(v),
+    // A hint without words is none.
+    hint: v.hint && v.hint.text.trim() ? { ...v.hint, text: v.hint.text.trim() } : null,
     // Only with a media to wait for; the server also falls back when its length is unknown.
     timerAfterMedia: mediaHasSound(v.media) && v.timerAfterMedia,
     // 'none' is a poll's: a restored draft may still carry it after a change of type.

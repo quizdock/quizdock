@@ -145,6 +145,7 @@ function previewQuestion(v: FormValues): QuizDetailDtoQuestionsItem {
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
     mediaStyle: p.mediaStyle ?? null,
+    hint: p.hint ?? null,
     timerAfterMedia: p.timerAfterMedia ?? false,
     pointsMode: p.pointsMode ?? 'standard',
     scoring: p.scoring ?? 'standard',

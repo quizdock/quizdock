@@ -538,5 +538,17 @@
     "played": "joué",
     "save": "Enregistrer comme sélection",
     "saved": "Enregistré comme sélection : l’ouvrir"
+  },
+  "hint": {
+    "consoleLabel": "Indice",
+    "switch": "Indices",
+    "planned": "Indice à {{seconds}} s · −{{penalty}} %",
+    "revealed": "Indice révélé · −{{penalty}} %",
+    "reminder": "Cette question a un indice, et les indices sont coupés.",
+    "enable": "Activer",
+    "onProjection": "Sur la projection",
+    "costs": "Indice — les réponses données maintenant perdent {{penalty}} % des points de la question",
+    "show": "Indice",
+    "fold": "Replier l’indice"
   }
 }

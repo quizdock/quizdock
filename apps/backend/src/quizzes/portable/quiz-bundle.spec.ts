@@ -327,6 +327,15 @@ describe('quiz bundle', () => {
     expect(ajv.compile(v5)(JSON.parse(JSON.stringify(bundle)))).toBe(false);
   });
 
+  it('carries a question’s hint, in version 9', () => {
+    const src = makeQuiz();
+    const hint = { text: 'Choisie en 1923', afterS: 10, penaltyPct: 25 };
+    src.questions[0].hint = hint;
+    const bundle = toBundle(src, pathFor);
+    expect(bundle.version).toBe(9);
+    expect(fromBundle(bundle, idFor).questions[0]).toMatchObject({ hint });
+  });
+
   it('carries how a picture is framed and revealed, in version 9', () => {
     const src = makeQuiz();
     const style = { ratio: '3:4', fit: 'cover' as const, focus: 'top' as const, revealS: 10 };

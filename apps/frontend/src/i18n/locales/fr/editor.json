@@ -414,13 +414,15 @@
       "audio": "Son, {{seconds}} s",
       "unknown": "Durée pas encore connue",
       "reveal": "Révélation progressive : {{seconds}} s",
-      "explanation": "Explication, affichée avec la bonne réponse"
+      "explanation": "Explication, affichée avec la bonne réponse",
+      "hint": "Indice, à partir de {{seconds}} s"
     },
     "label": {
       "image": "Image",
       "video": "Vidéo",
       "reveal": "Révélation",
-      "explanation": "Explication"
+      "explanation": "Explication",
+      "hint": "Indice"
     },
     "add": "Ajouter un élément",
     "clear": "Retirer tous les médias",
@@ -438,7 +440,9 @@
       "reveal": "Révélation progressive",
       "revealHint": "L’image devient nette pendant que la salle répond",
       "explanation": "Explication",
-      "explanationHint": "Affichée avec la bonne réponse"
+      "explanationHint": "Affichée avec la bonne réponse",
+      "hint": "Indice",
+      "hintHint": "Un coup de pouce pendant la question, contre une part de ses points"
     },
     "refused": {
       "imageChoice": "Un choix d’images n’a pas d’image ni de vidéo propre.",
@@ -451,7 +455,8 @@
       "revealNeedsImage": "Révélation progressive : ajoutez d’abord une image.",
       "oneReveal": "Une révélation par image.",
       "pollExplanation": "Un sondage n’a pas de bonne réponse à expliquer.",
-      "oneExplanation": "Une explication par question."
+      "oneExplanation": "Une explication par question.",
+      "oneHint": "Un indice par question."
     },
     "clearConfirm": {
       "title": "Retirer tous les médias ?",
@@ -526,7 +531,16 @@
     },
     "slideKind": "Slide",
     "totalOpen": "{{seconds}} s, puis l’animateur passe à la suite",
-    "explanationHint": "Affichée sur les écrans avec la bonne réponse, tant qu’elle reste."
+    "explanationHint": "Affichée sur les écrans avec la bonne réponse, tant qu’elle reste.",
+    "hint": {
+      "text": "Texte de l’indice",
+      "textPlaceholder": "Elle a été choisie en 1923",
+      "textHint": "{{n}} / {{max}} caractères",
+      "afterS": "Après l’ouverture (s)",
+      "penalty": "Pénalité (%)",
+      "rule": "Les réponses données après l’indice perdent {{penalty}} % des points de la question ; la série n’est pas touchée. L’animateur peut couper les indices.",
+      "remove": "Retirer l’indice"
+    }
   },
   "preview": {
     "view": "Aperçu (vue participant)",

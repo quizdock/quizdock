@@ -88,6 +88,7 @@ export const GUIDE_FIELDS = {
       'waveformSize',
       'mediaPosition',
       'mediaStyle',
+      'hint',
       'timerAfterMedia',
       'multiSelect',
     ],

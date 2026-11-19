@@ -6,6 +6,7 @@ import {
   GanttChart,
   Image as ImageIcon,
   LayoutTemplate,
+  Lightbulb,
   List,
   Music,
   Plus,
@@ -155,7 +156,7 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
                 onClick={() => setConfirmClear(true)}
               />
             ) : null}
-            <Tool icon={<Plus />} label={t('timeline.add')} onClick={edit.onAdd} />
+            <Tool icon={<Plus />} label={t('timeline.add')} onClick={edit.onAdd} accent />
           </span>
         ) : null}
       </div>
@@ -303,12 +304,15 @@ function Tool({
   icon,
   label,
   disabled = false,
+  accent = false,
   onClick,
 }: {
   icon: ReactNode;
   label: string;
   /** Still in sight and focusable, its tooltip saying why. */
   disabled?: boolean;
+  /** The timeline's main action: in the accent colour. */
+  accent?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -320,6 +324,8 @@ function Tool({
         className={cn(
           'text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring grid size-6 place-items-center rounded focus-visible:ring-2 focus-visible:outline-none [&_svg]:size-4',
           disabled && 'cursor-not-allowed opacity-50 hover:bg-transparent',
+          accent &&
+            'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground ml-0.5',
         )}
         onClick={disabled ? undefined : onClick}
       >
@@ -435,7 +441,8 @@ function Element({
   const height = bottom - top;
   // The split between the two rows, from the element's own top.
   const split = ROW.channel + ROW.gap / 2 - top;
-  const soft = e.kind === 'image' || e.kind === 'reveal' || e.kind === 'explanation';
+  const soft =
+    e.kind === 'image' || e.kind === 'reveal' || e.kind === 'explanation' || e.kind === 'hint';
   const fill = (color: string) => (soft ? mix(color, 28) : color);
   const background =
     e.kind === 'reveal'
@@ -551,17 +558,19 @@ function elementText(e: TimelineElement, t: TFunction<'editor'>) {
       ? t('timeline.element.image')
       : e.kind === 'explanation'
         ? t('timeline.element.explanation')
-        : e.kind === 'reveal'
-          ? t('timeline.element.reveal', { seconds })
-          : e.kind === 'video'
-            ? e.loop
-              ? t('timeline.element.videoLoop')
+        : e.kind === 'hint'
+          ? t('timeline.element.hint', { seconds: round(e.from) })
+          : e.kind === 'reveal'
+            ? t('timeline.element.reveal', { seconds })
+            : e.kind === 'video'
+              ? e.loop
+                ? t('timeline.element.videoLoop')
+                : seconds === null
+                  ? t('timeline.element.unknown')
+                  : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
               : seconds === null
                 ? t('timeline.element.unknown')
-                : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
-            : seconds === null
-              ? t('timeline.element.unknown')
-              : t('timeline.element.audio', { seconds });
+                : t('timeline.element.audio', { seconds });
   const Icon =
     e.kind === 'video'
       ? Video
@@ -571,7 +580,9 @@ function elementText(e: TimelineElement, t: TFunction<'editor'>) {
           ? Sparkles
           : e.kind === 'explanation'
             ? AlignLeft
-            : ImageIcon;
+            : e.kind === 'hint'
+              ? Lightbulb
+              : ImageIcon;
   const label =
     e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
   return { tip, label, Icon, seconds };

@@ -147,6 +147,17 @@ export interface PlayerPeek {
   joinLocked: boolean;
 }
 
+/** A revealed hint (`question:hint`). */
+export interface QuestionHintPayload {
+  questionIndex: number;
+  text: string;
+  penaltyPct: number;
+  /** When it was revealed (server ms epoch): the answers after it lose `penaltyPct` %. */
+  revealedAt: number;
+  /** Shown on the projection (the host's choice); a phone folds it on its own. */
+  shown: boolean;
+}
+
 export interface QuestionStartPayload {
   questionIndex: number;
   type: QuestionType;
@@ -171,6 +182,12 @@ export interface QuestionStartPayload {
   mediaStartAt?: number;
   /** Listen first: the answers open when the media ends (`startedAt`), not before. */
   listenFirst?: boolean;
+  /**
+   * The question carries a hint (SPECIFICATIONS-HINTS): when it comes, `afterS` seconds
+   * after `startedAt` if the host's hints are on, and what it costs. Never its text,
+   * which goes out with `question:hint` when revealed.
+   */
+  hint?: { afterS: number; penaltyPct: number };
   /** Optional full-cover background (image or gradient), like a slide's. */
   background?: SlideBackground | null;
   textTone?: SlideTextTone;
@@ -676,6 +693,10 @@ export interface ClientToServerEvents {
   'host:mode': (p: { pin: string; mode: GameMode }) => void;
   /** Suspend (`paused:true`) ou reprend (`paused:false`) l'auto-progression. */
   'host:pause': (p: { pin: string; paused: boolean }) => void;
+  /** Turns the game's hints on or off; on late, the current question's hint comes at once. */
+  'host:hints': (p: { pin: string; enabled: boolean }) => void;
+  /** Shows or hides the revealed hint on the projection: visual only, its penalty stays. */
+  'host:hint-shown': (p: { pin: string; shown: boolean }) => void;
   /** Steer the current step's sound or video (a question's, a slide's) on every device that plays it: restart, play, pause, seek. */
   'host:media': (p: HostMediaCommand) => void;
   /** Ajoute/retire `deltaS` secondes au chrono de la question courante. */
@@ -823,6 +844,14 @@ export interface ServerToClientEvents {
   }) => void;
   'game:state': (p: GameStatePayload) => void;
   'question:start': (p: QuestionStartPayload) => void;
+  /**
+   * The current question's hint, revealed to the whole room (SPECIFICATIONS-HINTS): at
+   * its time, when the host turns hints on late, again when the host shows or hides it
+   * on the projection (`shown`), and on (re)attach.
+   */
+  'question:hint': (p: QuestionHintPayload) => void;
+  /** Whether the game's hints are on (the host's switch): on attach and when switched. */
+  'game:hints': (p: { enabled: boolean }) => void;
   /** A content slide is shown (state `SLIDE_SHOW`, #7); re-sent on (re)attach. */
   'slide:show': (p: SlideShowPayload) => void;
   'answer:ack': (p: AnswerAck) => void;

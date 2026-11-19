@@ -1,5 +1,6 @@
 import { type MediaAsset, Prisma } from '@prisma/client';
 import type {
+  QuestionHint,
   LiveQuestionMedia,
   OptionColor,
   OptionShape,
@@ -12,6 +13,7 @@ import type {
   SlideBackground,
 } from '@quiz-dock/contracts';
 import {
+  questionHintSchema,
   type AudioTarget,
   LOUDNESS_TARGET_LUFS,
   effectiveTimeLimitS,
@@ -161,6 +163,7 @@ export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
               readDelayMs() - MEDIA_LEAD_MS,
             ),
         timerAfterMedia: listensFirst,
+        ...hintOf(q.hint),
         revealDelayS: q.revealDelayS ?? null,
         audioTarget: q.audioTarget ?? null,
         basePoints: basePointsFor(q.pointsMode as PointsMode),
@@ -375,6 +378,10 @@ export function buildQuestionStart(
     endsAt,
     ...(mediaLeadMs !== null && startedAt > 0 ? { mediaStartAt: startedAt - mediaLeadMs } : {}),
     ...(question.timerAfterMedia ? { listenFirst: true } : {}),
+    // When the hint comes and what it costs; its text waits for its reveal.
+    ...(question.hint
+      ? { hint: { afterS: question.hint.afterS, penaltyPct: question.hint.penaltyPct } }
+      : {}),
     background: question.background,
     textTone: question.textTone,
     textOutline: question.textOutline,
@@ -447,4 +454,10 @@ export function slideTitle(blocks: SlideBlock[]): string {
     return plain.length > 80 ? `${plain.slice(0, 79)}…` : plain;
   }
   return '';
+}
+
+/** A stored hint as the game plays it: none when unreadable. */
+function hintOf(stored: unknown): { hint?: QuestionHint } {
+  const parsed = questionHintSchema.safeParse(stored);
+  return parsed.success ? { hint: parsed.data } : {};
 }

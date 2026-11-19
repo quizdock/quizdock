@@ -526,5 +526,17 @@
     "played": "gespielt",
     "save": "Als Auswahl speichern",
     "saved": "Als Auswahl gespeichert: öffnen"
+  },
+  "hint": {
+    "consoleLabel": "Hinweis",
+    "switch": "Hinweise",
+    "planned": "Hinweis bei {{seconds}} s · −{{penalty}} %",
+    "revealed": "Hinweis gezeigt · −{{penalty}} %",
+    "reminder": "Diese Frage hat einen Hinweis, und Hinweise sind aus.",
+    "enable": "Einschalten",
+    "onProjection": "Auf der Projektion",
+    "costs": "Hinweis – Antworten ab jetzt verlieren {{penalty}} % der Punkte der Frage",
+    "show": "Hinweis",
+    "fold": "Hinweis einklappen"
   }
 }

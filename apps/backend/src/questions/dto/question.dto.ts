@@ -3,6 +3,7 @@ import {
   AUDIO_TARGETS,
   MEDIA_POSITIONS,
   mediaStyleSchema,
+  questionHintSchema,
   WAVEFORM_SIZES,
   questionMediaSchema,
 } from '@quiz-dock/contracts';
@@ -60,6 +61,8 @@ export const questionSchema = z.object({
   mediaPosition: z.enum(MEDIA_POSITIONS),
   /** How its picture or video is framed and revealed; null = as its file is. */
   mediaStyle: mediaStyleSchema.nullable(),
+  /** Its hint; null = none. */
+  hint: questionHintSchema.nullable(),
   /** The timer starts when the media ends. */
   timerAfterMedia: z.boolean(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']),

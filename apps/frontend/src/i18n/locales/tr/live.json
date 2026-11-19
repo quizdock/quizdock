@@ -526,5 +526,17 @@
     "played": "oynandı",
     "save": "Seçki olarak kaydet",
     "saved": "Seçki olarak kaydedildi: aç"
+  },
+  "hint": {
+    "consoleLabel": "İpucu",
+    "switch": "İpuçları",
+    "planned": "İpucu {{seconds}}. sn’de · −%{{penalty}}",
+    "revealed": "İpucu gösterildi · −%{{penalty}}",
+    "reminder": "Bu sorunun bir ipucu var ve ipuçları kapalı.",
+    "enable": "Aç",
+    "onProjection": "Projeksiyonda",
+    "costs": "İpucu — bundan sonraki cevaplar sorunun puanının %{{penalty}}’ini kaybeder",
+    "show": "İpucu",
+    "fold": "İpucunu kapat"
   }
 }

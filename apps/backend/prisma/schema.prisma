@@ -292,6 +292,8 @@ model Question {
   mediaPosition      MediaPosition   @default(bottom) @map("media_position")
   /// How its picture or video is framed and revealed (MediaStyle in @quiz-dock/contracts); null = as its file is.
   mediaStyle         Json?           @map("media_style")
+  /// Its hint (QuestionHint in @quiz-dock/contracts): text, start after the answers open, penalty; null = none.
+  hint               Json?
   /// The timer starts when the media ends (listen first, then answer); needs a known duration.
   timerAfterMedia    Boolean         @default(false) @map("timer_after_media")
   pointsMode         PointsMode      @default(standard) @map("points_mode")

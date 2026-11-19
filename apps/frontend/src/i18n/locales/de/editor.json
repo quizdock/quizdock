@@ -410,13 +410,15 @@
       "audio": "Ton, {{seconds}} s",
       "unknown": "Länge noch unbekannt",
       "reveal": "Schrittweise Enthüllung: {{seconds}} s",
-      "explanation": "Erklärung, mit der richtigen Antwort angezeigt"
+      "explanation": "Erklärung, mit der richtigen Antwort angezeigt",
+      "hint": "Hinweis, ab {{seconds}} s"
     },
     "label": {
       "image": "Bild",
       "video": "Video",
       "reveal": "Enthüllung",
-      "explanation": "Erklärung"
+      "explanation": "Erklärung",
+      "hint": "Hinweis"
     },
     "add": "Element hinzufügen",
     "clear": "Alle Medien entfernen",
@@ -434,7 +436,9 @@
       "reveal": "Schrittweise Enthüllung",
       "revealHint": "Das Bild wird scharf, während der Raum antwortet",
       "explanation": "Erklärung",
-      "explanationHint": "Mit der richtigen Antwort angezeigt"
+      "explanationHint": "Mit der richtigen Antwort angezeigt",
+      "hint": "Hinweis",
+      "hintHint": "Eine Hilfe während der Frage, gegen einen Teil ihrer Punkte"
     },
     "refused": {
       "imageChoice": "Eine Bildauswahl hat kein eigenes Bild und kein eigenes Video.",
@@ -447,7 +451,8 @@
       "revealNeedsImage": "Schrittweise Enthüllung: Füge zuerst ein Bild hinzu.",
       "oneReveal": "Eine Enthüllung pro Bild.",
       "pollExplanation": "Eine Umfrage hat keine richtige Antwort zu erklären.",
-      "oneExplanation": "Eine Erklärung pro Frage."
+      "oneExplanation": "Eine Erklärung pro Frage.",
+      "oneHint": "Ein Hinweis pro Frage."
     },
     "clearConfirm": {
       "title": "Alle Medien entfernen?",
@@ -522,7 +527,16 @@
     },
     "slideKind": "Folie",
     "totalOpen": "{{seconds}} s, dann macht die Moderation weiter",
-    "explanationHint": "Auf den Bildschirmen mit der richtigen Antwort angezeigt, solange sie bleibt."
+    "explanationHint": "Auf den Bildschirmen mit der richtigen Antwort angezeigt, solange sie bleibt.",
+    "hint": {
+      "text": "Text des Hinweises",
+      "textPlaceholder": "Sie wurde 1923 gewählt",
+      "textHint": "{{n}} / {{max}} Zeichen",
+      "afterS": "Nach dem Öffnen (s)",
+      "penalty": "Abzug (%)",
+      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten.",
+      "remove": "Hinweis entfernen"
+    }
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

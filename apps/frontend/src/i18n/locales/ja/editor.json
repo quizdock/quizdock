@@ -410,13 +410,15 @@
       "audio": "音声、{{seconds}} 秒",
       "unknown": "長さはまだ不明です",
       "reveal": "段階的に表示：{{seconds}}秒",
-      "explanation": "解説（正解と一緒に表示）"
+      "explanation": "解説（正解と一緒に表示）",
+      "hint": "ヒント（{{seconds}} 秒から）"
     },
     "label": {
       "image": "画像",
       "video": "動画",
       "reveal": "表示",
-      "explanation": "解説"
+      "explanation": "解説",
+      "hint": "ヒント"
     },
     "add": "要素を追加",
     "clear": "すべてのメディアを削除",
@@ -434,7 +436,9 @@
       "reveal": "段階的に表示",
       "revealHint": "会場が回答する間に画像が鮮明になります",
       "explanation": "解説",
-      "explanationHint": "正解と一緒に表示"
+      "explanationHint": "正解と一緒に表示",
+      "hint": "ヒント",
+      "hintHint": "問題の途中で出す手がかり（得点の一部と引き換え）"
     },
     "refused": {
       "imageChoice": "画像選択問題には独自の画像や動画を付けられません。",
@@ -447,7 +451,8 @@
       "revealNeedsImage": "段階的に表示：先に画像を追加してください。",
       "oneReveal": "段階的表示は画像ごとに1つです。",
       "pollExplanation": "アンケートには説明すべき正解がありません。",
-      "oneExplanation": "解説は問題ごとに1つです。"
+      "oneExplanation": "解説は問題ごとに1つです。",
+      "oneHint": "ヒントは問題ごとに1つです。"
     },
     "clearConfirm": {
       "title": "すべてのメディアを削除しますか？",
@@ -522,7 +527,16 @@
     },
     "slideKind": "スライド",
     "totalOpen": "{{seconds}} 秒、その後は司会者が進めます",
-    "explanationHint": "正解が表示されている間、画面に正解と一緒に表示されます。"
+    "explanationHint": "正解が表示されている間、画面に正解と一緒に表示されます。",
+    "hint": {
+      "text": "ヒントの文",
+      "textPlaceholder": "1923年に選ばれました",
+      "textHint": "{{n}} / {{max}} 文字",
+      "afterS": "回答開始から（秒）",
+      "penalty": "減点（%）",
+      "rule": "ヒントの後の回答は、この問題の得点が {{penalty}} % 減ります。連続正解ボーナスには影響しません。司会者はヒントをオフにできます。",
+      "remove": "ヒントを削除"
+    }
   },
   "preview": {
     "view": "プレビュー（参加者の表示）",

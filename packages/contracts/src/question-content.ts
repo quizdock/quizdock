@@ -102,6 +102,24 @@ export const TIME_LIMIT_BY_TYPE: Record<QuestionTypeName, number> = {
 };
 export const REVEAL_DELAY_S = { min: 1, max: 300 } as const;
 
+/** A hint's text: readable before the time runs out (SPECIFICATIONS-HINTS §2). */
+export const HINT_TEXT_MAX = 140;
+/** The share of the question's points an answer given after the hint loses, by default (%). */
+export const HINT_PENALTY_DEFAULT = 25;
+
+/**
+ * A question's hint (SPECIFICATIONS-HINTS, lot 1): a text revealed to the whole room
+ * `afterS` seconds after the answers open, when the host's hints are on. The answers
+ * given after it lose `penaltyPct` % of the points they earn on the question; the
+ * streak bonus is never touched.
+ */
+export const questionHintSchema = z.object({
+  text: z.string().trim().min(1).max(HINT_TEXT_MAX),
+  afterS: z.number().int().min(0).max(240),
+  penaltyPct: z.number().int().min(0).max(100),
+});
+export type QuestionHint = z.infer<typeof questionHintSchema>;
+
 export const POINTS_MODES = ['standard', 'double', 'none', 'fixed'] as const;
 export type PointsModeName = (typeof POINTS_MODES)[number];
 
@@ -182,6 +200,8 @@ export const questionContentSchema = z
     mediaPosition: z.enum(MEDIA_POSITIONS).default('bottom'),
     // How the visual is framed and revealed; null or absent = as its file is.
     mediaStyle: mediaStyleSchema.nullable().optional(),
+    // A clue revealed during the question, for part of its points; null = none.
+    hint: questionHintSchema.nullable().optional(),
     timeLimitS: z
       .number()
       .int()

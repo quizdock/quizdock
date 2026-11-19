@@ -410,13 +410,15 @@
       "audio": "Sound, {{seconds}} s",
       "unknown": "Length not known yet",
       "reveal": "Progressive reveal: {{seconds}} s",
-      "explanation": "Explanation, shown with the right answer"
+      "explanation": "Explanation, shown with the right answer",
+      "hint": "Hint, from {{seconds}} s"
     },
     "label": {
       "image": "Picture",
       "video": "Video",
       "reveal": "Reveal",
-      "explanation": "Explanation"
+      "explanation": "Explanation",
+      "hint": "Hint"
     },
     "add": "Add an element",
     "clear": "Remove every media",
@@ -434,7 +436,9 @@
       "reveal": "Progressive reveal",
       "revealHint": "The picture sharpens while the room answers",
       "explanation": "Explanation",
-      "explanationHint": "Shown with the right answer"
+      "explanationHint": "Shown with the right answer",
+      "hint": "Hint",
+      "hintHint": "A clue during the question, for part of its points"
     },
     "refused": {
       "imageChoice": "An image choice has no picture or video of its own.",
@@ -447,7 +451,8 @@
       "revealNeedsImage": "Progressive reveal: add a picture first.",
       "oneReveal": "One reveal per picture.",
       "pollExplanation": "A poll has no right answer to explain.",
-      "oneExplanation": "One explanation per question."
+      "oneExplanation": "One explanation per question.",
+      "oneHint": "One hint per question."
     },
     "clearConfirm": {
       "title": "Remove every media?",
@@ -522,7 +527,16 @@
     },
     "slideKind": "Slide",
     "totalOpen": "{{seconds}} s, then the host moves on",
-    "explanationHint": "Shown on the screens with the right answer, for as long as it stays."
+    "explanationHint": "Shown on the screens with the right answer, for as long as it stays.",
+    "hint": {
+      "text": "Text of the hint",
+      "textPlaceholder": "It was chosen in 1923",
+      "textHint": "{{n}} / {{max}} characters",
+      "afterS": "After the opening (s)",
+      "penalty": "Penalty (%)",
+      "rule": "The answers given after the hint lose {{penalty}} % of the question's points; the streak is untouched. The host can turn hints off.",
+      "remove": "Remove the hint"
+    }
   },
   "preview": {
     "view": "Preview (player view)",

@@ -526,5 +526,17 @@
     "played": "出題済み",
     "save": "セレクションとして保存",
     "saved": "セレクションとして保存しました：開く"
+  },
+  "hint": {
+    "consoleLabel": "ヒント",
+    "switch": "ヒント",
+    "planned": "ヒント {{seconds}} 秒 · −{{penalty}} %",
+    "revealed": "ヒント表示済み · −{{penalty}} %",
+    "reminder": "この問題にはヒントがありますが、ヒントはオフです。",
+    "enable": "オンにする",
+    "onProjection": "プロジェクション上",
+    "costs": "ヒント — これからの回答は問題の得点が {{penalty}} % 減ります",
+    "show": "ヒント",
+    "fold": "ヒントを閉じる"
   }
 }

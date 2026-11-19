@@ -414,13 +414,15 @@
       "audio": "Sonido, {{seconds}} s",
       "unknown": "Duración aún desconocida",
       "reveal": "Revelación progresiva: {{seconds}} s",
-      "explanation": "Explicación, mostrada con la respuesta correcta"
+      "explanation": "Explicación, mostrada con la respuesta correcta",
+      "hint": "Pista, desde {{seconds}} s"
     },
     "label": {
       "image": "Imagen",
       "video": "Vídeo",
       "reveal": "Revelación",
-      "explanation": "Explicación"
+      "explanation": "Explicación",
+      "hint": "Pista"
     },
     "add": "Añadir un elemento",
     "clear": "Quitar todos los medios",
@@ -438,7 +440,9 @@
       "reveal": "Revelación progresiva",
       "revealHint": "La imagen se aclara mientras la sala responde",
       "explanation": "Explicación",
-      "explanationHint": "Mostrada con la respuesta correcta"
+      "explanationHint": "Mostrada con la respuesta correcta",
+      "hint": "Pista",
+      "hintHint": "Una ayuda durante la pregunta, a cambio de parte de sus puntos"
     },
     "refused": {
       "imageChoice": "Una elección de imágenes no tiene imagen ni vídeo propios.",
@@ -451,7 +455,8 @@
       "revealNeedsImage": "Revelación progresiva: añade primero una imagen.",
       "oneReveal": "Una revelación por imagen.",
       "pollExplanation": "Una encuesta no tiene respuesta correcta que explicar.",
-      "oneExplanation": "Una explicación por pregunta."
+      "oneExplanation": "Una explicación por pregunta.",
+      "oneHint": "Una pista por pregunta."
     },
     "clearConfirm": {
       "title": "¿Quitar todos los medios?",
@@ -526,7 +531,16 @@
     },
     "slideKind": "Diapositiva",
     "totalOpen": "{{seconds}} s, luego el presentador avanza",
-    "explanationHint": "Se muestra en las pantallas con la respuesta correcta, mientras permanezca."
+    "explanationHint": "Se muestra en las pantallas con la respuesta correcta, mientras permanezca.",
+    "hint": {
+      "text": "Texto de la pista",
+      "textPlaceholder": "Fue elegida en 1923",
+      "textHint": "{{n}} / {{max}} caracteres",
+      "afterS": "Tras la apertura (s)",
+      "penalty": "Penalización (%)",
+      "rule": "Las respuestas dadas tras la pista pierden un {{penalty}} % de los puntos de la pregunta; la racha no se toca. El presentador puede desactivar las pistas.",
+      "remove": "Quitar la pista"
+    }
   },
   "preview": {
     "view": "Vista previa (vista del jugador)",

@@ -21,6 +21,7 @@ import type {
   PlayerPresence,
   PodiumPayload,
   QuestionRevealPayload,
+  QuestionHintPayload,
   QuestionStartPayload,
   QuestionTimePayload,
   RoomSoundsPayload,
@@ -151,6 +152,10 @@ export interface GameView {
   sounds: RoomSoundsPayload | null;
   /** Whether the room's screens move between steps (UI system §1.8); null until told. */
   motion: boolean | null;
+  /** The current question's hint once revealed (SPECIFICATIONS-HINTS); null before. */
+  hint: QuestionHintPayload | null;
+  /** Whether the game's hints are on (the host's switch); on until told. */
+  hintsEnabled: boolean;
   /** Whether this participant said they are ready in the lobby (#104). */
   youReady: boolean;
   /** The lobby's count, as a participant sees it: ready, out of how many (#104). */
@@ -232,6 +237,8 @@ export const INITIAL_VIEW: GameView = {
   lobbyCount: null,
   sounds: null,
   motion: null,
+  hint: null,
+  hintsEnabled: true,
   roomName: null,
   hostName: null,
   standings: null,
@@ -250,6 +257,7 @@ export const INITIAL_VIEW: GameView = {
  */
 const PER_QUIZ: Partial<GameView> = {
   question: null,
+  hint: null,
   slide: null,
   answerCount: null,
   reveal: null,
@@ -397,12 +405,16 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
       setView((prev) => ({
         ...prev,
         question: p,
+        // Another question: its hint, if any, is not out yet.
+        hint: prev.hint?.questionIndex === p.questionIndex ? prev.hint : null,
         answerCount:
           prev.question?.questionIndex === p.questionIndex
             ? prev.answerCount
             : { answered: 0, total: prev.answerCount?.total ?? prev.players.length },
       }));
     const onJoinUrl = (p: { baseUrl: string | null }) => patch({ joinBaseUrl: p.baseUrl });
+    const onHint = (p: QuestionHintPayload) => patch({ hint: p });
+    const onHints = (p: { enabled: boolean }) => patch({ hintsEnabled: p.enabled });
     const onMode = (p: GameModePayload) =>
       patch({
         mode: p.mode,
@@ -545,6 +557,8 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
       'player:joined': onJoined,
       'player:left': onLeft,
       'question:start': onQuestion,
+      'question:hint': onHint,
+      'game:hints': onHints,
       'game:mode': onMode,
       'game:join-url': onJoinUrl,
       'game:outline': onOutline,

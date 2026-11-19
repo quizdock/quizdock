@@ -526,5 +526,17 @@
     "played": "已示範",
     "save": "儲存為選集",
     "saved": "已儲存為選集：開啟"
+  },
+  "hint": {
+    "consoleLabel": "提示",
+    "switch": "提示",
+    "planned": "提示於 {{seconds}} 秒 · −{{penalty}}%",
+    "revealed": "提示已顯示 · −{{penalty}}%",
+    "reminder": "本題有提示，但提示已關閉。",
+    "enable": "開啟",
+    "onProjection": "在投影上",
+    "costs": "提示——此後的作答將失去本題 {{penalty}}% 的分數",
+    "show": "提示",
+    "fold": "收起提示"
   }
 }

@@ -3,6 +3,7 @@ import {
   OPTION_ALT_MAX,
   MEDIA_POSITIONS,
   mediaStyleSchema,
+  questionHintSchema,
   WAVEFORM_SIZES,
   audioPeaksSchema,
   loudnessSchema,
@@ -41,7 +42,8 @@ export const BUNDLE_FORMAT = 'quizdock/quiz';
  * Version 7: a question's picture or video may sit above or beside its text (`mediaPosition`).
  * Version 8: the quiz's theme (`theme`), and a step's background laid by its style (`background`).
  * Version 9: a question's picture or video may sit behind its text, or alone in its place
- * (`mediaPosition` `behind`, `alone`), and be framed and revealed (`mediaStyle`).
+ * (`mediaPosition` `behind`, `alone`), and be framed and revealed (`mediaStyle`); a question's
+ * hint (`hint`).
  */
 export const BUNDLE_VERSION = 9;
 
@@ -60,7 +62,10 @@ export function bundleVersionOf(items: QuizBundle['items'], theme?: QuizBundle['
     items.some(
       (it) =>
         it.kind === 'question' &&
-        (it.mediaPosition === 'behind' || it.mediaPosition === 'alone' || !!it.mediaStyle),
+        (it.mediaPosition === 'behind' ||
+          it.mediaPosition === 'alone' ||
+          !!it.mediaStyle ||
+          !!it.hint),
     )
   )
     return 9;
@@ -212,6 +217,8 @@ export const questionBundleSchema = z.object({
   mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
   /** How its picture or video is framed and revealed (version 9); absent = as its file is. */
   mediaStyle: mediaStyleSchema.optional(),
+  /** Its hint (version 9): a text, its start after the answers open, its penalty. */
+  hint: questionHintSchema.optional(),
   /** The timer starts when the media ends (version 3); absent = with the question. */
   timerAfterMedia: z.boolean().optional(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']).optional(),

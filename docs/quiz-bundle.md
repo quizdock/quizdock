@@ -166,6 +166,9 @@ Contributors changing the bundle schema or a content schema run
   (`center`, `top`, `bottom`, `left`, `right`), and for a picture `revealS`: blurred
   until the answers open, it sharpens over that many seconds. Absent, the media
   shows as its file is.
+- `hint` (version 9): a question's hint — `text` (140 characters at most),
+  `afterS` (seconds after the answers open) and `penaltyPct` (the share of the
+  question's points an answer given after it loses, 0 to 100).
 - A step's `background` (version 8): its background as one object — `image` (a
   media path) or `gradient`, `textTone`, and how it is laid: `mode` (`watermark`
   centred, `cover` filling the screen, `contain` whole on its `color`, `pattern`

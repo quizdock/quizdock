@@ -1,6 +1,7 @@
 import {
   AlignLeft,
   Image as ImageIcon,
+  Lightbulb,
   type LucideIcon,
   Music,
   Sparkles,
@@ -30,15 +31,17 @@ export const KIND_ICON: Record<AddableKind, LucideIcon> = {
   audio: Music,
   reveal: Sparkles,
   explanation: AlignLeft,
+  hint: Lightbulb,
 };
 
-/** Each kind in its channel's colour: a video sits on both. */
+/** Each kind its own colour, so the list reads at a glance: the channel's for the media. */
 const KIND_COLOR: Record<AddableKind, string> = {
   image: 'var(--timeline-visual)',
-  video: 'var(--timeline-visual)',
+  video: 'var(--primary)',
   audio: 'var(--timeline-audio)',
-  reveal: 'var(--timeline-visual)',
-  explanation: 'var(--timeline-visual)',
+  reveal: 'var(--timeline-time)',
+  explanation: 'var(--answer-pink)',
+  hint: 'var(--warning)',
 };
 
 /**
@@ -69,13 +72,18 @@ export function AddElementModal({
               type="button"
               disabled={refused !== null}
               onClick={() => onPick(kind)}
-              className="hover:bg-accent focus-visible:ring-ring grid grid-cols-[1.5rem_1fr] items-center gap-x-2 rounded-md border p-2 text-left focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent"
+              className="hover:bg-accent focus-visible:ring-ring grid grid-cols-[1.75rem_1fr] items-center gap-x-2 rounded-md border p-2 text-left focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent"
             >
-              <Icon
-                className="row-span-2 size-[18px]"
-                style={{ color: KIND_COLOR[kind] }}
+              <span
+                className="row-span-2 grid size-6 place-items-center rounded-md"
+                style={{
+                  color: KIND_COLOR[kind],
+                  background: `color-mix(in oklab, ${KIND_COLOR[kind]} 16%, transparent)`,
+                }}
                 aria-hidden
-              />
+              >
+                <Icon className="size-4" />
+              </span>
               <span className="text-sm font-medium">{t(`timeline.choice.${kind}`)}</span>
               <span className="text-muted-foreground text-xs">
                 {refused ?? t(`timeline.choice.${kind}Hint`)}

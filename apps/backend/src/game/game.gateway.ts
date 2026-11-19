@@ -621,6 +621,24 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     await this.engine.setPaused(payload.pin, this.requireHostId(socket), payload.paused);
   }
 
+  /** `host:hints`: the game's hints on or off (SPECIFICATIONS-HINTS). */
+  @SubscribeMessage('host:hints')
+  async hostHints(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; enabled: boolean },
+  ): Promise<void> {
+    await this.engine.setHints(payload.pin, this.requireHostId(socket), payload.enabled === true);
+  }
+
+  /** `host:hint-shown`: the revealed hint shown or hidden on the projection. */
+  @SubscribeMessage('host:hint-shown')
+  async hostHintShown(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; shown: boolean },
+  ): Promise<void> {
+    await this.engine.setHintShown(payload.pin, this.requireHostId(socket), payload.shown === true);
+  }
+
   /** `host:adjust-time` : ajoute/retire du temps au chrono de la question courante. */
   @SubscribeMessage('host:adjust-time')
   async hostAdjustTime(

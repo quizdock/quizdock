@@ -204,6 +204,19 @@ describe('scoreAnswer', () => {
     });
   });
 
+  it('after the hint: its share of the question points goes, never of the streak bonus', () => {
+    const { good, q } = single();
+    // 1000 instant points − 25 %, then the third right answer's +200 untouched.
+    expect(
+      scoreAnswer({ question: q, answer: good.id, tMs: 0, prevStreak: 2, hintPenaltyPct: 25 }),
+    ).toMatchObject({ correct: true, points: 750 + 200, newStreak: 3 });
+    // A wrong answer after the hint stays at 0.
+    expect(
+      scoreAnswer({ question: q, answer: 'inconnu', tMs: 0, prevStreak: 2, hintPenaltyPct: 25 })
+        .points,
+    ).toBe(0);
+  });
+
   it('bonne réponse au temps limite → P_max / 2', () => {
     const { good, q } = single();
     const r = scoreAnswer({ question: q, answer: good.id, tMs: 20_000, prevStreak: 0 });

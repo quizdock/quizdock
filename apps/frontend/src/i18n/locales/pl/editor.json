@@ -418,13 +418,15 @@
       "audio": "Dźwięk, {{seconds}} s",
       "unknown": "Długość jeszcze nieznana",
       "reveal": "Stopniowe odsłanianie: {{seconds}} s",
-      "explanation": "Wyjaśnienie, pokazane z poprawną odpowiedzią"
+      "explanation": "Wyjaśnienie, pokazane z poprawną odpowiedzią",
+      "hint": "Podpowiedź, od {{seconds}} s"
     },
     "label": {
       "image": "Obraz",
       "video": "Wideo",
       "reveal": "Odsłanianie",
-      "explanation": "Wyjaśnienie"
+      "explanation": "Wyjaśnienie",
+      "hint": "Podpowiedź"
     },
     "add": "Dodaj element",
     "clear": "Usuń wszystkie media",
@@ -442,7 +444,9 @@
       "reveal": "Stopniowe odsłanianie",
       "revealHint": "Obraz wyostrza się, gdy sala odpowiada",
       "explanation": "Wyjaśnienie",
-      "explanationHint": "Pokazane z poprawną odpowiedzią"
+      "explanationHint": "Pokazane z poprawną odpowiedzią",
+      "hint": "Podpowiedź",
+      "hintHint": "Pomoc w trakcie pytania w zamian za część punktów"
     },
     "refused": {
       "imageChoice": "Wybór obrazów nie ma własnego obrazu ani wideo.",
@@ -455,7 +459,8 @@
       "revealNeedsImage": "Stopniowe odsłanianie: najpierw dodaj obraz.",
       "oneReveal": "Jedno odsłanianie na obraz.",
       "pollExplanation": "Ankieta nie ma poprawnej odpowiedzi do wyjaśnienia.",
-      "oneExplanation": "Jedno wyjaśnienie na pytanie."
+      "oneExplanation": "Jedno wyjaśnienie na pytanie.",
+      "oneHint": "Jedna podpowiedź na pytanie."
     },
     "clearConfirm": {
       "title": "Usunąć wszystkie media?",
@@ -530,7 +535,16 @@
     },
     "slideKind": "Slajd",
     "totalOpen": "{{seconds}} s, potem prowadzący przechodzi dalej",
-    "explanationHint": "Pokazywane na ekranach z poprawną odpowiedzią, dopóki ona jest widoczna."
+    "explanationHint": "Pokazywane na ekranach z poprawną odpowiedzią, dopóki ona jest widoczna.",
+    "hint": {
+      "text": "Tekst podpowiedzi",
+      "textPlaceholder": "Wybrano ją w 1923 roku",
+      "textHint": "{{n}} / {{max}} znaków",
+      "afterS": "Po otwarciu (s)",
+      "penalty": "Kara (%)",
+      "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi.",
+      "remove": "Usuń podpowiedź"
+    }
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",

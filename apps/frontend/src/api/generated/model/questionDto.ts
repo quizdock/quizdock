@@ -9,6 +9,7 @@ import type { QuestionDtoAcceptedAnswersItem } from './questionDtoAcceptedAnswer
 import type { QuestionDtoAudioTarget } from './questionDtoAudioTarget';
 import type { QuestionDtoBackgroundGradient } from './questionDtoBackgroundGradient';
 import type { QuestionDtoBackgroundStyle } from './questionDtoBackgroundStyle';
+import type { QuestionDtoHint } from './questionDtoHint';
 import type { QuestionDtoMedia } from './questionDtoMedia';
 import type { QuestionDtoMediaPosition } from './questionDtoMediaPosition';
 import type { QuestionDtoMediaStyle } from './questionDtoMediaStyle';
@@ -57,6 +58,8 @@ export interface QuestionDto {
   mediaPosition: QuestionDtoMediaPosition;
   /** @nullable */
   mediaStyle: QuestionDtoMediaStyle;
+  /** @nullable */
+  hint: QuestionDtoHint;
   timerAfterMedia: boolean;
   pointsMode: QuestionDtoPointsMode;
   scoring: QuestionDtoScoring;
