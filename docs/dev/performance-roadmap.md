@@ -94,11 +94,21 @@ Before that measure, the analysis read the code:
   (departures, bans, reconnections, next quiz) cover the cases; each one must
   keep passing.
 
-### 3.3 Coalescing the lobby broadcasts — behaviour change
+### 3.3 Coalescing the lobby broadcasts: **done** (#291)
 
-- Send the "ready / loaded" count at most every ~100 ms instead of on every
-  arrival. The count on the screens moves in steps: to be decided as a product
-  choice, apart from the rest.
+- The readiness (the screens' *ready* count, the lobby's count on the phones) goes out
+  at most every 100 ms per room (`READINESS_EVERY_MS`), the last one always, instead of
+  on every arrival, *Ready!*, departure or media loaded: the pattern of 3.0. The step
+  changes still send it at once. The counts move in steps of at most 100 ms; the last
+  device ready ends a media wait up to 100 ms later.
+- **Measured**, a join wave (50 at a time, as the load test) into one lobby, Apple M4,
+  two runs each: the messages to the participants from 265,000 to 134,400 at 500
+  players and from 1,034,000 to 536,000 at 1000; `player:join` ack p95 from 319–344 ms
+  to 176–194 ms at 500 and from 744–749 ms to 386–394 ms at 1000 (`load-test.mjs`);
+  the backend's CPU over the wave from 2.1 s to 1.2–1.4 s at 500, 8.4 s to 4.2–4.4 s at
+  1000.
+- **Left**: `player:joined` still goes to every device, about 93 % of what a join wave
+  sends now; who needs it is a protocol question (#291).
 
 ### 3.4 Several processes — architecture
 
@@ -124,7 +134,7 @@ Before that measure, the analysis read the code:
 
 1. ~~The engine refactoring (lot 2), behaviour unchanged, measured.~~ Done.
 2. ~~3.1, measured.~~ Done. 3.2 set aside (see above).
-3. ~~3.0.~~ Done (lot 5b). 3.3 if the product accepts it.
+3. ~~3.0.~~ Done (lot 5b). ~~3.3.~~ Done.
 4. ~~The sizing table measured again and published in the
    [sizing guide](https://quizdock.github.io/docs/operator/sizing/).~~ Done, measured cold, 3.0 included.
 5. 3.4 only on a confirmed need, after a multi-room measure.
