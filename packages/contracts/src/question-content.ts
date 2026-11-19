@@ -86,20 +86,26 @@ export const EXPLANATION_MAX = 2000;
 export const TIME_LIMIT_S = { min: 5, max: 240, default: 20 } as const;
 
 /**
- * The answer time a new question starts from, by type (SPECIFICATIONS-QUESTION-TIMELINE
- * §4): a true or false reads at a glance, a typed answer takes longer. The builder's
- * starting point only; a question stored without one keeps {@link TIME_LIMIT_S.default}.
+ * The question types' reference (SPECIFICATIONS-QUESTION-TIMELINE §4): for each, the answer
+ * time a new question starts from — a true or false reads at a glance, a typed answer
+ * takes longer — and its icon, a Lucide name the screens draw. The builder's starting
+ * point only; a question stored without a time keeps {@link TIME_LIMIT_S.default}.
  */
-export const TIME_LIMIT_BY_TYPE: Record<QuestionTypeName, number> = {
-  true_false: 10,
-  single_choice: 20,
-  multiple_choice: 20,
-  text_input: 30,
-  numeric: 20,
-  ordering: 20,
-  poll: 20,
-  image_choice: 20,
+export const QUESTION_TYPE_INFO: Record<QuestionTypeName, { timeLimitS: number; icon: string }> = {
+  single_choice: { timeLimitS: 20, icon: 'circle-dot' },
+  multiple_choice: { timeLimitS: 20, icon: 'square-check' },
+  true_false: { timeLimitS: 10, icon: 'check-check' },
+  text_input: { timeLimitS: 30, icon: 'text-cursor-input' },
+  numeric: { timeLimitS: 20, icon: 'hash' },
+  ordering: { timeLimitS: 20, icon: 'arrow-down-wide-narrow' },
+  poll: { timeLimitS: 20, icon: 'bar-chart-3' },
+  image_choice: { timeLimitS: 20, icon: 'layout-grid' },
 };
+
+/** The answer time a new question of each type starts from (see {@link QUESTION_TYPE_INFO}). */
+export const TIME_LIMIT_BY_TYPE = Object.fromEntries(
+  Object.entries(QUESTION_TYPE_INFO).map(([type, info]) => [type, info.timeLimitS]),
+) as Record<QuestionTypeName, number>;
 export const REVEAL_DELAY_S = { min: 1, max: 300 } as const;
 
 /** A hint's text: readable before the time runs out (SPECIFICATIONS-HINTS §2). */

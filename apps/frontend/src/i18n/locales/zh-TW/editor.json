@@ -741,5 +741,18 @@
       "formula": "不讀取公式",
       "invalid_content": "文字超出 QuizDock 的長度限制"
     }
+  },
+  "quizTimeline": {
+    "legend": "測驗流程",
+    "total": "自動模式約 {{time}}",
+    "count": "{{questions}} 題 · {{slides}} 張簡報",
+    "scale": "比例",
+    "scaleValue": {
+      "time": "按時長",
+      "equal": "每步一格"
+    },
+    "minute": "{{n}} 分鐘",
+    "slideTip": "簡報「{{name}}」· {{time}}",
+    "questionTip": "第 {{n}} 題 · {{name}} · {{time}}"
   }
 }

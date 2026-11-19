@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, type Quiz, QuizStatus, SessionStatus } from '@prisma/client';
+import { SETTINGS } from '@quiz-dock/contracts';
 import { isManager, type RoleSet } from '../auth/roles';
 import { livePinOf } from '../game/game.keys';
 import { MediaService } from '../media/media.service';
@@ -22,6 +23,8 @@ import type { UpdateQuizDto } from './dto/update-quiz.dto';
 import { roomStandings } from './room-standings';
 import { instanceLanguage } from '../common/instance-language';
 import { readableBy, requireQuiz } from './quiz-access';
+import { quizDurationS } from './quiz-duration';
+import { settings } from '../admin/settings/settings.service';
 
 type QuizFeedbackQuery = Pick<QuizFeedbackQueryDto, 'page' | 'pageSize' | 'rating'>;
 
@@ -49,7 +52,9 @@ export class QuizzesService {
   async list(user: {
     id: string;
     roles: RoleSet;
-  }): Promise<(Quiz & { ownerName?: string; editable: boolean; sessionCount: number })[]> {
+  }): Promise<
+    (Quiz & { ownerName?: string; editable: boolean; sessionCount: number; durationS: number })[]
+  > {
     const manager = isManager(user.roles);
     const rows = await this.prisma.quiz.findMany({
       where: manager ? {} : readableBy(user.id),
@@ -58,12 +63,32 @@ export class QuizzesService {
         owner: { select: { displayName: true } },
         // Its sessions kept: the library leads to their results.
         _count: { select: { sessionLogs: true } },
+        // What its length in auto mode is read from (its estimate, below).
+        questions: {
+          select: {
+            timeLimitS: true,
+            timerAfterMedia: true,
+            revealDelayS: true,
+            visualMedia: { select: { kind: true, durationMs: true } },
+            audioMedia: { select: { durationMs: true } },
+          },
+        },
+        slides: { select: { displayDelayS: true } },
       },
     });
+    const autoAdvanceMs = settings.get(SETTINGS.GAME_AUTO_ADVANCE_MS);
     // Le nom du propriétaire n'a de sens que pour le quiz d'un autre : un hôte qui
     // lit sa banque n'a pas besoin qu'on lui rappelle que tout est à lui.
-    return rows.map(({ owner, _count, ...row }) => {
-      const quiz = { ...row, sessionCount: _count.sessionLogs };
+    return rows.map(({ owner, _count, questions, slides, ...row }) => {
+      const quiz = {
+        ...row,
+        sessionCount: _count.sessionLogs,
+        durationS: quizDurationS(questions, slides, {
+          readMs: settings.get(SETTINGS.GAME_READ_DELAY_MS),
+          tailS: row.mediaTailS,
+          autoAdvanceS: autoAdvanceMs ? Math.round(autoAdvanceMs / 1000) : null,
+        }),
+      };
       const editable = quiz.ownerId === user.id;
       return manager || !editable
         ? { ...quiz, editable, ownerName: owner.displayName }

@@ -215,5 +215,7 @@
   "results": "नतीजे",
   "newQuizBlank": "खाली क्विज़",
   "newQuizFromTemplate": "टेम्पलेट से…",
-  "newQuizImport": "फ़ाइल इंपोर्ट करें…"
+  "newQuizImport": "फ़ाइल इंपोर्ट करें…",
+  "duration": "≈ {{n}} मि.",
+  "durationHint": "ऑटो मोड में अनुमानित अवधि"
 }

@@ -16,6 +16,7 @@ export * from './preferences';
 export * from './question-media';
 export * from './question-content';
 export * from './quiz-terms';
+export * from './quiz-duration';
 export * from './slide-content';
 export * from './slide-media';
 export * from './admin/settings';

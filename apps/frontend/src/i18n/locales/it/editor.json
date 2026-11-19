@@ -756,5 +756,18 @@
       "formula": "le formule non vengono lette",
       "invalid_content": "un testo troppo lungo per QuizDock"
     }
+  },
+  "quizTimeline": {
+    "legend": "Svolgimento del quiz",
+    "total": "≈ {{time}} in modalità auto",
+    "count": "{{questions}} domande · {{slides}} slide",
+    "scale": "Scala",
+    "scaleValue": {
+      "time": "In scala",
+      "equal": "Una casella per passaggio"
+    },
+    "minute": "{{n}} min",
+    "slideTip": "Slide «{{name}}» · {{time}}",
+    "questionTip": "D{{n}} · {{name}} · {{time}}"
   }
 }

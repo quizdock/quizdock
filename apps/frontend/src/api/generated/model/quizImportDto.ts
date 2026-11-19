@@ -52,6 +52,11 @@ export interface QuizImportDto {
      * @maximum 9007199254740991
      */
   sessionCount?: number;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+  durationS?: number;
   createdAt: string;
   updatedAt: string;
   /** @nullable */

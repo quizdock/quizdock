@@ -755,5 +755,18 @@
       "formula": "las fórmulas no se leen",
       "invalid_content": "texto demasiado largo para QuizDock"
     }
+  },
+  "quizTimeline": {
+    "legend": "Desarrollo del quiz",
+    "total": "≈ {{time}} en modo auto",
+    "count": "{{questions}} preguntas · {{slides}} diapositivas",
+    "scale": "Escala",
+    "scaleValue": {
+      "time": "A escala",
+      "equal": "Una casilla por paso"
+    },
+    "minute": "{{n}} min",
+    "slideTip": "Diapositiva «{{name}}» · {{time}}",
+    "questionTip": "P{{n}} · {{name}} · {{time}}"
   }
 }

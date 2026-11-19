@@ -233,5 +233,7 @@
   "results": "Résultats",
   "newQuizBlank": "Quiz vierge",
   "newQuizFromTemplate": "À partir d’un modèle…",
-  "newQuizImport": "Importer un fichier…"
+  "newQuizImport": "Importer un fichier…",
+  "duration": "≈ {{n}} min",
+  "durationHint": "Durée estimée en mode auto"
 }

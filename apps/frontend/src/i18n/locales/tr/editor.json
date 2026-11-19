@@ -739,5 +739,18 @@
       "formula": "formüller okunmaz",
       "invalid_content": "QuizDock için fazla uzun bir metin"
     }
+  },
+  "quizTimeline": {
+    "legend": "Yarışmanın akışı",
+    "total": "Otomatik modda ≈ {{time}}",
+    "count": "{{questions}} soru · {{slides}} slayt",
+    "scale": "Ölçek",
+    "scaleValue": {
+      "time": "Ölçekli",
+      "equal": "Adım başına bir kutu"
+    },
+    "minute": "{{n}} dk",
+    "slideTip": "Slayt “{{name}}” · {{time}}",
+    "questionTip": "S{{n}} · {{name}} · {{time}}"
   }
 }

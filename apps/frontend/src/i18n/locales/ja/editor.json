@@ -741,5 +741,18 @@
       "formula": "数式は読み込まれません",
       "invalid_content": "QuizDock には長すぎるテキストです"
     }
+  },
+  "quizTimeline": {
+    "legend": "クイズの流れ",
+    "total": "自動モードで約 {{time}}",
+    "count": "問題 {{questions}} · スライド {{slides}}",
+    "scale": "縮尺",
+    "scaleValue": {
+      "time": "時間に比例",
+      "equal": "1ステップ1マス"
+    },
+    "minute": "{{n}} 分",
+    "slideTip": "スライド「{{name}}」· {{time}}",
+    "questionTip": "Q{{n}} · {{name}} · {{time}}"
   }
 }

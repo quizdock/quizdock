@@ -769,5 +769,18 @@
       "formula": "формулы не читаются",
       "invalid_content": "текст слишком длинный для QuizDock"
     }
+  },
+  "quizTimeline": {
+    "legend": "Ход квиза",
+    "total": "≈ {{time}} в авторежиме",
+    "count": "Вопросов: {{questions}} · слайдов: {{slides}}",
+    "scale": "Масштаб",
+    "scaleValue": {
+      "time": "В масштабе",
+      "equal": "Одна ячейка на шаг"
+    },
+    "minute": "{{n}} мин",
+    "slideTip": "Слайд «{{name}}» · {{time}}",
+    "questionTip": "В{{n}} · {{name}} · {{time}}"
   }
 }

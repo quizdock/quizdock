@@ -51,6 +51,7 @@
   --timeline-time: oklch(0.55 0.16 300);
   --timeline-visual: oklch(0.55 0.2 255);
   --timeline-audio: oklch(0.55 0.14 155);
+  --timeline-slide: oklch(0.62 0.12 185);
   /* An answer's colour, as its author picked it: its identity on every screen. */
   --answer-red: oklch(57.7% 0.245 27.325);
   --answer-blue: oklch(54.6% 0.245 262.881);
@@ -112,6 +113,7 @@
   --timeline-time: oklch(0.72 0.14 300);
   --timeline-visual: oklch(0.72 0.15 255);
   --timeline-audio: oklch(0.75 0.14 155);
+  --timeline-slide: oklch(0.7 0.11 185);
 }
 
 /*
@@ -192,6 +194,7 @@
   --color-timeline-time: var(--timeline-time);
   --color-timeline-visual: var(--timeline-visual);
   --color-timeline-audio: var(--timeline-audio);
+  --color-timeline-slide: var(--timeline-slide);
   --color-answer-red: var(--answer-red);
   --color-answer-blue: var(--answer-blue);
   --color-answer-yellow: var(--answer-yellow);

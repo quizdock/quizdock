@@ -3962,6 +3962,11 @@
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
+          "durationS": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
           "createdAt": {
             "type": "string"
           },
@@ -4161,6 +4166,11 @@
             "type": "string"
           },
           "sessionCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "durationS": {
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
@@ -4521,6 +4531,11 @@
             "type": "string"
           },
           "sessionCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "durationS": {
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991

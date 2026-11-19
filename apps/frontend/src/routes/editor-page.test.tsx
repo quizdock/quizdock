@@ -777,12 +777,20 @@ describe('EditorPage', () => {
     ]);
     renderApp('/quizzes/q1');
 
-    const rows = await screen.findAllByRole('listitem');
+    // The sequence's rows, not the quiz timeline's blocks above it.
+    const timeline = await screen.findByRole('region', { name: 'Déroulé du quiz' });
+    const rows = (await screen.findAllByRole('listitem')).filter((r) => !timeline.contains(r));
     expect(rows.map((r) => r.textContent)).toEqual([
       expect.stringContaining('Première'),
       expect.stringContaining('Interlude'),
       expect.stringContaining('Seconde'),
     ]);
+    // The quiz timeline goes in the same order: the slide between its two questions.
+    expect(
+      within(timeline)
+        .getAllByRole('button', { name: /^(Slide|Q\d)/ })
+        .map((b) => b.getAttribute('aria-label')?.split(' · ')[0]),
+    ).toEqual(['Q1', 'Slide « Interlude »', 'Q2']);
     // The slide moves above « Première », from its ⋯ (the open step is « Première »).
     await stepMenu('Interlude', 'Monter');
     await waitFor(() => {

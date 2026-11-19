@@ -741,5 +741,18 @@
       "formula": "Formeln werden nicht gelesen",
       "invalid_content": "ein Text, der für QuizDock zu lang ist"
     }
+  },
+  "quizTimeline": {
+    "legend": "Ablauf des Quiz",
+    "total": "≈ {{time}} im Automodus",
+    "count": "{{questions}} Fragen · {{slides}} Folien",
+    "scale": "Maßstab",
+    "scaleValue": {
+      "time": "Maßstabsgetreu",
+      "equal": "Ein Feld pro Schritt"
+    },
+    "minute": "{{n}} min",
+    "slideTip": "Folie „{{name}}“ · {{time}}",
+    "questionTip": "F{{n}} · {{name}} · {{time}}"
   }
 }

@@ -671,6 +671,12 @@ function QuizFacts({ quiz, date }: { quiz: QuizDto; date: (iso: string) => strin
   return (
     <span className="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
       <span>{t('questionCount', { count: quiz.questionCount })}</span>
+      {quiz.durationS ? (
+        // Its length in auto mode, by the editor's timeline rule, in whole minutes.
+        <span title={t('durationHint')}>
+          · {t('duration', { n: Math.max(1, Math.round(quiz.durationS / 60)) })}
+        </span>
+      ) : null}
       <span>· {quiz.language.toUpperCase()}</span>
       <span>· {t('updatedOn', { date: date(quiz.updatedAt) })}</span>
       {quiz.ownerName ? <span>· {t('ownedBy', { name: quiz.ownerName })}</span> : null}

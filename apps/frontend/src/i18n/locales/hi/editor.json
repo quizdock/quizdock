@@ -742,5 +742,18 @@
       "formula": "फ़ॉर्मूले नहीं पढ़े जाते",
       "invalid_content": "QuizDock के लिए बहुत लंबा टेक्स्ट"
     }
+  },
+  "quizTimeline": {
+    "legend": "क्विज़ का क्रम",
+    "total": "ऑटो मोड में ≈ {{time}}",
+    "count": "{{questions}} प्रश्न · {{slides}} स्लाइड",
+    "scale": "पैमाना",
+    "scaleValue": {
+      "time": "समय के अनुपात में",
+      "equal": "हर चरण के लिए एक खाना"
+    },
+    "minute": "{{n}} मि.",
+    "slideTip": "स्लाइड “{{name}}” · {{time}}",
+    "questionTip": "प्र{{n}} · {{name}} · {{time}}"
   }
 }

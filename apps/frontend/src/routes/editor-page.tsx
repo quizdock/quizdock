@@ -79,6 +79,9 @@ import type { QuizDetailDto, UpdateQuizDto } from '../api/generated/model';
 import { QuizThemeField } from './quiz-theme-field';
 import { QuizThemeProvider, useQuizThemeValues } from '@/lib/quiz-theme';
 import { LiveThemeAnswers } from '../game/theme';
+import { READ_DELAY_DEFAULT_MS } from './question-form-model';
+import { QuizTimeline } from './quiz-timeline';
+import { quizTimeline } from './quiz-timeline-model';
 import { quizItems, moveItem, slideLabel, type QuizItem } from '@/lib/quiz-items';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
@@ -111,7 +114,7 @@ import {
 } from '../api/generated/store/store';
 import { useGameControllerMine } from '../api/generated/games/games';
 import { useQuestionsControllerRemove } from '../api/generated/questions/questions';
-import { getDemo } from '../config';
+import { appConfig, getDemo } from '../config';
 import { editorRoute } from '../router';
 import { LoadFailed, PageLoading } from '@/components/ui/loading';
 import { CheckboxField } from '@/components/ui/checkbox-field';
@@ -377,6 +380,8 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
     }))
     .filter((u) => u.issues.length > 0);
   const [checklist, setChecklist] = useState(false);
+  // The quiz timeline to scale, or one box per step (a long quiz's slides stay readable).
+  const [timelineScale, setTimelineScale] = useState<'time' | 'equal'>('time');
   // Publishing an unfinished quiz lists what is missing, each line opening its step.
   const onPublish = () => (unfinished.length > 0 ? setChecklist(true) : void changeStatus('ready'));
   // Arrived from the dashboard's « Publish to present »: done once, then the address is clean.
@@ -841,6 +846,22 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         ) : null}
       </header>
       <ImportReportNotice quizId={quiz.id} />
+      {/* The whole quiz, in order and to scale, between its settings and its steps. */}
+      <QuizTimeline
+        steps={quizTimeline(items, {
+          readMs: READ_DELAY_DEFAULT_MS,
+          tailS: quiz.mediaTailS,
+          autoAdvanceS: appConfig.autoAdvanceS ?? null,
+        })}
+        labels={items.map((item, i) => ({
+          number: questionNumber(items, i),
+          name: item.kind === 'question' ? item.question.prompt : slideLabel(item.slide),
+        }))}
+        selected={editing}
+        onOpen={(id) => requestEditing(id)}
+        scale={timelineScale}
+        onScale={setTimelineScale}
+      />
       {/* Master / detail: the sequence on the left, the open item on the right (a bottom
           sheet below `lg`). */}
       <div
@@ -1295,13 +1316,14 @@ function ItemRow({
         active ? 'bg-primary/5 border-primary/30' : 'hover:bg-accent/60',
       )}
     >
-      {/* The open step shows how to move it; nothing appears on hover only. */}
-      {active ? <div className="flex items-center pl-1">{handle}</div> : null}
+      {/* The open step shows how to move it; nothing appears on hover only. Its place is
+          kept on every row, so the numbers stay in one column whichever step is open. */}
+      <div className="flex w-6 shrink-0 items-center justify-center">{active ? handle : null}</div>
       <button
         type="button"
         aria-current={active ? 'true' : undefined}
         onClick={onEdit}
-        className="flex min-w-0 flex-1 items-start gap-3 py-3 pr-2 text-left"
+        className="flex min-w-0 flex-1 items-start gap-3 py-3 pr-2 pl-0 text-left"
       >
         <span
           className={cn(

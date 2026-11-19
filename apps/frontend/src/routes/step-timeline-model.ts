@@ -1,4 +1,4 @@
-import { effectiveTimeLimitS, slideMediaHoldMs } from '@quiz-dock/contracts';
+import { effectiveTimeLimitS, OPEN_END_S, slideMediaHoldMs } from '@quiz-dock/contracts';
 
 /**
  * What a question or a slide plays, and when, as the editor's timeline draws it
@@ -54,7 +54,7 @@ export interface StepTimeline {
 }
 
 /** How wide a segment without an end of its own is drawn (s): the host moves on. */
-export const OPEN_END_S = 5;
+export { OPEN_END_S };
 
 const seconds = (ms: number) => Math.ceil(ms / 1000);
 
