@@ -192,7 +192,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const [formDirty, setFormDirty] = useState(false);
   const [pendingEdit, setPendingEdit] = useState<Editing | undefined>(undefined);
   const onFormDirty = useCallback((d: boolean) => setFormDirty(d), []);
-  // The open question form's save, to save before switching (#195); a slide form has none.
+  // The open step form's save, a question's or a slide's, to save before switching (#195).
   const saveFormRef = useRef<(() => Promise<boolean>) | null>(null);
   const [savingFirst, setSavingFirst] = useState(false);
   // A new question saved: it stays open, as the question it now is.
@@ -471,6 +471,8 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         onMoveToDraft={moveToDraft}
         quizFields={slideQuizFields}
         onClose={closeForm}
+        onCreated={openCreated}
+        saveRef={saveFormRef}
         onDirtyChange={onFormDirty}
       />
     ) : editingItem?.kind === 'question' ? (
@@ -498,6 +500,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         onMoveToDraft={moveToDraft}
         quizFields={slideQuizFields}
         onClose={closeForm}
+        saveRef={saveFormRef}
         onDirtyChange={onFormDirty}
       />
     ) : null;
@@ -1086,9 +1089,9 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         confirmLabel={
           pendingEdit ? t('discardConfirm.discardAndContinue') : t('discardConfirm.confirmLabel')
         }
-        // A question's changes can be saved on the way (#195): only once saved does it go on.
+        // A step's changes can be saved on the way (#195): only once saved does it go on.
         alternative={
-          editing === 'new' || editingItem?.kind === 'question'
+          editing !== null
             ? {
                 label: pendingEdit
                   ? t('discardConfirm.saveAndContinue')

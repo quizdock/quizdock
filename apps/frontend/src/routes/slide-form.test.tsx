@@ -134,6 +134,29 @@ describe('SlideForm — media and display time', () => {
       .filter(([url, o]) => String(url).includes('/slides/s1') && o?.method === 'PUT')
       .map(([, o]) => JSON.parse(String((o as RequestInit).body)));
 
+  it('as a question’s (SPECIFICATIONS-STEP-EDITOR): Cmd+S saves it, it stays open, its preview pins', async () => {
+    const fetchMock = mockApi([{ method: 'PUT', path: '/slides/s1', status: 200, body: {} }]);
+    renderSlide(slideWith({ displayDelayS: 12 }));
+    // The room's screen, projection or phone, pinnable at the top.
+    expect(screen.getByRole('button', { name: 'Épingler' })).toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: 'Montrer la réponse' })).toBeNull();
+    openTimeSettings();
+    fireEvent.change(screen.getByLabelText('Durée (s)'), { target: { value: '13' } });
+    screen.getByLabelText('Durée (s)').dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 's',
+        code: 'KeyS',
+        ctrlKey: true,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await waitFor(() => expect(put(fetchMock)).toHaveLength(1));
+    // Saved: still open, clean, and saying so.
+    expect(await screen.findByText('Enregistré')).toBeInTheDocument();
+    expect(screen.getByLabelText('Durée (s)')).toHaveValue(13);
+  });
+
   it('saves a loaded slide as it was, but for the one change', async () => {
     const fetchMock = mockApi([{ method: 'PUT', path: '/slides/s1', status: 200, body: {} }]);
     renderSlide(

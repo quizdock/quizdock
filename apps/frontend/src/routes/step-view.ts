@@ -58,6 +58,22 @@ export function stepView(
     : { ...base, state: GameState.QuestionShow, question };
 }
 
+/**
+ * A slide being written, as the room will see it (the step editor's preview): the slide
+ * alone, still, in the quiz's theme.
+ */
+export function slidePreviewView(slide: GameView['slide'], theme: ThemeValues | null): GameView {
+  return {
+    ...INITIAL_VIEW,
+    status: 'ready',
+    joinLocked: true,
+    still: true,
+    theme,
+    state: GameState.SlideShow,
+    slide,
+  };
+}
+
 /** The question as `question:start` carries it. */
 function liveQuestion(
   q: QuizDetailDtoQuestionsItem,

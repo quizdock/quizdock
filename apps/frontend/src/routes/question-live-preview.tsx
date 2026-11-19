@@ -4,25 +4,14 @@ import {
   type QuestionContent,
   normalizeAnswer,
 } from '@quiz-dock/contracts';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Monitor, Pin, PinOff, Smartphone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Disclosure } from '@/components/ui/disclosure';
-import { cn } from '@/lib/utils';
-import { useSessionState } from '@/lib/use-session-state';
 import type { QuizDetailDtoQuestionsItem } from '../api/generated/model';
-import { Segmented } from '@/components/ui/segmented';
-import { Switch } from '@/components/ui/switch';
-import { useMediaUrl } from '@/lib/media-url';
-import { RoomScreen } from './quiz-steps-preview';
+import { StepLivePreview } from './step-live-preview';
 import { stepView } from './step-view';
-import { useQuizTheme } from '@/lib/quiz-theme';
 import { type FormValues, buildPayload } from './question-form-model';
 
 /**
- * The question as the room will see it, while it is being written: the real
- * projection or phone (UI system §3), folded until asked for.
+ * The question as the room will see it, while it is being written: the step preview
+ * (StepLivePreview), its right answer shown on request.
  */
 export function LivePreview({
   values,
@@ -31,84 +20,25 @@ export function LivePreview({
   values: FormValues;
   position?: { index: number; total: number };
 }) {
-  const { t } = useTranslation('editor');
-  const url = useMediaUrl();
-  const [device, setDevice] = useState<'projection' | 'phone'>('projection');
-  const [answer, setAnswer] = useState(false);
-  // Pinned, it stays at the top while the form scrolls, from one question to the next.
-  const [pinned, setPinned] = useSessionState(
-    'editor:preview-pinned',
-    false,
-    (v): v is boolean => typeof v === 'boolean',
-  );
-  // In the quiz's theme, as the room will see it.
-  const theme = useQuizTheme();
-  const view = useMemo(() => {
-    const question = previewQuestion(values);
-    const view = stepView([{ kind: 'question', id: question.id, question }], 0, NO_QUIZ, url, {
-      reveal: answer,
-      theme,
-    });
-    // Where it stands in the quiz, as the room's band will say.
-    return {
-      ...view,
-      questionIndex: position.index,
-      totalQuestions: position.total,
-      question: view.question && {
-        ...view.question,
-        questionIndex: position.index,
-      },
-    };
-  }, [values, url, answer, position.index, position.total, theme]);
   return (
-    <Disclosure
-      title={t('preview.title')}
-      value={t(`preview.${device}`)}
-      rememberAs="question-preview"
-      className={cn(pinned && 'bg-background sticky top-0 z-20 shadow-md')}
-    >
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Segmented
-            size="sm"
-            label={t('preview.device')}
-            value={device}
-            onChange={setDevice}
-            options={[
-              {
-                value: 'projection',
-                label: t('preview.projection'),
-                icon: Monitor,
-              },
-              { value: 'phone', label: t('preview.phone'), icon: Smartphone },
-            ]}
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <Switch
-              checked={answer}
-              onCheckedChange={setAnswer}
-              aria-label={t('preview.showAnswer')}
-            />
-            {t('preview.showAnswer')}
-          </label>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="ml-auto"
-            aria-pressed={pinned}
-            onClick={() => setPinned(!pinned)}
-          >
-            {pinned ? <PinOff /> : <Pin />}
-            {pinned ? t('preview.unpin') : t('preview.pin')}
-          </Button>
-        </div>
-        {/* Pinned, it leaves the form most of the screen. */}
-        <div className={cn(pinned && 'mx-auto w-full max-w-[calc(40dvh*16/9)]')}>
-          <RoomScreen view={view} device={device} />
-        </div>
-      </div>
-    </Disclosure>
+    <StepLivePreview
+      canReveal
+      deps={[values, position.index, position.total]}
+      viewOf={({ reveal, url, theme }) => {
+        const question = previewQuestion(values);
+        const view = stepView([{ kind: 'question', id: question.id, question }], 0, NO_QUIZ, url, {
+          reveal,
+          theme,
+        });
+        // Where it stands in the quiz, as the room's band will say.
+        return {
+          ...view,
+          questionIndex: position.index,
+          totalQuestions: position.total,
+          question: view.question && { ...view.question, questionIndex: position.index },
+        };
+      }}
+    />
   );
 }
 

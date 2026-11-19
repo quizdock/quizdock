@@ -13,15 +13,12 @@ import {
 } from '@quiz-dock/contracts';
 import { useStore } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useMemo, useRef, useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MediaEditsContext, useMediaEdits } from '@/lib/media-edits';
 import { Disclosure } from '@/components/ui/disclosure';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useFormDraft } from '@/lib/use-form-draft';
 import { clearDraft, formDraftKey, loadDraft } from '@/lib/draft-store';
-import { FormActionBar } from '@/components/form-action-bar';
-import { DraftNotice } from '@/components/draft-notice';
 import { MarkdownEditor } from '@/components/markdown-editor';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
@@ -68,7 +65,7 @@ import {
 } from './question-answer-sections';
 import { PromptImageNotice } from './prompt-image-notice';
 import { LivePreview } from './question-live-preview';
-import { useHotkeys } from 'react-hotkeys-hook';
+import { StepFormFrame, useStepForm } from './step-form';
 
 export function QuestionForm({
   quizId,
@@ -120,7 +117,6 @@ export function QuestionForm({
   // A save makes what was saved the new baseline: the editor stays open, clean (#195).
   const [initial, setInitial] = useState(() => initialValues(question));
   // "Saved" shows after a save, until the next change.
-  const [saved, setSaved] = useState(false);
   // Whether the last submit got saved (a refusal, or the ready-to-draft question, did not).
   const savedOk = useRef(false);
   // Draft kept in localStorage until saved or discarded (survives reload / closed tab).
@@ -154,7 +150,7 @@ export function QuestionForm({
   const save = async (data: ReturnType<typeof buildPayload>, value: FormValues) => {
     try {
       // The media's alt and credit, edited here, are saved with the question.
-      await mediaEdits.flush();
+      await step.mediaEdits.flush();
       let createdId: string | null = null;
       if (question) {
         await update.mutateAsync({ qid: question.id, data });
@@ -170,7 +166,7 @@ export function QuestionForm({
         // What was typed meanwhile stays a change.
         setInitial(value);
         setRestored(null);
-        setSaved(true);
+        step.setSaved(true);
       } else if (onCreated) onCreated(createdId);
       else onClose();
     } catch (err) {
@@ -203,50 +199,17 @@ export function QuestionForm({
   const values = useStore(form.store, (s) => s.values);
   // Dirty = values differ from what was loaded (a fresh question is dirty as soon as typed in).
   const formDirty = useFormDraft(draftKey, initial, values, onDirtyChange);
-  // Alt texts and credits typed here wait for the Save, and count as changes.
-  const mediaEdits = useMediaEdits();
-  const dirty = formDirty || mediaEdits.dirty;
-  useEffect(() => {
-    if (mediaEdits.dirty) onDirtyChange?.(true);
-  }, [mediaEdits.dirty, onDirtyChange]);
-  useEffect(() => {
-    if (dirty) setSaved(false);
-  }, [dirty]);
-  // Cmd+S (macOS) or Ctrl+S saves the question, from any of its fields, instead of the
-  // browser saving the page; not under a dialog, and once at a time.
-  const formRef = useRef<HTMLFormElement>(null);
-  const dirtyRef = useRef(dirty);
-  dirtyRef.current = dirty;
-  useHotkeys(
-    'mod+s',
-    () => {
-      if (dirtyRef.current && !form.state.isSubmitting) void form.handleSubmit();
-    },
-    {
-      enableOnFormTags: true,
-      enableOnContentEditable: true,
-      preventDefault: true,
-      // A dialog over the form (its own confirms, another one) keeps the keys; the
-      // sheet the form sits in on a phone is a dialog too, and does not.
-      ignoreEventWhen: () => {
-        const formEl = formRef.current;
-        return (
-          !formEl || [...document.querySelectorAll('dialog[open]')].some((d) => !d.contains(formEl))
-        );
-      },
-    },
-    [form],
-  );
-  useEffect(() => {
-    if (!saveRef) return;
-    saveRef.current = async () => {
+  // The frame every step's form shares: media edits, changes, Cmd+S, the page's save.
+  const step = useStepForm({
+    formDirty,
+    onDirtyChange,
+    busy: add.isPending || update.isPending,
+    saveRef,
+    submit: async () => {
       await form.handleSubmit();
       return savedOk.current;
-    };
-    return () => {
-      saveRef.current = null;
-    };
-  }, [saveRef, form]);
+    },
+  });
   // Back to what was loaded: the draft goes with the changes.
   const discardDraft = () => {
     setRestored(null);
@@ -361,225 +324,209 @@ export function QuestionForm({
   };
 
   return (
-    <MediaEditsContext.Provider value={mediaEdits.edits}>
-      <form
-        ref={formRef}
-        className="flex flex-col gap-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void form.handleSubmit();
-        }}
-      >
-        {/* Enregistrer est en haut, collant : une question longue (propositions,
-          explication, arrière-plan) mettait le bouton hors d'atteinte, et on ne
-          devrait jamais avoir à chercher comment garder ce qu'on vient d'écrire. */}
-        <FormActionBar
-          title={question ? t('questionForm.titleEdit') : t('questionForm.titleAdd')}
-          dirty={dirty}
-          saved={saved && !dirty}
-          busy={add.isPending || update.isPending}
-          submitLabel={question ? t('questionForm.submitUpdate') : t('questionForm.submitAdd')}
-          issues={issues}
-          onIssue={focusField}
-          onCancel={cancel}
-        />
+    <StepFormFrame
+      step={step}
+      className="flex flex-col gap-5"
+      onSubmit={() => void form.handleSubmit()}
+      title={question ? t('questionForm.titleEdit') : t('questionForm.titleAdd')}
+      submitLabel={question ? t('questionForm.submitUpdate') : t('questionForm.submitAdd')}
+      busy={add.isPending || update.isPending}
+      issues={issues}
+      onIssue={focusField}
+      onCancel={cancel}
+      restored={!!restored}
+      onDiscardDraft={discardDraft}
+      preview={<LivePreview values={values} position={position} />}
+      askDraft={{
+        open: askDraft,
+        title: t('questionForm.moveToDraft.title'),
+        description: t('questionForm.moveToDraft.description'),
+        confirmLabel: t('questionForm.moveToDraft.confirmLabel'),
+        cancelLabel: t('questionForm.moveToDraft.cancelLabel'),
+        onCancel: () => setAskDraft(false),
+        onConfirm: () => void moveToDraftAndSave(),
+      }}
+    >
+      <Label>
+        {t('questionForm.typeLabel')}
+        <Select value={type} onChange={(e) => onTypeChange(e.target.value as QType)}>
+          {TYPES.map((value) => (
+            <option key={value} value={value}>
+              {t(`questionType.${value}`)}
+            </option>
+          ))}
+        </Select>
+      </Label>
+      {/* What this type does on screen and how it scores — the rules are not obvious. */}
+      <p className="text-muted-foreground -mt-3 text-xs leading-snug">
+        {t(`questionTypeHelp.${type}`)}
+      </p>
+      {ticksCleared ? <Notice tone="info">{t('questionForm.ticksCleared')}</Notice> : null}
 
-        {restored ? <DraftNotice onDiscard={discardDraft} /> : null}
-        <LivePreview values={values} position={position} />
-        <Label>
-          {t('questionForm.typeLabel')}
-          <Select value={type} onChange={(e) => onTypeChange(e.target.value as QType)}>
-            {TYPES.map((value) => (
-              <option key={value} value={value}>
-                {t(`questionType.${value}`)}
-              </option>
-            ))}
-          </Select>
-        </Label>
-        {/* What this type does on screen and how it scores — the rules are not obvious. */}
-        <p className="text-muted-foreground -mt-3 text-xs leading-snug">
-          {t(`questionTypeHelp.${type}`)}
-        </p>
-        {ticksCleared ? <Notice tone="info">{t('questionForm.ticksCleared')}</Notice> : null}
-
-        <form.Field name="prompt">
-          {(field) => (
-            <div id="qf-prompt" className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium leading-none">
-                {t('questionForm.promptLabel')}
-              </span>
-              <MarkdownEditor
-                aria-label={t('questionForm.promptLabel')}
-                value={field.state.value}
-                onChange={field.handleChange}
-                placeholder={t('questionForm.promptPlaceholder')}
-              />
-              <FieldMessage issues={issuesAt('prompt')} />
-              {type === 'image_choice' ? null : (
-                <PromptImageNotice
-                  prompt={field.state.value}
-                  media={media}
-                  onMove={(rest, next) => {
-                    field.handleChange(rest);
-                    form.setFieldValue('media', next);
-                  }}
-                />
-              )}
-            </div>
-          )}
-        </form.Field>
-
-        {type === 'image_choice' && (
-          <fieldset id="qf-options" className="flex flex-col gap-2">
-            <legend className={LEGEND}>{t('questionForm.imagesLegend')}</legend>
-            <ImageChoiceOptions
-              options={options}
-              currentOptions={() => form.getFieldValue('options')}
-              multiSelect={multiSelect}
-              showErrors={checked}
-              sensors={sensors}
-              setOptions={setOptions}
-              newOption={newOption}
-              onCorrect={setCorrect}
-              onMultiSelect={(multi) => {
-                form.setFieldValue('multiSelect', multi);
-                // Back to one right picture: the first one ticked stays.
-                if (!multi) {
-                  const first = options.findIndex((o) => o.isCorrect);
-                  setOptions(options.map((o, i) => ({ ...o, isCorrect: i === first })));
-                }
-              }}
+      <form.Field name="prompt">
+        {(field) => (
+          <div id="qf-prompt" className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium leading-none">
+              {t('questionForm.promptLabel')}
+            </span>
+            <MarkdownEditor
+              aria-label={t('questionForm.promptLabel')}
+              value={field.state.value}
+              onChange={field.handleChange}
+              placeholder={t('questionForm.promptPlaceholder')}
             />
-            {/* Each picture says what it misses; here, what the whole question does. */}
-            <FieldMessage issues={issues.filter((i) => i.field === 'options')} />
-          </fieldset>
+            <FieldMessage issues={issuesAt('prompt')} />
+            {type === 'image_choice' ? null : (
+              <PromptImageNotice
+                prompt={field.state.value}
+                media={media}
+                onMove={(rest, next) => {
+                  field.handleChange(rest);
+                  form.setFieldValue('media', next);
+                }}
+              />
+            )}
+          </div>
         )}
+      </form.Field>
 
-        {OPTION_TYPES.includes(type) && type !== 'image_choice' && (
-          <TextOptionsSection
-            type={type}
+      {type === 'image_choice' && (
+        <fieldset id="qf-options" className="flex flex-col gap-2">
+          <legend className={LEGEND}>{t('questionForm.imagesLegend')}</legend>
+          <ImageChoiceOptions
             options={options}
-            setOptions={setOptions}
-            onCorrect={setCorrect}
-            onRemoveAsked={setPendingRemoval}
+            currentOptions={() => form.getFieldValue('options')}
+            multiSelect={multiSelect}
+            showErrors={checked}
             sensors={sensors}
-            issues={issuesAt('options')}
+            setOptions={setOptions}
+            newOption={newOption}
+            onCorrect={setCorrect}
+            onMultiSelect={(multi) => {
+              form.setFieldValue('multiSelect', multi);
+              // Back to one right picture: the first one ticked stays.
+              if (!multi) {
+                const first = options.findIndex((o) => o.isCorrect);
+                setOptions(options.map((o, i) => ({ ...o, isCorrect: i === first })));
+              }
+            }}
           />
-        )}
-        {type === 'text_input' && (
-          <AcceptedAnswersSection form={form} issues={issuesAt('acceptedAnswers')} />
-        )}
-        {type === 'numeric' && <NumericSection form={form} issues={issues} />}
+          {/* Each picture says what it misses; here, what the whole question does. */}
+          <FieldMessage issues={issues.filter((i) => i.field === 'options')} />
+        </fieldset>
+      )}
 
-        <QuestionTimelineSection form={form} mediaTailS={mediaTailS} issues={issuesAt('media')} />
+      {OPTION_TYPES.includes(type) && type !== 'image_choice' && (
+        <TextOptionsSection
+          type={type}
+          options={options}
+          setOptions={setOptions}
+          onCorrect={setCorrect}
+          onRemoveAsked={setPendingRemoval}
+          sensors={sensors}
+          issues={issuesAt('options')}
+        />
+      )}
+      {type === 'text_input' && (
+        <AcceptedAnswersSection form={form} issues={issuesAt('acceptedAnswers')} />
+      )}
+      {type === 'numeric' && <NumericSection form={form} issues={issues} />}
 
-        {/* Le barème par défaut convient presque toujours : il se lit replié. */}
-        {type !== 'poll' && (
-          <Disclosure
-            title={t('questionForm.pointsLegend')}
-            value={[
-              t(`questionForm.pointsMode.${pointsMode}`, {
-                defaultValue: pointsMode,
-              }),
-              scorings.length > 0
-                ? t(
-                    `questionForm.scoring.${type}.${scorings.includes(scoring) ? scoring : 'standard'}`,
-                  )
-                : null,
-            ]
-              .filter(Boolean)
-              .join(' · ')}
-          >
-            <div className="grid gap-3 sm:grid-cols-2">
-              <form.Field name="pointsMode">
+      <QuestionTimelineSection form={form} mediaTailS={mediaTailS} issues={issuesAt('media')} />
+
+      {/* Le barème par défaut convient presque toujours : il se lit replié. */}
+      {type !== 'poll' && (
+        <Disclosure
+          title={t('questionForm.pointsLegend')}
+          value={[
+            t(`questionForm.pointsMode.${pointsMode}`, {
+              defaultValue: pointsMode,
+            }),
+            scorings.length > 0
+              ? t(
+                  `questionForm.scoring.${type}.${scorings.includes(scoring) ? scoring : 'standard'}`,
+                )
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            <form.Field name="pointsMode">
+              {(field) => (
+                <Label>
+                  {t('questionForm.pointsLabel')}
+                  <Select
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value as FormValues['pointsMode'])}
+                  >
+                    <option value="standard">{t('questionForm.pointsMode.standard')}</option>
+                    <option value="double">{t('questionForm.pointsMode.double')}</option>
+                    <option value="fixed">{t('questionForm.pointsMode.fixed')}</option>
+                  </Select>
+                </Label>
+              )}
+            </form.Field>
+            {scorings.length > 0 && (
+              <form.Field name="scoring">
                 {(field) => (
                   <Label>
-                    {t('questionForm.pointsLabel')}
+                    {t('questionForm.scoringLabel')}
                     <Select
                       value={field.state.value}
-                      onChange={(e) =>
-                        field.handleChange(e.target.value as FormValues['pointsMode'])
-                      }
+                      onChange={(e) => field.handleChange(e.target.value as Scoring)}
                     >
-                      <option value="standard">{t('questionForm.pointsMode.standard')}</option>
-                      <option value="double">{t('questionForm.pointsMode.double')}</option>
-                      <option value="fixed">{t('questionForm.pointsMode.fixed')}</option>
+                      <option value="standard">{t(`questionForm.scoring.${type}.standard`)}</option>
+                      {scorings.map((v) => (
+                        <option key={v} value={v}>
+                          {t(`questionForm.scoring.${type}.${v}`)}
+                        </option>
+                      ))}
                     </Select>
                   </Label>
                 )}
               </form.Field>
-              {scorings.length > 0 && (
-                <form.Field name="scoring">
-                  {(field) => (
-                    <Label>
-                      {t('questionForm.scoringLabel')}
-                      <Select
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value as Scoring)}
-                      >
-                        <option value="standard">
-                          {t(`questionForm.scoring.${type}.standard`)}
-                        </option>
-                        {scorings.map((v) => (
-                          <option key={v} value={v}>
-                            {t(`questionForm.scoring.${type}.${v}`)}
-                          </option>
-                        ))}
-                      </Select>
-                    </Label>
-                  )}
-                </form.Field>
+            )}
+          </div>
+          {/* The rule chosen, in words, where the choice is made. */}
+          {scorings.length > 0 ? (
+            <p className="text-muted-foreground text-xs leading-snug">
+              {t(
+                `questionForm.scoringHelp.${type}.${scorings.includes(scoring) ? scoring : 'standard'}`,
               )}
-            </div>
-            {/* The rule chosen, in words, where the choice is made. */}
-            {scorings.length > 0 ? (
-              <p className="text-muted-foreground text-xs leading-snug">
-                {t(
-                  `questionForm.scoringHelp.${type}.${scorings.includes(scoring) ? scoring : 'standard'}`,
-                )}
-              </p>
-            ) : null}
-          </Disclosure>
+            </p>
+          ) : null}
+        </Disclosure>
+      )}
+
+      <form.Field name="background">
+        {(field) => (
+          <div id="qf-backgroundGradient" className="flex flex-col gap-1.5">
+            <BackgroundField value={field.state.value} onChange={field.handleChange} />
+            <FieldMessage issues={issuesAt('backgroundGradient')} />
+          </div>
         )}
+      </form.Field>
 
-        <form.Field name="background">
-          {(field) => (
-            <div id="qf-backgroundGradient" className="flex flex-col gap-1.5">
-              <BackgroundField value={field.state.value} onChange={field.handleChange} />
-              <FieldMessage issues={issuesAt('backgroundGradient')} />
-            </div>
-          )}
-        </form.Field>
-
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <ConfirmDialog
-          open={askDraft}
-          title={t('questionForm.moveToDraft.title')}
-          description={t('questionForm.moveToDraft.description')}
-          confirmLabel={t('questionForm.moveToDraft.confirmLabel')}
-          cancelLabel={t('questionForm.moveToDraft.cancelLabel')}
-          onCancel={() => setAskDraft(false)}
-          onConfirm={() => void moveToDraftAndSave()}
-        />
-        <ConfirmDialog
-          open={pendingRemoval !== null}
-          destructive
-          title={t('questionForm.removeOptionConfirm.title')}
-          description={t('questionForm.removeOptionConfirm.description', {
-            label:
-              pendingRemoval !== null
-                ? options[pendingRemoval]?.text || `#${pendingRemoval + 1}`
-                : '',
-          })}
-          confirmLabel={t('questionForm.removeOptionConfirm.confirmLabel')}
-          onCancel={() => setPendingRemoval(null)}
-          onConfirm={() => {
-            if (pendingRemoval !== null)
-              setOptions(options.filter((_, idx) => idx !== pendingRemoval));
-            setPendingRemoval(null);
-          }}
-        />
-      </form>
-    </MediaEditsContext.Provider>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <ConfirmDialog
+        open={pendingRemoval !== null}
+        destructive
+        title={t('questionForm.removeOptionConfirm.title')}
+        description={t('questionForm.removeOptionConfirm.description', {
+          label:
+            pendingRemoval !== null
+              ? options[pendingRemoval]?.text || `#${pendingRemoval + 1}`
+              : '',
+        })}
+        confirmLabel={t('questionForm.removeOptionConfirm.confirmLabel')}
+        onCancel={() => setPendingRemoval(null)}
+        onConfirm={() => {
+          if (pendingRemoval !== null)
+            setOptions(options.filter((_, idx) => idx !== pendingRemoval));
+          setPendingRemoval(null);
+        }}
+      />
+    </StepFormFrame>
   );
 }
