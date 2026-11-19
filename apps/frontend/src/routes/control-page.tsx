@@ -506,10 +506,9 @@ function HostConsole({
     </div>
   );
 
-  // Then what I set for the room.
-  const rowTwo = (
-    <div className="flex flex-wrap items-center justify-end gap-2">
-      <LockButton locked={view.joinLocked} onToggle={setJoinLocked} />
+  // What the room sees and hears, beside the projection's window.
+  const roomLook = (
+    <div className="flex flex-wrap items-center gap-2">
       <RoomSoundsButton
         sounds={view.sounds}
         theme={view.theme}
@@ -610,6 +609,10 @@ function HostConsole({
           </h2>
         )}
         <span className="flex-1" />
+        {/* Who may still come in, with who is there. */}
+        {panel === 'players' ? (
+          <LockButton locked={view.joinLocked} onToggle={setJoinLocked} />
+        ) : null}
         {panel === 'outline' && view.nav && canLookBack ? (
           <>
             <Button
@@ -664,8 +667,9 @@ function HostConsole({
   const sideColumns =
     wideSide && !noQuiz ? (
       <>
-        {sidePanel('players', false)}
+        {/* The outline beside the stage it drives; the players at the edge. */}
         {sidePanel('outline', false)}
+        {sidePanel('players', false)}
       </>
     ) : wideSide ? (
       sidePanel('players', false)
@@ -1186,7 +1190,6 @@ function HostConsole({
       {/* Who and where, then what is set for the room: one line when there is room. */}
       <header className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b pb-3">
         <div className="min-w-0 flex-1">{rowOne}</div>
-        {rowTwo}
         <div className="w-full empty:hidden">
           <ChromiumNotice />
         </div>
@@ -1203,6 +1206,7 @@ function HostConsole({
           <div className="flex flex-wrap items-center gap-2">
             <ViewSwitch tab={tab} onTab={setTab} />
             {screenButton}
+            {roomLook}
           </div>
           {tab === 'screen' ? (
             // The projection's 16:9, scaled to the column. The console's own session: a
