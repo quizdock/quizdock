@@ -366,8 +366,6 @@
     "optionActions": "Actions for choice {{index}}",
     "removeOptionShort": "Remove",
     "ticksCleared": "The type changed: the right answers were cleared. Tick them again under the new rules.",
-    "explanationWritten": "Written",
-    "explanationEmpty": "Empty",
     "numericLegend": "Answer",
     "decimalsAllowed": "Decimals are fine: 3.14, 0.5…",
     "place_ordinal_one": "{{count}}st",
@@ -400,7 +398,9 @@
       "display": "Display: {{seconds}} s",
       "manual": "By hand: the host moves on",
       "stretch": "Stretched by the media: +{{seconds}} s",
-      "tail": "Pause after the media: {{seconds}} s (quiz setting)"
+      "tail": "Pause after the media: {{seconds}} s (quiz setting)",
+      "answer": "Right answer shown: {{seconds}} s (auto mode)",
+      "answerManual": "Right answer shown: the host moves on"
     },
     "element": {
       "image": "Picture, the whole time",
@@ -409,12 +409,14 @@
       "videoLoop": "Looped video, the whole slide",
       "audio": "Sound, {{seconds}} s",
       "unknown": "Length not known yet",
-      "reveal": "Progressive reveal: {{seconds}} s"
+      "reveal": "Progressive reveal: {{seconds}} s",
+      "explanation": "Explanation, shown with the right answer"
     },
     "label": {
       "image": "Picture",
       "video": "Video",
-      "reveal": "Reveal"
+      "reveal": "Reveal",
+      "explanation": "Explanation"
     },
     "add": "Add an element",
     "clear": "Remove every media",
@@ -430,7 +432,9 @@
       "audio": "Audio",
       "audioHint": "Audio channel",
       "reveal": "Progressive reveal",
-      "revealHint": "The picture sharpens while the room answers"
+      "revealHint": "The picture sharpens while the room answers",
+      "explanation": "Explanation",
+      "explanationHint": "Shown with the right answer"
     },
     "refused": {
       "imageChoice": "An image choice has no picture or video of its own.",
@@ -441,7 +445,9 @@
       "oneSlideAudio": "One audio per slide.",
       "slideVideoSound": "The video plays its own sound: mute it to add an audio.",
       "revealNeedsImage": "Progressive reveal: add a picture first.",
-      "oneReveal": "One reveal per picture."
+      "oneReveal": "One reveal per picture.",
+      "pollExplanation": "A poll has no right answer to explain.",
+      "oneExplanation": "One explanation per question."
     },
     "clearConfirm": {
       "title": "Remove every media?",
@@ -514,7 +520,9 @@
       "description": "The media are removed, the duration goes back to {{seconds}} s and the flow to its default settings. Nothing is lost until you save.",
       "confirm": "Reset"
     },
-    "slideKind": "Slide"
+    "slideKind": "Slide",
+    "totalOpen": "{{seconds}} s, then the host moves on",
+    "explanationHint": "Shown on the screens with the right answer, for as long as it stays."
   },
   "preview": {
     "view": "Preview (player view)",

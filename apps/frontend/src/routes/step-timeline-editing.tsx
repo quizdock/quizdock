@@ -1,4 +1,12 @@
-import { Image as ImageIcon, type LucideIcon, Music, Sparkles, Video, X } from 'lucide-react';
+import {
+  AlignLeft,
+  Image as ImageIcon,
+  type LucideIcon,
+  Music,
+  Sparkles,
+  Video,
+  X,
+} from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -21,6 +29,7 @@ export const KIND_ICON: Record<AddableKind, LucideIcon> = {
   video: Video,
   audio: Music,
   reveal: Sparkles,
+  explanation: AlignLeft,
 };
 
 /** Each kind in its channel's colour: a video sits on both. */
@@ -29,6 +38,7 @@ const KIND_COLOR: Record<AddableKind, string> = {
   video: 'var(--timeline-visual)',
   audio: 'var(--timeline-audio)',
   reveal: 'var(--timeline-visual)',
+  explanation: 'var(--timeline-visual)',
 };
 
 /**

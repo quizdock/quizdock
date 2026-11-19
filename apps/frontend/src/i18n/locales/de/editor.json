@@ -366,8 +366,6 @@
     "optionActions": "Aktionen für Antwortmöglichkeit {{index}}",
     "removeOptionShort": "Entfernen",
     "ticksCleared": "Der Typ hat sich geändert: Die richtigen Antworten wurden zurückgesetzt. Kreuzen Sie sie nach den neuen Regeln erneut an.",
-    "explanationWritten": "Geschrieben",
-    "explanationEmpty": "Leer",
     "numericLegend": "Antwort",
     "decimalsAllowed": "Dezimalzahlen sind möglich: 3.14, 0.5…",
     "place_ordinal_one": "{{count}}.",
@@ -400,7 +398,9 @@
       "display": "Anzeige: {{seconds}} s",
       "manual": "Manuell: die Moderation geht weiter",
       "stretch": "Durch das Medium verlängert: +{{seconds}} s",
-      "tail": "Pause nach dem Medium: {{seconds}} s (Quiz-Einstellung)"
+      "tail": "Pause nach dem Medium: {{seconds}} s (Quiz-Einstellung)",
+      "answer": "Richtige Antwort angezeigt: {{seconds}} s (Automodus)",
+      "answerManual": "Richtige Antwort angezeigt: Die Moderation macht weiter"
     },
     "element": {
       "image": "Bild, die ganze Zeit",
@@ -409,12 +409,14 @@
       "videoLoop": "Video in Schleife, die ganze Folie",
       "audio": "Ton, {{seconds}} s",
       "unknown": "Länge noch unbekannt",
-      "reveal": "Schrittweise Enthüllung: {{seconds}} s"
+      "reveal": "Schrittweise Enthüllung: {{seconds}} s",
+      "explanation": "Erklärung, mit der richtigen Antwort angezeigt"
     },
     "label": {
       "image": "Bild",
       "video": "Video",
-      "reveal": "Enthüllung"
+      "reveal": "Enthüllung",
+      "explanation": "Erklärung"
     },
     "add": "Element hinzufügen",
     "clear": "Alle Medien entfernen",
@@ -430,7 +432,9 @@
       "audio": "Audio",
       "audioHint": "Tonkanal",
       "reveal": "Schrittweise Enthüllung",
-      "revealHint": "Das Bild wird scharf, während der Raum antwortet"
+      "revealHint": "Das Bild wird scharf, während der Raum antwortet",
+      "explanation": "Erklärung",
+      "explanationHint": "Mit der richtigen Antwort angezeigt"
     },
     "refused": {
       "imageChoice": "Eine Bildauswahl hat kein eigenes Bild und kein eigenes Video.",
@@ -441,7 +445,9 @@
       "oneSlideAudio": "Ein Audio pro Folie.",
       "slideVideoSound": "Das Video spielt seinen eigenen Ton: Schalte ihn stumm, um ein Audio hinzuzufügen.",
       "revealNeedsImage": "Schrittweise Enthüllung: Füge zuerst ein Bild hinzu.",
-      "oneReveal": "Eine Enthüllung pro Bild."
+      "oneReveal": "Eine Enthüllung pro Bild.",
+      "pollExplanation": "Eine Umfrage hat keine richtige Antwort zu erklären.",
+      "oneExplanation": "Eine Erklärung pro Frage."
     },
     "clearConfirm": {
       "title": "Alle Medien entfernen?",
@@ -514,7 +520,9 @@
       "description": "Die Medien werden entfernt, die Dauer kehrt zu {{seconds}} s zurück und der Ablauf zu seinen Standardeinstellungen. Nichts geht verloren, solange du nicht speicherst.",
       "confirm": "Zurücksetzen"
     },
-    "slideKind": "Folie"
+    "slideKind": "Folie",
+    "totalOpen": "{{seconds}} s, dann macht die Moderation weiter",
+    "explanationHint": "Auf den Bildschirmen mit der richtigen Antwort angezeigt, solange sie bleibt."
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

@@ -1,4 +1,5 @@
 import {
+  AlignLeft,
   Clock,
   Eraser,
   Eye,
@@ -65,6 +66,8 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
   const pct = (s: number) => `${(Math.min(s, T) / T) * 100}%`;
   const stretched = model.actualS !== null && model.actualS > model.minimumS;
   const [confirmClear, setConfirmClear] = useState(false);
+  // A reveal the host ends by hand: the step's length is known up to it.
+  const knownEnd = model.phases.find((p) => p.kind === 'answerManual')?.from;
   const [confirmReset, setConfirmReset] = useState(false);
 
   let ticks: number[] = [];
@@ -95,7 +98,13 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
               ? `${model.minimumS} s → ${model.actualS} s`
               : `${model.minimumS} s`}
         </Chip>
-        <Chip tip={t('timeline.total', { seconds: round(T) })}>{round(T)} s</Chip>
+        {knownEnd === undefined ? (
+          <Chip tip={t('timeline.total', { seconds: round(T) })}>{round(T)} s</Chip>
+        ) : (
+          <Chip tip={t('timeline.totalOpen', { seconds: round(knownEnd) })}>
+            {`${round(knownEnd)} s + ${t('timeline.manualShort')}`}
+          </Chip>
+        )}
         {edit ? (
           <span className="ml-auto flex items-center gap-0.5">
             {edit.view ? (
@@ -154,7 +163,7 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
       {edit?.view?.value === 'list' ? (
         <StepList model={model} edit={edit} />
       ) : (
-        <div className="grid grid-cols-[22px_1fr] gap-x-1 select-none">
+        <div className="relative grid grid-cols-[22px_1fr] gap-x-1 select-none">
           <span />
           <div className="relative h-3.5">
             {ticks.map((s, i) => (
@@ -212,6 +221,20 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
               </div>
             </div>
           </Row>
+          {/* The answers' opening and closing: plain lines across the rows, nothing written. */}
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 left-[26px] z-20 mt-3.5"
+            aria-hidden
+          >
+            {model.milestones.map((s) => (
+              <span
+                key={s}
+                data-milestone={s}
+                className="border-destructive/50 absolute inset-y-0 border-l-[1.5px] border-dashed"
+                style={{ left: pct(s) }}
+              />
+            ))}
+          </div>
         </div>
       )}
       {edit?.reset ? (
@@ -346,13 +369,23 @@ function Phase({ phase, pct }: { phase: TimelinePhase; pct: (s: number) => strin
   const background =
     phase.kind === 'stretch'
       ? `repeating-linear-gradient(135deg, ${mix(color, 40)} 0 5px, transparent 5px 10px)`
-      : mix(color, phase.kind === 'answers' || phase.kind === 'display' ? 40 : 20);
+      : phase.kind === 'answerManual'
+        ? // No end of its own: it fades out.
+          `linear-gradient(90deg, ${mix(color, 28)}, transparent)`
+        : mix(
+            color,
+            phase.kind === 'answers' || phase.kind === 'display'
+              ? 40
+              : phase.kind === 'answer'
+                ? 28
+                : 20,
+          );
   const text =
-    phase.kind === 'answers' || phase.kind === 'display'
+    phase.kind === 'answers' || phase.kind === 'display' || phase.kind === 'answer'
       ? `${len} s`
       : phase.kind === 'stretch'
         ? `+${len}`
-        : phase.kind === 'manual'
+        : phase.kind === 'manual' || phase.kind === 'answerManual'
           ? t('timeline.manualShort')
           : '';
   return (
@@ -366,6 +399,7 @@ function Phase({ phase, pct }: { phase: TimelinePhase; pct: (s: number) => strin
         className={cn(
           'flex size-full items-center overflow-hidden px-1 text-[11px] whitespace-nowrap',
           phase.kind === 'stretch' && 'text-warning-text',
+          (phase.kind === 'answer' || phase.kind === 'answerManual') && 'italic',
           phase.kind === 'tail' && 'border-l border-dashed',
           phase.kind === 'manual' && 'border-r-2 border-dashed',
         )}
@@ -401,7 +435,7 @@ function Element({
   const height = bottom - top;
   // The split between the two rows, from the element's own top.
   const split = ROW.channel + ROW.gap / 2 - top;
-  const soft = e.kind === 'image' || e.kind === 'reveal';
+  const soft = e.kind === 'image' || e.kind === 'reveal' || e.kind === 'explanation';
   const fill = (color: string) => (soft ? mix(color, 28) : color);
   const background =
     e.kind === 'reveal'
@@ -515,17 +549,19 @@ function elementText(e: TimelineElement, t: TFunction<'editor'>) {
   const tip =
     e.kind === 'image'
       ? t('timeline.element.image')
-      : e.kind === 'reveal'
-        ? t('timeline.element.reveal', { seconds })
-        : e.kind === 'video'
-          ? e.loop
-            ? t('timeline.element.videoLoop')
+      : e.kind === 'explanation'
+        ? t('timeline.element.explanation')
+        : e.kind === 'reveal'
+          ? t('timeline.element.reveal', { seconds })
+          : e.kind === 'video'
+            ? e.loop
+              ? t('timeline.element.videoLoop')
+              : seconds === null
+                ? t('timeline.element.unknown')
+                : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
             : seconds === null
               ? t('timeline.element.unknown')
-              : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
-          : seconds === null
-            ? t('timeline.element.unknown')
-            : t('timeline.element.audio', { seconds });
+              : t('timeline.element.audio', { seconds });
   const Icon =
     e.kind === 'video'
       ? Video
@@ -533,7 +569,9 @@ function elementText(e: TimelineElement, t: TFunction<'editor'>) {
         ? Music
         : e.kind === 'reveal'
           ? Sparkles
-          : ImageIcon;
+          : e.kind === 'explanation'
+            ? AlignLeft
+            : ImageIcon;
   const label =
     e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
   return { tip, label, Icon, seconds };
@@ -603,7 +641,11 @@ function StepList({ model, edit }: { model: Model; edit: TimelineEditing }) {
   return (
     <table className="w-full border-collapse text-sm tabular-nums">
       <caption className="text-muted-foreground pb-1 text-left text-xs">
-        {t('timeline.list.caption', { n: model.elements.length, total: round(model.totalS) })}
+        {t('timeline.list.caption', {
+          n: model.elements.length,
+          // Up to the host's hand, when the step ends by it (the flow's row says so).
+          total: round(model.phases.find((p) => p.kind === 'answerManual')?.from ?? model.totalS),
+        })}
       </caption>
       <thead>
         <tr className="text-muted-foreground border-b text-left text-xs">

@@ -370,8 +370,6 @@
     "optionActions": "Actions du choix {{index}}",
     "removeOptionShort": "Retirer",
     "ticksCleared": "Le type a changé : les bonnes réponses ont été décochées. Cochez-les à nouveau selon les nouvelles règles.",
-    "explanationWritten": "Rédigée",
-    "explanationEmpty": "Vide",
     "numericLegend": "Réponse",
     "decimalsAllowed": "Les décimales sont acceptées : 3,14, 0,5…",
     "place_ordinal_one": "{{count}}er",
@@ -404,7 +402,9 @@
       "display": "Affichage : {{seconds}} s",
       "manual": "Manuel : l’animateur passe à la suite",
       "stretch": "Allongement par le média : +{{seconds}} s",
-      "tail": "Pause après le média : {{seconds}} s (réglage du quiz)"
+      "tail": "Pause après le média : {{seconds}} s (réglage du quiz)",
+      "answer": "Bonne réponse affichée : {{seconds}} s (mode auto)",
+      "answerManual": "Bonne réponse affichée : l’animateur passe à la suite"
     },
     "element": {
       "image": "Image, toute la durée",
@@ -413,12 +413,14 @@
       "videoLoop": "Vidéo en boucle, toute la slide",
       "audio": "Son, {{seconds}} s",
       "unknown": "Durée pas encore connue",
-      "reveal": "Révélation progressive : {{seconds}} s"
+      "reveal": "Révélation progressive : {{seconds}} s",
+      "explanation": "Explication, affichée avec la bonne réponse"
     },
     "label": {
       "image": "Image",
       "video": "Vidéo",
-      "reveal": "Révélation"
+      "reveal": "Révélation",
+      "explanation": "Explication"
     },
     "add": "Ajouter un élément",
     "clear": "Retirer tous les médias",
@@ -434,7 +436,9 @@
       "audio": "Audio",
       "audioHint": "Canal audio",
       "reveal": "Révélation progressive",
-      "revealHint": "L’image devient nette pendant que la salle répond"
+      "revealHint": "L’image devient nette pendant que la salle répond",
+      "explanation": "Explication",
+      "explanationHint": "Affichée avec la bonne réponse"
     },
     "refused": {
       "imageChoice": "Un choix d’images n’a pas d’image ni de vidéo propre.",
@@ -445,7 +449,9 @@
       "oneSlideAudio": "Un seul audio par slide.",
       "slideVideoSound": "La vidéo joue son propre son : coupez-le pour ajouter un audio.",
       "revealNeedsImage": "Révélation progressive : ajoutez d’abord une image.",
-      "oneReveal": "Une révélation par image."
+      "oneReveal": "Une révélation par image.",
+      "pollExplanation": "Un sondage n’a pas de bonne réponse à expliquer.",
+      "oneExplanation": "Une explication par question."
     },
     "clearConfirm": {
       "title": "Retirer tous les médias ?",
@@ -518,7 +524,9 @@
       "description": "Les médias sont retirés, la durée revient à {{seconds}} s et le déroulé à ses réglages par défaut. Rien n’est perdu tant que vous n’enregistrez pas.",
       "confirm": "Rétablir"
     },
-    "slideKind": "Slide"
+    "slideKind": "Slide",
+    "totalOpen": "{{seconds}} s, puis l’animateur passe à la suite",
+    "explanationHint": "Affichée sur les écrans avec la bonne réponse, tant qu’elle reste."
   },
   "preview": {
     "view": "Aperçu (vue participant)",

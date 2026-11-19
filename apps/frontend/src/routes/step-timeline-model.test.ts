@@ -59,6 +59,32 @@ describe('questionTimeline', () => {
     ]);
   });
 
+  it('the right answer shows after the answers, with its explanation; milestones at their opening and closing', () => {
+    const t = questionTimeline({
+      ...question,
+      audio: { peaks: [] },
+      mediaMs: 25_000,
+      answerShownS: 5,
+      explanation: true,
+    });
+    // 25 s of sound stretches the answers to 23 s: they close at 26 s.
+    expect(t.milestones).toEqual([3, 26]);
+    expect(t.phases.at(-1)).toEqual({ kind: 'answer', from: 26, to: 31 });
+    expect(t.totalS).toBe(31);
+    expect(t.openEnded).toBe(false);
+    expect(t.elements.at(-1)).toEqual(
+      expect.objectContaining({ kind: 'explanation', from: 26, visualTo: 31, audioTo: null }),
+    );
+  });
+
+  it('a reveal the host ends by hand has no end of its own', () => {
+    const t = questionTimeline({ ...question, visual: 'image', answerShownS: null });
+    expect(t.phases.at(-1)).toEqual({ kind: 'answerManual', from: 23, to: 28 });
+    expect(t.openEnded).toBe(true);
+    // The picture stops with the answers.
+    expect(t.elements[0]).toEqual(expect.objectContaining({ kind: 'image', visualTo: 23 }));
+  });
+
   it('a video is one element over both rows', () => {
     const t = questionTimeline({ ...question, visual: 'video', mediaMs: 12_000 });
     expect(t.elements).toEqual([

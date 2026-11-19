@@ -366,8 +366,6 @@
     "optionActions": "選択肢 {{index}} の操作",
     "removeOptionShort": "削除",
     "ticksCleared": "形式が変わったため、正解の設定がクリアされました。新しいルールで改めてチェックを入れてください。",
-    "explanationWritten": "記入済み",
-    "explanationEmpty": "未記入",
     "numericLegend": "答え",
     "decimalsAllowed": "小数も使えます：3.14、0.5…",
     "place_ordinal_one": "{{count}}番目",
@@ -400,7 +398,9 @@
       "display": "表示：{{seconds}} 秒",
       "manual": "手動：司会者が次へ進めます",
       "stretch": "メディアによる延長：+{{seconds}} 秒",
-      "tail": "メディア後の間：{{seconds}} 秒（クイズの設定）"
+      "tail": "メディア後の間：{{seconds}} 秒（クイズの設定）",
+      "answer": "正解を表示：{{seconds}} 秒（自動モード）",
+      "answerManual": "正解を表示：司会者が次へ進めます"
     },
     "element": {
       "image": "画像、全体を通して",
@@ -409,12 +409,14 @@
       "videoLoop": "ループ動画、スライド全体",
       "audio": "音声、{{seconds}} 秒",
       "unknown": "長さはまだ不明です",
-      "reveal": "段階的に表示：{{seconds}}秒"
+      "reveal": "段階的に表示：{{seconds}}秒",
+      "explanation": "解説（正解と一緒に表示）"
     },
     "label": {
       "image": "画像",
       "video": "動画",
-      "reveal": "表示"
+      "reveal": "表示",
+      "explanation": "解説"
     },
     "add": "要素を追加",
     "clear": "すべてのメディアを削除",
@@ -430,7 +432,9 @@
       "audio": "音声",
       "audioHint": "音声チャンネル",
       "reveal": "段階的に表示",
-      "revealHint": "会場が回答する間に画像が鮮明になります"
+      "revealHint": "会場が回答する間に画像が鮮明になります",
+      "explanation": "解説",
+      "explanationHint": "正解と一緒に表示"
     },
     "refused": {
       "imageChoice": "画像選択問題には独自の画像や動画を付けられません。",
@@ -441,7 +445,9 @@
       "oneSlideAudio": "音声はスライドごとに1つです。",
       "slideVideoSound": "動画が独自の音声を再生します。音声を追加するには動画をミュートしてください。",
       "revealNeedsImage": "段階的に表示：先に画像を追加してください。",
-      "oneReveal": "段階的表示は画像ごとに1つです。"
+      "oneReveal": "段階的表示は画像ごとに1つです。",
+      "pollExplanation": "アンケートには説明すべき正解がありません。",
+      "oneExplanation": "解説は問題ごとに1つです。"
     },
     "clearConfirm": {
       "title": "すべてのメディアを削除しますか？",
@@ -514,7 +520,9 @@
       "description": "メディアが外され、長さは {{seconds}} 秒に、流れは既定の設定に戻ります。保存するまでは何も失われません。",
       "confirm": "元に戻す"
     },
-    "slideKind": "スライド"
+    "slideKind": "スライド",
+    "totalOpen": "{{seconds}} 秒、その後は司会者が進めます",
+    "explanationHint": "正解が表示されている間、画面に正解と一緒に表示されます。"
   },
   "preview": {
     "view": "プレビュー（参加者の表示）",

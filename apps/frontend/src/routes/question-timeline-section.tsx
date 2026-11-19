@@ -13,11 +13,13 @@ import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { MarkdownEditor } from '@/components/markdown-editor';
 import { FieldMessage } from '@/components/ui/field-message';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import type { FieldIssue } from '@/lib/question-issues';
 import { cn } from '@/lib/utils';
+import { appConfig } from '../config';
 import { Waveform } from '../game/media/waveform';
 import { MediaDetailsFields, MediaUpload, type UploadedMedia } from './media-upload';
 import { mediaHasSound, type QuestionFormApi, READ_DELAY_DEFAULT_MS } from './question-form-model';
@@ -94,6 +96,8 @@ export function QuestionTimelineSection({
     setMedia({ visual: hasVideo ? null : visual, audio: track } as QuestionMedia);
   };
   const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
+  const explanation = useStore(form.store, (s) => s.values.answerExplanation);
+  const explains = type !== 'poll' && explanation.trim() !== '';
   const defaultS = TIME_LIMIT_BY_TYPE[type];
   // Already at its type's defaults: nothing to bring back.
   const atDefaults =
@@ -139,6 +143,15 @@ export function QuestionTimelineSection({
             : null,
     },
     {
+      kind: 'explanation',
+      refused:
+        type === 'poll'
+          ? t('timeline.refused.pollExplanation')
+          : explains
+            ? t('timeline.refused.oneExplanation')
+            : null,
+    },
+    {
       kind: 'audio',
       refused: audio
         ? t('timeline.refused.oneAudio')
@@ -156,6 +169,9 @@ export function QuestionTimelineSection({
           listenFirst: canListenFirst && listenFirst,
           visual: withVisual ? (visual?.kind ?? null) : null,
           revealS: visual?.kind === 'image' ? (mediaStyle.revealS ?? null) : null,
+          // In auto mode, the question's own time, else the instance's; without one, by hand.
+          answerShownS: revealDelayS ?? appConfig.autoAdvanceS ?? null,
+          explanation: explains,
           audio: audio ? { peaks: audio.peaks } : null,
           mediaMs,
           tailS: mediaTailS,
@@ -220,6 +236,20 @@ export function QuestionTimelineSection({
             mediaMs={mediaMs}
             mediaTailS={mediaTailS}
           />
+        </ElementPanel>
+      ) : selected === 'explanation' ? (
+        <ElementPanel title={t('timeline.choice.explanation')} onClose={() => setSelected(null)}>
+          <form.Field name="answerExplanation">
+            {(field) => (
+              <MarkdownEditor
+                aria-label={t('questionForm.answerExplanationLabel')}
+                value={field.state.value}
+                onChange={field.handleChange}
+                placeholder={t('questionForm.answerExplanationPlaceholder')}
+              />
+            )}
+          </form.Field>
+          <p className="text-muted-foreground text-xs">{t('timeline.explanationHint')}</p>
         </ElementPanel>
       ) : selected === 'image' || selected === 'video' || selected === 'audio' ? (
         <ElementPanel title={t(`timeline.choice.${selected}`)} onClose={() => setSelected(null)}>

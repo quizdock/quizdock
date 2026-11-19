@@ -374,8 +374,6 @@
     "optionActions": "Działania dla wariantu {{index}}",
     "removeOptionShort": "Usuń",
     "ticksCleared": "Typ się zmienił: poprawne odpowiedzi zostały wyczyszczone. Zaznacz je ponownie według nowych zasad.",
-    "explanationWritten": "Napisane",
-    "explanationEmpty": "Puste",
     "numericLegend": "Odpowiedź",
     "decimalsAllowed": "Ułamki dziesiętne są dozwolone: 3,14, 0,5…",
     "place_ordinal_one": "{{count}}.",
@@ -408,7 +406,9 @@
       "display": "Wyświetlanie: {{seconds}} s",
       "manual": "Ręcznie: prowadzący przechodzi dalej",
       "stretch": "Wydłużone przez media: +{{seconds}} s",
-      "tail": "Przerwa po mediach: {{seconds}} s (ustawienie quizu)"
+      "tail": "Przerwa po mediach: {{seconds}} s (ustawienie quizu)",
+      "answer": "Pokazana poprawna odpowiedź: {{seconds}} s (tryb auto)",
+      "answerManual": "Pokazana poprawna odpowiedź: prowadzący przechodzi dalej"
     },
     "element": {
       "image": "Obraz, przez cały czas",
@@ -417,12 +417,14 @@
       "videoLoop": "Wideo w pętli, przez cały slajd",
       "audio": "Dźwięk, {{seconds}} s",
       "unknown": "Długość jeszcze nieznana",
-      "reveal": "Stopniowe odsłanianie: {{seconds}} s"
+      "reveal": "Stopniowe odsłanianie: {{seconds}} s",
+      "explanation": "Wyjaśnienie, pokazane z poprawną odpowiedzią"
     },
     "label": {
       "image": "Obraz",
       "video": "Wideo",
-      "reveal": "Odsłanianie"
+      "reveal": "Odsłanianie",
+      "explanation": "Wyjaśnienie"
     },
     "add": "Dodaj element",
     "clear": "Usuń wszystkie media",
@@ -438,7 +440,9 @@
       "audio": "Nagranie",
       "audioHint": "Kanał audio",
       "reveal": "Stopniowe odsłanianie",
-      "revealHint": "Obraz wyostrza się, gdy sala odpowiada"
+      "revealHint": "Obraz wyostrza się, gdy sala odpowiada",
+      "explanation": "Wyjaśnienie",
+      "explanationHint": "Pokazane z poprawną odpowiedzią"
     },
     "refused": {
       "imageChoice": "Wybór obrazów nie ma własnego obrazu ani wideo.",
@@ -449,7 +453,9 @@
       "oneSlideAudio": "Jedno nagranie na slajd.",
       "slideVideoSound": "Wideo odtwarza własny dźwięk: wycisz je, aby dodać nagranie.",
       "revealNeedsImage": "Stopniowe odsłanianie: najpierw dodaj obraz.",
-      "oneReveal": "Jedno odsłanianie na obraz."
+      "oneReveal": "Jedno odsłanianie na obraz.",
+      "pollExplanation": "Ankieta nie ma poprawnej odpowiedzi do wyjaśnienia.",
+      "oneExplanation": "Jedno wyjaśnienie na pytanie."
     },
     "clearConfirm": {
       "title": "Usunąć wszystkie media?",
@@ -522,7 +528,9 @@
       "description": "Media zostaną usunięte, czas wróci do {{seconds}} s, a przebieg do ustawień domyślnych. Nic nie przepada, dopóki nie zapiszesz.",
       "confirm": "Przywróć"
     },
-    "slideKind": "Slajd"
+    "slideKind": "Slajd",
+    "totalOpen": "{{seconds}} s, potem prowadzący przechodzi dalej",
+    "explanationHint": "Pokazywane na ekranach z poprawną odpowiedzią, dopóki ona jest widoczna."
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",

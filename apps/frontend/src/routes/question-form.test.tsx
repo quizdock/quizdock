@@ -174,6 +174,8 @@ describe('QuestionForm', () => {
 
   it("no text field offers an image to add: a question's picture goes in its Media section", () => {
     renderForm();
+    // The explanation is edited in its panel, from the timeline's +.
+    fireEvent.click(openAdd().getByRole('button', { name: /^Explication/ }));
     for (const label of ['Énoncé', 'Explication (montrée avec la bonne réponse)']) {
       const editor = screen.getByLabelText(label).closest('[data-markdown-editor]') as HTMLElement;
       expect(within(editor).queryByRole('button', { name: /image/i })).toBeNull();
@@ -581,6 +583,23 @@ describe('QuestionForm — the timeline', () => {
     fireEvent.change(time(), { target: { value: '25' } });
     fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'single_choice' } });
     expect(time()).toHaveValue(25);
+  });
+
+  it('the explanation is added from the +, written in its panel, and drawn after the answers', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    setMarkdownField('Énoncé', 'Q ?');
+    fireEvent.click(openAdd().getByRole('button', { name: /^Explication/ }));
+    setMarkdownField('Explication (montrée avec la bonne réponse)', 'Parce que.');
+    expect(
+      screen.getByRole('button', { name: 'Explication, affichée avec la bonne réponse' }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('radio')[0]);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).answerExplanation).toBe('Parce que.');
   });
 
   it('the layouts wait for a picture or a video, and say so', () => {

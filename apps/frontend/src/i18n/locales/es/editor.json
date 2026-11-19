@@ -370,8 +370,6 @@
     "optionActions": "Acciones de la opción {{index}}",
     "removeOptionShort": "Quitar",
     "ticksCleared": "El tipo cambió: las respuestas correctas se desmarcaron. Márcalas de nuevo según las nuevas reglas.",
-    "explanationWritten": "Redactada",
-    "explanationEmpty": "Vacía",
     "numericLegend": "Respuesta",
     "decimalsAllowed": "Se admiten decimales: 3,14, 0,5…",
     "place_ordinal_one": "{{count}}.º",
@@ -404,7 +402,9 @@
       "display": "Visualización: {{seconds}} s",
       "manual": "Manual: el presentador avanza",
       "stretch": "Extendido por el medio: +{{seconds}} s",
-      "tail": "Pausa tras el medio: {{seconds}} s (ajuste del quiz)"
+      "tail": "Pausa tras el medio: {{seconds}} s (ajuste del quiz)",
+      "answer": "Respuesta correcta mostrada: {{seconds}} s (modo auto)",
+      "answerManual": "Respuesta correcta mostrada: el presentador avanza"
     },
     "element": {
       "image": "Imagen, todo el tiempo",
@@ -413,12 +413,14 @@
       "videoLoop": "Vídeo en bucle, toda la diapositiva",
       "audio": "Sonido, {{seconds}} s",
       "unknown": "Duración aún desconocida",
-      "reveal": "Revelación progresiva: {{seconds}} s"
+      "reveal": "Revelación progresiva: {{seconds}} s",
+      "explanation": "Explicación, mostrada con la respuesta correcta"
     },
     "label": {
       "image": "Imagen",
       "video": "Vídeo",
-      "reveal": "Revelación"
+      "reveal": "Revelación",
+      "explanation": "Explicación"
     },
     "add": "Añadir un elemento",
     "clear": "Quitar todos los medios",
@@ -434,7 +436,9 @@
       "audio": "Audio",
       "audioHint": "Canal de audio",
       "reveal": "Revelación progresiva",
-      "revealHint": "La imagen se aclara mientras la sala responde"
+      "revealHint": "La imagen se aclara mientras la sala responde",
+      "explanation": "Explicación",
+      "explanationHint": "Mostrada con la respuesta correcta"
     },
     "refused": {
       "imageChoice": "Una elección de imágenes no tiene imagen ni vídeo propios.",
@@ -445,7 +449,9 @@
       "oneSlideAudio": "Un audio por diapositiva.",
       "slideVideoSound": "El vídeo reproduce su propio sonido: siléncialo para añadir un audio.",
       "revealNeedsImage": "Revelación progresiva: añade primero una imagen.",
-      "oneReveal": "Una revelación por imagen."
+      "oneReveal": "Una revelación por imagen.",
+      "pollExplanation": "Una encuesta no tiene respuesta correcta que explicar.",
+      "oneExplanation": "Una explicación por pregunta."
     },
     "clearConfirm": {
       "title": "¿Quitar todos los medios?",
@@ -518,7 +524,9 @@
       "description": "Se quitan los medios, la duración vuelve a {{seconds}} s y el desarrollo a sus ajustes por defecto. No se pierde nada hasta que guardes.",
       "confirm": "Restablecer"
     },
-    "slideKind": "Diapositiva"
+    "slideKind": "Diapositiva",
+    "totalOpen": "{{seconds}} s, luego el presentador avanza",
+    "explanationHint": "Se muestra en las pantallas con la respuesta correcta, mientras permanezca."
   },
   "preview": {
     "view": "Vista previa (vista del jugador)",

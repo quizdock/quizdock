@@ -366,8 +366,6 @@
     "optionActions": "{{index}}. seçenek için işlemler",
     "removeOptionShort": "Kaldır",
     "ticksCleared": "Soru türü değişti: doğru yanıt işaretleri temizlendi. Yeni kurallara göre yeniden işaretleyin.",
-    "explanationWritten": "Yazıldı",
-    "explanationEmpty": "Boş",
     "numericLegend": "Yanıt",
     "decimalsAllowed": "Ondalık sayılar kullanılabilir: 3.14, 0.5…",
     "place_ordinal_one": "{{count}}.",
@@ -398,7 +396,9 @@
       "display": "Gösterim: {{seconds}} sn",
       "manual": "Elle: sunucu devam eder",
       "stretch": "Medya ile uzatıldı: +{{seconds}} sn",
-      "tail": "Medyadan sonra ara: {{seconds}} sn (quiz ayarı)"
+      "tail": "Medyadan sonra ara: {{seconds}} sn (quiz ayarı)",
+      "answer": "Doğru cevap gösterilir: {{seconds}} sn (otomatik mod)",
+      "answerManual": "Doğru cevap gösterilir: sunucu devam eder"
     },
     "element": {
       "image": "Görsel, tüm süre boyunca",
@@ -407,12 +407,14 @@
       "videoLoop": "Döngüdeki video, tüm slayt boyunca",
       "audio": "Ses, {{seconds}} sn",
       "unknown": "Süre henüz bilinmiyor",
-      "reveal": "Kademeli gösterim: {{seconds}} sn"
+      "reveal": "Kademeli gösterim: {{seconds}} sn",
+      "explanation": "Açıklama, doğru cevapla gösterilir"
     },
     "label": {
       "image": "Görsel",
       "video": "Video",
-      "reveal": "Gösterim"
+      "reveal": "Gösterim",
+      "explanation": "Açıklama"
     },
     "add": "Öğe ekle",
     "clear": "Tüm medyaları kaldır",
@@ -428,7 +430,9 @@
       "audio": "Ses",
       "audioHint": "Ses kanalı",
       "reveal": "Kademeli gösterim",
-      "revealHint": "Salon cevaplarken resim netleşir"
+      "revealHint": "Salon cevaplarken resim netleşir",
+      "explanation": "Açıklama",
+      "explanationHint": "Doğru cevapla gösterilir"
     },
     "refused": {
       "imageChoice": "Görsel seçimli bir sorunun kendi resmi veya videosu olmaz.",
@@ -439,7 +443,9 @@
       "oneSlideAudio": "Slayt başına bir ses.",
       "slideVideoSound": "Video kendi sesini çalıyor: ses eklemek için videonun sesini kapatın.",
       "revealNeedsImage": "Kademeli gösterim: önce bir resim ekleyin.",
-      "oneReveal": "Resim başına bir gösterim."
+      "oneReveal": "Resim başına bir gösterim.",
+      "pollExplanation": "Bir ankette açıklanacak doğru cevap yoktur.",
+      "oneExplanation": "Soru başına bir açıklama."
     },
     "clearConfirm": {
       "title": "Tüm medyalar kaldırılsın mı?",
@@ -512,7 +518,9 @@
       "description": "Medyalar kaldırılır, süre {{seconds}} sn’ye ve akış varsayılan ayarlarına döner. Kaydetmediğiniz sürece hiçbir şey kaybolmaz.",
       "confirm": "Sıfırla"
     },
-    "slideKind": "Slayt"
+    "slideKind": "Slayt",
+    "totalOpen": "{{seconds}} sn, sonra sunucu devam eder",
+    "explanationHint": "Doğru cevap ekranda kaldıkça, onunla birlikte gösterilir."
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",

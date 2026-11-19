@@ -542,29 +542,6 @@ export function QuestionForm({
           </Disclosure>
         )}
 
-        {/* Facultative : repliée, comme tout ce qui est secondaire. */}
-        {type !== 'poll' && (
-          <form.Field name="answerExplanation">
-            {(field) => (
-              <Disclosure
-                title={t('questionForm.answerExplanationLabel')}
-                value={
-                  field.state.value.trim()
-                    ? t('questionForm.explanationWritten')
-                    : t('questionForm.explanationEmpty')
-                }
-              >
-                <MarkdownEditor
-                  aria-label={t('questionForm.answerExplanationLabel')}
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  placeholder={t('questionForm.answerExplanationPlaceholder')}
-                />
-              </Disclosure>
-            )}
-          </form.Field>
-        )}
-
         <form.Field name="background">
           {(field) => (
             <div id="qf-backgroundGradient" className="flex flex-col gap-1.5">

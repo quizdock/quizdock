@@ -366,8 +366,6 @@
     "optionActions": "选项 {{index}} 的操作",
     "removeOptionShort": "移除",
     "ticksCleared": "题型已更改：正确答案已取消勾选。请按新规则重新勾选。",
-    "explanationWritten": "已填写",
-    "explanationEmpty": "未填写",
     "numericLegend": "答案",
     "decimalsAllowed": "可以使用小数：3.14、0.5…",
     "place_ordinal_one": "第{{count}}",
@@ -400,7 +398,9 @@
       "display": "显示：{{seconds}} 秒",
       "manual": "手动：由主持人继续",
       "stretch": "因媒体延长：+{{seconds}} 秒",
-      "tail": "媒体后的停顿：{{seconds}} 秒（测验设置）"
+      "tail": "媒体后的停顿：{{seconds}} 秒（测验设置）",
+      "answer": "显示正确答案：{{seconds}} 秒（自动模式）",
+      "answerManual": "显示正确答案：由主持人继续"
     },
     "element": {
       "image": "图片，全程",
@@ -409,12 +409,14 @@
       "videoLoop": "循环视频，整张幻灯片",
       "audio": "声音，{{seconds}} 秒",
       "unknown": "时长尚未知",
-      "reveal": "逐步显现：{{seconds}} 秒"
+      "reveal": "逐步显现：{{seconds}} 秒",
+      "explanation": "解析，与正确答案一同显示"
     },
     "label": {
       "image": "图片",
       "video": "视频",
-      "reveal": "显现"
+      "reveal": "显现",
+      "explanation": "解析"
     },
     "add": "添加元素",
     "clear": "移除所有媒体",
@@ -430,7 +432,9 @@
       "audio": "音频",
       "audioHint": "音频通道",
       "reveal": "逐步显现",
-      "revealHint": "全场作答时图片逐渐清晰"
+      "revealHint": "全场作答时图片逐渐清晰",
+      "explanation": "解析",
+      "explanationHint": "与正确答案一同显示"
     },
     "refused": {
       "imageChoice": "图片选择题不能有自己的图片或视频。",
@@ -441,7 +445,9 @@
       "oneSlideAudio": "每张幻灯片一个音频。",
       "slideVideoSound": "视频正在播放自己的声音：将其静音后才能添加音频。",
       "revealNeedsImage": "逐步显现：请先添加图片。",
-      "oneReveal": "每张图片只能有一个逐步显现。"
+      "oneReveal": "每张图片只能有一个逐步显现。",
+      "pollExplanation": "投票没有需要解析的正确答案。",
+      "oneExplanation": "每道题一个解析。"
     },
     "clearConfirm": {
       "title": "移除所有媒体？",
@@ -514,7 +520,9 @@
       "description": "媒体将被移除，时长恢复为 {{seconds}} 秒，流程恢复默认设置。保存之前不会丢失任何内容。",
       "confirm": "恢复"
     },
-    "slideKind": "幻灯片"
+    "slideKind": "幻灯片",
+    "totalOpen": "{{seconds}} 秒，然后由主持人继续",
+    "explanationHint": "在正确答案显示期间，与其一同显示在屏幕上。"
   },
   "preview": {
     "view": "预览（玩家视图）",

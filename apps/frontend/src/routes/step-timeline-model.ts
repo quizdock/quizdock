@@ -8,14 +8,23 @@ import { effectiveTimeLimitS, slideMediaHoldMs } from '@quiz-dock/contracts';
 
 /** A segment of the time row. */
 export interface TimelinePhase {
-  kind: 'reading' | 'listen' | 'answers' | 'display' | 'manual' | 'stretch' | 'tail';
+  kind:
+    | 'reading'
+    | 'listen'
+    | 'answers'
+    | 'display'
+    | 'manual'
+    | 'stretch'
+    | 'tail'
+    | 'answer'
+    | 'answerManual';
   from: number;
   to: number;
 }
 
 /** One element, drawn once over the channels it has. */
 export interface TimelineElement {
-  kind: 'image' | 'video' | 'audio' | 'reveal';
+  kind: 'image' | 'video' | 'audio' | 'reveal' | 'explanation';
   from: number;
   /** Where it ends on the visual row; null when it shows nothing. */
   visualTo: number | null;
@@ -38,7 +47,14 @@ export interface StepTimeline {
   actualS: number | null;
   phases: TimelinePhase[];
   elements: TimelineElement[];
+  /** The answers' opening and closing (s): plain lines across the rows. */
+  milestones: number[];
+  /** The step ends when the host moves on: its last segment has no end of its own. */
+  openEnded: boolean;
 }
+
+/** How wide a segment without an end of its own is drawn (s): the host moves on. */
+export const OPEN_END_S = 5;
 
 const seconds = (ms: number) => Math.ceil(ms / 1000);
 
@@ -71,6 +87,13 @@ export function questionTimeline(q: {
   tailS: number;
   /** The reading window before the answers open. */
   readMs: number;
+  /**
+   * How long the right answer shows, in auto mode (s); null = the host moves on by hand.
+   * Absent, the timeline stops at the answers' end.
+   */
+  answerShownS?: number | null;
+  /** An explanation goes with the right answer. */
+  explanation?: boolean;
 }): StepTimeline {
   const sounding = q.visual === 'video' || !!q.audio;
   const mediaS = q.mediaMs === null ? null : q.mediaMs / 1000;
@@ -87,17 +110,27 @@ export function questionTimeline(q: {
     answers = effectiveTimeLimitS(q.timeLimitS, sounding ? q.mediaMs : null, q.tailS, q.readMs);
     phases.push({ kind: 'reading', from: 0, to: open });
   }
-  const total = open + answers;
+  // The answers close here; the media stop with them.
+  const closed = open + answers;
   phases.push({ kind: 'answers', from: open, to: open + q.timeLimitS });
   if (answers > q.timeLimitS) {
-    const mediaEnd = Math.min(total, Math.max(open + q.timeLimitS, mediaS ?? 0));
+    const mediaEnd = Math.min(closed, Math.max(open + q.timeLimitS, mediaS ?? 0));
     phases.push({ kind: 'stretch', from: open + q.timeLimitS, to: mediaEnd });
-    if (total > mediaEnd) phases.push({ kind: 'tail', from: mediaEnd, to: total });
+    if (closed > mediaEnd) phases.push({ kind: 'tail', from: mediaEnd, to: closed });
   }
-  const end = (len: number | null) => (len === null ? total : Math.min(len, total));
+  const shown = q.answerShownS === undefined ? 0 : (q.answerShownS ?? OPEN_END_S);
+  const total = closed + shown;
+  if (q.answerShownS !== undefined) {
+    phases.push({
+      kind: q.answerShownS === null ? 'answerManual' : 'answer',
+      from: closed,
+      to: total,
+    });
+  }
+  const end = (len: number | null) => (len === null ? closed : Math.min(len, closed));
   const elements: Omit<TimelineElement, 'lowered'>[] = [];
   if (q.visual === 'image') {
-    elements.push({ kind: 'image', from: 0, visualTo: total, audioTo: null, lengthS: null });
+    elements.push({ kind: 'image', from: 0, visualTo: closed, audioTo: null, lengthS: null });
   }
   if (q.visual === 'image' && q.revealS) {
     // Over the picture, from the answers' opening: sharp at the latest when they close.
@@ -123,12 +156,23 @@ export function questionTimeline(q: {
       peaks: q.audio.peaks,
     });
   }
+  if (q.explanation && shown > 0) {
+    elements.push({
+      kind: 'explanation',
+      from: closed,
+      visualTo: total,
+      audioTo: null,
+      lengthS: q.answerShownS ?? null,
+    });
+  }
   return {
     totalS: total,
     minimumS: q.timeLimitS,
     actualS: answers,
     phases,
     elements: lower(elements),
+    milestones: [open, closed],
+    openEnded: q.answerShownS === null,
   };
 }
 
@@ -201,5 +245,7 @@ export function slideTimeline(s: {
     actualS: manual ? null : total,
     phases,
     elements: lower(elements),
+    milestones: [],
+    openEnded: manual,
   };
 }

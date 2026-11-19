@@ -370,8 +370,6 @@
     "optionActions": "Azioni per la scelta {{index}}",
     "removeOptionShort": "Rimuovi",
     "ticksCleared": "Il tipo è cambiato: le risposte corrette sono state azzerate. Spuntale di nuovo secondo le nuove regole.",
-    "explanationWritten": "Scritta",
-    "explanationEmpty": "Vuota",
     "numericLegend": "Risposta",
     "decimalsAllowed": "I decimali vanno bene: 3.14, 0.5…",
     "place_ordinal_one": "{{count}}º",
@@ -405,7 +403,9 @@
       "display": "Visualizzazione: {{seconds}} s",
       "manual": "Manuale: chi conduce va avanti",
       "stretch": "Prolungato dal media: +{{seconds}} s",
-      "tail": "Pausa dopo il media: {{seconds}} s (impostazione del quiz)"
+      "tail": "Pausa dopo il media: {{seconds}} s (impostazione del quiz)",
+      "answer": "Risposta giusta mostrata: {{seconds}} s (modalità auto)",
+      "answerManual": "Risposta giusta mostrata: il conduttore va avanti"
     },
     "element": {
       "image": "Immagine, per tutta la durata",
@@ -414,12 +414,14 @@
       "videoLoop": "Video in loop, per tutta la slide",
       "audio": "Audio, {{seconds}} s",
       "unknown": "Durata non ancora nota",
-      "reveal": "Rivelazione progressiva: {{seconds}} s"
+      "reveal": "Rivelazione progressiva: {{seconds}} s",
+      "explanation": "Spiegazione, mostrata con la risposta giusta"
     },
     "label": {
       "image": "Immagine",
       "video": "Video",
-      "reveal": "Rivelazione"
+      "reveal": "Rivelazione",
+      "explanation": "Spiegazione"
     },
     "add": "Aggiungi un elemento",
     "clear": "Rimuovi tutti i media",
@@ -435,7 +437,9 @@
       "audio": "Audio",
       "audioHint": "Canale audio",
       "reveal": "Rivelazione progressiva",
-      "revealHint": "L'immagine diventa nitida mentre la sala risponde"
+      "revealHint": "L'immagine diventa nitida mentre la sala risponde",
+      "explanation": "Spiegazione",
+      "explanationHint": "Mostrata con la risposta giusta"
     },
     "refused": {
       "imageChoice": "Una scelta di immagini non ha un'immagine né un video propri.",
@@ -446,7 +450,9 @@
       "oneSlideAudio": "Un audio per slide.",
       "slideVideoSound": "Il video riproduce il proprio suono: disattivalo per aggiungere un audio.",
       "revealNeedsImage": "Rivelazione progressiva: aggiungi prima un'immagine.",
-      "oneReveal": "Una rivelazione per immagine."
+      "oneReveal": "Una rivelazione per immagine.",
+      "pollExplanation": "Un sondaggio non ha una risposta giusta da spiegare.",
+      "oneExplanation": "Una spiegazione per domanda."
     },
     "clearConfirm": {
       "title": "Rimuovere tutti i media?",
@@ -519,7 +525,9 @@
       "description": "I media vengono rimossi, la durata torna a {{seconds}} s e lo svolgimento alle impostazioni predefinite. Non si perde nulla finché non salvi.",
       "confirm": "Ripristina"
     },
-    "slideKind": "Slide"
+    "slideKind": "Slide",
+    "totalOpen": "{{seconds}} s, poi il conduttore va avanti",
+    "explanationHint": "Mostrata sugli schermi con la risposta giusta, finché resta."
   },
   "preview": {
     "view": "Anteprima (vista del partecipante)",

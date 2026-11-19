@@ -366,8 +366,6 @@
     "optionActions": "選項 {{index}} 的操作",
     "removeOptionShort": "移除",
     "ticksCleared": "題型已變更：正確答案已取消勾選。請依新規則重新勾選。",
-    "explanationWritten": "已填寫",
-    "explanationEmpty": "未填寫",
     "numericLegend": "答案",
     "decimalsAllowed": "可以使用小數：3.14、0.5…",
     "place_ordinal_one": "第{{count}}",
@@ -400,7 +398,9 @@
       "display": "顯示：{{seconds}} 秒",
       "manual": "手動：由主持人繼續",
       "stretch": "因媒體延長：+{{seconds}} 秒",
-      "tail": "媒體後的停頓：{{seconds}} 秒（測驗設定）"
+      "tail": "媒體後的停頓：{{seconds}} 秒（測驗設定）",
+      "answer": "顯示正確答案：{{seconds}} 秒（自動模式）",
+      "answerManual": "顯示正確答案：由主持人繼續"
     },
     "element": {
       "image": "圖片，全程",
@@ -409,12 +409,14 @@
       "videoLoop": "循環影片，整張投影片",
       "audio": "聲音，{{seconds}} 秒",
       "unknown": "時長尚未知",
-      "reveal": "逐步顯現：{{seconds}} 秒"
+      "reveal": "逐步顯現：{{seconds}} 秒",
+      "explanation": "解析，與正確答案一同顯示"
     },
     "label": {
       "image": "圖片",
       "video": "影片",
-      "reveal": "顯現"
+      "reveal": "顯現",
+      "explanation": "解析"
     },
     "add": "新增元素",
     "clear": "移除所有媒體",
@@ -430,7 +432,9 @@
       "audio": "音訊",
       "audioHint": "音訊通道",
       "reveal": "逐步顯現",
-      "revealHint": "全場作答時圖片逐漸清晰"
+      "revealHint": "全場作答時圖片逐漸清晰",
+      "explanation": "解析",
+      "explanationHint": "與正確答案一同顯示"
     },
     "refused": {
       "imageChoice": "圖片選擇題不能有自己的圖片或影片。",
@@ -441,7 +445,9 @@
       "oneSlideAudio": "每張簡報一個音訊。",
       "slideVideoSound": "影片正在播放自己的聲音：將其靜音後才能新增音訊。",
       "revealNeedsImage": "逐步顯現：請先新增圖片。",
-      "oneReveal": "每張圖片只能有一個逐步顯現。"
+      "oneReveal": "每張圖片只能有一個逐步顯現。",
+      "pollExplanation": "投票沒有需要解析的正確答案。",
+      "oneExplanation": "每題一個解析。"
     },
     "clearConfirm": {
       "title": "移除所有媒體？",
@@ -514,7 +520,9 @@
       "description": "媒體將被移除，時長恢復為 {{seconds}} 秒，流程恢復預設設定。儲存之前不會遺失任何內容。",
       "confirm": "恢復"
     },
-    "slideKind": "簡報"
+    "slideKind": "簡報",
+    "totalOpen": "{{seconds}} 秒，然後由主持人繼續",
+    "explanationHint": "在正確答案顯示期間，與其一同顯示在螢幕上。"
   },
   "preview": {
     "view": "預覽（玩家視角）",
