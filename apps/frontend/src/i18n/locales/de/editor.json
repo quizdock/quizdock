@@ -534,9 +534,10 @@
       "textHint": "{{n}} / {{max}} Zeichen",
       "afterS": "Nach dem Öffnen (s)",
       "penalty": "Abzug (%)",
-      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten.",
-      "remove": "Hinweis entfernen"
-    }
+      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten."
+    },
+    "removeElement": "Dieses Element entfernen",
+    "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden."
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

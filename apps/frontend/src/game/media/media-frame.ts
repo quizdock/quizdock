@@ -44,7 +44,12 @@ export interface Reveal {
 export function useRevealStyle(reveal: Reveal | null | undefined, still: boolean) {
   const [delayS] = useState(() => (reveal ? (reveal.startAt - serverNow()) / 1000 : 0));
   if (!reveal) return undefined;
-  if (still) return { filter: 'blur(var(--qd-reveal-blur))' } satisfies CSSProperties;
+  if (still) {
+    return {
+      filter: 'blur(var(--qd-reveal-blur))',
+      transform: 'scale(1.08)',
+    } satisfies CSSProperties;
+  }
   return {
     animation: `qd-reveal ${reveal.durationS}s linear ${delayS}s both`,
     animationPlayState: reveal.paused ? 'paused' : 'running',

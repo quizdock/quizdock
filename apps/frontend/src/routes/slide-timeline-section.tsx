@@ -129,7 +129,18 @@ export function SlideTimelineSection({
           />
         </ElementPanel>
       ) : selected === 'video' ? (
-        <ElementPanel title={t('timeline.choice.video')} onClose={close}>
+        <ElementPanel
+          title={t('timeline.choice.video')}
+          onClose={close}
+          onRemove={
+            videoMediaId
+              ? () => {
+                  onChange({ videoMediaId: null });
+                  close();
+                }
+              : undefined
+          }
+        >
           <MediaUpload
             value={videoMediaId}
             // Picked next to a sound, it comes muted: one sound at a time.
@@ -139,6 +150,7 @@ export function SlideTimelineSection({
             }}
             kind="video"
             label={t('media.addVideo')}
+            removable={false}
           />
           {videoMediaId ? (
             <>
@@ -166,7 +178,19 @@ export function SlideTimelineSection({
           ) : null}
         </ElementPanel>
       ) : selected === 'audio' ? (
-        <ElementPanel title={t('timeline.choice.audio')} onClose={close}>
+        <ElementPanel
+          title={t('timeline.choice.audio')}
+          onClose={close}
+          onRemove={
+            audioMediaId
+              ? () => {
+                  onChange({ audioMediaId: null });
+                  onPeaks(null);
+                  close();
+                }
+              : undefined
+          }
+        >
           <MediaUpload
             value={audioMediaId}
             onChange={(id, uploaded) => {
@@ -176,6 +200,7 @@ export function SlideTimelineSection({
             }}
             kind="audio"
             label={t('media.addAudio')}
+            removable={false}
           />
           {audioMediaId ? (
             <>

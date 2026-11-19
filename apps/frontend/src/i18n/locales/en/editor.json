@@ -534,9 +534,10 @@
       "textHint": "{{n}} / {{max}} characters",
       "afterS": "After the opening (s)",
       "penalty": "Penalty (%)",
-      "rule": "The answers given after the hint lose {{penalty}} % of the question's points; the streak is untouched. The host can turn hints off.",
-      "remove": "Remove the hint"
-    }
+      "rule": "The answers given after the hint lose {{penalty}} % of the question's points; the streak is untouched. The host can turn hints off."
+    },
+    "removeElement": "Remove this element",
+    "embeddedVideo": "An embedded video: it can only be removed."
   },
   "preview": {
     "view": "Preview (player view)",

@@ -449,7 +449,17 @@ export function VideoBox({
       !frame && 'h-full w-full',
       cover ? 'object-cover' : 'object-contain',
     );
-    Object.assign(el.style, { ...(frame ?? {}), objectPosition: focus ?? '' });
+    // Every property a frame sets, set or cleared: the element is pooled, and a frame left
+    // from another use (or a ratio taken back) would size it against the page.
+    Object.assign(el.style, {
+      position: '',
+      inset: '',
+      margin: '',
+      width: '',
+      height: '',
+      ...(frame ?? {}),
+      objectPosition: focus ?? '',
+    });
     box.current.appendChild(el);
     // The frame by its value: a new object each render must not re-append the element.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -459,7 +469,7 @@ export function VideoBox({
     <>
       <div
         ref={box}
-        className={cn('relative aspect-video max-w-full', boxClassName)}
+        className={cn('relative aspect-video max-w-full overflow-hidden', boxClassName)}
         style={frame ? SIZE_CONTAINER : undefined}
       />
       {notices && blocked ? <SoundNotice kind="video" onEnable={() => void enableSound()} /> : null}
@@ -692,7 +702,11 @@ export function QuestionMediaStage({
             />
           </ZoomableImage>
         ) : (
-          <div className={cn('relative aspect-video max-w-full', boxClassName)} style={look.box}>
+          // Clipped: a reveal's blur would spill past the picture's place.
+          <div
+            className={cn('relative aspect-video max-w-full overflow-hidden', boxClassName)}
+            style={look.box}
+          >
             {look.frame ? (
               <div className="overflow-hidden rounded-lg" style={look.frame}>
                 {picture}

@@ -539,9 +539,10 @@
       "textHint": "{{n}} / {{max}} caratteri",
       "afterS": "Dopo l'apertura (s)",
       "penalty": "Penalità (%)",
-      "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi.",
-      "remove": "Rimuovi l'indizio"
-    }
+      "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi."
+    },
+    "removeElement": "Rimuovi questo elemento",
+    "embeddedVideo": "Un video incorporato: può solo essere rimosso."
   },
   "preview": {
     "view": "Anteprima (vista del partecipante)",

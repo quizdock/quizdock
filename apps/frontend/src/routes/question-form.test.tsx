@@ -632,6 +632,20 @@ describe('QuestionForm — the timeline', () => {
     });
   });
 
+  it('every element is taken away by the same button at the foot of its panel', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Son, 42 s' }));
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Audio' })).getByRole('button', {
+        name: 'Retirer cet élément',
+      }),
+    );
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Audio' })).toBeNull();
+  });
+
   it('the layouts wait for a picture or a video, and say so', () => {
     withSound();
     mockApi([]);

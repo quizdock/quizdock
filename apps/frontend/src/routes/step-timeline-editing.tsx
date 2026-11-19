@@ -5,6 +5,7 @@ import {
   type LucideIcon,
   Music,
   Sparkles,
+  Trash2,
   Video,
   X,
 } from 'lucide-react';
@@ -104,12 +105,16 @@ export function AddElementModal({
 export function ElementPanel({
   title,
   onClose,
+  onRemove,
   children,
 }: {
   title: string;
   onClose: () => void;
+  /** Takes the element away: the same button at the foot of every element's panel. */
+  onRemove?: () => void;
   children: ReactNode;
 }) {
+  const { t: te } = useTranslation('editor');
   const { t } = useTranslation('common');
   const panel = useRef<HTMLDivElement>(null);
   // Opened, it comes into sight and the focus moves in: the keyboard goes on from there.
@@ -144,6 +149,18 @@ export function ElementPanel({
         </button>
       </div>
       {children}
+      {onRemove ? (
+        <Button
+          type="button"
+          variant="destructive-outline"
+          size="sm"
+          className="w-fit"
+          onClick={onRemove}
+        >
+          <Trash2 className="size-4" />
+          {te('timeline.removeElement')}
+        </Button>
+      ) : null}
     </div>
   );
 }

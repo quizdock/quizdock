@@ -350,12 +350,15 @@
 :root {
   --qd-reveal-blur: 28px;
 }
+/* Slightly larger while blurred: its edges fade inside its clipped place, not into it. */
 @keyframes qd-reveal {
   from {
     filter: blur(var(--qd-reveal-blur));
+    transform: scale(1.08);
   }
   to {
     filter: blur(0);
+    transform: scale(1);
   }
 }
 @keyframes qd-draw {

@@ -1,7 +1,5 @@
 import { HINT_TEXT_MAX, type QuestionHint } from '@quiz-dock/contracts';
-import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { QuestionFormApi } from './question-form-model';
@@ -14,12 +12,10 @@ import type { QuestionFormApi } from './question-form-model';
 export function HintFields({
   form,
   timeLimitS,
-  onRemove,
 }: {
   form: QuestionFormApi;
   /** It comes before the answers close. */
   timeLimitS: number;
-  onRemove: () => void;
 }) {
   const { t } = useTranslation('editor');
   return (
@@ -69,19 +65,6 @@ export function HintFields({
             <p className="text-muted-foreground text-xs">
               {t('timeline.hint.rule', { penalty: hint.penaltyPct })}
             </p>
-            <Button
-              type="button"
-              variant="destructive-outline"
-              size="sm"
-              className="w-fit"
-              onClick={() => {
-                field.handleChange(null);
-                onRemove();
-              }}
-            >
-              <Trash2 className="size-4" />
-              {t('timeline.hint.remove')}
-            </Button>
           </div>
         );
       }}

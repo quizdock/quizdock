@@ -164,7 +164,7 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
       {edit?.view?.value === 'list' ? (
         <StepList model={model} edit={edit} />
       ) : (
-        <div className="relative grid grid-cols-[22px_1fr] gap-x-1 select-none">
+        <div className="relative isolate grid grid-cols-[22px_1fr] gap-x-1 select-none">
           <span />
           <div className="relative h-3.5">
             {ticks.map((s, i) => (

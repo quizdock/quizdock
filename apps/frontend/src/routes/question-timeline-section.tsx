@@ -13,7 +13,6 @@ import {
 import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
 import { MarkdownEditor } from '@/components/markdown-editor';
 import { FieldMessage } from '@/components/ui/field-message';
 import { Label } from '@/components/ui/label';
@@ -253,11 +252,29 @@ export function QuestionTimelineSection({
           />
         </ElementPanel>
       ) : selected === 'hint' && hint ? (
-        <ElementPanel title={t('timeline.choice.hint')} onClose={() => setSelected(null)}>
-          <HintFields form={form} timeLimitS={timeLimitS} onRemove={() => setSelected(null)} />
+        <ElementPanel
+          title={t('timeline.choice.hint')}
+          onClose={() => setSelected(null)}
+          onRemove={() => {
+            form.setFieldValue('hint', null);
+            setSelected(null);
+          }}
+        >
+          <HintFields form={form} timeLimitS={timeLimitS} />
         </ElementPanel>
       ) : selected === 'explanation' ? (
-        <ElementPanel title={t('timeline.choice.explanation')} onClose={() => setSelected(null)}>
+        <ElementPanel
+          title={t('timeline.choice.explanation')}
+          onClose={() => setSelected(null)}
+          onRemove={
+            explains
+              ? () => {
+                  form.setFieldValue('answerExplanation', '');
+                  setSelected(null);
+                }
+              : undefined
+          }
+        >
           <form.Field name="answerExplanation">
             {(field) => (
               <MarkdownEditor
@@ -271,7 +288,19 @@ export function QuestionTimelineSection({
           <p className="text-muted-foreground text-xs">{t('timeline.explanationHint')}</p>
         </ElementPanel>
       ) : selected === 'image' || selected === 'video' || selected === 'audio' ? (
-        <ElementPanel title={t(`timeline.choice.${selected}`)} onClose={() => setSelected(null)}>
+        <ElementPanel
+          title={t(`timeline.choice.${selected}`)}
+          onClose={() => setSelected(null)}
+          onRemove={
+            selected === 'audio'
+              ? audio
+                ? () => setAudio(null)
+                : undefined
+              : visual?.kind === selected
+                ? () => (selected === 'image' ? setImage(null) : setVideo(null))
+                : undefined
+          }
+        >
           {/* The preview on the left, how it is shown on the right; its texts below, full width. */}
           <div className={cn('grid items-start gap-4', styled && 'md:grid-cols-2')}>
             <div className="flex min-w-0 flex-col gap-3">
@@ -282,19 +311,12 @@ export function QuestionTimelineSection({
                   kind="image"
                   label={t('media.addImage')}
                   withDetails={!styled}
+                  removable={false}
                 />
               ) : selected === 'video' ? (
                 visual?.kind === 'video' && visual.source !== 'upload' ? (
-                  // An embedded video (YouTube / Vimeo) comes with its own phase; it can only be removed here.
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-fit"
-                    onClick={() => setVideo(null)}
-                  >
-                    {t('media.remove')}
-                  </Button>
+                  // An embedded video (YouTube / Vimeo) comes with its own phase: only removed, below.
+                  <p className="text-muted-foreground text-sm">{t('timeline.embeddedVideo')}</p>
                 ) : (
                   <MediaUpload
                     value={visual?.kind === 'video' ? visual.assetId : null}
@@ -302,6 +324,7 @@ export function QuestionTimelineSection({
                     kind="video"
                     label={t('media.addVideo')}
                     withDetails={!styled}
+                    removable={false}
                   />
                 )
               ) : (
@@ -310,6 +333,7 @@ export function QuestionTimelineSection({
                   onChange={setAudio}
                   kind="audio"
                   label={t('media.addAudio')}
+                  removable={false}
                 />
               )}
               {selected === 'audio' && audio ? (
