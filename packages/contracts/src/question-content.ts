@@ -4,6 +4,7 @@ import { IMAGE_CHOICE_OPTION_COUNTS, OPTION_ALT_MAX } from './image-choice';
 import {
   AUDIO_TARGETS,
   MEDIA_POSITIONS,
+  mediaStyleSchema,
   WAVEFORM_SIZES,
   questionMediaSchema,
 } from './question-media';
@@ -163,6 +164,8 @@ export const questionContentSchema = z
     media: questionMediaSchema.optional(),
     // Where the visual sits against the text on the projection.
     mediaPosition: z.enum(MEDIA_POSITIONS).default('bottom'),
+    // How the visual is framed and revealed; null or absent = as its file is.
+    mediaStyle: mediaStyleSchema.nullable().optional(),
     timeLimitS: z
       .number()
       .int()

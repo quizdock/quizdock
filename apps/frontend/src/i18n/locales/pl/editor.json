@@ -416,11 +416,13 @@
       "videoMuted": "Wideo, {{seconds}} s, bez dźwięku",
       "videoLoop": "Wideo w pętli, przez cały slajd",
       "audio": "Dźwięk, {{seconds}} s",
-      "unknown": "Długość jeszcze nieznana"
+      "unknown": "Długość jeszcze nieznana",
+      "reveal": "Stopniowe odsłanianie: {{seconds}} s"
     },
     "label": {
       "image": "Obraz",
-      "video": "Wideo"
+      "video": "Wideo",
+      "reveal": "Odsłanianie"
     },
     "add": "Dodaj element",
     "clear": "Usuń wszystkie media",
@@ -434,7 +436,9 @@
       "video": "Wideo",
       "videoHint": "Obraz i dźwięk, na obu kanałach",
       "audio": "Nagranie",
-      "audioHint": "Kanał audio"
+      "audioHint": "Kanał audio",
+      "reveal": "Stopniowe odsłanianie",
+      "revealHint": "Obraz wyostrza się, gdy sala odpowiada"
     },
     "refused": {
       "imageChoice": "Wybór obrazów nie ma własnego obrazu ani wideo.",
@@ -443,7 +447,9 @@
       "oneAudio": "Jedno nagranie na pytanie.",
       "oneVideo": "Jedno wideo na slajd.",
       "oneSlideAudio": "Jedno nagranie na slajd.",
-      "slideVideoSound": "Wideo odtwarza własny dźwięk: wycisz je, aby dodać nagranie."
+      "slideVideoSound": "Wideo odtwarza własny dźwięk: wycisz je, aby dodać nagranie.",
+      "revealNeedsImage": "Stopniowe odsłanianie: najpierw dodaj obraz.",
+      "oneReveal": "Jedno odsłanianie na obraz."
     },
     "clearConfirm": {
       "title": "Usunąć wszystkie media?",
@@ -460,6 +466,30 @@
       "right": "Tekst po lewej, obraz lub wideo obok, odpowiedzi poniżej.",
       "behind": "Tekst na obrazie lub wideo, czytelny dzięki kolorowi i obrysowi z bloku Tło; odpowiedzi poniżej, poza medium.",
       "alone": "Obraz lub wideo zamiast tekstu: prowadzący czyta pytanie. Telefony nadal je pokazują; odpowiedzi zostają poniżej."
+    },
+    "picture": {
+      "behindNote": "Za tekstem medium wypełnia obszar: liczy się tylko punkt kadrowania.",
+      "fit": "Wypełnienie",
+      "fitValue": {
+        "contain": "Całość",
+        "cover": "Wypełnij ramkę"
+      },
+      "focus": "Punkt kadrowania",
+      "focusValue": {
+        "center": "Środek",
+        "top": "Góra",
+        "bottom": "Dół",
+        "left": "Lewo",
+        "right": "Prawo"
+      },
+      "reveal": "Stopniowe odsłanianie",
+      "revealHint": "Rozmyty podczas czytania pytania, obraz wyostrza się od otwarcia odpowiedzi – także na telefonach.",
+      "revealSeconds": "Ostry po (s)",
+      "ratio": "Proporcje",
+      "ratioFile": "Z pliku",
+      "ratioFree": "Dowolne",
+      "ratioFreeLabel": "Proporcje (S:W)",
+      "ratioInvalid": "Proporcje zapisuje się S:W, liczbami całkowitymi, od 1:4 do 4:1."
     }
   },
   "preview": {

@@ -327,6 +327,15 @@ describe('quiz bundle', () => {
     expect(ajv.compile(v5)(JSON.parse(JSON.stringify(bundle)))).toBe(false);
   });
 
+  it('carries how a picture is framed and revealed, in version 9', () => {
+    const src = makeQuiz();
+    const style = { ratio: '3:4', fit: 'cover' as const, focus: 'top' as const, revealS: 10 };
+    src.questions[0].mediaStyle = style;
+    const bundle = toBundle(src, pathFor);
+    expect(bundle.version).toBe(9);
+    expect(fromBundle(bundle, idFor).questions[0]).toMatchObject({ mediaStyle: style });
+  });
+
   it.each(['behind', 'alone'] as const)(
     'stamps version 9 once a picture sits %s, and brings the place back',
     (position) => {

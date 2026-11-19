@@ -7,6 +7,8 @@ import {
   VIDEO_WITH_AUDIO,
   WAVEFORM_SIZE_DEFAULT,
   type MediaPosition,
+  type MediaStyle,
+  mediaStyleSchema,
   type WaveformSize,
   playbackGainDb,
 } from '@quiz-dock/contracts';
@@ -26,6 +28,8 @@ interface WithMedia {
   waveformSize?: WaveformSize;
   /** Where the visual sits against the text (the question's; bottom when not given). */
   mediaPosition?: MediaPosition;
+  /** How the visual is framed and revealed (the question's, as stored). */
+  mediaStyle?: Prisma.JsonValue | null;
 }
 
 /** The two slots of a stored question, in the shape of the shared contract. */
@@ -83,7 +87,20 @@ export function liveMediaOf(
     ...(visual && q.mediaPosition && q.mediaPosition !== 'bottom'
       ? { position: q.mediaPosition }
       : {}),
+    ...(visual ? styleOf(q.mediaStyle, visual.kind) : {}),
   };
+}
+
+/** The visual's style as the screens get it: none when empty; a video is never revealed. */
+function styleOf(
+  stored: Prisma.JsonValue | null | undefined,
+  kind: MediaAsset['kind'],
+): { style?: MediaStyle } {
+  const parsed = mediaStyleSchema.safeParse(stored ?? {});
+  if (!parsed.success) return {};
+  const { revealS, ...rest } = parsed.data;
+  const style = kind === 'image' && revealS ? { ...rest, revealS } : rest;
+  return Object.keys(style).length > 0 ? { style } : {};
 }
 
 /**

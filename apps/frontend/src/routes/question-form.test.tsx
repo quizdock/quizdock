@@ -560,6 +560,82 @@ describe('QuestionForm — the timeline', () => {
   });
 });
 
+describe('QuestionForm — the picture’s options', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+  const PIC = '01M3GM8JMFRA3DJ04SWWDWPPC9';
+
+  it('frames, crops and reveals the picture, and the timeline shows the reveal', async () => {
+    const fetchMock = mockApi([
+      { method: 'GET', path: `/media/${PIC}/meta`, body: { id: PIC, alt: null, credit: null } },
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    localStorage.setItem(
+      'draft:quiz:q1:question:new',
+      JSON.stringify({
+        type: 'poll',
+        prompt: 'Où est-ce ?',
+        media: { visual: { kind: 'image', assetId: PIC }, audio: null },
+        answerExplanation: '',
+        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        timeLimitS: 20,
+        revealDelayS: null,
+        pointsMode: 'none',
+        scoring: 'standard',
+        numericValue: 0,
+        numericTolerance: 0,
+        options: [
+          {
+            key: 'a',
+            text: 'Ici',
+            color: 'green',
+            shape: 'square',
+            isCorrect: false,
+            correctOrderIndex: 0,
+          },
+          {
+            key: 'b',
+            text: 'Là',
+            color: 'red',
+            shape: 'triangle',
+            isCorrect: false,
+            correctOrderIndex: 1,
+          },
+        ],
+        acceptedAnswers: [],
+      }),
+    );
+    const { onClose } = renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Image, toute la durée' }));
+    const panel = within(screen.getByRole('region', { name: 'Image' }));
+    fireEvent.click(panel.getByRole('button', { name: '1:1' }));
+    fireEvent.click(panel.getByRole('button', { name: 'Remplir le cadre' }));
+    fireEvent.click(panel.getByRole('button', { name: 'Haut' }));
+    fireEvent.click(panel.getByRole('checkbox', { name: /^Révélation progressive/ }));
+    expect(
+      screen.getByRole('button', { name: 'Révélation progressive : 10 s' }),
+    ).toBeInTheDocument();
+    // A ratio typed freely is kept once it reads as one.
+    fireEvent.click(panel.getByRole('button', { name: 'Libre' }));
+    const free = panel.getByLabelText('Ratio (L:H)');
+    fireEvent.change(free, { target: { value: '9:0' } });
+    fireEvent.blur(free);
+    expect(panel.getByRole('alert')).toHaveTextContent('Un ratio s’écrit L:H');
+    fireEvent.change(free, { target: { value: '21:9' } });
+    fireEvent.blur(free);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).mediaStyle).toEqual({
+      ratio: '21:9',
+      fit: 'cover',
+      focus: 'top',
+      revealS: 10,
+    });
+  });
+});
+
 describe('QuestionForm — image choice', () => {
   const CAT = '01M3GM8JMFRA3DJ04SWWDWPPC1';
   const DOG = '01M3GM8JMFRA3DJ04SWWDWPPC2';
@@ -1004,6 +1080,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
     audioTarget: null,
     waveformSize: 'M',
     mediaPosition: 'bottom',
+    mediaStyle: null,
     timerAfterMedia: false,
     pointsMode: 'standard',
     scoring: 'standard',
@@ -1019,6 +1096,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
     backgroundMediaId: null,
     backgroundGradient: null,
     backgroundStyle: null,
+    mediaStyle: null,
   };
 
   const cases: [string, Record<string, unknown>, Record<string, unknown>][] = [
@@ -1067,6 +1145,8 @@ describe('QuestionForm — a loaded question saves as it was', () => {
           audio: null,
         },
         mediaPosition: 'right',
+        // A video is framed, never revealed.
+        mediaStyle: { ratio: '4:3', fit: 'cover', revealS: 5 },
         audioTarget: 'projection',
         scoring: 'partial',
         options: [opt('o1', 'A', 'red', 'triangle', true), opt('o2', 'B', 'blue', 'diamond', true)],
@@ -1078,6 +1158,7 @@ describe('QuestionForm — a loaded question saves as it was', () => {
         audioTarget: 'projection',
         waveformSize: 'M',
         mediaPosition: 'right',
+        mediaStyle: { ratio: '4:3', fit: 'cover' },
         timerAfterMedia: false,
         pointsMode: 'standard',
         scoring: 'partial',

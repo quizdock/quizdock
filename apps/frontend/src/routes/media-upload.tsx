@@ -234,7 +234,7 @@ export function MediaUpload({
  * and, for any kind, its credit (#53): who made it, under which licence, from
  * where, shown with the quiz and at the end of a session.
  */
-function MediaDetailsFields({ mediaId, withAlt }: { mediaId: string; withAlt: boolean }) {
+export function MediaDetailsFields({ mediaId, withAlt }: { mediaId: string; withAlt: boolean }) {
   const { t } = useTranslation('editor');
   const setAlt = useMediaControllerSetAlt();
   const setCredit = useMediaControllerSetCredit();

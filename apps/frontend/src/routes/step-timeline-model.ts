@@ -15,7 +15,7 @@ export interface TimelinePhase {
 
 /** One element, drawn once over the channels it has. */
 export interface TimelineElement {
-  kind: 'image' | 'video' | 'audio';
+  kind: 'image' | 'video' | 'audio' | 'reveal';
   from: number;
   /** Where it ends on the visual row; null when it shows nothing. */
   visualTo: number | null;
@@ -62,6 +62,8 @@ export function questionTimeline(q: {
   /** The answers wait for the media's end. */
   listenFirst: boolean;
   visual: 'image' | 'video' | null;
+  /** The picture's progressive reveal (s), from the answers' opening; null without one. */
+  revealS?: number | null;
   audio: { peaks: number[] } | null;
   /** The video's or the sound's length; null while unknown. */
   mediaMs: number | null;
@@ -96,6 +98,11 @@ export function questionTimeline(q: {
   const elements: Omit<TimelineElement, 'lowered'>[] = [];
   if (q.visual === 'image') {
     elements.push({ kind: 'image', from: 0, visualTo: total, audioTo: null, lengthS: null });
+  }
+  if (q.visual === 'image' && q.revealS) {
+    // Over the picture, from the answers' opening: sharp at the latest when they close.
+    const to = Math.min(open + q.revealS, open + q.timeLimitS);
+    elements.push({ kind: 'reveal', from: open, visualTo: to, audioTo: null, lengthS: to - open });
   }
   if (q.visual === 'video') {
     elements.push({

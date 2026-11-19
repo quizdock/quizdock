@@ -11,6 +11,7 @@ import type { CreateQuestionDtoBackgroundGradient } from './createQuestionDtoBac
 import type { CreateQuestionDtoBackgroundStyle } from './createQuestionDtoBackgroundStyle';
 import type { CreateQuestionDtoMedia } from './createQuestionDtoMedia';
 import type { CreateQuestionDtoMediaPosition } from './createQuestionDtoMediaPosition';
+import type { CreateQuestionDtoMediaStyle } from './createQuestionDtoMediaStyle';
 import type { CreateQuestionDtoOptionsItem } from './createQuestionDtoOptionsItem';
 import type { CreateQuestionDtoPointsMode } from './createQuestionDtoPointsMode';
 import type { CreateQuestionDtoScoring } from './createQuestionDtoScoring';
@@ -41,6 +42,8 @@ export interface CreateQuestionDto {
   backgroundStyle?: CreateQuestionDtoBackgroundStyle;
   media?: CreateQuestionDtoMedia;
   mediaPosition?: CreateQuestionDtoMediaPosition;
+  /** @nullable */
+  mediaStyle?: CreateQuestionDtoMediaStyle;
   /**
      * @minimum 5
      * @maximum 240

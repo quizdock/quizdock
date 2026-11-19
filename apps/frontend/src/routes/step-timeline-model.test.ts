@@ -51,6 +51,14 @@ describe('questionTimeline', () => {
     ]);
   });
 
+  it('a reveal sits over the picture from the answers’ opening, sharp when they close at the latest', () => {
+    const t = questionTimeline({ ...question, visual: 'image', revealS: 30 });
+    expect(t.elements.map((e) => [e.kind, e.from, e.visualTo, e.lowered])).toEqual([
+      ['image', 0, 23, false],
+      ['reveal', 3, 23, true],
+    ]);
+  });
+
   it('a video is one element over both rows', () => {
     const t = questionTimeline({ ...question, visual: 'video', mediaMs: 12_000 });
     expect(t.elements).toEqual([

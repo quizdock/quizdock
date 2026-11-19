@@ -39,6 +39,7 @@ import { ReadinessMeter } from '../game/media/readiness-meter';
 import { anchorOf, followed } from '../game/media/followed';
 import { SoundUnlockOverlay } from '../game/media/sound-unlock-overlay';
 import { BACKDROP_EDGE, Surface } from '../game/surface';
+import { revealOf } from '../game/media/media-frame';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { ImageChoiceGrid } from '../game/image-choice';
 import { useQuestionClock } from '../game/use-countdown';
@@ -589,6 +590,8 @@ export function ScreenSurface({
       !!clock,
     );
     const { questionIndex, mediaStartAt } = view.question;
+    // A picture revealed progressively: blurred, it sharpens from the answers' opening.
+    const revealing = revealOf(view.question, !!view.paused);
     const stageOf = (
       media: LiveQuestionMedia | null | undefined,
       className: string,
@@ -599,6 +602,7 @@ export function ScreenSurface({
         key={questionIndex}
         media={media}
         cover={cover}
+        reveal={revealing}
         mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
         // A copy plays the sound only when asked (a remote participant), and only
         // when the question's sound is for remote devices.

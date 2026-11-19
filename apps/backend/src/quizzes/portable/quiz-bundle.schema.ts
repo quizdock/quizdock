@@ -2,6 +2,7 @@ import {
   AUDIO_TARGETS,
   OPTION_ALT_MAX,
   MEDIA_POSITIONS,
+  mediaStyleSchema,
   WAVEFORM_SIZES,
   audioPeaksSchema,
   loudnessSchema,
@@ -40,7 +41,7 @@ export const BUNDLE_FORMAT = 'quizdock/quiz';
  * Version 7: a question's picture or video may sit above or beside its text (`mediaPosition`).
  * Version 8: the quiz's theme (`theme`), and a step's background laid by its style (`background`).
  * Version 9: a question's picture or video may sit behind its text, or alone in its place
- * (`mediaPosition` `behind`, `alone`).
+ * (`mediaPosition` `behind`, `alone`), and be framed and revealed (`mediaStyle`).
  */
 export const BUNDLE_VERSION = 9;
 
@@ -58,7 +59,8 @@ export function bundleVersionOf(items: QuizBundle['items'], theme?: QuizBundle['
   if (
     items.some(
       (it) =>
-        it.kind === 'question' && (it.mediaPosition === 'behind' || it.mediaPosition === 'alone'),
+        it.kind === 'question' &&
+        (it.mediaPosition === 'behind' || it.mediaPosition === 'alone' || !!it.mediaStyle),
     )
   )
     return 9;
@@ -208,6 +210,8 @@ export const questionBundleSchema = z.object({
   waveformSize: z.enum(WAVEFORM_SIZES).optional(),
   /** Where its picture or video sits against its text (version 7); absent = below it. */
   mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
+  /** How its picture or video is framed and revealed (version 9); absent = as its file is. */
+  mediaStyle: mediaStyleSchema.optional(),
   /** The timer starts when the media ends (version 3); absent = with the question. */
   timerAfterMedia: z.boolean().optional(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']).optional(),

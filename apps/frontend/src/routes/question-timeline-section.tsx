@@ -18,8 +18,9 @@ import { Select } from '@/components/ui/select';
 import type { FieldIssue } from '@/lib/question-issues';
 import { cn } from '@/lib/utils';
 import { Waveform } from '../game/media/waveform';
-import { MediaUpload, type UploadedMedia } from './media-upload';
+import { MediaDetailsFields, MediaUpload, type UploadedMedia } from './media-upload';
 import { mediaHasSound, type QuestionFormApi, READ_DELAY_DEFAULT_MS } from './question-form-model';
+import { PictureStyleFields, REVEAL_DEFAULT_S } from './picture-style-fields';
 import { QuestionTimingFields } from './question-timing-section';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
 import {
@@ -55,6 +56,7 @@ export function QuestionTimelineSection({
   const [adding, setAdding] = useState(false);
   const [layingOut, setLayingOut] = useState(false);
   const mediaPosition = useStore(form.store, (s) => s.values.mediaPosition);
+  const mediaStyle = useStore(form.store, (s) => s.values.mediaStyle);
 
   const mediaMs = useMediaDurationMs(media);
   const canListenFirst = mediaHasSound(media) && mediaMs !== null;
@@ -63,6 +65,8 @@ export function QuestionTimelineSection({
       ? timeLimitS
       : effectiveTimeLimitS(timeLimitS, mediaMs, mediaTailS, READ_DELAY_DEFAULT_MS);
   const withVisual = type !== 'image_choice';
+  // The selected element is the visual: its options sit beside its preview.
+  const styled = (selected === 'image' || selected === 'video') && media.visual?.kind === selected;
   const { visual, audio } = media;
   const hasVideo = visual?.kind === 'video';
 
@@ -88,6 +92,7 @@ export function QuestionTimelineSection({
   };
   const clear = () => {
     form.setFieldValue('media', { visual: null, audio: null });
+    form.setFieldValue('mediaStyle', {});
     form.setFieldValue('timerAfterMedia', false);
     setSelected(null);
   };
@@ -102,6 +107,15 @@ export function QuestionTimelineSection({
     {
       kind: 'video',
       refused: refusedVisual ?? (audio ? t('timeline.refused.videoHasSound') : null),
+    },
+    {
+      kind: 'reveal',
+      refused:
+        visual?.kind !== 'image'
+          ? t('timeline.refused.revealNeedsImage')
+          : mediaStyle.revealS
+            ? t('timeline.refused.oneReveal')
+            : null,
     },
     {
       kind: 'audio',
@@ -120,6 +134,7 @@ export function QuestionTimelineSection({
           timeLimitS,
           listenFirst: canListenFirst && listenFirst,
           visual: withVisual ? (visual?.kind ?? null) : null,
+          revealS: visual?.kind === 'image' ? (mediaStyle.revealS ?? null) : null,
           audio: audio ? { peaks: audio.peaks } : null,
           mediaMs,
           tailS: mediaTailS,
@@ -127,7 +142,8 @@ export function QuestionTimelineSection({
         })}
         edit={{
           selected,
-          onSelect: setSelected,
+          // The reveal is the picture's: its panel holds it.
+          onSelect: (s) => setSelected(s === 'reveal' ? 'image' : s),
           onAdd: () => setAdding(true),
           onClear: visual || audio ? clear : null,
           layout: {
@@ -160,7 +176,13 @@ export function QuestionTimelineSection({
         choices={choices}
         onPick={(kind) => {
           setAdding(false);
-          setSelected(kind);
+          if (kind === 'reveal') {
+            form.setFieldValue('mediaStyle', {
+              ...mediaStyle,
+              revealS: Math.min(REVEAL_DEFAULT_S, timeLimitS),
+            });
+            setSelected('image');
+          } else setSelected(kind);
         }}
         onClose={() => setAdding(false)}
       />
@@ -176,44 +198,63 @@ export function QuestionTimelineSection({
         </ElementPanel>
       ) : selected === 'image' || selected === 'video' || selected === 'audio' ? (
         <ElementPanel title={t(`timeline.choice.${selected}`)} onClose={() => setSelected(null)}>
-          {selected === 'image' ? (
-            <MediaUpload
-              value={visual?.kind === 'image' ? visual.assetId : null}
-              onChange={setImage}
-              kind="image"
-              label={t('media.addImage')}
-            />
-          ) : selected === 'video' ? (
-            visual?.kind === 'video' && visual.source !== 'upload' ? (
-              // An embedded video (YouTube / Vimeo) comes with its own phase; it can only be removed here.
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-fit"
-                onClick={() => setVideo(null)}
-              >
-                {t('media.remove')}
-              </Button>
-            ) : (
-              <MediaUpload
-                value={visual?.kind === 'video' ? visual.assetId : null}
-                onChange={setVideo}
-                kind="video"
-                label={t('media.addVideo')}
+          {/* The preview on the left, how it is shown on the right; its texts below, full width. */}
+          <div className={cn('grid items-start gap-4', styled && 'md:grid-cols-2')}>
+            <div className="flex min-w-0 flex-col gap-3">
+              {selected === 'image' ? (
+                <MediaUpload
+                  value={visual?.kind === 'image' ? visual.assetId : null}
+                  onChange={setImage}
+                  kind="image"
+                  label={t('media.addImage')}
+                  withDetails={!styled}
+                />
+              ) : selected === 'video' ? (
+                visual?.kind === 'video' && visual.source !== 'upload' ? (
+                  // An embedded video (YouTube / Vimeo) comes with its own phase; it can only be removed here.
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-fit"
+                    onClick={() => setVideo(null)}
+                  >
+                    {t('media.remove')}
+                  </Button>
+                ) : (
+                  <MediaUpload
+                    value={visual?.kind === 'video' ? visual.assetId : null}
+                    onChange={setVideo}
+                    kind="video"
+                    label={t('media.addVideo')}
+                    withDetails={!styled}
+                  />
+                )
+              ) : (
+                <MediaUpload
+                  value={audio?.assetId ?? null}
+                  onChange={setAudio}
+                  kind="audio"
+                  label={t('media.addAudio')}
+                />
+              )}
+              {selected === 'audio' && audio ? (
+                <PlaybackFields form={form} peaks={audio.peaks} />
+              ) : null}
+            </div>
+            {styled && visual ? (
+              <PictureStyleFields
+                form={form}
+                image={visual.kind === 'image'}
+                behind={mediaPosition === 'behind'}
+                timeLimitS={timeLimitS}
               />
-            )
-          ) : (
-            <MediaUpload
-              value={audio?.assetId ?? null}
-              onChange={setAudio}
-              kind="audio"
-              label={t('media.addAudio')}
-            />
-          )}
-          {(selected === 'video' && hasVideo) || (selected === 'audio' && audio) ? (
-            <PlaybackFields form={form} peaks={selected === 'audio' ? audio!.peaks : null} />
+            ) : null}
+          </div>
+          {styled && visual && 'assetId' in visual ? (
+            <MediaDetailsFields mediaId={visual.assetId} withAlt={visual.kind === 'image'} />
           ) : null}
+          {selected === 'video' && hasVideo ? <PlaybackFields form={form} peaks={null} /> : null}
         </ElementPanel>
       ) : null}
     </div>

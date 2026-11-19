@@ -408,11 +408,13 @@
       "videoMuted": "视频，{{seconds}} 秒，无声音",
       "videoLoop": "循环视频，整张幻灯片",
       "audio": "声音，{{seconds}} 秒",
-      "unknown": "时长尚未知"
+      "unknown": "时长尚未知",
+      "reveal": "逐步显现：{{seconds}} 秒"
     },
     "label": {
       "image": "图片",
-      "video": "视频"
+      "video": "视频",
+      "reveal": "显现"
     },
     "add": "添加元素",
     "clear": "移除所有媒体",
@@ -426,7 +428,9 @@
       "video": "视频",
       "videoHint": "画面和声音，占两个通道",
       "audio": "音频",
-      "audioHint": "音频通道"
+      "audioHint": "音频通道",
+      "reveal": "逐步显现",
+      "revealHint": "全场作答时图片逐渐清晰"
     },
     "refused": {
       "imageChoice": "图片选择题不能有自己的图片或视频。",
@@ -435,7 +439,9 @@
       "oneAudio": "每道题一个音频。",
       "oneVideo": "每张幻灯片一个视频。",
       "oneSlideAudio": "每张幻灯片一个音频。",
-      "slideVideoSound": "视频正在播放自己的声音：将其静音后才能添加音频。"
+      "slideVideoSound": "视频正在播放自己的声音：将其静音后才能添加音频。",
+      "revealNeedsImage": "逐步显现：请先添加图片。",
+      "oneReveal": "每张图片只能有一个逐步显现。"
     },
     "clearConfirm": {
       "title": "移除所有媒体？",
@@ -452,6 +458,30 @@
       "right": "文字在左侧，图片或视频在旁边，答案在下方。",
       "behind": "文字叠在图片或视频上，借助“背景”区块的颜色和描边保持清晰；答案在下方，位于媒体之外。",
       "alone": "用图片或视频代替文字：由主持人朗读题目。手机上仍显示题目；答案保留在下方。"
+    },
+    "picture": {
+      "behindNote": "在文字后方时，媒体会填满区域：仅裁剪点生效。",
+      "fit": "填充",
+      "fitValue": {
+        "contain": "完整",
+        "cover": "填满画框"
+      },
+      "focus": "裁剪点",
+      "focusValue": {
+        "center": "居中",
+        "top": "上",
+        "bottom": "下",
+        "left": "左",
+        "right": "右"
+      },
+      "reveal": "逐步显现",
+      "revealHint": "读题时图片是模糊的，从开放作答起逐渐清晰——手机上也一样。",
+      "revealSeconds": "清晰所需时间（秒）",
+      "ratio": "比例",
+      "ratioFile": "按文件",
+      "ratioFree": "自定义",
+      "ratioFreeLabel": "比例（宽:高）",
+      "ratioInvalid": "比例写作 宽:高，使用整数，范围 1:4 到 4:1。"
     }
   },
   "preview": {

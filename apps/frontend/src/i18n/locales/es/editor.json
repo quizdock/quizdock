@@ -412,11 +412,13 @@
       "videoMuted": "Vídeo, {{seconds}} s, sin sonido",
       "videoLoop": "Vídeo en bucle, toda la diapositiva",
       "audio": "Sonido, {{seconds}} s",
-      "unknown": "Duración aún desconocida"
+      "unknown": "Duración aún desconocida",
+      "reveal": "Revelación progresiva: {{seconds}} s"
     },
     "label": {
       "image": "Imagen",
-      "video": "Vídeo"
+      "video": "Vídeo",
+      "reveal": "Revelación"
     },
     "add": "Añadir un elemento",
     "clear": "Quitar todos los medios",
@@ -430,7 +432,9 @@
       "video": "Vídeo",
       "videoHint": "Imagen y sonido, en los dos canales",
       "audio": "Audio",
-      "audioHint": "Canal de audio"
+      "audioHint": "Canal de audio",
+      "reveal": "Revelación progresiva",
+      "revealHint": "La imagen se aclara mientras la sala responde"
     },
     "refused": {
       "imageChoice": "Una elección de imágenes no tiene imagen ni vídeo propios.",
@@ -439,7 +443,9 @@
       "oneAudio": "Un audio por pregunta.",
       "oneVideo": "Un vídeo por diapositiva.",
       "oneSlideAudio": "Un audio por diapositiva.",
-      "slideVideoSound": "El vídeo reproduce su propio sonido: siléncialo para añadir un audio."
+      "slideVideoSound": "El vídeo reproduce su propio sonido: siléncialo para añadir un audio.",
+      "revealNeedsImage": "Revelación progresiva: añade primero una imagen.",
+      "oneReveal": "Una revelación por imagen."
     },
     "clearConfirm": {
       "title": "¿Quitar todos los medios?",
@@ -456,6 +462,30 @@
       "right": "El texto a la izquierda, la imagen o el vídeo al lado, las respuestas debajo.",
       "behind": "El texto sobre la imagen o el vídeo, legible gracias al color y al contorno del bloque Fondo; las respuestas debajo, fuera del medio.",
       "alone": "La imagen o el vídeo en lugar del texto: el presentador lee la pregunta. Los móviles la siguen mostrando; las respuestas quedan debajo."
+    },
+    "picture": {
+      "behindNote": "Detrás del texto, el medio llena la zona: solo se aplica el punto de encuadre.",
+      "fit": "Relleno",
+      "fitValue": {
+        "contain": "Entera",
+        "cover": "Llenar el marco"
+      },
+      "focus": "Punto de encuadre",
+      "focusValue": {
+        "center": "Centro",
+        "top": "Arriba",
+        "bottom": "Abajo",
+        "left": "Izquierda",
+        "right": "Derecha"
+      },
+      "reveal": "Revelación progresiva",
+      "revealHint": "Borrosa mientras se lee la pregunta, la imagen se vuelve nítida desde la apertura de las respuestas, también en los móviles.",
+      "revealSeconds": "Nítida tras (s)",
+      "ratio": "Proporción",
+      "ratioFile": "Del archivo",
+      "ratioFree": "Libre",
+      "ratioFreeLabel": "Proporción (An:Al)",
+      "ratioInvalid": "Una proporción se escribe An:Al, con números enteros, entre 1:4 y 4:1."
     }
   },
   "preview": {

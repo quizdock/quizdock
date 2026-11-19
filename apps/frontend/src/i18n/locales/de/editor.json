@@ -408,11 +408,13 @@
       "videoMuted": "Video, {{seconds}} s, ohne Ton",
       "videoLoop": "Video in Schleife, die ganze Folie",
       "audio": "Ton, {{seconds}} s",
-      "unknown": "Länge noch unbekannt"
+      "unknown": "Länge noch unbekannt",
+      "reveal": "Schrittweise Enthüllung: {{seconds}} s"
     },
     "label": {
       "image": "Bild",
-      "video": "Video"
+      "video": "Video",
+      "reveal": "Enthüllung"
     },
     "add": "Element hinzufügen",
     "clear": "Alle Medien entfernen",
@@ -426,7 +428,9 @@
       "video": "Video",
       "videoHint": "Bild und Ton, auf beiden Kanälen",
       "audio": "Audio",
-      "audioHint": "Tonkanal"
+      "audioHint": "Tonkanal",
+      "reveal": "Schrittweise Enthüllung",
+      "revealHint": "Das Bild wird scharf, während der Raum antwortet"
     },
     "refused": {
       "imageChoice": "Eine Bildauswahl hat kein eigenes Bild und kein eigenes Video.",
@@ -435,7 +439,9 @@
       "oneAudio": "Ein Audio pro Frage.",
       "oneVideo": "Ein Video pro Folie.",
       "oneSlideAudio": "Ein Audio pro Folie.",
-      "slideVideoSound": "Das Video spielt seinen eigenen Ton: Schalte ihn stumm, um ein Audio hinzuzufügen."
+      "slideVideoSound": "Das Video spielt seinen eigenen Ton: Schalte ihn stumm, um ein Audio hinzuzufügen.",
+      "revealNeedsImage": "Schrittweise Enthüllung: Füge zuerst ein Bild hinzu.",
+      "oneReveal": "Eine Enthüllung pro Bild."
     },
     "clearConfirm": {
       "title": "Alle Medien entfernen?",
@@ -452,6 +458,30 @@
       "right": "Der Text links, das Bild oder Video daneben, die Antworten darunter.",
       "behind": "Der Text liegt über dem Bild oder Video, lesbar durch Farbe und Kontur aus dem Block Hintergrund; die Antworten darunter, außerhalb.",
       "alone": "Das Bild oder Video anstelle des Textes: Die Moderation liest die Frage vor. Die Handys zeigen sie weiterhin; die Antworten bleiben darunter."
+    },
+    "picture": {
+      "behindNote": "Hinter dem Text füllt das Medium die Fläche: Nur der Bildausschnitt gilt.",
+      "fit": "Füllung",
+      "fitValue": {
+        "contain": "Ganz",
+        "cover": "Rahmen füllen"
+      },
+      "focus": "Bildausschnitt",
+      "focusValue": {
+        "center": "Mitte",
+        "top": "Oben",
+        "bottom": "Unten",
+        "left": "Links",
+        "right": "Rechts"
+      },
+      "reveal": "Schrittweise Enthüllung",
+      "revealHint": "Unscharf, während die Frage gelesen wird, wird das Bild ab dem Öffnen der Antworten scharf – auch auf den Handys.",
+      "revealSeconds": "Scharf nach (s)",
+      "ratio": "Seitenverhältnis",
+      "ratioFile": "Der Datei",
+      "ratioFree": "Frei",
+      "ratioFreeLabel": "Seitenverhältnis (B:H)",
+      "ratioInvalid": "Ein Seitenverhältnis lautet B:H, ganze Zahlen, zwischen 1:4 und 4:1."
     }
   },
   "preview": {

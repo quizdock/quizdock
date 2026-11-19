@@ -1,6 +1,6 @@
 import type { LiveAudio, LiveQuestionMedia, MediaAnchor } from '@quiz-dock/contracts';
 import { Volume2, VolumeX } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ import {
 import { unlockAudio, useAudioUnlocked } from './audio-unlock';
 import { releaseMedia, takeMedia } from './media-pool';
 import { clearPosition, readPosition, resumeAt, writePosition } from './media-position';
+import { mediaFrame, type Reveal, SIZE_CONTAINER, useRevealStyle } from './media-frame';
 import { Waveform } from './waveform';
 import { serverNow } from '../clock';
 import { ZoomableImage } from '../live-components';
@@ -389,6 +390,8 @@ export function VideoBox({
   startAt,
   loop = false,
   cover = false,
+  frame,
+  focus,
   notices = true,
   mutedElement = false,
 }: {
@@ -406,6 +409,10 @@ export function VideoBox({
   loop?: boolean;
   /** Fills its box, cropped (a background), rather than fitting in it. */
   cover?: boolean;
+  /** Its frame in the box, for a ratio of its own (the box is then a size container). */
+  frame?: CSSProperties;
+  /** Where it is cropped when it fills its frame. */
+  focus?: string;
   /** Says under the picture what went wrong (sound refused, slow); off behind a slide. */
   notices?: boolean;
   /** It never plays sound on this device (a slide's muted video, #125). */
@@ -434,15 +441,27 @@ export function VideoBox({
   useCatchUp(el, startAt === null && !anchor ? catchUp : null);
   usePositionReport(el, onPosition);
 
+  const frameKey = JSON.stringify(frame ?? null);
   useEffect(() => {
     if (!el || !box.current) return;
-    el.className = cn('absolute inset-0 h-full w-full', cover ? 'object-cover' : 'object-contain');
+    el.className = cn(
+      'absolute inset-0',
+      !frame && 'h-full w-full',
+      cover ? 'object-cover' : 'object-contain',
+    );
+    Object.assign(el.style, { ...(frame ?? {}), objectPosition: focus ?? '' });
     box.current.appendChild(el);
-  }, [el, cover]);
+    // The frame by its value: a new object each render must not re-append the element.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [el, cover, frameKey, focus]);
 
   return (
     <>
-      <div ref={box} className={cn('relative aspect-video max-w-full', boxClassName)} />
+      <div
+        ref={box}
+        className={cn('relative aspect-video max-w-full', boxClassName)}
+        style={frame ? SIZE_CONTAINER : undefined}
+      />
       {notices && blocked ? <SoundNotice kind="video" onEnable={() => void enableSound()} /> : null}
       {notices && slow ? <SlowNotice /> : null}
     </>
@@ -598,10 +617,13 @@ export function QuestionMediaStage({
   zoomable = false,
   showHiddenWaveform = false,
   cover = false,
+  reveal = null,
 }: {
   media: LiveQuestionMedia | null | undefined;
   /** The visual fills its box, cropped, rather than fitting in it: a media behind the text. */
   cover?: boolean;
+  /** A picture's progressive reveal, when its style asks for one and the question is open. */
+  reveal?: Reveal | null;
   /** A phone's picture: sized by `boxClassName`, a tap opens it over the whole screen. */
   zoomable?: boolean;
   /** The host's console: draws a waveform the author hid from the screens. */
@@ -634,28 +656,50 @@ export function QuestionMediaStage({
   const visual = media?.visual ?? null;
   // A sound not meant for this device is left out — or drawn following the projection.
   const audio = audible || follow !== undefined ? (media?.audio ?? null) : null;
+  const look = mediaFrame(media?.style, cover);
+  const revealed = useRevealStyle(visual?.kind === 'image' ? reveal : null, mode === 'still');
   if (!visual && !audio) return null;
+  const picture = visual?.kind === 'image' && (
+    <img
+      src={visual.url}
+      alt={visual.alt?.trim() || t('question.mediaAlt')}
+      className={cn(
+        'absolute inset-0 h-full w-full',
+        look.fill === 'cover' ? 'object-cover' : 'object-contain',
+        !cover && !look.ratio && 'rounded-lg',
+      )}
+      style={{ objectPosition: look.focus, ...revealed }}
+    />
+  );
   return (
     <div className={cn('flex w-full flex-col items-center gap-[0.75em]', className)}>
       {visual?.kind === 'image' ? (
-        zoomable ? (
+        // A revealing picture is not opened over the screen: it would show it sharp.
+        zoomable && !revealed ? (
           <ZoomableImage src={visual.url} alt={visual.alt?.trim() || t('question.mediaAlt')}>
             <img
               src={visual.url}
               alt={visual.alt?.trim() || t('question.mediaAlt')}
-              className={cn('rounded-lg object-contain', boxClassName)}
+              className={cn(
+                'rounded-lg',
+                look.fill === 'cover' ? 'object-cover' : 'object-contain',
+                boxClassName,
+              )}
+              style={{
+                aspectRatio: look.ratio ?? undefined,
+                objectPosition: look.focus,
+              }}
             />
           </ZoomableImage>
         ) : (
-          <div className={cn('relative aspect-video max-w-full', boxClassName)}>
-            <img
-              src={visual.url}
-              alt={visual.alt?.trim() || t('question.mediaAlt')}
-              className={cn(
-                'absolute inset-0 h-full w-full',
-                cover ? 'object-cover' : 'rounded-lg object-contain',
-              )}
-            />
+          <div className={cn('relative aspect-video max-w-full', boxClassName)} style={look.box}>
+            {look.frame ? (
+              <div className="overflow-hidden rounded-lg" style={look.frame}>
+                {picture}
+              </div>
+            ) : (
+              picture
+            )}
           </div>
         )
       ) : visual?.source === 'upload' ? (
@@ -670,7 +714,9 @@ export function QuestionMediaStage({
           catchUp={catchUp}
           onPosition={onPosition}
           startAt={startAt}
-          cover={cover}
+          cover={look.fill === 'cover'}
+          frame={look.frame}
+          focus={look.focus}
         />
       ) : null}
       {audio && (mode === 'still' || !audible) && follow !== undefined ? (

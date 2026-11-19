@@ -406,11 +406,13 @@
       "videoMuted": "Video, {{seconds}} sn, sessiz",
       "videoLoop": "Döngüdeki video, tüm slayt boyunca",
       "audio": "Ses, {{seconds}} sn",
-      "unknown": "Süre henüz bilinmiyor"
+      "unknown": "Süre henüz bilinmiyor",
+      "reveal": "Kademeli gösterim: {{seconds}} sn"
     },
     "label": {
       "image": "Görsel",
-      "video": "Video"
+      "video": "Video",
+      "reveal": "Gösterim"
     },
     "add": "Öğe ekle",
     "clear": "Tüm medyaları kaldır",
@@ -424,7 +426,9 @@
       "video": "Video",
       "videoHint": "Görüntü ve ses, iki kanalda",
       "audio": "Ses",
-      "audioHint": "Ses kanalı"
+      "audioHint": "Ses kanalı",
+      "reveal": "Kademeli gösterim",
+      "revealHint": "Salon cevaplarken resim netleşir"
     },
     "refused": {
       "imageChoice": "Görsel seçimli bir sorunun kendi resmi veya videosu olmaz.",
@@ -433,7 +437,9 @@
       "oneAudio": "Soru başına bir ses.",
       "oneVideo": "Slayt başına bir video.",
       "oneSlideAudio": "Slayt başına bir ses.",
-      "slideVideoSound": "Video kendi sesini çalıyor: ses eklemek için videonun sesini kapatın."
+      "slideVideoSound": "Video kendi sesini çalıyor: ses eklemek için videonun sesini kapatın.",
+      "revealNeedsImage": "Kademeli gösterim: önce bir resim ekleyin.",
+      "oneReveal": "Resim başına bir gösterim."
     },
     "clearConfirm": {
       "title": "Tüm medyalar kaldırılsın mı?",
@@ -450,6 +456,30 @@
       "right": "Metin solda, resim ya da video yanında, cevaplar aşağıda.",
       "behind": "Metin resmin ya da videonun üzerinde, Arka plan bloğunun rengi ve kenarlığıyla okunur; cevaplar aşağıda, medyanın dışında.",
       "alone": "Metnin yerinde resim ya da video: soruyu sunucu okur. Telefonlar soruyu yine gösterir; cevaplar aşağıda kalır."
+    },
+    "picture": {
+      "behindNote": "Metnin arkasında medya alanı doldurur: yalnızca kırpma noktası geçerlidir.",
+      "fit": "Doldurma",
+      "fitValue": {
+        "contain": "Tamamı",
+        "cover": "Çerçeveyi doldur"
+      },
+      "focus": "Kırpma noktası",
+      "focusValue": {
+        "center": "Orta",
+        "top": "Üst",
+        "bottom": "Alt",
+        "left": "Sol",
+        "right": "Sağ"
+      },
+      "reveal": "Kademeli gösterim",
+      "revealHint": "Soru okunurken bulanık olan resim, cevaplar açıldıkça netleşir; telefonlarda da.",
+      "revealSeconds": "Net olduğu an (sn)",
+      "ratio": "Oran",
+      "ratioFile": "Dosyanınki",
+      "ratioFree": "Serbest",
+      "ratioFreeLabel": "Oran (G:Y)",
+      "ratioInvalid": "Oran G:Y biçiminde, tam sayılarla, 1:4 ile 4:1 arasında yazılır."
     }
   },
   "preview": {

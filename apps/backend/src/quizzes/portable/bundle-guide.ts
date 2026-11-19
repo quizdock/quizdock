@@ -87,6 +87,7 @@ export const GUIDE_FIELDS = {
       'audioTarget',
       'waveformSize',
       'mediaPosition',
+      'mediaStyle',
       'timerAfterMedia',
       'multiSelect',
     ],

@@ -772,6 +772,37 @@
                   "alone"
                 ]
               },
+              "mediaStyle": {
+                "type": "object",
+                "properties": {
+                  "ratio": {
+                    "type": "string"
+                  },
+                  "fit": {
+                    "type": "string",
+                    "enum": [
+                      "contain",
+                      "cover"
+                    ]
+                  },
+                  "focus": {
+                    "type": "string",
+                    "enum": [
+                      "center",
+                      "top",
+                      "bottom",
+                      "left",
+                      "right"
+                    ]
+                  },
+                  "revealS": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 240
+                  }
+                },
+                "additionalProperties": false
+              },
               "timerAfterMedia": {
                 "type": "boolean"
               },

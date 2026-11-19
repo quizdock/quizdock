@@ -290,6 +290,8 @@ model Question {
   waveformSize       WaveformSize    @default(M) @map("waveform_size")
   /// Where its picture or video sits against its text on the projection (answers stay below).
   mediaPosition      MediaPosition   @default(bottom) @map("media_position")
+  /// How its picture or video is framed and revealed (MediaStyle in @quiz-dock/contracts); null = as its file is.
+  mediaStyle         Json?           @map("media_style")
   /// The timer starts when the media ends (listen first, then answer); needs a known duration.
   timerAfterMedia    Boolean         @default(false) @map("timer_after_media")
   pointsMode         PointsMode      @default(standard) @map("points_mode")

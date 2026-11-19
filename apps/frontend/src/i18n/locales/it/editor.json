@@ -413,11 +413,13 @@
       "videoMuted": "Video, {{seconds}} s, senza audio",
       "videoLoop": "Video in loop, per tutta la slide",
       "audio": "Audio, {{seconds}} s",
-      "unknown": "Durata non ancora nota"
+      "unknown": "Durata non ancora nota",
+      "reveal": "Rivelazione progressiva: {{seconds}} s"
     },
     "label": {
       "image": "Immagine",
-      "video": "Video"
+      "video": "Video",
+      "reveal": "Rivelazione"
     },
     "add": "Aggiungi un elemento",
     "clear": "Rimuovi tutti i media",
@@ -431,7 +433,9 @@
       "video": "Video",
       "videoHint": "Immagine e suono, su entrambi i canali",
       "audio": "Audio",
-      "audioHint": "Canale audio"
+      "audioHint": "Canale audio",
+      "reveal": "Rivelazione progressiva",
+      "revealHint": "L'immagine diventa nitida mentre la sala risponde"
     },
     "refused": {
       "imageChoice": "Una scelta di immagini non ha un'immagine né un video propri.",
@@ -440,7 +444,9 @@
       "oneAudio": "Un audio per domanda.",
       "oneVideo": "Un video per slide.",
       "oneSlideAudio": "Un audio per slide.",
-      "slideVideoSound": "Il video riproduce il proprio suono: disattivalo per aggiungere un audio."
+      "slideVideoSound": "Il video riproduce il proprio suono: disattivalo per aggiungere un audio.",
+      "revealNeedsImage": "Rivelazione progressiva: aggiungi prima un'immagine.",
+      "oneReveal": "Una rivelazione per immagine."
     },
     "clearConfirm": {
       "title": "Rimuovere tutti i media?",
@@ -457,6 +463,30 @@
       "right": "Il testo a sinistra, l'immagine o il video accanto, le risposte sotto.",
       "behind": "Il testo sopra l'immagine o il video, reso leggibile dal colore e dal contorno del blocco Sfondo; le risposte sotto, fuori dal media.",
       "alone": "L'immagine o il video al posto del testo: il conduttore legge la domanda. I telefoni la mostrano comunque; le risposte restano sotto."
+    },
+    "picture": {
+      "behindNote": "Dietro il testo, il media riempie l'area: vale solo il punto di inquadratura.",
+      "fit": "Riempimento",
+      "fitValue": {
+        "contain": "Intera",
+        "cover": "Riempi la cornice"
+      },
+      "focus": "Punto di inquadratura",
+      "focusValue": {
+        "center": "Centro",
+        "top": "Alto",
+        "bottom": "Basso",
+        "left": "Sinistra",
+        "right": "Destra"
+      },
+      "reveal": "Rivelazione progressiva",
+      "revealHint": "Sfocata mentre si legge la domanda, l'immagine diventa nitida dall'apertura delle risposte, anche sui telefoni.",
+      "revealSeconds": "Nitida dopo (s)",
+      "ratio": "Proporzioni",
+      "ratioFile": "Del file",
+      "ratioFree": "Libere",
+      "ratioFreeLabel": "Proporzioni (L:A)",
+      "ratioInvalid": "Le proporzioni si scrivono L:A, numeri interi, tra 1:4 e 4:1."
     }
   },
   "preview": {

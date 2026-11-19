@@ -144,6 +144,7 @@ function previewQuestion(v: FormValues): QuizDetailDtoQuestionsItem {
     audioTarget: p.audioTarget ?? null,
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
+    mediaStyle: p.mediaStyle ?? null,
     timerAfterMedia: p.timerAfterMedia ?? false,
     pointsMode: p.pointsMode ?? 'standard',
     scoring: p.scoring ?? 'standard',

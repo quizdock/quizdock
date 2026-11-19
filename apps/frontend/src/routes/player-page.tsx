@@ -73,6 +73,7 @@ import { FollowedWaveform, QuestionMediaStage } from '../game/media/question-med
 import { SlidePlaybackContext } from '../game/media/slide-media';
 import { RoomVariables } from '../game/slide-variables';
 import { anchorOf, followed } from '../game/media/followed';
+import { revealOf } from '../game/media/media-frame';
 import { RatingPanel } from '../game/rating-panel';
 import { setDeviceMuted, useDeviceSound } from '../game/media/audio-mixer';
 import { SoundButton } from '../game/media/sound-button';
@@ -978,6 +979,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               key={question.questionIndex}
               media={question.media}
               mode={view.paused ? 'pause' : 'play'}
+              reveal={revealOf(question, !!view.paused)}
               audible={hears}
               muted={muted}
               follow={hears ? undefined : followed(view, { questionIndex: question.questionIndex })}

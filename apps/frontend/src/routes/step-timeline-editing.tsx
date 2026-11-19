@@ -1,4 +1,4 @@
-import { Image as ImageIcon, type LucideIcon, Music, Video, X } from 'lucide-react';
+import { Image as ImageIcon, type LucideIcon, Music, Sparkles, Video, X } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import type { TimelineElement } from './step-timeline-model';
 
 /** The kinds of element a step can be given. */
-export type AddableKind = Extract<TimelineElement['kind'], 'image' | 'video' | 'audio'>;
+export type AddableKind = TimelineElement['kind'];
 
 /** One kind the + offers, and why the format refuses it here, if it does. */
 export interface AddChoice {
@@ -20,6 +20,7 @@ export const KIND_ICON: Record<AddableKind, LucideIcon> = {
   image: ImageIcon,
   video: Video,
   audio: Music,
+  reveal: Sparkles,
 };
 
 /** Each kind in its channel's colour: a video sits on both. */
@@ -27,6 +28,7 @@ const KIND_COLOR: Record<AddableKind, string> = {
   image: 'var(--timeline-visual)',
   video: 'var(--timeline-visual)',
   audio: 'var(--timeline-audio)',
+  reveal: 'var(--timeline-visual)',
 };
 
 /**

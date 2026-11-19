@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import {
+  mediaStyleSchema,
   AUDIO_TARGET_DEFAULT,
   type AudioTarget,
   LOUDNESS_TARGET_LUFS,
@@ -226,6 +227,8 @@ function questionOut(
   if (q.audioTarget) item.audioTarget = q.audioTarget;
   if (q.waveformSize && q.waveformSize !== 'M') item.waveformSize = q.waveformSize;
   if (q.mediaPosition && q.mediaPosition !== 'bottom') item.mediaPosition = q.mediaPosition;
+  const style = mediaStyleSchema.safeParse(q.mediaStyle ?? {});
+  if (style.success && Object.keys(style.data).length > 0) item.mediaStyle = style.data;
   if (q.timerAfterMedia) item.timerAfterMedia = true;
   if (q.numericValue !== null) item.numericValue = Number(q.numericValue);
   if (q.numericTolerance !== null) item.numericTolerance = Number(q.numericTolerance);
@@ -542,6 +545,7 @@ export function fromBundle(
           audioTarget: it.audioTarget ?? null,
           waveformSize: it.waveformSize,
           mediaPosition: it.mediaPosition,
+          mediaStyle: it.mediaStyle ?? null,
           timerAfterMedia: it.timerAfterMedia,
           pointsMode: it.pointsMode,
           scoring: it.scoring,

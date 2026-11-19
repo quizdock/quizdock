@@ -2,6 +2,7 @@ import { createZodDto } from 'nestjs-zod';
 import {
   AUDIO_TARGETS,
   MEDIA_POSITIONS,
+  mediaStyleSchema,
   WAVEFORM_SIZES,
   questionMediaSchema,
 } from '@quiz-dock/contracts';
@@ -57,6 +58,8 @@ export const questionSchema = z.object({
   waveformSize: z.enum(WAVEFORM_SIZES),
   /** Where its picture or video sits against its text on the projection. */
   mediaPosition: z.enum(MEDIA_POSITIONS),
+  /** How its picture or video is framed and revealed; null = as its file is. */
+  mediaStyle: mediaStyleSchema.nullable(),
   /** The timer starts when the media ends. */
   timerAfterMedia: z.boolean(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']),

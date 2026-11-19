@@ -90,6 +90,7 @@ export function templateSteps(
     audioTarget: q.audioTarget ?? null,
     waveformSize: q.waveformSize,
     mediaPosition: q.mediaPosition,
+    mediaStyle: q.mediaStyle ?? null,
     timerAfterMedia: q.timerAfterMedia,
     pointsMode: q.type === 'poll' ? 'none' : q.pointsMode,
     scoring: q.scoring,

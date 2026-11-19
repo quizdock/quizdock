@@ -408,11 +408,13 @@
       "videoMuted": "Video, {{seconds}} s, without sound",
       "videoLoop": "Looped video, the whole slide",
       "audio": "Sound, {{seconds}} s",
-      "unknown": "Length not known yet"
+      "unknown": "Length not known yet",
+      "reveal": "Progressive reveal: {{seconds}} s"
     },
     "label": {
       "image": "Picture",
-      "video": "Video"
+      "video": "Video",
+      "reveal": "Reveal"
     },
     "add": "Add an element",
     "clear": "Remove every media",
@@ -426,7 +428,9 @@
       "video": "Video",
       "videoHint": "Picture and sound, on both channels",
       "audio": "Audio",
-      "audioHint": "Audio channel"
+      "audioHint": "Audio channel",
+      "reveal": "Progressive reveal",
+      "revealHint": "The picture sharpens while the room answers"
     },
     "refused": {
       "imageChoice": "An image choice has no picture or video of its own.",
@@ -435,7 +439,9 @@
       "oneAudio": "One audio per question.",
       "oneVideo": "One video per slide.",
       "oneSlideAudio": "One audio per slide.",
-      "slideVideoSound": "The video plays its own sound: mute it to add an audio."
+      "slideVideoSound": "The video plays its own sound: mute it to add an audio.",
+      "revealNeedsImage": "Progressive reveal: add a picture first.",
+      "oneReveal": "One reveal per picture."
     },
     "clearConfirm": {
       "title": "Remove every media?",
@@ -452,6 +458,30 @@
       "right": "The text on the left, the picture or video beside it, the answers below.",
       "behind": "The text laid over the picture or video, made legible by the colour and outline of the Background block; the answers below, outside it.",
       "alone": "The picture or video in the text's place: the host reads the question out. The phones still show it; the answers stay below."
+    },
+    "picture": {
+      "behindNote": "Behind the text, the media fills the area: only the crop point applies.",
+      "fit": "Fill",
+      "fitValue": {
+        "contain": "Whole",
+        "cover": "Fill the frame"
+      },
+      "focus": "Crop point",
+      "focusValue": {
+        "center": "Centre",
+        "top": "Top",
+        "bottom": "Bottom",
+        "left": "Left",
+        "right": "Right"
+      },
+      "reveal": "Progressive reveal",
+      "revealHint": "Blurred while the question is read, the picture sharpens from the answers' opening — on the phones too.",
+      "revealSeconds": "Sharp after (s)",
+      "ratio": "Ratio",
+      "ratioFile": "File's",
+      "ratioFree": "Free",
+      "ratioFreeLabel": "Ratio (W:H)",
+      "ratioInvalid": "A ratio reads W:H, whole numbers, between 1:4 and 4:1."
     }
   },
   "preview": {

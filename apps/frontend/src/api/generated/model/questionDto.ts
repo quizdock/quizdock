@@ -11,6 +11,7 @@ import type { QuestionDtoBackgroundGradient } from './questionDtoBackgroundGradi
 import type { QuestionDtoBackgroundStyle } from './questionDtoBackgroundStyle';
 import type { QuestionDtoMedia } from './questionDtoMedia';
 import type { QuestionDtoMediaPosition } from './questionDtoMediaPosition';
+import type { QuestionDtoMediaStyle } from './questionDtoMediaStyle';
 import type { QuestionDtoOptionsItem } from './questionDtoOptionsItem';
 import type { QuestionDtoPointsMode } from './questionDtoPointsMode';
 import type { QuestionDtoScoring } from './questionDtoScoring';
@@ -54,6 +55,8 @@ export interface QuestionDto {
   audioTarget: QuestionDtoAudioTarget;
   waveformSize: QuestionDtoWaveformSize;
   mediaPosition: QuestionDtoMediaPosition;
+  /** @nullable */
+  mediaStyle: QuestionDtoMediaStyle;
   timerAfterMedia: boolean;
   pointsMode: QuestionDtoPointsMode;
   scoring: QuestionDtoScoring;

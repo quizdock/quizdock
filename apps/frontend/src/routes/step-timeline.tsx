@@ -6,6 +6,7 @@ import {
   LayoutTemplate,
   Music,
   Plus,
+  Sparkles,
   Video,
   Volume2,
 } from 'lucide-react';
@@ -337,27 +338,39 @@ function Element({
   const height = bottom - top;
   // The split between the two rows, from the element's own top.
   const split = ROW.channel + ROW.gap / 2 - top;
-  const soft = e.kind === 'image';
+  const soft = e.kind === 'image' || e.kind === 'reveal';
   const fill = (color: string) => (soft ? mix(color, 28) : color);
   const background =
-    visual && audio
-      ? `linear-gradient(${fill(VISUAL)} 0 ${split}px, ${fill(AUDIO)} ${split}px)`
-      : fill(visual ? VISUAL : AUDIO);
+    e.kind === 'reveal'
+      ? // Blurred to sharp: the picture's colour comes in along it.
+        `linear-gradient(90deg, ${mix(VISUAL, 8)}, ${mix(VISUAL, 55)})`
+      : visual && audio
+        ? `linear-gradient(${fill(VISUAL)} 0 ${split}px, ${fill(AUDIO)} ${split}px)`
+        : fill(visual ? VISUAL : AUDIO);
   const border = visual ? VISUAL : AUDIO;
   const seconds = e.lengthS === null ? null : round(e.lengthS);
   const tip =
     e.kind === 'image'
       ? t('timeline.element.image')
-      : e.kind === 'video'
-        ? e.loop
-          ? t('timeline.element.videoLoop')
+      : e.kind === 'reveal'
+        ? t('timeline.element.reveal', { seconds })
+        : e.kind === 'video'
+          ? e.loop
+            ? t('timeline.element.videoLoop')
+            : seconds === null
+              ? t('timeline.element.unknown')
+              : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
           : seconds === null
             ? t('timeline.element.unknown')
-            : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
-        : seconds === null
-          ? t('timeline.element.unknown')
-          : t('timeline.element.audio', { seconds });
-  const Icon = e.kind === 'video' ? Video : e.kind === 'audio' ? Music : ImageIcon;
+            : t('timeline.element.audio', { seconds });
+  const Icon =
+    e.kind === 'video'
+      ? Video
+      : e.kind === 'audio'
+        ? Music
+        : e.kind === 'reveal'
+          ? Sparkles
+          : ImageIcon;
   const label =
     e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
   const style: CSSProperties = {

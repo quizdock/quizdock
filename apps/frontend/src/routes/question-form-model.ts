@@ -3,6 +3,7 @@ import {
   type BackgroundStyle,
   MEDIA_POSITION_DEFAULT,
   type MediaPosition,
+  type MediaStyle,
   NO_QUESTION_MEDIA,
   OPTION_COLORS,
   OPTION_ORDER,
@@ -57,6 +58,8 @@ export interface FormValues {
   /** How thick the sound's waveform is drawn on the screens. */
   waveformSize: WaveformSize;
   mediaPosition: MediaPosition;
+  /** How the visual is framed and revealed; empty = as its file is. */
+  mediaStyle: MediaStyle;
   /** Listen first: the timer starts when the media ends. */
   timerAfterMedia: boolean;
   pointsMode: 'standard' | 'double' | 'none' | 'fixed';
@@ -101,6 +104,7 @@ export function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
       audioTarget: null,
       waveformSize: WAVEFORM_SIZE_DEFAULT,
       mediaPosition: MEDIA_POSITION_DEFAULT,
+      mediaStyle: {},
       timerAfterMedia: false,
       pointsMode: 'standard',
       scoring: 'standard',
@@ -128,6 +132,7 @@ export function initialValues(q?: QuizDetailDtoQuestionsItem): FormValues {
     audioTarget: (q.audioTarget as AudioTarget | null | undefined) ?? null,
     waveformSize: (q.waveformSize as WaveformSize | undefined) ?? WAVEFORM_SIZE_DEFAULT,
     mediaPosition: (q.mediaPosition as MediaPosition | undefined) ?? MEDIA_POSITION_DEFAULT,
+    mediaStyle: (q.mediaStyle as MediaStyle | null | undefined) ?? {},
     timerAfterMedia: q.timerAfterMedia ?? false,
     // A poll is stored as 'none', which the menu does not offer: the poll's own
     // setting stays out of the form, so a change of type starts from 'standard'.
@@ -155,6 +160,8 @@ export function withDefaults(draft: FormValues): FormValues {
   return {
     ...draft,
     multiSelect: draft.multiSelect ?? false,
+    // A draft from before the picture's options.
+    mediaStyle: draft.mediaStyle ?? {},
     options: draft.options.map((o) => ({
       ...o,
       mediaId: o.mediaId ?? null,
@@ -222,6 +229,7 @@ export function buildPayload(v: FormValues) {
     audioTarget: mediaHasSound(v.media) ? v.audioTarget : null,
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
+    mediaStyle: styleToSend(v),
     // Only with a media to wait for; the server also falls back when its length is unknown.
     timerAfterMedia: mediaHasSound(v.media) && v.timerAfterMedia,
     // 'none' is a poll's: a restored draft may still carry it after a change of type.
@@ -298,3 +306,12 @@ export function useQuestionFormApi(
 }
 
 export type QuestionFormApi = ReturnType<typeof useQuestionFormApi>;
+
+/** The style worth sending: none without a visual or when empty; a video is never revealed. */
+function styleToSend(v: Pick<FormValues, 'media' | 'mediaStyle'>): MediaStyle | null {
+  const visual = v.media.visual;
+  if (!visual) return null;
+  const { revealS, ...rest } = v.mediaStyle;
+  const style = visual.kind === 'image' && revealS ? { ...rest, revealS } : rest;
+  return Object.keys(style).length > 0 ? style : null;
+}

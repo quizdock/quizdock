@@ -25,6 +25,7 @@ export function questionData(dto: QuestionContent) {
     audioTarget: dto.audioTarget ?? null,
     waveformSize: dto.waveformSize,
     mediaPosition: dto.mediaPosition,
+    mediaStyle: dto.mediaStyle ?? Prisma.JsonNull,
     timerAfterMedia: dto.timerAfterMedia,
     // Un sondage ne rapporte aucun point (technique §4).
     pointsMode: dto.type === 'poll' ? 'none' : dto.pointsMode,

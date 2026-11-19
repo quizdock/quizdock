@@ -157,6 +157,43 @@ export const MEDIA_POSITIONS = ['bottom', 'top', 'left', 'right', 'behind', 'alo
 export type MediaPosition = (typeof MEDIA_POSITIONS)[number];
 export const MEDIA_POSITION_DEFAULT: MediaPosition = 'bottom';
 
+/** How a picture or a video fills its frame: whole in it, or filling it, cropped. */
+export const MEDIA_FITS = ['contain', 'cover'] as const;
+export type MediaFit = (typeof MEDIA_FITS)[number];
+/** Where a filling picture is cropped around. */
+export const MEDIA_FOCI = ['center', 'top', 'bottom', 'left', 'right'] as const;
+export type MediaFocus = (typeof MEDIA_FOCI)[number];
+/** The ratio presets the builder offers; any `W:H` between 1:4 and 4:1 is fine. */
+export const MEDIA_RATIO_PRESETS = ['16:9', '4:3', '1:1', '3:4'] as const;
+
+/** A ratio as `W:H` (whole numbers) → its width over its height; null when not one. */
+export function parseMediaRatio(ratio: string | null | undefined): number | null {
+  const m = /^(\d{1,3}):(\d{1,3})$/.exec(ratio ?? '');
+  if (!m) return null;
+  const w = Number(m[1]);
+  const h = Number(m[2]);
+  if (!w || !h || w / h < 1 / 4 || w / h > 4) return null;
+  return w / h;
+}
+
+/**
+ * How a question's picture or video is shown (SPECIFICATIONS-QUESTION-PICTURE): its
+ * frame's ratio (the file's own when absent), how it fills it, where it is cropped, and
+ * a picture's progressive reveal — blurred, it sharpens over `revealS` seconds from the
+ * answers' opening. Every setting optional: absent, the media shows as its file is.
+ */
+export const mediaStyleSchema = z
+  .object({
+    ratio: z.string().refine((r) => parseMediaRatio(r) !== null, 'question.media_ratio'),
+    fit: z.enum(MEDIA_FITS),
+    focus: z.enum(MEDIA_FOCI),
+    // At most the longest answer time (TIME_LIMIT_S.max, which imports from here).
+    revealS: z.number().int().min(1).max(240),
+  })
+  .partial()
+  .strict();
+export type MediaStyle = z.infer<typeof mediaStyleSchema>;
+
 // ─── Audio target ─────────────────────────────────────────────────────────
 
 /**
@@ -214,6 +251,8 @@ export type LiveQuestionMedia = {
   audio: LiveAudio | null;
   /** Where the visual sits against the text ({@link MEDIA_POSITION_DEFAULT} when absent). */
   position?: MediaPosition;
+  /** How the visual is framed and revealed (absent: as its file is). */
+  style?: MediaStyle;
 };
 
 /** Every URL a screen should fetch ahead to play these media at once. */
