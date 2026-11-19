@@ -460,7 +460,8 @@
       "oneReveal": "Jedno odsłanianie na obraz.",
       "pollExplanation": "Ankieta nie ma poprawnej odpowiedzi do wyjaśnienia.",
       "oneExplanation": "Jedno wyjaśnienie na pytanie.",
-      "oneHint": "Jedna podpowiedź na pytanie."
+      "oneHint": "Jedna podpowiedź na pytanie.",
+      "oneSlideVisual": "Slajd pokazuje obraz albo wideo, nie oba naraz."
     },
     "clearConfirm": {
       "title": "Usunąć wszystkie media?",
@@ -545,7 +546,15 @@
       "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi."
     },
     "removeElement": "Usuń ten element",
-    "embeddedVideo": "Osadzone wideo: można je tylko usunąć."
+    "embeddedVideo": "Osadzone wideo: można je tylko usunąć.",
+    "slideLayoutDescription": {
+      "bottom": "Obraz lub wideo pod blokami.",
+      "top": "Obraz lub wideo nad blokami.",
+      "left": "Obraz lub wideo po lewej, bloki obok.",
+      "right": "Bloki po lewej, obraz lub wideo obok.",
+      "behind": "Obraz lub wideo wypełnia slajd, bloki na nim (dotąd wideo slajdu).",
+      "alone": "Sam obraz lub wideo, zamiast bloków."
+    }
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",

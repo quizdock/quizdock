@@ -49,6 +49,7 @@ describe('SlidesService', () => {
         videoLoop: true,
         videoSound: true,
         waveformSize: 'hidden',
+        mediaPosition: 'behind',
       });
       const data = (prisma.slide.create.mock.calls[0][0] as { data: unknown }).data;
       expect(data).toMatchObject({
@@ -70,6 +71,7 @@ describe('SlidesService', () => {
         videoLoop: true,
         videoSound: true,
         waveformSize: 'hidden' as const,
+        mediaPosition: 'behind' as const,
       };
       await service.add(OWNER, 'quiz-1', empty);
       expect(prisma.slide.create).toHaveBeenCalled();
@@ -91,6 +93,7 @@ describe('SlidesService', () => {
           videoLoop: true,
           videoSound: true,
           waveformSize: 'hidden',
+          mediaPosition: 'behind',
         }),
       ).rejects.toBeInstanceOf(NotFoundException);
     });
@@ -107,6 +110,7 @@ describe('SlidesService', () => {
         videoLoop: true,
         videoSound: true,
         waveformSize: 'hidden',
+        mediaPosition: 'behind',
         ...over,
       }) as Parameters<SlidesService['add']>[2];
 
@@ -189,6 +193,7 @@ describe('SlidesService', () => {
         videoLoop: true,
         videoSound: true,
         waveformSize: 'hidden',
+        mediaPosition: 'behind',
       } as Parameters<SlidesService['update']>[2]);
       expect(released()).toEqual([BG, SND, VID].sort());
     });

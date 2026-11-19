@@ -452,7 +452,8 @@
       "oneReveal": "One reveal per picture.",
       "pollExplanation": "A poll has no right answer to explain.",
       "oneExplanation": "One explanation per question.",
-      "oneHint": "One hint per question."
+      "oneHint": "One hint per question.",
+      "oneSlideVisual": "A slide shows a picture or a video, not both."
     },
     "clearConfirm": {
       "title": "Remove every media?",
@@ -537,7 +538,15 @@
       "rule": "The answers given after the hint lose {{penalty}} % of the question's points; the streak is untouched. The host can turn hints off."
     },
     "removeElement": "Remove this element",
-    "embeddedVideo": "An embedded video: it can only be removed."
+    "embeddedVideo": "An embedded video: it can only be removed.",
+    "slideLayoutDescription": {
+      "bottom": "The picture or video under the blocks.",
+      "top": "The picture or video above the blocks.",
+      "left": "The picture or video on the left, the blocks beside it.",
+      "right": "The blocks on the left, the picture or video beside it.",
+      "behind": "The picture or video fills the slide, the blocks laid over it (a slide's video until now).",
+      "alone": "The picture or video alone, in the blocks' place."
+    }
   },
   "preview": {
     "view": "Preview (player view)",

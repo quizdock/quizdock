@@ -7,6 +7,7 @@ import type { SlideContent } from './dto/slide-content.schema';
 export function slideMediaIds(slide: {
   blocks: unknown;
   mediaId: string | null;
+  imageMediaId?: string | null;
   videoMediaId?: string | null;
   audioMediaId?: string | null;
 }): string[] {
@@ -19,7 +20,8 @@ export function slideMediaIds(slide: {
     }
   };
   walk(slide.blocks);
-  for (const id of [slide.mediaId, slide.videoMediaId, slide.audioMediaId]) if (id) ids.push(id);
+  for (const id of [slide.mediaId, slide.imageMediaId, slide.videoMediaId, slide.audioMediaId])
+    if (id) ids.push(id);
   return ids;
 }
 
@@ -38,6 +40,7 @@ export async function checkSlideMedia(
   const expected = new Map<string, MediaKind>();
   for (const id of slideMediaIds({ blocks: dto.blocks, mediaId: null })) expected.set(id, 'image');
   if (dto.mediaId) expected.set(dto.mediaId, 'image');
+  if (dto.imageMediaId) expected.set(dto.imageMediaId, 'image');
   if (dto.videoMediaId) expected.set(dto.videoMediaId, 'video');
   if (dto.audioMediaId) expected.set(dto.audioMediaId, 'audio');
   // Only what changes is checked: an image block the slide already had is not asked again.

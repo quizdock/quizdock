@@ -9,6 +9,8 @@ import type { QuizDetailDtoSlidesItemAudioTarget } from './quizDetailDtoSlidesIt
 import type { QuizDetailDtoSlidesItemBackgroundStyle } from './quizDetailDtoSlidesItemBackgroundStyle';
 import type { QuizDetailDtoSlidesItemBlocksItem } from './quizDetailDtoSlidesItemBlocksItem';
 import type { QuizDetailDtoSlidesItemGradient } from './quizDetailDtoSlidesItemGradient';
+import type { QuizDetailDtoSlidesItemMediaPosition } from './quizDetailDtoSlidesItemMediaPosition';
+import type { QuizDetailDtoSlidesItemMediaStyle } from './quizDetailDtoSlidesItemMediaStyle';
 import type { QuizDetailDtoSlidesItemTextTone } from './quizDetailDtoSlidesItemTextTone';
 import type { QuizDetailDtoSlidesItemWaveformSize } from './quizDetailDtoSlidesItemWaveformSize';
 
@@ -30,7 +32,12 @@ export type QuizDetailDtoSlidesItem = {
   /** @nullable */
   backgroundStyle: QuizDetailDtoSlidesItemBackgroundStyle;
   /** @nullable */
+  imageMediaId: string | null;
+  /** @nullable */
   videoMediaId: string | null;
+  mediaPosition: QuizDetailDtoSlidesItemMediaPosition;
+  /** @nullable */
+  mediaStyle: QuizDetailDtoSlidesItemMediaStyle;
   videoLoop: boolean;
   videoSound: boolean;
   /** @nullable */

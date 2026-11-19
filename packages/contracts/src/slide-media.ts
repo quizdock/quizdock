@@ -11,6 +11,9 @@ import type { LiveAudio, LiveQuestionMedia } from './question-media';
 /** Error code of a slide with a video playing its sound next to a sound. */
 export const SLIDE_TWO_SOUNDS = 'slide.two_sounds';
 
+/** Error code of a slide given a picture and a video: one visual, as a question's. */
+export const SLIDE_TWO_VISUALS = 'slide.two_visuals';
+
 /** What a slide plays, as the live payload carries it. */
 interface LiveSlideMedia {
   video?: SlideVideo | null;

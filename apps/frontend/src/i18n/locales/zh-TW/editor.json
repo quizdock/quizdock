@@ -452,7 +452,8 @@
       "oneReveal": "每張圖片只能有一個逐步顯現。",
       "pollExplanation": "投票沒有需要解析的正確答案。",
       "oneExplanation": "每題一個解析。",
-      "oneHint": "每題一個提示。"
+      "oneHint": "每題一個提示。",
+      "oneSlideVisual": "簡報只能顯示圖片或影片，不能兩者都有。"
     },
     "clearConfirm": {
       "title": "移除所有媒體？",
@@ -537,7 +538,15 @@
       "rule": "在提示之後作答，將失去本題 {{penalty}}% 的分數；連對獎勵不受影響。主持人可以關閉提示。"
     },
     "removeElement": "移除此元素",
-    "embeddedVideo": "嵌入的影片：只能移除。"
+    "embeddedVideo": "嵌入的影片：只能移除。",
+    "slideLayoutDescription": {
+      "bottom": "圖片或影片在區塊下方。",
+      "top": "圖片或影片在區塊上方。",
+      "left": "圖片或影片在左側，區塊在旁邊。",
+      "right": "區塊在左側，圖片或影片在旁邊。",
+      "behind": "圖片或影片鋪滿簡報，區塊疊在其上（即以往簡報的影片）。",
+      "alone": "只有圖片或影片，取代區塊。"
+    }
   },
   "preview": {
     "view": "預覽（玩家視角）",

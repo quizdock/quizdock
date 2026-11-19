@@ -456,7 +456,8 @@
       "oneReveal": "Una revelación por imagen.",
       "pollExplanation": "Una encuesta no tiene respuesta correcta que explicar.",
       "oneExplanation": "Una explicación por pregunta.",
-      "oneHint": "Una pista por pregunta."
+      "oneHint": "Una pista por pregunta.",
+      "oneSlideVisual": "Una diapositiva muestra una imagen o un vídeo, no ambos."
     },
     "clearConfirm": {
       "title": "¿Quitar todos los medios?",
@@ -541,7 +542,15 @@
       "rule": "Las respuestas dadas tras la pista pierden un {{penalty}} % de los puntos de la pregunta; la racha no se toca. El presentador puede desactivar las pistas."
     },
     "removeElement": "Quitar este elemento",
-    "embeddedVideo": "Un vídeo incrustado: solo se puede quitar."
+    "embeddedVideo": "Un vídeo incrustado: solo se puede quitar.",
+    "slideLayoutDescription": {
+      "bottom": "La imagen o el vídeo bajo los bloques.",
+      "top": "La imagen o el vídeo sobre los bloques.",
+      "left": "La imagen o el vídeo a la izquierda, los bloques al lado.",
+      "right": "Los bloques a la izquierda, la imagen o el vídeo al lado.",
+      "behind": "La imagen o el vídeo llena la diapositiva, los bloques encima (el vídeo de una diapositiva hasta ahora).",
+      "alone": "La imagen o el vídeo solo, en lugar de los bloques."
+    }
   },
   "preview": {
     "view": "Vista previa (vista del jugador)",

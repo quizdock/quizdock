@@ -1,6 +1,9 @@
 import {
   AUDIO_TARGETS,
   type AudioTarget,
+  MEDIA_POSITIONS,
+  type MediaPosition,
+  type MediaStyle,
   WAVEFORM_SIZES,
   type WaveformSize,
 } from '@quiz-dock/contracts';
@@ -11,15 +14,27 @@ import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { Waveform } from '../game/media/waveform';
-import { MediaUpload } from './media-upload';
+import { MediaDetailsFields, MediaUpload } from './media-upload';
+import { PictureStyleEditor } from './picture-style-fields';
 import { DisplayTimeFields } from './slide-display-time';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
-import { type AddChoice, AddElementModal, ElementPanel } from './step-timeline-editing';
+import {
+  type AddChoice,
+  AddElementModal,
+  ElementPanel,
+  LayoutModal,
+} from './step-timeline-editing';
 import { slideTimeline } from './step-timeline-model';
 import { useStepView } from './use-step-view';
 
 export interface SlideMediaValue {
+  /** Its picture, placed as a question's; never with a video (SPECIFICATIONS-STEP-EDITOR). */
+  imageMediaId: string | null;
   videoMediaId: string | null;
+  /** Where its picture or video sits against its blocks; behind them by default. */
+  mediaPosition: MediaPosition;
+  /** How its picture or video is framed; empty = as its file is (no reveal on a slide). */
+  mediaStyle: MediaStyle;
   videoLoop: boolean;
   videoSound: boolean;
   audioMediaId: string | null;
@@ -29,9 +44,10 @@ export interface SlideMediaValue {
 }
 
 /**
- * A slide's timeline (#125, SPECIFICATIONS-QUESTION-TIMELINE §4), as a question's: the
- * video fills the slide behind its content; with its sound on, it excludes the sound,
- * muted it goes with one. The time row opens the display time.
+ * A slide's timeline (#125, SPECIFICATIONS-STEP-EDITOR), as a question's: a picture or a
+ * video, placed against its blocks by the same layouts (behind them by default, as a slide's
+ * video always was) and framed by the same options; a video with its sound on excludes the
+ * sound, muted it goes with one. The time row opens the display time.
  */
 export function SlideTimelineSection({
   value,
@@ -54,15 +70,18 @@ export function SlideTimelineSection({
   const { t } = useTranslation('editor');
   const [selected, setSelected] = useState<TimelineSelection | null>(null);
   const [adding, setAdding] = useState(false);
+  const [layingOut, setLayingOut] = useState(false);
   const [view, setView] = useStepView();
-  const { videoMediaId, videoSound, audioMediaId } = value;
+  const { imageMediaId, videoMediaId, videoSound, audioMediaId } = value;
+  const visual = imageMediaId ? 'image' : videoMediaId ? 'video' : null;
   const videoTakesSound = !!videoMediaId && videoSound;
   const videoMs = useAssetDurationMs(videoMediaId);
   const audioMs = useAssetDurationMs(audioMediaId);
   const close = () => setSelected(null);
 
   const choices: AddChoice[] = [
-    { kind: 'video', refused: videoMediaId ? t('timeline.refused.oneVideo') : null },
+    { kind: 'image', refused: visual ? t('timeline.refused.oneSlideVisual') : null },
+    { kind: 'video', refused: visual ? t('timeline.refused.oneSlideVisual') : null },
     {
       kind: 'audio',
       refused: audioMediaId
@@ -79,6 +98,7 @@ export function SlideTimelineSection({
         model={slideTimeline({
           displayDelayS: value.displayDelayS,
           defaultS,
+          image: !!imageMediaId,
           video: videoMediaId
             ? { lengthMs: videoMs, loop: value.videoLoop, sound: videoSound }
             : null,
@@ -90,27 +110,52 @@ export function SlideTimelineSection({
           onSelect: setSelected,
           onAdd: () => setAdding(true),
           view: { value: view, onChange: setView },
+          layout: {
+            open: () => setLayingOut(true),
+            refused: visual ? null : t('timeline.layoutNeedsVisual'),
+          },
           reset:
-            videoMediaId || audioMediaId || value.displayDelayS !== null
+            visual || audioMediaId || value.displayDelayS !== null
               ? {
                   type: t('timeline.slideKind'),
                   seconds: defaultS,
                   run: () => {
-                    onChange({ videoMediaId: null, audioMediaId: null, displayDelayS: null });
+                    onChange({
+                      imageMediaId: null,
+                      videoMediaId: null,
+                      audioMediaId: null,
+                      displayDelayS: null,
+                      mediaPosition: 'behind',
+                      mediaStyle: {},
+                    });
                     onPeaks(null);
                     close();
                   },
                 }
               : null,
           onClear:
-            videoMediaId || audioMediaId
+            visual || audioMediaId
               ? () => {
-                  onChange({ videoMediaId: null, audioMediaId: null });
+                  onChange({ imageMediaId: null, videoMediaId: null, audioMediaId: null });
                   onPeaks(null);
                   close();
                 }
               : null,
         }}
+      />
+      <LayoutModal
+        open={layingOut}
+        value={value.mediaPosition}
+        choices={MEDIA_POSITIONS.map((position) => ({
+          value: position,
+          label: t(`questionForm.mediaPosition.${position}`),
+          description: t(`timeline.slideLayoutDescription.${position}`),
+        }))}
+        onApply={(position) => {
+          onChange({ mediaPosition: position });
+          setLayingOut(false);
+        }}
+        onClose={() => setLayingOut(false)}
       />
       <AddElementModal
         open={adding}
@@ -127,6 +172,43 @@ export function SlideTimelineSection({
             value={value.displayDelayS}
             onChange={(v) => onChange({ displayDelayS: v })}
           />
+        </ElementPanel>
+      ) : selected === 'image' ? (
+        <ElementPanel
+          title={t('timeline.choice.image')}
+          onClose={close}
+          onRemove={
+            imageMediaId
+              ? () => {
+                  onChange({ imageMediaId: null });
+                  close();
+                }
+              : undefined
+          }
+        >
+          {/* The preview on the left, how it is shown on the right; its texts below. */}
+          <div className={cn('grid items-start gap-4', imageMediaId && 'md:grid-cols-2')}>
+            <MediaUpload
+              value={imageMediaId}
+              onChange={(id) => {
+                onChange({ imageMediaId: id });
+                if (!id) close();
+              }}
+              kind="image"
+              label={t('media.addImage')}
+              withDetails={!imageMediaId}
+              removable={false}
+            />
+            {imageMediaId ? (
+              <PictureStyleEditor
+                value={value.mediaStyle}
+                onChange={(mediaStyle) => onChange({ mediaStyle })}
+                reveal={null}
+                behind={value.mediaPosition === 'behind'}
+              />
+            ) : null}
+          </div>
+          {imageMediaId ? <MediaDetailsFields mediaId={imageMediaId} withAlt /> : null}
         </ElementPanel>
       ) : selected === 'video' ? (
         <ElementPanel
@@ -154,7 +236,9 @@ export function SlideTimelineSection({
           />
           {videoMediaId ? (
             <>
-              <p className="text-muted-foreground text-xs">{t('slideForm.videoCover')}</p>
+              {value.mediaPosition === 'behind' ? (
+                <p className="text-muted-foreground text-xs">{t('slideForm.videoCover')}</p>
+              ) : null}
               <CheckboxField
                 checked={value.videoLoop}
                 onChange={(v) => onChange({ videoLoop: v })}
@@ -174,6 +258,12 @@ export function SlideTimelineSection({
                 }
               />
               {videoTakesSound ? <AudioTargetField value={value} onChange={onChange} /> : null}
+              <PictureStyleEditor
+                value={value.mediaStyle}
+                onChange={(mediaStyle) => onChange({ mediaStyle })}
+                reveal={null}
+                behind={value.mediaPosition === 'behind'}
+              />
             </>
           ) : null}
         </ElementPanel>

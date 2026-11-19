@@ -542,7 +542,10 @@ export class QuizzesService {
             mediaId: s.mediaId,
             gradient: s.gradient ?? Prisma.JsonNull,
             backgroundStyle: s.backgroundStyle ?? Prisma.JsonNull,
+            imageMediaId: s.imageMediaId,
             videoMediaId: s.videoMediaId,
+            mediaPosition: s.mediaPosition,
+            mediaStyle: s.mediaStyle ?? Prisma.JsonNull,
             videoLoop: s.videoLoop,
             videoSound: s.videoSound,
             audioMediaId: s.audioMediaId,
@@ -611,7 +614,13 @@ export class QuizzesService {
       }),
       this.prisma.slide.findMany({
         where: { quizId: id },
-        select: { blocks: true, mediaId: true, videoMediaId: true, audioMediaId: true },
+        select: {
+          blocks: true,
+          mediaId: true,
+          imageMediaId: true,
+          videoMediaId: true,
+          audioMediaId: true,
+        },
       }),
     ]);
     await this.prisma.quiz.delete({ where: { id } });
@@ -676,7 +685,13 @@ export class QuizzesService {
     });
     const slides = await this.prisma.slide.findMany({
       where: { quizId },
-      select: { blocks: true, mediaId: true, gradient: true, videoMediaId: true },
+      select: {
+        blocks: true,
+        mediaId: true,
+        gradient: true,
+        imageMediaId: true,
+        videoMediaId: true,
+      },
     });
     return (
       questions.filter((q) => storedQuestionIssues(q).length > 0).length +

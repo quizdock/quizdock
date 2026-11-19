@@ -457,7 +457,8 @@
       "oneReveal": "Una rivelazione per immagine.",
       "pollExplanation": "Un sondaggio non ha una risposta giusta da spiegare.",
       "oneExplanation": "Una spiegazione per domanda.",
-      "oneHint": "Un indizio per domanda."
+      "oneHint": "Un indizio per domanda.",
+      "oneSlideVisual": "Una slide mostra un'immagine o un video, non entrambi."
     },
     "clearConfirm": {
       "title": "Rimuovere tutti i media?",
@@ -542,7 +543,15 @@
       "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi."
     },
     "removeElement": "Rimuovi questo elemento",
-    "embeddedVideo": "Un video incorporato: può solo essere rimosso."
+    "embeddedVideo": "Un video incorporato: può solo essere rimosso.",
+    "slideLayoutDescription": {
+      "bottom": "L'immagine o il video sotto i blocchi.",
+      "top": "L'immagine o il video sopra i blocchi.",
+      "left": "L'immagine o il video a sinistra, i blocchi accanto.",
+      "right": "I blocchi a sinistra, l'immagine o il video accanto.",
+      "behind": "L'immagine o il video riempie la slide, i blocchi sopra (il video di una slide finora).",
+      "alone": "L'immagine o il video da solo, al posto dei blocchi."
+    }
   },
   "preview": {
     "view": "Anteprima (vista del partecipante)",

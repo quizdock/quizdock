@@ -9,6 +9,8 @@ import type { CommunityPreviewDtoSlidesItemAudioTarget } from './communityPrevie
 import type { CommunityPreviewDtoSlidesItemBackgroundStyle } from './communityPreviewDtoSlidesItemBackgroundStyle';
 import type { CommunityPreviewDtoSlidesItemBlocksItem } from './communityPreviewDtoSlidesItemBlocksItem';
 import type { CommunityPreviewDtoSlidesItemGradient } from './communityPreviewDtoSlidesItemGradient';
+import type { CommunityPreviewDtoSlidesItemMediaPosition } from './communityPreviewDtoSlidesItemMediaPosition';
+import type { CommunityPreviewDtoSlidesItemMediaStyle } from './communityPreviewDtoSlidesItemMediaStyle';
 import type { CommunityPreviewDtoSlidesItemTextTone } from './communityPreviewDtoSlidesItemTextTone';
 import type { CommunityPreviewDtoSlidesItemWaveformSize } from './communityPreviewDtoSlidesItemWaveformSize';
 
@@ -30,7 +32,12 @@ export type CommunityPreviewDtoSlidesItem = {
   /** @nullable */
   backgroundStyle: CommunityPreviewDtoSlidesItemBackgroundStyle;
   /** @nullable */
+  imageMediaId: string | null;
+  /** @nullable */
   videoMediaId: string | null;
+  mediaPosition: CommunityPreviewDtoSlidesItemMediaPosition;
+  /** @nullable */
+  mediaStyle: CommunityPreviewDtoSlidesItemMediaStyle;
   videoLoop: boolean;
   videoSound: boolean;
   /** @nullable */

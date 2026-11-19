@@ -1,4 +1,6 @@
 import {
+  type MediaPosition,
+  type MediaStyle,
   type SlideBlock,
   type SlideShowPayload,
   type PublicOption,
@@ -56,7 +58,10 @@ export function slideShowOf(
     | 'mediaId'
     | 'gradient'
     | 'backgroundStyle'
+    | 'imageMediaId'
     | 'videoMediaId'
+    | 'mediaPosition'
+    | 'mediaStyle'
     | 'videoLoop'
     | 'videoSound'
     | 'textTone'
@@ -82,6 +87,16 @@ export function slideShowOf(
           gainDb: 0,
         }
       : null,
+    // Its picture, where it or the video sits, and how it is framed (SPECIFICATIONS-STEP-EDITOR).
+    ...(slide.imageMediaId && !slide.videoMediaId
+      ? { image: { url: url(slide.imageMediaId), alt: null } }
+      : {}),
+    ...((slide.imageMediaId || slide.videoMediaId) &&
+    slide.mediaPosition &&
+    slide.mediaPosition !== 'behind'
+      ? { position: slide.mediaPosition as MediaPosition }
+      : {}),
+    ...(slide.mediaStyle ? { style: slide.mediaStyle as MediaStyle } : {}),
     textTone: slide.textTone,
     textOutline: slide.textOutline,
     displayDelayS: slide.displayDelayS,

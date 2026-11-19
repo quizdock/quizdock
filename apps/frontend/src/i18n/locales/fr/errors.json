@@ -175,7 +175,8 @@
     "background_conflict": "Un fond est une image ou un dégradé, pas les deux.",
     "empty": "La diapositive n’affiche rien : ajoutez un titre, un texte, une image, un fond ou une vidéo.",
     "not_found": "Cette diapositive n’existe plus : elle a été supprimée entre-temps.",
-    "incomplete_in_ready_quiz": "Ce quiz est publié : repassez-le en brouillon pour enregistrer une diapositive qui ne montre rien."
+    "incomplete_in_ready_quiz": "Ce quiz est publié : repassez-le en brouillon pour enregistrer une diapositive qui ne montre rien.",
+    "two_visuals": "Une slide montre une image ou une vidéo, pas les deux."
   },
   "record": {
     "not_found": "Cet élément n’existe plus : il a été supprimé entre-temps.",

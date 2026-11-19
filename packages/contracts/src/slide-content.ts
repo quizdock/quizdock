@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { backgroundStyleSchema, gradientSchema } from './background';
-import { AUDIO_TARGETS, WAVEFORM_SIZES } from './question-media';
-import { SLIDE_TWO_SOUNDS } from './slide-media';
+import { AUDIO_TARGETS, MEDIA_POSITIONS, mediaStyleSchema, WAVEFORM_SIZES } from './question-media';
+import { SLIDE_TWO_SOUNDS, SLIDE_TWO_VISUALS } from './slide-media';
 
 const blockId = z.string().min(1).max(64);
 
@@ -55,9 +55,13 @@ export const slideContentSchema = z
     gradient: gradientSchema.nullable().optional(),
     /** How the background is laid (docs/themes.md); null: today's cover. */
     backgroundStyle: backgroundStyleSchema.nullable().optional(),
-    // Media (#125), set like a question's: a video filling the slide behind its
-    // content — looped (else played once), with its sound (else muted) — and a sound.
+    // Media (#125, SPECIFICATIONS-STEP-EDITOR), set like a question's: a picture or a video,
+    // placed against the blocks (behind them by default, as a slide's video always was) —
+    // the video looped (else played once), with its sound (else muted) — and a sound.
+    imageMediaId: z.string().length(26).nullable().optional(),
     videoMediaId: z.string().length(26).nullable().optional(),
+    mediaPosition: z.enum(MEDIA_POSITIONS).default('behind'),
+    mediaStyle: mediaStyleSchema.nullable().optional(),
     videoLoop: z.boolean().default(true),
     videoSound: z.boolean().default(true),
     audioMediaId: z.string().length(26).nullable().optional(),
@@ -74,6 +78,11 @@ export const slideContentSchema = z
     message: 'slide.background_conflict',
     path: ['gradient'],
   })
+  // A picture or a video, not both, as a question's visual.
+  .refine((d) => !(d.imageMediaId && d.videoMediaId), {
+    message: SLIDE_TWO_VISUALS,
+    path: ['imageMediaId'],
+  })
   // One sound at a time: a video with its own excludes the sound, as a question's does.
   .refine((d) => !(d.videoMediaId && d.videoSound && d.audioMediaId), {
     message: SLIDE_TWO_SOUNDS,
@@ -87,6 +96,7 @@ export interface SlideCompletenessInput {
   blocks: unknown[];
   mediaId?: string | null;
   gradient?: unknown;
+  imageMediaId?: string | null;
   videoMediaId?: string | null;
 }
 
@@ -94,6 +104,7 @@ export interface SlideCompletenessInput {
 export function slideIssues(
   s: SlideCompletenessInput,
 ): { code: string; path: (string | number)[] }[] {
-  const shows = s.blocks.length > 0 || !!s.mediaId || !!s.gradient || !!s.videoMediaId;
+  const shows =
+    s.blocks.length > 0 || !!s.mediaId || !!s.gradient || !!s.imageMediaId || !!s.videoMediaId;
   return shows ? [] : [{ code: 'slide.empty', path: ['blocks'] }];
 }

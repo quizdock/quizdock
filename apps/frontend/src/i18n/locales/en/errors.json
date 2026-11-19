@@ -174,7 +174,8 @@
     "background_conflict": "A background is an image or a gradient, not both.",
     "empty": "The slide shows nothing: add a heading, a text, an image, a background or a video.",
     "not_found": "This slide no longer exists: it was deleted meanwhile.",
-    "incomplete_in_ready_quiz": "This quiz is published: move it back to draft to save a slide that shows nothing."
+    "incomplete_in_ready_quiz": "This quiz is published: move it back to draft to save a slide that shows nothing.",
+    "two_visuals": "A slide shows a picture or a video, not both."
   },
   "record": {
     "not_found": "This item no longer exists: it was deleted meanwhile.",

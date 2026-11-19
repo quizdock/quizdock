@@ -135,6 +135,7 @@ export function collectMediaIds(quiz: ExportableQuiz): Set<string> {
   }
   for (const s of quiz.slides) {
     add(s.mediaId);
+    add(s.imageMediaId);
     add(s.videoMediaId);
     add(s.audioMediaId);
     walkBlocks(s.blocks, (b) => {
@@ -274,6 +275,15 @@ function slideOut(
   } else {
     if (s.mediaId) item.backgroundImage = pathFor(s.mediaId);
     if (s.gradient) item.backgroundGradient = s.gradient as SlideBundleItem['backgroundGradient'];
+  }
+  // Its picture, and where it or its video sits (version 9): behind the blocks unless said.
+  if (s.imageMediaId) item.image = pathFor(s.imageMediaId);
+  if ((s.imageMediaId || s.videoMediaId) && s.mediaPosition !== 'behind') {
+    item.mediaPosition = s.mediaPosition;
+  }
+  const slideStyle = mediaStyleSchema.safeParse(s.mediaStyle ?? {});
+  if (slideStyle.success && Object.keys(slideStyle.data).length > 0) {
+    item.mediaStyle = slideStyle.data;
   }
   // Media (#125): looped with its sound, a waveform hidden, unless said otherwise.
   if (s.videoMediaId) {
@@ -511,7 +521,10 @@ export function fromBundle(
             mediaId: bg.image ? idFor(bg.image) : null,
             gradient: bg.gradient ?? null,
             backgroundStyle: bg.style,
+            imageMediaId: it.image ? idFor(it.image) : null,
             videoMediaId: it.video ? idFor(it.video) : null,
+            mediaPosition: it.mediaPosition,
+            mediaStyle: it.mediaStyle ?? null,
             videoLoop: it.videoLoop,
             videoSound: it.videoSound,
             audioMediaId: it.audio ? idFor(it.audio) : null,

@@ -327,6 +327,30 @@ describe('quiz bundle', () => {
     expect(ajv.compile(v5)(JSON.parse(JSON.stringify(bundle)))).toBe(false);
   });
 
+  it('carries a slide’s picture, where it sits and how it is framed, in version 9', () => {
+    const src = makeQuiz();
+    const IMG = '01ARZ3NDEKTSV4RRFFQ69G5FAX';
+    Object.assign(src.slides[0], {
+      imageMediaId: IMG,
+      mediaPosition: 'left',
+      mediaStyle: { fit: 'cover', focus: 'top' },
+    });
+    const bundle = toBundle(src, pathFor);
+    expect(bundle.version).toBe(9);
+    const slide = bundle.items.find((it) => it.kind === 'slide' && it.image);
+    expect(slide).toMatchObject({
+      image: pathFor(IMG),
+      mediaPosition: 'left',
+      mediaStyle: { fit: 'cover', focus: 'top' },
+    });
+    const back = fromBundle(bundle, idFor).slides.find((s) => s.content.imageMediaId)?.content;
+    expect(back).toMatchObject({
+      imageMediaId: IMG,
+      mediaPosition: 'left',
+      mediaStyle: { fit: 'cover', focus: 'top' },
+    });
+  });
+
   it('carries a question’s hint, in version 9', () => {
     const src = makeQuiz();
     const hint = { text: 'Choisie en 1923', afterS: 10, penaltyPct: 25 };

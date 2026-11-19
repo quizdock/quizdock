@@ -174,7 +174,8 @@
     "background_conflict": "Arka plan görsel veya renk geçişi olabilir, ikisi birden olamaz.",
     "empty": "Slayt hiçbir şey göstermiyor: başlık, metin, görsel, arka plan veya video ekleyin.",
     "not_found": "Bu slayt artık mevcut değil: bu sırada silinmiş.",
-    "incomplete_in_ready_quiz": "Bu quiz yayımlanmış: hiçbir şey göstermeyen bir slaytı kaydetmek için quizi taslağa döndürün."
+    "incomplete_in_ready_quiz": "Bu quiz yayımlanmış: hiçbir şey göstermeyen bir slaytı kaydetmek için quizi taslağa döndürün.",
+    "two_visuals": "Bir slayt resim ya da video gösterir, ikisini birden değil."
   },
   "record": {
     "not_found": "Bu öğe artık mevcut değil: bu arada silindi.",

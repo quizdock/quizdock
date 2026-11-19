@@ -1,4 +1,6 @@
 import type {
+  MediaPosition,
+  MediaStyle,
   QuestionHint,
   AnswerValue,
   AudioTarget,
@@ -90,6 +92,10 @@ export interface SnapshotSlide {
   background: SlideBackground | null;
   /** A video filling the slide behind its content (#125), over its background. */
   video?: SlideVideo | null;
+  /** Its picture, and where it or the video sits (SPECIFICATIONS-STEP-EDITOR). */
+  image?: { url: string; alt: string | null } | null;
+  position?: MediaPosition;
+  style?: MediaStyle;
   /** The slide's sound (#125); never with a video that plays its own. */
   audio?: LiveAudio | null;
   /** Who hears the slide's sound: its own target, null = the game's (#125). */

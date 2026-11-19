@@ -24,6 +24,7 @@ import {
 import { usePodiumMotion, useRevealMotion, useStandingsMotion } from './motion/primitives';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { mediaFrame } from './media/media-frame';
 import { Markdown } from '@/components/markdown';
 import {
   COLOR_BG,
@@ -802,39 +803,116 @@ export function SlideView({ slide }: { slide: SlideShowPayload }) {
   const blocks = fillSlideBlocks(slide.blocks, variables);
   // A phone in the room shows the slide's background, not its video (the big screen does).
   const video = slide.video && showsVideo(slide.video, playback) ? slide.video : null;
+  // Its visual — its video, else its picture — and where it sits against the blocks
+  // (SPECIFICATIONS-STEP-EDITOR): behind them, as a slide's video always was, or placed as
+  // a question's against its text.
+  const image = video ? null : (slide.image ?? null);
+  const position = (video || image) && slide.position ? slide.position : 'behind';
+  const behind = position === 'behind';
+  const look = mediaFrame(slide.style, behind);
+  const picture = image ? (
+    <img
+      src={image.url}
+      alt={image.alt?.trim() ?? ''}
+      className={cn(
+        'absolute inset-0 h-full w-full',
+        look.fill === 'cover' ? 'object-cover' : 'object-contain',
+      )}
+      style={{ objectPosition: look.focus }}
+    />
+  ) : null;
+  const behindLayer = !behind ? null : video ? (
+    <SlideVideoLayer video={video} />
+  ) : picture ? (
+    <div className="absolute inset-0">{picture}</div>
+  ) : null;
+  const placed =
+    behind || (!video && !image) ? null : (
+      // Placed against the blocks: as large as its room allows, in its own frame.
+      <div
+        className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-[0.5em]"
+        style={look.box}
+      >
+        {video ? (
+          <SlideVideoLayer
+            video={video}
+            placed={{
+              boxClassName: 'absolute inset-0 h-full w-full max-w-none aspect-auto',
+              frame: look.frame,
+              focus: look.focus,
+              cover: look.fill === 'cover',
+            }}
+          />
+        ) : look.frame ? (
+          <div className="overflow-hidden" style={look.frame}>
+            {picture}
+          </div>
+        ) : (
+          picture
+        )}
+      </div>
+    );
   // No background of its own: the quiz theme's (docs/themes.md), with its text tone.
   const theme = useLiveTheme();
-  const themed = slide.background || video ? null : themeBackdrop(theme);
+  const themed = slide.background || behindLayer ? null : themeBackdrop(theme);
+  const content = (
+    <>
+      {blocks.map((b) =>
+        b.type === 'columns' ? (
+          <div
+            key={b.id}
+            className="grid items-start gap-[2em]"
+            style={{ gridTemplateColumns: columnsTemplate(b.columns.length, b.ratio) }}
+          >
+            {b.columns.map((col, i) => (
+              <div key={i} className="flex min-w-0 flex-col gap-[1em]">
+                {col.map((leaf) => (
+                  <SlideBlockView key={leaf.id} block={leaf} />
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <SlideBlockView key={b.id} block={b} />
+        ),
+      )}
+    </>
+  );
+  const side = position === 'left' || position === 'right';
   return (
     <Surface
       background={slide.background ?? themed?.background}
-      // A video behind the content (#125), played as the screen's playback says.
-      backdrop={video ? <SlideVideoLayer video={video} /> : null}
+      // Its visual behind the content (#125), played as the screen's playback says.
+      backdrop={behindLayer}
       textTone={themed?.textTone ?? slide.textTone}
       textOutline={slide.textOutline}
       // No explicit height: a flex parent stretches it (`h-full` would opt out of stretching).
       className="qd-slide w-full flex-1"
     >
-      <article className="flex w-full flex-1 flex-col justify-center gap-[1.5em] p-[2em]">
-        {blocks.map((b) =>
-          b.type === 'columns' ? (
-            <div
-              key={b.id}
-              className="grid items-start gap-[2em]"
-              style={{ gridTemplateColumns: columnsTemplate(b.columns.length, b.ratio) }}
-            >
-              {b.columns.map((col, i) => (
-                <div key={i} className="flex min-w-0 flex-col gap-[1em]">
-                  {col.map((leaf) => (
-                    <SlideBlockView key={leaf.id} block={leaf} />
-                  ))}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <SlideBlockView key={b.id} block={b} />
-          ),
+      <article
+        className={cn(
+          'flex min-h-0 w-full flex-1 gap-[1.5em] p-[2em]',
+          side ? 'flex-row items-stretch' : 'flex-col justify-center',
         )}
+      >
+        {placed && (position === 'top' || position === 'left') ? placed : null}
+        {position === 'alone' ? (
+          // The visual in the blocks' place: they stay for a screen reader.
+          <div className="sr-only">{content}</div>
+        ) : (
+          <div
+            className={cn(
+              'flex min-w-0 flex-col justify-center gap-[1.5em]',
+              placed ? 'shrink-0' : 'flex-1',
+              side && 'flex-1',
+            )}
+          >
+            {content}
+          </div>
+        )}
+        {placed && (position === 'bottom' || position === 'right' || position === 'alone')
+          ? placed
+          : null}
         {/* Its sound (#125), under the content: drawn at its size, hidden by default. */}
         {slide.audio ? <SlideSound audio={slide.audio} /> : null}
       </article>

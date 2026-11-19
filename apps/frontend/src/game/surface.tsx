@@ -72,9 +72,12 @@ export function Surface({
       )}
       style={background ? backgroundFill(background) : undefined}
     >
+      {/* The background picture, then a layer over it (a slide's video, #125): one veil
+          for the text, over whichever is on top. */}
       {background && 'url' in background ? (
-        <Picture url={background.url} style={background.style} veil={veil} />
-      ) : backdrop ? (
+        <Picture url={background.url} style={background.style} veil={backdrop ? null : veil} />
+      ) : null}
+      {backdrop ? (
         <>
           {backdrop}
           {veil}

@@ -1,5 +1,5 @@
 import type { LiveAudio, SlideVideo } from '@quiz-dock/contracts';
-import { createContext, useContext } from 'react';
+import { type CSSProperties, createContext, useContext } from 'react';
 import {
   AudioTrack,
   type FollowedPosition,
@@ -91,7 +91,14 @@ export function showsVideo(video: SlideVideo, play: SlidePlayback): boolean {
 }
 
 /** The slide's video, behind its content (cover): looped or played once, with its sound or muted. */
-export function SlideVideoLayer({ video }: { video: SlideVideo }) {
+export function SlideVideoLayer({
+  video,
+  placed,
+}: {
+  video: SlideVideo;
+  /** Placed against the blocks rather than behind them: its box, frame and fill. */
+  placed?: { boxClassName: string; frame?: CSSProperties; focus?: string; cover: boolean };
+}) {
   const play = useContext(SlidePlaybackContext);
   const withSound = playsSoundHere(video.sound, play);
   if (!showsVideo(video, play)) return null;
@@ -100,7 +107,9 @@ export function SlideVideoLayer({ video }: { video: SlideVideo }) {
       url={video.url}
       mode={play.mode}
       gainDb={video.gainDb}
-      boxClassName="absolute inset-0 h-full w-full max-w-none aspect-auto"
+      boxClassName={placed?.boxClassName ?? 'absolute inset-0 h-full w-full max-w-none aspect-auto'}
+      frame={placed?.frame}
+      focus={placed?.focus}
       resumeKey={play.resumeKey}
       anchor={video.sound ? play.anchor : null}
       silent={!withSound || !!play.muted}
@@ -108,7 +117,7 @@ export function SlideVideoLayer({ video }: { video: SlideVideo }) {
       onPosition={video.sound ? play.onPosition : undefined}
       startAt={play.startAt}
       loop={video.loop}
-      cover
+      cover={placed ? placed.cover : true}
       notices={false}
       mutedElement={!withSound}
     />

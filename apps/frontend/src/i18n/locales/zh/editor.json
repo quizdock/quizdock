@@ -452,7 +452,8 @@
       "oneReveal": "每张图片只能有一个逐步显现。",
       "pollExplanation": "投票没有需要解析的正确答案。",
       "oneExplanation": "每道题一个解析。",
-      "oneHint": "每道题一个提示。"
+      "oneHint": "每道题一个提示。",
+      "oneSlideVisual": "幻灯片只能显示图片或视频，不能两者都有。"
     },
     "clearConfirm": {
       "title": "移除所有媒体？",
@@ -537,7 +538,15 @@
       "rule": "在提示之后作答，将失去本题 {{penalty}}% 的分数；连对奖励不受影响。主持人可以关闭提示。"
     },
     "removeElement": "移除此元素",
-    "embeddedVideo": "嵌入的视频：只能移除。"
+    "embeddedVideo": "嵌入的视频：只能移除。",
+    "slideLayoutDescription": {
+      "bottom": "图片或视频在区块下方。",
+      "top": "图片或视频在区块上方。",
+      "left": "图片或视频在左侧，区块在旁边。",
+      "right": "区块在左侧，图片或视频在旁边。",
+      "behind": "图片或视频铺满幻灯片，区块叠在其上（即以往幻灯片的视频）。",
+      "alone": "只有图片或视频，代替区块。"
+    }
   },
   "preview": {
     "view": "预览（玩家视图）",

@@ -144,6 +144,7 @@ export class SlidesService {
         quizId: true,
         blocks: true,
         mediaId: true,
+        imageMediaId: true,
         videoMediaId: true,
         audioMediaId: true,
       },

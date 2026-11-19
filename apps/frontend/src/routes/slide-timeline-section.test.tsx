@@ -28,7 +28,10 @@ vi.mock('../api/generated/media/media', () => ({
 afterEach(cleanup);
 
 const base: SlideMediaValue = {
+  imageMediaId: null,
   videoMediaId: null,
+  mediaPosition: 'behind',
+  mediaStyle: {},
   videoLoop: true,
   videoSound: true,
   audioMediaId: null,
@@ -96,10 +99,40 @@ describe('SlideTimelineSection (#125)', () => {
       screen.getByRole('button', { name: i18n.t('editor:timeline.resetConfirm.confirm') }),
     );
     expect(onChange).toHaveBeenCalledWith({
+      imageMediaId: null,
       videoMediaId: null,
       audioMediaId: null,
       displayDelayS: null,
+      mediaPosition: 'behind',
+      mediaStyle: {},
     });
+  });
+
+  it('a picture or a video, not both; the layouts wait for one (SPECIFICATIONS-STEP-EDITOR)', () => {
+    const onChange = open({ ...base, imageMediaId: 'img' });
+    const modal = add();
+    expect(modal.getByRole('button', { name: /^Vidéo/ })).toHaveTextContent(
+      i18n.t('editor:timeline.refused.oneSlideVisual'),
+    );
+    expect(modal.getByRole('button', { name: /^Image/ })).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('dialog', { name: i18n.t('editor:timeline.add') }), {
+      key: 'Escape',
+    });
+    // Behind the blocks by default; another layout applied from its modal.
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('editor:timeline.layout') }));
+    const layouts = within(screen.getByRole('dialog', { name: i18n.t('editor:timeline.layout') }));
+    fireEvent.click(
+      layouts.getByRole('button', { name: i18n.t('editor:questionForm.mediaPosition.left') }),
+    );
+    fireEvent.click(layouts.getByRole('button', { name: i18n.t('editor:timeline.layoutApply') }));
+    expect(onChange).toHaveBeenCalledWith({ mediaPosition: 'left' });
+  });
+
+  it('without a picture nor a video, the layouts say why they wait', () => {
+    open(base);
+    expect(
+      screen.getByRole('button', { name: i18n.t('editor:timeline.layoutNeedsVisual') }),
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('nothing to clear nor reset on an empty slide', () => {
@@ -115,6 +148,10 @@ describe('SlideTimelineSection (#125)', () => {
     fireEvent.click(
       screen.getByRole('button', { name: i18n.t('editor:timeline.clearConfirm.confirm') }),
     );
-    expect(onChange).toHaveBeenCalledWith({ videoMediaId: null, audioMediaId: null });
+    expect(onChange).toHaveBeenCalledWith({
+      imageMediaId: null,
+      videoMediaId: null,
+      audioMediaId: null,
+    });
   });
 });

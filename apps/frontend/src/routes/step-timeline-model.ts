@@ -187,6 +187,8 @@ export function slideTimeline(s: {
   /** null = the instance's default, 0 = the host moves on by hand, n = n seconds. */
   displayDelayS: number | null;
   defaultS: number;
+  /** Its picture, shown the whole slide (SPECIFICATIONS-STEP-EDITOR). */
+  image?: boolean;
   video: { lengthMs: number | null; loop: boolean; sound: boolean } | null;
   audio: { lengthMs: number | null; peaks: number[] | null } | null;
   tailS: number;
@@ -224,6 +226,9 @@ export function slideTimeline(s: {
   }
   const end = (ms: number | null) => (ms === null ? total : Math.min(ms / 1000, total));
   const elements: Omit<TimelineElement, 'lowered'>[] = [];
+  if (s.image) {
+    elements.push({ kind: 'image', from: 0, visualTo: total, audioTo: null, lengthS: null });
+  }
   if (s.video) {
     // A looped video is a decor: it plays the whole slide.
     const to = s.video.loop ? total : end(s.video.lengthMs);

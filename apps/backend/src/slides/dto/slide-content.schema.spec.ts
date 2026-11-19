@@ -22,6 +22,22 @@ describe('slideContentSchema', () => {
     ).toBe(false);
   });
 
+  it('a picture or a video, not both, placed behind the blocks unless said (SPECIFICATIONS-STEP-EDITOR)', () => {
+    const IMG = '01ARZ3NDEKTSV4RRFFQ69G5FAX';
+    const VID = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+    const both = slideContentSchema.safeParse({ imageMediaId: IMG, videoMediaId: VID });
+    expect(both.success).toBe(false);
+    expect(both.error?.issues[0].message).toBe('slide.two_visuals');
+    expect(slideContentSchema.parse({ videoMediaId: VID }).mediaPosition).toBe('behind');
+    expect(
+      slideContentSchema.parse({
+        imageMediaId: IMG,
+        mediaPosition: 'left',
+        mediaStyle: { ratio: '1:1' },
+      }),
+    ).toMatchObject({ mediaPosition: 'left', mediaStyle: { ratio: '1:1' } });
+  });
+
   it('one sound at a time: a video with its own excludes the sound (#125)', () => {
     const VID = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
     const SND = '01ARZ3NDEKTSV4RRFFQ69G5FAW';

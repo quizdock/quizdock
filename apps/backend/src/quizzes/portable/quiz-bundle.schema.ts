@@ -66,7 +66,8 @@ export function bundleVersionOf(items: QuizBundle['items'], theme?: QuizBundle['
           it.mediaPosition === 'alone' ||
           !!it.mediaStyle ||
           !!it.hint),
-    )
+    ) ||
+    items.some((it) => it.kind === 'slide' && (!!it.image || !!it.mediaPosition || !!it.mediaStyle))
   )
     return 9;
   if (theme || items.some((it) => it.background)) return 8;
@@ -236,8 +237,14 @@ export const slideBundleSchema = z.object({
   kind: z.literal('slide'),
   blocks: z.array(z.unknown()).optional(),
   ...backgroundBundleFields,
-  /** An MP4 filling the slide behind its content (version 5). */
+  /** Its picture (version 9), placed by `mediaPosition`; never with a `video`. */
+  image: mediaPathSchema.optional(),
+  /** An MP4 (version 5), behind its content unless `mediaPosition` says otherwise. */
   video: mediaPathSchema.optional(),
+  /** Where its picture or video sits against its blocks (version 9); absent = behind. */
+  mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
+  /** How its picture or video is framed (version 9). */
+  mediaStyle: mediaStyleSchema.optional(),
   /** The video loops (version 5); absent = yes. */
   videoLoop: z.boolean().optional(),
   /** The video plays its own sound (version 5); absent = yes. Then no `audio`. */

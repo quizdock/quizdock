@@ -36,86 +36,109 @@ export function PictureStyleFields({
   /** The reveal is over before the answers close. */
   timeLimitS: number;
 }) {
-  const { t } = useTranslation('editor');
   return (
     <form.Field name="mediaStyle">
-      {(field) => {
-        const style = field.state.value;
-        const set = (patch: Partial<MediaStyle>) => {
-          const next: MediaStyle = { ...style, ...patch };
-          // An unset setting is left out: an empty style is no style.
-          for (const k of Object.keys(next) as (keyof MediaStyle)[]) {
-            if (next[k] === undefined) delete next[k];
-          }
-          field.handleChange(next);
-        };
-        const fill = behind ? 'cover' : (style.fit ?? 'contain');
-        return (
-          <div className="flex flex-col gap-3">
-            {behind ? (
-              <p className="text-muted-foreground text-xs">{t('timeline.picture.behindNote')}</p>
-            ) : (
-              <>
-                <RatioField value={style.ratio} onChange={(ratio) => set({ ratio })} />
-                <Choice label={t('timeline.picture.fit')}>
-                  <Segmented
-                    label={t('timeline.picture.fit')}
-                    value={fill}
-                    onChange={(fit) => set({ fit: fit === 'contain' ? undefined : fit })}
-                    options={MEDIA_FITS.map((fit) => ({
-                      value: fit,
-                      label: t(`timeline.picture.fitValue.${fit}`),
-                    }))}
-                  />
-                </Choice>
-              </>
-            )}
-            {fill === 'cover' ? (
-              <Choice label={t('timeline.picture.focus')}>
-                <Segmented
-                  label={t('timeline.picture.focus')}
-                  value={style.focus ?? 'center'}
-                  onChange={(focus) => set({ focus: focus === 'center' ? undefined : focus })}
-                  options={MEDIA_FOCI.map((focus) => ({
-                    value: focus,
-                    label: t(`timeline.picture.focusValue.${focus}`),
-                  }))}
-                />
-              </Choice>
-            ) : null}
-            {image ? (
-              <div className="flex flex-col gap-1.5">
-                <CheckboxField
-                  checked={!!style.revealS}
-                  onChange={(on) =>
-                    set({ revealS: on ? Math.min(REVEAL_DEFAULT_S, timeLimitS) : undefined })
-                  }
-                  label={t('timeline.picture.reveal')}
-                  hint={t('timeline.picture.revealHint')}
-                />
-                {style.revealS ? (
-                  <label className="flex items-center gap-2 text-sm">
-                    {t('timeline.picture.revealSeconds')}
-                    <Input
-                      type="number"
-                      className="w-24"
-                      min={1}
-                      max={timeLimitS}
-                      value={style.revealS}
-                      onChange={(e) =>
-                        set({
-                          revealS: Math.min(timeLimitS, Math.max(1, Number(e.target.value) || 1)),
-                        })
-                      }
-                    />
-                  </label>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
-        );
-      }}
+      {(field) => (
+        <PictureStyleEditor
+          value={field.state.value}
+          onChange={field.handleChange}
+          reveal={image ? { timeLimitS } : null}
+          behind={behind}
+        />
+      )}
     </form.Field>
+  );
+}
+
+/**
+ * The same options for any step's picture or video (SPECIFICATIONS-STEP-EDITOR): a
+ * question's, through its form, or a slide's. `reveal`: offered with the answer time it
+ * must fit in (a question's picture), absent elsewhere.
+ */
+export function PictureStyleEditor({
+  value: style,
+  onChange,
+  reveal,
+  behind,
+}: {
+  value: MediaStyle;
+  onChange: (style: MediaStyle) => void;
+  reveal: { timeLimitS: number } | null;
+  behind: boolean;
+}) {
+  const { t } = useTranslation('editor');
+  const set = (patch: Partial<MediaStyle>) => {
+    const next: MediaStyle = { ...style, ...patch };
+    // An unset setting is left out: an empty style is no style.
+    for (const k of Object.keys(next) as (keyof MediaStyle)[]) {
+      if (next[k] === undefined) delete next[k];
+    }
+    onChange(next);
+  };
+  const fill = behind ? 'cover' : (style.fit ?? 'contain');
+  return (
+    <div className="flex flex-col gap-3">
+      {behind ? (
+        <p className="text-muted-foreground text-xs">{t('timeline.picture.behindNote')}</p>
+      ) : (
+        <>
+          <RatioField value={style.ratio} onChange={(ratio) => set({ ratio })} />
+          <Choice label={t('timeline.picture.fit')}>
+            <Segmented
+              label={t('timeline.picture.fit')}
+              value={fill}
+              onChange={(fit) => set({ fit: fit === 'contain' ? undefined : fit })}
+              options={MEDIA_FITS.map((fit) => ({
+                value: fit,
+                label: t(`timeline.picture.fitValue.${fit}`),
+              }))}
+            />
+          </Choice>
+        </>
+      )}
+      {fill === 'cover' ? (
+        <Choice label={t('timeline.picture.focus')}>
+          <Segmented
+            label={t('timeline.picture.focus')}
+            value={style.focus ?? 'center'}
+            onChange={(focus) => set({ focus: focus === 'center' ? undefined : focus })}
+            options={MEDIA_FOCI.map((focus) => ({
+              value: focus,
+              label: t(`timeline.picture.focusValue.${focus}`),
+            }))}
+          />
+        </Choice>
+      ) : null}
+      {reveal ? (
+        <div className="flex flex-col gap-1.5">
+          <CheckboxField
+            checked={!!style.revealS}
+            onChange={(on) =>
+              set({ revealS: on ? Math.min(REVEAL_DEFAULT_S, reveal.timeLimitS) : undefined })
+            }
+            label={t('timeline.picture.reveal')}
+            hint={t('timeline.picture.revealHint')}
+          />
+          {style.revealS ? (
+            <label className="flex items-center gap-2 text-sm">
+              {t('timeline.picture.revealSeconds')}
+              <Input
+                type="number"
+                className="w-24"
+                min={1}
+                max={reveal.timeLimitS}
+                value={style.revealS}
+                onChange={(e) =>
+                  set({
+                    revealS: Math.min(reveal.timeLimitS, Math.max(1, Number(e.target.value) || 1)),
+                  })
+                }
+              />
+            </label>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }
 

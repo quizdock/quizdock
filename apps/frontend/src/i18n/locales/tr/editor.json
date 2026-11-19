@@ -450,7 +450,8 @@
       "oneReveal": "Resim başına bir gösterim.",
       "pollExplanation": "Bir ankette açıklanacak doğru cevap yoktur.",
       "oneExplanation": "Soru başına bir açıklama.",
-      "oneHint": "Soru başına bir ipucu."
+      "oneHint": "Soru başına bir ipucu.",
+      "oneSlideVisual": "Bir slayt resim ya da video gösterir, ikisini birden değil."
     },
     "clearConfirm": {
       "title": "Tüm medyalar kaldırılsın mı?",
@@ -535,7 +536,15 @@
       "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir."
     },
     "removeElement": "Bu öğeyi kaldır",
-    "embeddedVideo": "Gömülü bir video: yalnızca kaldırılabilir."
+    "embeddedVideo": "Gömülü bir video: yalnızca kaldırılabilir.",
+    "slideLayoutDescription": {
+      "bottom": "Resim ya da video blokların altında.",
+      "top": "Resim ya da video blokların üstünde.",
+      "left": "Resim ya da video solda, bloklar yanında.",
+      "right": "Bloklar solda, resim ya da video yanında.",
+      "behind": "Resim ya da video slaytı doldurur, bloklar üstünde (şimdiye kadarki slayt videosu).",
+      "alone": "Blokların yerine yalnızca resim ya da video."
+    }
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",

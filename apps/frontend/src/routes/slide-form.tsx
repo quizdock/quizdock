@@ -15,6 +15,8 @@ import {
 } from '@dnd-kit/sortable';
 import type {
   AudioTarget,
+  MediaPosition,
+  MediaStyle,
   WaveformSize,
   SlideBlock,
   SlideGradient,
@@ -80,7 +82,10 @@ function initialValues(s?: QuizDetailDtoSlidesItem): FormValues {
     ],
     mediaId: s?.mediaId ?? null,
     gradient: (s?.gradient as SlideGradient | null | undefined) ?? null,
+    imageMediaId: s?.imageMediaId ?? null,
     videoMediaId: s?.videoMediaId ?? null,
+    mediaPosition: (s?.mediaPosition as MediaPosition | undefined) ?? 'behind',
+    mediaStyle: (s?.mediaStyle as MediaStyle | null | undefined) ?? {},
     videoLoop: s?.videoLoop ?? true,
     videoSound: s?.videoSound ?? true,
     audioMediaId: s?.audioMediaId ?? null,
@@ -172,7 +177,11 @@ export function SlideForm({
     blocks: complete(values.blocks),
     mediaId: values.mediaId,
     gradient: values.gradient,
+    // One visual: a picture left beside a video goes.
+    imageMediaId: values.videoMediaId ? null : values.imageMediaId,
     videoMediaId: values.videoMediaId,
+    mediaPosition: values.mediaPosition,
+    mediaStyle: slideStyle(values),
     videoLoop: values.videoLoop,
     videoSound: values.videoSound,
     audioMediaId: values.videoMediaId && values.videoSound ? null : values.audioMediaId,
@@ -402,4 +411,12 @@ export function SlideForm({
       </div>
     </StepFormFrame>
   );
+}
+
+/** The style worth sending: none without a visual or when empty; never a reveal on a slide. */
+function slideStyle(v: Pick<FormValues, 'imageMediaId' | 'videoMediaId' | 'mediaStyle'>) {
+  if (!v.imageMediaId && !v.videoMediaId) return null;
+  const framing = { ...v.mediaStyle };
+  delete framing.revealS;
+  return Object.keys(framing).length > 0 ? framing : null;
 }

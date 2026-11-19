@@ -5517,8 +5517,55 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "imageMediaId": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "videoMediaId": {
                   "type": "string",
+                  "nullable": true
+                },
+                "mediaPosition": {
+                  "type": "string",
+                  "enum": [
+                    "bottom",
+                    "top",
+                    "left",
+                    "right",
+                    "behind",
+                    "alone"
+                  ]
+                },
+                "mediaStyle": {
+                  "type": "object",
+                  "properties": {
+                    "ratio": {
+                      "type": "string"
+                    },
+                    "fit": {
+                      "type": "string",
+                      "enum": [
+                        "contain",
+                        "cover"
+                      ]
+                    },
+                    "focus": {
+                      "type": "string",
+                      "enum": [
+                        "center",
+                        "top",
+                        "bottom",
+                        "left",
+                        "right"
+                      ]
+                    },
+                    "revealS": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 240
+                    }
+                  },
+                  "additionalProperties": false,
                   "nullable": true
                 },
                 "videoLoop": {
@@ -5576,7 +5623,10 @@
                 "mediaId",
                 "gradient",
                 "backgroundStyle",
+                "imageMediaId",
                 "videoMediaId",
+                "mediaPosition",
+                "mediaStyle",
                 "videoLoop",
                 "videoSound",
                 "audioMediaId",
@@ -10118,8 +10168,55 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "imageMediaId": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "videoMediaId": {
                   "type": "string",
+                  "nullable": true
+                },
+                "mediaPosition": {
+                  "type": "string",
+                  "enum": [
+                    "bottom",
+                    "top",
+                    "left",
+                    "right",
+                    "behind",
+                    "alone"
+                  ]
+                },
+                "mediaStyle": {
+                  "type": "object",
+                  "properties": {
+                    "ratio": {
+                      "type": "string"
+                    },
+                    "fit": {
+                      "type": "string",
+                      "enum": [
+                        "contain",
+                        "cover"
+                      ]
+                    },
+                    "focus": {
+                      "type": "string",
+                      "enum": [
+                        "center",
+                        "top",
+                        "bottom",
+                        "left",
+                        "right"
+                      ]
+                    },
+                    "revealS": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 240
+                    }
+                  },
+                  "additionalProperties": false,
                   "nullable": true
                 },
                 "videoLoop": {
@@ -10177,7 +10274,10 @@
                 "mediaId",
                 "gradient",
                 "backgroundStyle",
+                "imageMediaId",
                 "videoMediaId",
+                "mediaPosition",
+                "mediaStyle",
                 "videoLoop",
                 "videoSound",
                 "audioMediaId",
@@ -11354,8 +11454,55 @@
                   "additionalProperties": false,
                   "nullable": true
                 },
+                "imageMediaId": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "videoMediaId": {
                   "type": "string",
+                  "nullable": true
+                },
+                "mediaPosition": {
+                  "type": "string",
+                  "enum": [
+                    "bottom",
+                    "top",
+                    "left",
+                    "right",
+                    "behind",
+                    "alone"
+                  ]
+                },
+                "mediaStyle": {
+                  "type": "object",
+                  "properties": {
+                    "ratio": {
+                      "type": "string"
+                    },
+                    "fit": {
+                      "type": "string",
+                      "enum": [
+                        "contain",
+                        "cover"
+                      ]
+                    },
+                    "focus": {
+                      "type": "string",
+                      "enum": [
+                        "center",
+                        "top",
+                        "bottom",
+                        "left",
+                        "right"
+                      ]
+                    },
+                    "revealS": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 240
+                    }
+                  },
+                  "additionalProperties": false,
                   "nullable": true
                 },
                 "videoLoop": {
@@ -11413,7 +11560,10 @@
                 "mediaId",
                 "gradient",
                 "backgroundStyle",
+                "imageMediaId",
                 "videoMediaId",
+                "mediaPosition",
+                "mediaStyle",
                 "videoLoop",
                 "videoSound",
                 "audioMediaId",
@@ -13456,10 +13606,60 @@
             "additionalProperties": false,
             "nullable": true
           },
+          "imageMediaId": {
+            "type": "string",
+            "minLength": 26,
+            "maxLength": 26,
+            "nullable": true
+          },
           "videoMediaId": {
             "type": "string",
             "minLength": 26,
             "maxLength": 26,
+            "nullable": true
+          },
+          "mediaPosition": {
+            "default": "behind",
+            "type": "string",
+            "enum": [
+              "bottom",
+              "top",
+              "left",
+              "right",
+              "behind",
+              "alone"
+            ]
+          },
+          "mediaStyle": {
+            "type": "object",
+            "properties": {
+              "ratio": {
+                "type": "string"
+              },
+              "fit": {
+                "type": "string",
+                "enum": [
+                  "contain",
+                  "cover"
+                ]
+              },
+              "focus": {
+                "type": "string",
+                "enum": [
+                  "center",
+                  "top",
+                  "bottom",
+                  "left",
+                  "right"
+                ]
+              },
+              "revealS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 240
+              }
+            },
+            "additionalProperties": false,
             "nullable": true
           },
           "videoLoop": {
@@ -13947,8 +14147,55 @@
             "additionalProperties": false,
             "nullable": true
           },
+          "imageMediaId": {
+            "type": "string",
+            "nullable": true
+          },
           "videoMediaId": {
             "type": "string",
+            "nullable": true
+          },
+          "mediaPosition": {
+            "type": "string",
+            "enum": [
+              "bottom",
+              "top",
+              "left",
+              "right",
+              "behind",
+              "alone"
+            ]
+          },
+          "mediaStyle": {
+            "type": "object",
+            "properties": {
+              "ratio": {
+                "type": "string"
+              },
+              "fit": {
+                "type": "string",
+                "enum": [
+                  "contain",
+                  "cover"
+                ]
+              },
+              "focus": {
+                "type": "string",
+                "enum": [
+                  "center",
+                  "top",
+                  "bottom",
+                  "left",
+                  "right"
+                ]
+              },
+              "revealS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 240
+              }
+            },
+            "additionalProperties": false,
             "nullable": true
           },
           "videoLoop": {
@@ -14006,7 +14253,10 @@
           "mediaId",
           "gradient",
           "backgroundStyle",
+          "imageMediaId",
           "videoMediaId",
+          "mediaPosition",
+          "mediaStyle",
           "videoLoop",
           "videoSound",
           "audioMediaId",
@@ -14470,10 +14720,60 @@
             "additionalProperties": false,
             "nullable": true
           },
+          "imageMediaId": {
+            "type": "string",
+            "minLength": 26,
+            "maxLength": 26,
+            "nullable": true
+          },
           "videoMediaId": {
             "type": "string",
             "minLength": 26,
             "maxLength": 26,
+            "nullable": true
+          },
+          "mediaPosition": {
+            "default": "behind",
+            "type": "string",
+            "enum": [
+              "bottom",
+              "top",
+              "left",
+              "right",
+              "behind",
+              "alone"
+            ]
+          },
+          "mediaStyle": {
+            "type": "object",
+            "properties": {
+              "ratio": {
+                "type": "string"
+              },
+              "fit": {
+                "type": "string",
+                "enum": [
+                  "contain",
+                  "cover"
+                ]
+              },
+              "focus": {
+                "type": "string",
+                "enum": [
+                  "center",
+                  "top",
+                  "bottom",
+                  "left",
+                  "right"
+                ]
+              },
+              "revealS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 240
+              }
+            },
+            "additionalProperties": false,
             "nullable": true
           },
           "videoLoop": {

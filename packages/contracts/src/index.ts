@@ -25,7 +25,13 @@ export * from './admin/results';
 import type { ParticipantAccess } from './preferences';
 import type { ThemeValues } from './theme';
 import type { BackgroundStyle } from './background';
-import type { AudioTarget, LiveAudio, LiveQuestionMedia } from './question-media';
+import type {
+  AudioTarget,
+  LiveAudio,
+  LiveQuestionMedia,
+  MediaPosition,
+  MediaStyle,
+} from './question-media';
 
 export const CONTRACTS_VERSION = '0.3.0' as const;
 
@@ -281,8 +287,14 @@ export interface SlideShowPayload {
   textOutline: boolean;
   /** Auto-mode display time: null = engine default, 0 = the host clicks, else seconds. */
   displayDelayS: number | null;
-  /** A video filling the slide behind its content (#125), over its background. */
+  /** A video (#125), behind its content unless `position` says otherwise. */
   video?: SlideVideo | null;
+  /** Its picture (SPECIFICATIONS-STEP-EDITOR), placed by `position`; never with a video. */
+  image?: { url: string; alt: string | null } | null;
+  /** Where its picture or video sits against its blocks; absent = behind them. */
+  position?: MediaPosition;
+  /** How its picture or video is framed (no reveal on a slide). */
+  style?: MediaStyle;
   /** The slide's sound (#125); never with a video that plays its own. */
   audio?: LiveAudio | null;
   /** Which devices play the slide's sound, resolved for this game (present when it has one). */

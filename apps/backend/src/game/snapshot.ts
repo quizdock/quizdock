@@ -13,6 +13,7 @@ import type {
   SlideBackground,
 } from '@quiz-dock/contracts';
 import {
+  mediaStyleSchema,
   questionHintSchema,
   type AudioTarget,
   LOUDNESS_TARGET_LUFS,
@@ -55,7 +56,7 @@ const quizWithContent = Prisma.validator<Prisma.QuizDefaultArgs>()({
     },
     slides: {
       orderBy: { orderIndex: 'asc' },
-      include: { media: true, videoMedia: true, audioMedia: true },
+      include: { media: true, imageMedia: true, videoMedia: true, audioMedia: true },
     },
     // Its slides may name the author (`{author}`).
     owner: { select: { displayName: true } },
@@ -245,9 +246,18 @@ function snapshotSlide(
         size: slide.waveformSize,
       }
     : null;
+  // Its picture (never beside a video), where its visual sits, and how it is framed.
+  const img = !v && slide.imageMedia?.kind === 'image' ? slide.imageMedia : null;
+  const style = mediaStyleSchema.safeParse(slide.mediaStyle ?? {});
+  // Framed, never revealed: a slide has no answers to open.
+  const framing = { ...(style.success ? style.data : {}) };
+  delete framing.revealS;
   return {
     id: slide.id,
     beforeQuestionIndex: anchor,
+    ...(img ? { image: { url: img.url, alt: img.alt ?? null } } : {}),
+    ...((img || v) && slide.mediaPosition !== 'behind' ? { position: slide.mediaPosition } : {}),
+    ...((img || v) && Object.keys(framing).length > 0 ? { style: framing } : {}),
     blocks: resolveBlocks(slide.blocks as SlideBlock[], quiz),
     background: backdropOf(slide.media, slide.gradient, slide.backgroundStyle),
     video,
@@ -324,6 +334,9 @@ export function buildSlideShow(
     blocks: slide.blocks,
     background: slide.background,
     ...(slide.video ? { video: slide.video } : {}),
+    ...(slide.image ? { image: slide.image } : {}),
+    ...(slide.position && slide.position !== 'behind' ? { position: slide.position } : {}),
+    ...(slide.style ? { style: slide.style } : {}),
     ...(slide.audio ? { audio: slide.audio } : {}),
     ...(gameTarget && slideHasSound(slide)
       ? { audioTarget: slideAudioTarget(slide, gameTarget) }

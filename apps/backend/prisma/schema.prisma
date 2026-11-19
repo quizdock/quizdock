@@ -376,8 +376,14 @@ model Slide {
   blocks           Json          @default("[]")
   /// Optional full-cover background image (exclusive with `gradient`).
   mediaId          String?       @map("media_id") @db.Char(26)
-  /// A video filling the slide behind its content (#125), over its background.
+  /// Its picture (SPECIFICATIONS-STEP-EDITOR), placed as a question's: never with `videoMediaId`.
+  imageMediaId     String?       @map("image_media_id") @db.Char(26)
+  /// A video (#125), placed by `mediaPosition`; behind the content as it always was.
   videoMediaId     String?       @map("video_media_id") @db.Char(26)
+  /// Where its picture or video sits against its blocks, as a question's against its text.
+  mediaPosition    MediaPosition @default(behind) @map("media_position")
+  /// How its picture or video is framed (MediaStyle in @quiz-dock/contracts; no reveal); null = as its file is.
+  mediaStyle       Json?         @map("media_style")
   /// The video runs as long as the slide shows; false = played once, held on its last frame.
   videoLoop        Boolean       @default(true) @map("video_loop")
   /// The video plays its own sound; false = muted. With its sound, no `audioMediaId` (checked by the API).
@@ -403,6 +409,7 @@ model Slide {
   quiz           Quiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
   beforeQuestion Question?   @relation(fields: [beforeQuestionId], references: [id], onDelete: SetNull)
   media          MediaAsset? @relation("SlideMedia", fields: [mediaId], references: [id])
+  imageMedia     MediaAsset? @relation("SlideImage", fields: [imageMediaId], references: [id])
   videoMedia     MediaAsset? @relation("SlideVideo", fields: [videoMediaId], references: [id])
   audioMedia     MediaAsset? @relation("SlideAudio", fields: [audioMediaId], references: [id])
 
@@ -458,6 +465,7 @@ model MediaAsset {
   questionAudios      Question[]     @relation("QuestionAudio")
   questionBackgrounds Question[]     @relation("QuestionBackground")
   slides              Slide[]        @relation("SlideMedia")
+  slideImages         Slide[]        @relation("SlideImage")
   slideVideos         Slide[]        @relation("SlideVideo")
   slideAudios         Slide[]        @relation("SlideAudio")
   options             AnswerOption[] @relation("OptionMedia")

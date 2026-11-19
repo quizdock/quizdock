@@ -452,7 +452,8 @@
       "oneReveal": "Eine Enthüllung pro Bild.",
       "pollExplanation": "Eine Umfrage hat keine richtige Antwort zu erklären.",
       "oneExplanation": "Eine Erklärung pro Frage.",
-      "oneHint": "Ein Hinweis pro Frage."
+      "oneHint": "Ein Hinweis pro Frage.",
+      "oneSlideVisual": "Eine Folie zeigt ein Bild oder ein Video, nicht beides."
     },
     "clearConfirm": {
       "title": "Alle Medien entfernen?",
@@ -537,7 +538,15 @@
       "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten."
     },
     "removeElement": "Dieses Element entfernen",
-    "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden."
+    "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden.",
+    "slideLayoutDescription": {
+      "bottom": "Das Bild oder Video unter den Blöcken.",
+      "top": "Das Bild oder Video über den Blöcken.",
+      "left": "Das Bild oder Video links, die Blöcke daneben.",
+      "right": "Die Blöcke links, das Bild oder Video daneben.",
+      "behind": "Das Bild oder Video füllt die Folie, die Blöcke liegen darüber (bisher das Video einer Folie).",
+      "alone": "Das Bild oder Video allein, anstelle der Blöcke."
+    }
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",

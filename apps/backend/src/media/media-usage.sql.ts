@@ -20,6 +20,7 @@ export const MEDIA_SLOTS = [
   'questionAudios',
   'questionBackgrounds',
   'slides',
+  'slideImages',
   'slideVideos',
   'slideAudios',
   'options',
@@ -44,7 +45,7 @@ export const QUIZ_MEDIA_REFS = Prisma.sql`
     WHERE o.media_id IS NOT NULL
   UNION ALL
   SELECT s.quiz_id, v.media_id FROM slide s
-    CROSS JOIN LATERAL (VALUES (s.media_id), (s.video_media_id), (s.audio_media_id)) v (media_id)
+    CROSS JOIN LATERAL (VALUES (s.media_id), (s.image_media_id), (s.video_media_id), (s.audio_media_id)) v (media_id)
     WHERE v.media_id IS NOT NULL
   UNION ALL
   SELECT q.id, r[1] FROM quiz q, regexp_matches(COALESCE(q.description, ''), ${MEDIA_ID}, 'g') r

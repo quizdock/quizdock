@@ -9,6 +9,8 @@ import type { StorePreviewDtoSlidesItemAudioTarget } from './storePreviewDtoSlid
 import type { StorePreviewDtoSlidesItemBackgroundStyle } from './storePreviewDtoSlidesItemBackgroundStyle';
 import type { StorePreviewDtoSlidesItemBlocksItem } from './storePreviewDtoSlidesItemBlocksItem';
 import type { StorePreviewDtoSlidesItemGradient } from './storePreviewDtoSlidesItemGradient';
+import type { StorePreviewDtoSlidesItemMediaPosition } from './storePreviewDtoSlidesItemMediaPosition';
+import type { StorePreviewDtoSlidesItemMediaStyle } from './storePreviewDtoSlidesItemMediaStyle';
 import type { StorePreviewDtoSlidesItemTextTone } from './storePreviewDtoSlidesItemTextTone';
 import type { StorePreviewDtoSlidesItemWaveformSize } from './storePreviewDtoSlidesItemWaveformSize';
 
@@ -30,7 +32,12 @@ export type StorePreviewDtoSlidesItem = {
   /** @nullable */
   backgroundStyle: StorePreviewDtoSlidesItemBackgroundStyle;
   /** @nullable */
+  imageMediaId: string | null;
+  /** @nullable */
   videoMediaId: string | null;
+  mediaPosition: StorePreviewDtoSlidesItemMediaPosition;
+  /** @nullable */
+  mediaStyle: StorePreviewDtoSlidesItemMediaStyle;
   videoLoop: boolean;
   videoSound: boolean;
   /** @nullable */

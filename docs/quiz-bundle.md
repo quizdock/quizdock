@@ -166,6 +166,10 @@ Contributors changing the bundle schema or a content schema run
   (`center`, `top`, `bottom`, `left`, `right`), and for a picture `revealS`: blurred
   until the answers open, it sharpens over that many seconds. Absent, the media
   shows as its file is.
+- A slide's `image`, `mediaPosition` and `mediaStyle` (version 9): its own picture
+  (never with a `video`), where its picture or video sits against its blocks —
+  the same places as a question's, `behind` when absent, as a slide's video
+  always was — and how it is framed (no `revealS` on a slide).
 - `hint` (version 9): a question's hint — `text` (140 characters at most),
   `afterS` (seconds after the answers open) and `penaltyPct` (the share of the
   question's points an answer given after it loses, 0 to 100).

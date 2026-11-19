@@ -1059,9 +1059,55 @@
                 },
                 "additionalProperties": false
               },
+              "image": {
+                "type": "string",
+                "pattern": "^media\\/[A-Za-z0-9][A-Za-z0-9._-]{0,120}$"
+              },
               "video": {
                 "type": "string",
                 "pattern": "^media\\/[A-Za-z0-9][A-Za-z0-9._-]{0,120}$"
+              },
+              "mediaPosition": {
+                "type": "string",
+                "enum": [
+                  "bottom",
+                  "top",
+                  "left",
+                  "right",
+                  "behind",
+                  "alone"
+                ]
+              },
+              "mediaStyle": {
+                "type": "object",
+                "properties": {
+                  "ratio": {
+                    "type": "string"
+                  },
+                  "fit": {
+                    "type": "string",
+                    "enum": [
+                      "contain",
+                      "cover"
+                    ]
+                  },
+                  "focus": {
+                    "type": "string",
+                    "enum": [
+                      "center",
+                      "top",
+                      "bottom",
+                      "left",
+                      "right"
+                    ]
+                  },
+                  "revealS": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 240
+                  }
+                },
+                "additionalProperties": false
               },
               "videoLoop": {
                 "type": "boolean"

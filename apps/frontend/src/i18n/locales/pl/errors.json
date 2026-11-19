@@ -176,7 +176,8 @@
     "background_conflict": "Tło to obraz albo gradient, nie oba naraz.",
     "empty": "Slajd nic nie pokazuje: dodaj nagłówek, tekst, obraz, tło lub film.",
     "not_found": "Ten slajd już nie istnieje: w międzyczasie został usunięty.",
-    "incomplete_in_ready_quiz": "Ten quiz jest opublikowany: przywróć go do szkicu, aby zapisać slajd, który nic nie pokazuje."
+    "incomplete_in_ready_quiz": "Ten quiz jest opublikowany: przywróć go do szkicu, aby zapisać slajd, który nic nie pokazuje.",
+    "two_visuals": "Slajd pokazuje obraz albo wideo, nie oba naraz."
   },
   "record": {
     "not_found": "Ten element już nie istnieje: w międzyczasie został usunięty.",
