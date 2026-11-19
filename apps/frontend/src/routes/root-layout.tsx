@@ -154,7 +154,8 @@ export function RootLayout() {
           {t('common:demo.banner', { user: demo.user })}
         </p>
       ) : null}
-      {/* Wide but bounded: ~1440px, the usual ceiling for app layouts. Pages fill it;
+      {/* Wide but bounded: ~1440px, the usual ceiling for app layouts, wider on the large
+          and UHD screens (3xl, 4xl: index.css). Pages fill it;
           only the ones that would look lost in it narrow themselves (see `content-*`).
           A participant's page gets the whole viewport under the header: a question's
           background covers it edge to edge, and the page centres its own phone column. */}

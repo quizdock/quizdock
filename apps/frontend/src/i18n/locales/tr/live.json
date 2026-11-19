@@ -271,7 +271,8 @@
     "backToLobbyDescription": "Katılımcılar odada kalır; sıradaki quizi orada seçersiniz, kimse PIN'i yeniden yazmaz.",
     "noQuizYetHint": "Oda bekliyor: sıradaki quizi seçin.",
     "columnRank": "Sıra",
-    "seeResults": "Sonuçları gör"
+    "seeResults": "Sonuçları gör",
+    "stopMenu": "Diğer durdurma seçenekleri"
   },
   "screen": {
     "sessionUnavailable": "Oda kullanılamıyor.",

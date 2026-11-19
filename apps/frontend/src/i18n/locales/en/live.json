@@ -271,7 +271,8 @@
     "backToLobbyDescription": "The participants stay in the lobby, where you pick the next quiz; nobody types the PIN again.",
     "noQuizYetHint": "The lobby is waiting: choose the quiz it plays next.",
     "columnRank": "Rank",
-    "seeResults": "See the results"
+    "seeResults": "See the results",
+    "stopMenu": "More ways to stop"
   },
   "screen": {
     "sessionUnavailable": "Lobby unavailable.",

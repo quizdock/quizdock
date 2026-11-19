@@ -61,6 +61,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Notice } from '@/components/ui/notice';
 import { PageTitle, SectionTitle } from '@/components/ui/page-title';
+import { MenuItem } from '@/components/ui/menu-item';
 import { Popover } from '@/components/ui/popover';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
@@ -73,6 +74,7 @@ import { serverNow } from '../game/clock';
 import { Switch } from '@/components/ui/switch';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Tooltip } from '@/components/ui/tooltip';
+import { useMediaQuery } from '@/lib/use-media-query';
 import { cn } from '@/lib/utils';
 import { getAuthMode } from '../auth/auth-context';
 import { Avatar } from '../game/avatar';
@@ -177,6 +179,8 @@ function HostConsole({
   const [tab, setTab] = useState<HostTab>('control');
   // The right column's tab; null = the phase's default (players in the lobby, the outline after).
   const [side, setSide] = useState<SideTab | null>(null);
+  // Wide (Tailwind's 2xl): the players and the outline side by side, no tabs.
+  const wideSide = useMediaQuery('(min-width: 96rem)');
   // The step the game is live on, kept while the host looks back at another one.
   const liveStep = useRef<number | null>(null);
   // Whether the live position is a question being answered, kept the same way.
@@ -235,9 +239,15 @@ function HostConsole({
     });
   };
   const screenButton = (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center">
       <Tooltip label={t('control.screenButtonTooltip')}>
-        <Button type="button" variant="outline" size="sm" onClick={openScreen}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="rounded-r-none"
+          onClick={openScreen}
+        >
           <Eye className="size-4" />
           {t('control.screenButton')}
           {/* It opens in a new tab: said before the click. */}
@@ -246,13 +256,13 @@ function HostConsole({
       </Tooltip>
       {/* The projection on another computer: opened with the PIN, then paired by its code. */}
       <Popover
-        align="end"
         className="w-80"
         trigger={({ toggle, open }) => (
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
+            className="rounded-l-none border-l-0 px-2"
             onClick={() => {
               setPairResult(null);
               setScreenShareNote(null);
@@ -492,14 +502,12 @@ function HostConsole({
       >
         {t(`control.phase.${phase}`)}
       </span>
-      {/* The projection window, at the first row's end. */}
-      <div className="ml-auto">{screenButton}</div>
     </div>
   );
 
-  // Row 2 — what I set; what I look at.
+  // Then what I set for the room.
   const rowTwo = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-2">
       <LockButton locked={view.joinLocked} onToggle={setJoinLocked} />
       <RoomSoundsButton
         sounds={view.sounds}
@@ -510,81 +518,95 @@ function HostConsole({
         on={view.motion ?? appConfig.liveMotion !== false}
         onToggle={(on) => socket?.emit('host:motion', { pin, on })}
       />
-      {/* What I look at, at the second row's end. */}
-      <ViewSwitch tab={tab} onTab={setTab} />
     </div>
   );
 
-  // The transport, above the outline: the pace (auto or not, play / pause), then what
-  // changes or stops the quiz, and what closes the room.
-  const transport = (
-    <div className="bg-card flex flex-col gap-2 rounded-xl border p-2.5">
-      <div className="flex items-center justify-end gap-3">
-        <Tooltip label={t('control.modeAutoTooltip')}>
-          <label className="flex items-center gap-2 text-sm font-medium">
-            {t('control.modeAuto')}
-            <Switch
-              checked={view.mode === 'auto'}
-              onCheckedChange={(auto) => setMode(auto ? 'auto' : 'manual')}
-              aria-label={t('control.modeAuto')}
-            />
-          </label>
-        </Tooltip>
-        <PauseButton paused={view.paused} disabled={!pausable} onToggle={setPaused} />
-      </div>
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        {inLobby ? (
-          noQuiz ? null : (
-            <QuizPickButton
-              pin={pin}
-              socket={socket}
-              currentQuizId={view.quizId}
-              playedQuizIds={view.standings?.playedQuizIds}
-            />
-          )
-        ) : phase === 'podium' ? null : (
-          <BackToLobbyButton
-            pin={pin}
-            socket={socket}
-            mode="stop"
-            offerArchive={view.keepResults}
+  // The pace, on the bottom bar's left (what decides when to move on): auto or not, play
+  // or pause, the next quiz in a lobby; then stopping — the quiz while one runs, closing
+  // the lobby only from its menu; the lobby itself when no quiz runs.
+  const quizRuns = !inLobby && phase !== 'podium';
+  const controls = (
+    <div className="flex flex-wrap items-center gap-3">
+      <Tooltip label={t('control.modeAutoTooltip')}>
+        <label className="flex items-center gap-2 text-sm font-medium">
+          {t('control.modeAuto')}
+          <Switch
+            checked={view.mode === 'auto'}
+            onCheckedChange={(auto) => setMode(auto ? 'auto' : 'manual')}
+            aria-label={t('control.modeAuto')}
           />
-        )}
+        </label>
+      </Tooltip>
+      <PauseButton paused={view.paused} disabled={!pausable} onToggle={setPaused} />
+      {inLobby && !noQuiz ? (
+        <QuizPickButton
+          pin={pin}
+          socket={socket}
+          currentQuizId={view.quizId}
+          playedQuizIds={view.standings?.playedQuizIds}
+        />
+      ) : null}
+      {quizRuns ? (
+        <BackToLobbyButton
+          pin={pin}
+          socket={socket}
+          mode="stop"
+          offerArchive={view.keepResults}
+          joined={
+            <EndGameButton
+              label={t('control.endSession')}
+              offerArchive={view.keepResults}
+              onConfirm={endGame}
+              asMenu
+            />
+          }
+        />
+      ) : (
         <EndGameButton
           label={inLobby ? t('control.stopSession') : t('control.endSession')}
           offerArchive={!inLobby && view.keepResults}
           onConfirm={endGame}
         />
-      </div>
+      )}
     </div>
   );
 
-  // The right column: the whole quiz, or the players.
-  const sideColumn = (
-    <aside className="bg-card flex min-h-0 flex-col gap-2 rounded-xl border p-3">
+  // The players and the quiz's outline: side by side on a wide screen once a quiz is
+  // picked, else one column and its tabs.
+  const sidePanel = (panel: SideTab, tabs: boolean) => (
+    <aside key={panel} className="bg-card flex min-h-0 flex-col gap-2 rounded-xl border p-3">
       <div className="flex items-center gap-2">
-        <div role="tablist" className="bg-muted flex rounded-md p-0.5 text-sm">
-          {(['outline', 'players'] as const).map((id) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={sideTab === id}
-              onClick={() => setSide(id)}
-              className={cn(
-                'rounded px-2.5 py-1 font-medium',
-                sideTab === id ? 'bg-background shadow-sm' : 'text-muted-foreground',
-              )}
-            >
-              {t(`control.sideTabs.${id}`)}
-              <span className="text-muted-foreground ml-1 tabular-nums">
-                {id === 'players' ? view.players.length : steps.length}
-              </span>
-            </button>
-          ))}
-        </div>
+        {tabs ? (
+          <div role="tablist" className="bg-muted flex rounded-md p-0.5 text-sm">
+            {(['outline', 'players'] as const).map((id) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={sideTab === id}
+                onClick={() => setSide(id)}
+                className={cn(
+                  'rounded px-2.5 py-1 font-medium',
+                  sideTab === id ? 'bg-background shadow-sm' : 'text-muted-foreground',
+                )}
+              >
+                {t(`control.sideTabs.${id}`)}
+                <span className="text-muted-foreground ml-1 tabular-nums">
+                  {id === 'players' ? view.players.length : steps.length}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <h2 className="px-1 py-1 text-sm font-semibold">
+            {t(`control.sideTabs.${panel}`)}
+            <span className="text-muted-foreground ml-1 tabular-nums">
+              {panel === 'players' ? view.players.length : steps.length}
+            </span>
+          </h2>
+        )}
         <span className="flex-1" />
-        {sideTab === 'outline' && view.nav && canLookBack ? (
+        {panel === 'outline' && view.nav && canLookBack ? (
           <>
             <Button
               type="button"
@@ -614,7 +636,7 @@ function HostConsole({
         ) : null}
       </div>
       <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
-        {sideTab === 'outline' ? (
+        {panel === 'outline' ? (
           <OutlineList
             steps={steps}
             live={live}
@@ -630,11 +652,22 @@ function HostConsole({
           />
         )}
       </div>
-      {sideTab === 'outline' && canLookBack ? (
+      {panel === 'outline' && canLookBack ? (
         <p className="text-muted-foreground text-xs">{t('control.playedHint')}</p>
       ) : null}
     </aside>
   );
+  const sideColumns =
+    wideSide && !noQuiz ? (
+      <>
+        {sidePanel('players', false)}
+        {sidePanel('outline', false)}
+      </>
+    ) : wideSide ? (
+      sidePanel('players', false)
+    ) : (
+      sidePanel(sideTab, true)
+    );
 
   const next = steps[(live ?? -1) + 1];
   const nextLabel = !next
@@ -1146,20 +1179,27 @@ function HostConsole({
 
   return (
     <section className={cn(CONSOLE_SECTION, 'gap-4')}>
-      <header className="flex flex-wrap items-start gap-x-5 gap-y-3 border-b pb-3">
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          {rowOne}
-          {rowTwo}
-        </div>
-        {/* The transport, in the header's right corner, above the outline. */}
-        <div className="w-full lg:w-[24rem]">{transport}</div>
+      {/* Who and where, then what is set for the room: one line when there is room. */}
+      <header className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b pb-3">
+        <div className="min-w-0 flex-1">{rowOne}</div>
+        {rowTwo}
         <div className="w-full empty:hidden">
           <ChromiumNotice />
         </div>
       </header>
       {/* Whatever the view, the participants and the quiz's outline stay beside it. */}
-      <div className="grid flex-1 items-start gap-5 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-stretch">
-        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto">
+      <div
+        className={cn(
+          'grid flex-1 items-start gap-5 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch',
+          wideSide && !noQuiz && '2xl:grid-cols-[minmax(0,1fr)_22rem_22rem]',
+        )}
+      >
+        <div className="flex min-w-0 flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
+          {/* What I look at, and the projection's own window, over what it shows. */}
+          <div className="flex flex-wrap items-center gap-2">
+            <ViewSwitch tab={tab} onTab={setTab} />
+            {screenButton}
+          </div>
           {tab === 'screen' ? (
             // The projection's 16:9, scaled to the column. The console's own session: a
             // second one would re-join the room on the host's socket.
@@ -1177,21 +1217,31 @@ function HostConsole({
             <div className="flex min-w-0 flex-col gap-5">{centre}</div>
           )}
         </div>
-        {sideColumn}
+        {sideColumns}
       </div>
-      <ActionBar status={status} primary={primary} />
+      <ActionBar controls={controls} status={status} primary={primary} />
     </section>
   );
 }
 
 /**
  * The console's action bar, the same on every screen so the hands never search:
- * on the left what decides when to move on, on the right the one primary action.
- * Nothing else sits next to it (UI system §2.1).
+ * on the left what decides when to move on — the pace, stopping, where the room is —
+ * on the right the one primary action. Nothing else sits next to it (UI system §2.1).
  */
-function ActionBar({ status, primary }: { status?: React.ReactNode; primary?: React.ReactNode }) {
+function ActionBar({
+  controls,
+  status,
+  primary,
+}: {
+  controls?: React.ReactNode;
+  status?: React.ReactNode;
+  primary?: React.ReactNode;
+}) {
   return (
     <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:-mx-10 lg:px-10">
+      {controls}
+      {controls && status ? <span className="bg-border h-6 w-px" aria-hidden /> : null}
       <div className="text-muted-foreground flex min-w-0 flex-1 items-center gap-3 text-sm">
         {status}
       </div>
@@ -1850,23 +1900,67 @@ function EndGameButton({
   label,
   offerArchive,
   onConfirm,
+  asMenu = false,
 }: {
   label: string;
   /** Propose d'archiver les résultats (pertinent dès qu'une partie a été jouée). */
   offerArchive?: boolean;
   onConfirm: (archive: boolean) => void;
+  /**
+   * Only in the menu of the button it is joined to (stopping the quiz): closing the
+   * lobby is never at hand while a quiz runs, where it would be taken for stopping it.
+   */
+  asMenu?: boolean;
 }) {
   const { t } = useTranslation(['live', 'common']);
   const [open, setOpen] = useState(false);
   const [archive, setArchive] = useState(true);
   return (
     <>
-      <Tooltip label={t('control.endTooltip')}>
-        <Button type="button" variant="destructive-outline" size="sm" onClick={() => setOpen(true)}>
-          <Power className="size-4" />
-          {label}
-        </Button>
-      </Tooltip>
+      {asMenu ? (
+        <Popover
+          align="end"
+          className="w-56"
+          trigger={({ toggle, open: menuOpen }) => (
+            <Button
+              type="button"
+              variant="destructive-outline"
+              size="sm"
+              className="rounded-l-none border-l-0 px-2"
+              onClick={toggle}
+              aria-expanded={menuOpen}
+              aria-label={t('control.stopMenu')}
+            >
+              <ChevronDown className="size-4" />
+            </Button>
+          )}
+        >
+          {(close) => (
+            <MenuItem
+              destructive
+              onClick={() => {
+                close();
+                setOpen(true);
+              }}
+            >
+              <Power className="size-4" />
+              {`${label}…`}
+            </MenuItem>
+          )}
+        </Popover>
+      ) : (
+        <Tooltip label={t('control.endTooltip')}>
+          <Button
+            type="button"
+            variant="destructive-outline"
+            size="sm"
+            onClick={() => setOpen(true)}
+          >
+            <Power className="size-4" />
+            {label}
+          </Button>
+        </Tooltip>
+      )}
       <ConfirmDialog
         open={open}
         destructive
@@ -2030,7 +2124,7 @@ function ViewSwitch({ tab, onTab }: { tab: HostTab; onTab: (t: HostTab) => void 
     <div
       role="tablist"
       aria-label={t('control.viewSwitch')}
-      className="bg-muted ml-auto flex rounded-lg p-0.5 text-sm"
+      className="bg-muted flex rounded-lg p-0.5 text-sm"
     >
       {tabs.map((x) => (
         <button

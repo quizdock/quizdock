@@ -271,7 +271,8 @@
     "backToLobbyDescription": "参加者はルームに残り、そこで次のクイズを選びます。PIN を入力し直す必要はありません。",
     "noQuizYetHint": "ルームは待っています。次に実施するクイズを選んでください。",
     "columnRank": "順位",
-    "seeResults": "結果を見る"
+    "seeResults": "結果を見る",
+    "stopMenu": "その他の停止方法"
   },
   "screen": {
     "sessionUnavailable": "ルームを利用できません。",

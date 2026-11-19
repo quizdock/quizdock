@@ -276,7 +276,8 @@
     "backToLobbyDescription": "Les participants restent dans le salon, où vous choisissez le quiz suivant ; personne ne ressaisit le PIN.",
     "noQuizYetHint": "Le salon attend : choisissez le quiz qu’il joue ensuite.",
     "columnRank": "Rang",
-    "seeResults": "Voir les résultats"
+    "seeResults": "Voir les résultats",
+    "stopMenu": "Autres façons d’arrêter"
   },
   "screen": {
     "sessionUnavailable": "Salon indisponible.",

@@ -1,7 +1,7 @@
 import type { RoomSelectionPayload, RoomStandingsPayload } from '@quiz-dock/contracts';
 import { Link } from '@tanstack/react-router';
 import { BookmarkPlus, CircleCheck, Circle, ListChecks, ListPlus, Square } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TagFilter, tagsOf } from '@/components/tag-filter';
 import { Button } from '@/components/ui/button';
@@ -327,12 +327,15 @@ export function BackToLobbyButton({
   socket,
   mode,
   offerArchive = true,
+  joined,
 }: {
   pin: string;
   socket: GameSocket | null;
   mode: 'podium' | 'stop';
   /** False for a game that keeps nothing (another host's shared quiz): no choice to offer. */
   offerArchive?: boolean;
+  /** What is joined to its end, as one control (the stop's menu, closing the lobby). */
+  joined?: ReactNode;
 }) {
   const stop = mode === 'stop';
   const { t } = useTranslation(['live', 'common']);
@@ -361,16 +364,22 @@ export function BackToLobbyButton({
 
   return (
     <>
-      <Tooltip label={t(stop ? 'control.closeQuizTooltip' : 'control.backToLobbyTooltip')}>
-        <Button
-          type="button"
-          variant={stop ? 'outline' : 'main-action'}
-          onClick={() => setOpen(true)}
-        >
-          <ListPlus className="size-4" />
-          {label}
-        </Button>
-      </Tooltip>
+      <span className="inline-flex">
+        <Tooltip label={t(stop ? 'control.closeQuizTooltip' : 'control.backToLobbyTooltip')}>
+          {/* Stopping is the console's one red control: a square, as on any player. */}
+          <Button
+            type="button"
+            variant={stop ? 'destructive-outline' : 'main-action'}
+            size={stop ? 'sm' : 'default'}
+            className={cn(joined && 'rounded-r-none')}
+            onClick={() => setOpen(true)}
+          >
+            {stop ? <Square className="size-3.5 fill-current" /> : <ListPlus className="size-4" />}
+            {label}
+          </Button>
+        </Tooltip>
+        {joined}
+      </span>
       <ConfirmDialog
         open={open}
         destructive={stop}

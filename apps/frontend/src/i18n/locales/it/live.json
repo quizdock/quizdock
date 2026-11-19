@@ -276,7 +276,8 @@
     "backToLobbyDescription": "I partecipanti restano nella sala, dove scegli il quiz successivo; nessuno deve ridigitare il PIN.",
     "noQuizYetHint": "La sala aspetta: scegli il quiz che giocherà dopo.",
     "columnRank": "Posizione",
-    "seeResults": "Vedi i risultati"
+    "seeResults": "Vedi i risultati",
+    "stopMenu": "Altri modi per fermare"
   },
   "screen": {
     "sessionUnavailable": "Sala non disponibile.",
