@@ -33,6 +33,7 @@ Read them in this order to discover the project:
 | 17 | **[SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)** | The question timeline (draft): the builder interface that places a question's media and lays out its flow to scale; conflicts flagged, never arbitrated | Product, frontend |
 | 18 | **[SPECIFICATIONS-HINTS.md](./SPECIFICATIONS-HINTS.md)** | Hints (draft, discussion #288): a collective clue on the timeline, a configurable penalty on the question's points, the host's switch, three lots | Product, backend, frontend |
 | 19 | **[SPECIFICATIONS-QUESTION-PICTURE.md](./SPECIFICATIONS-QUESTION-PICTURE.md)** | How a question's picture is shown (draft): ratio (presets or free), fill, crop point, progressive reveal; one `mediaStyle` field | Product, frontend, backend |
+| 20 | **[SPECIFICATIONS-STEP-EDITOR.md](./SPECIFICATIONS-STEP-EDITOR.md)** | One editor for every step (draft): questions and slides share the frame, the preview, the timeline and the media model; the data stay apart; three lots | Product, frontend |
 
 > The documents refer to one another (for instance `technique §5`, `RG-13`, `données §2.10`). Any change of behaviour must update **the document it concerns, in the same commit** (see the "test & document" policy, technique §18).
 
