@@ -959,7 +959,10 @@ export class GameEngine {
     const sockets = await this.server.in(pin).fetchSockets();
     for (const socket of sockets) {
       const playerId = (socket.data as { playerId?: string }).playerId;
-      socket.emit('question:reveal', personalReveal(common, records, ranking, playerId));
+      socket.emit(
+        'question:reveal',
+        personalReveal(common, records, ranking, playerId, question.hint?.penaltyPct),
+      );
       socket.emit('leaderboard', personalLeaderboard(ranking, playerId));
     }
     await this.emitHostScores(ref, sockets);
@@ -1019,6 +1022,7 @@ export class GameEngine {
       // Given after the hint: its share goes, as for any question.
       const points = rec.hinted ? withHint(row.points, question.hint?.penaltyPct ?? 0) : row.points;
       rec.pointsAwarded = points;
+      if (rec.hinted) rec.hintLost = row.points - points;
       rec.isCorrect = row.exact;
       rec.credit = row.points / (question.basePoints || 1);
       rec.closestRank = row.rank;
@@ -1218,10 +1222,14 @@ export class GameEngine {
     index: number,
   ): Promise<void> {
     const records = await this.game.answers(ref.id, index);
-    const common = await this.revealCommon(ref.pin, snapshot.questions[index], records);
+    const question = snapshot.questions[index];
+    const common = await this.revealCommon(ref.pin, question, records);
     const ranking = await this.ranking(ref);
     const playerId = socket.data.playerId;
-    socket.emit('question:reveal', personalReveal(common, records, ranking, playerId));
+    socket.emit(
+      'question:reveal',
+      personalReveal(common, records, ranking, playerId, question.hint?.penaltyPct),
+    );
     socket.emit('leaderboard', personalLeaderboard(ranking, playerId));
   }
 
@@ -2244,14 +2252,22 @@ export class GameEngine {
       await this.advanceToReveal(pin, meta.currentIndex, 'host', meta.id); // restant épuisé → reveal
       return;
     }
-    await this.redis.hset(gameKeys.game(meta.id), gameHash({ questionEndsAt: newEndsAt }));
+    // Time added lengthens the question; time taken moves the clock on: the opening goes
+    // back with the end, the whole stays, and what comes at its time (the hint) comes sooner.
+    const newStartedAt = deltaMs < 0 ? meta.questionStartedAt + deltaMs : meta.questionStartedAt;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({ questionStartedAt: newStartedAt, questionEndsAt: newEndsAt }),
+    );
+    meta.questionStartedAt = newStartedAt;
     meta.questionEndsAt = newEndsAt;
     this.scheduleReveal(refOf(pin, meta), meta.currentIndex, newEndsAt + GRACE_MS - now);
+    await this.armHint(refOf(pin, meta), meta);
     this.server.to(pin).emit('question:time', {
       questionIndex: meta.currentIndex,
-      startedAt: meta.questionStartedAt,
+      startedAt: newStartedAt,
       endsAt: newEndsAt,
-      ...mediaStartOf(meta.mediaLeadMs, meta.questionStartedAt),
+      ...mediaStartOf(meta.mediaLeadMs, newStartedAt),
     });
   }
 
@@ -2479,7 +2495,7 @@ export class GameEngine {
       credit: score.credit,
       tMs,
       receivedAt,
-      ...(hinted ? { hinted: true } : {}),
+      ...(hinted ? { hinted: true, hintLost: score.hintLost ?? 0 } : {}),
     };
 
     // Unicité : 1re réponse gagne (RG-06), tant que le reveal n'a pas commencé : il

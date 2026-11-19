@@ -536,7 +536,9 @@
     "enable": "Einschalten",
     "onProjection": "Auf der Projektion",
     "costs": "Hinweis – Antworten ab jetzt verlieren {{penalty}} % der Punkte der Frage",
-    "show": "Hinweis",
-    "fold": "Hinweis einklappen"
+    "show": "Anzeigen",
+    "fold": "Einklappen",
+    "label": "Hinweis",
+    "penaltyApplied": "Hinweis: −{{penalty}} % ({{lost}} Punkte weniger)"
   }
 }

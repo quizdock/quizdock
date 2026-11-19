@@ -536,7 +536,9 @@
     "enable": "オンにする",
     "onProjection": "プロジェクション上",
     "costs": "ヒント — これからの回答は問題の得点が {{penalty}} % 減ります",
-    "show": "ヒント",
-    "fold": "ヒントを閉じる"
+    "show": "表示",
+    "fold": "閉じる",
+    "label": "ヒント",
+    "penaltyApplied": "ヒント：−{{penalty}} %（{{lost}} 点減点）"
   }
 }

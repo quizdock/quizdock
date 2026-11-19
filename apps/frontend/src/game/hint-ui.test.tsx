@@ -66,11 +66,38 @@ describe('the hint in play (SPECIFICATIONS-HINTS)', () => {
     expect(screen.getByRole('status')).toHaveTextContent('perdent 25 %');
   });
 
-  it('phone: folded and opened again by its owner', () => {
+  it('phone: a bar on top of the tiles, its text folded and unfolded by its owner', () => {
     render(<PhoneHint text="Elle a été choisie en 1923" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Replier l’indice' }));
+    const bar = screen.getByRole('button', { name: /Indice/ });
+    expect(bar).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.click(bar);
     expect(screen.queryByText('Elle a été choisie en 1923')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Indice' }));
+    expect(bar).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(bar);
     expect(screen.getByText('Elle a été choisie en 1923')).toBeInTheDocument();
+  });
+});
+
+describe('a picture revealed progressively, on a phone in the room', () => {
+  it('blurred as on the projection, and never opened sharp meanwhile', async () => {
+    const { QuestionMedia } = await import('./live-components');
+    const media = {
+      visual: { kind: 'image' as const, url: '/m/x.webp', alt: 'Ankara' },
+      audio: null,
+      style: { revealS: 10 },
+    };
+    const { rerender } = render(
+      <QuestionMedia
+        media={media}
+        zoomable
+        reveal={{ startAt: Date.now() + 3000, durationS: 10, paused: false }}
+      />,
+    );
+    const img = screen.getByRole('img', { name: 'Ankara' });
+    expect(img.style.animation).toContain('qd-reveal');
+    expect(screen.queryByRole('button')).toBeNull();
+    // No reveal: the usual picture, opened over the screen on a tap.
+    rerender(<QuestionMedia media={{ ...media, style: undefined }} zoomable />);
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 });

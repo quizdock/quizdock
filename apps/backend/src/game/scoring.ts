@@ -252,17 +252,30 @@ export function scoreAnswer(input: ScoreInput): ScoreResult {
     return { correct: false, points: 0, newStreak: 0, credit };
   }
   // `fixed`: full base points whatever the speed; else the usual time weighting.
-  // The hint takes its share of the question's points, never of the streak bonus.
-  const timed = withHint(
+  const full =
     question.pointsMode === PointsMode.Fixed
       ? question.basePoints
-      : timePoints(question.basePoints, tMs / 1000, question.timeLimitS),
-    hintPenaltyPct,
-  );
+      : timePoints(question.basePoints, tMs / 1000, question.timeLimitS);
+  // The hint takes its share of the question's points, never of the streak bonus.
+  const timed = withHint(full, hintPenaltyPct);
+  const lost = (share: number) =>
+    hintPenaltyPct > 0 ? { hintLost: Math.round(full * share) - Math.round(timed * share) } : {};
   if (!correct) {
     // Partial credit: a share of the points; the streak neither grows nor breaks.
-    return { correct: false, points: Math.round(timed * credit), newStreak: prevStreak, credit };
+    return {
+      correct: false,
+      points: Math.round(timed * credit),
+      newStreak: prevStreak,
+      credit,
+      ...lost(credit),
+    };
   }
   const newStreak = prevStreak + 1;
-  return { correct: true, points: timed + streakBonus(newStreak), newStreak, credit };
+  return {
+    correct: true,
+    points: timed + streakBonus(newStreak),
+    newStreak,
+    credit,
+    ...lost(1),
+  };
 }

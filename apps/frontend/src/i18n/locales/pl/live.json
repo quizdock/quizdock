@@ -560,7 +560,9 @@
     "enable": "Włącz",
     "onProjection": "Na projekcji",
     "costs": "Podpowiedź – odpowiedzi od teraz tracą {{penalty}} % punktów za pytanie",
-    "show": "Podpowiedź",
-    "fold": "Zwiń podpowiedź"
+    "show": "Pokaż",
+    "fold": "Zwiń",
+    "label": "Podpowiedź",
+    "penaltyApplied": "Podpowiedź: −{{penalty}} % ({{lost}} pkt mniej)"
   }
 }

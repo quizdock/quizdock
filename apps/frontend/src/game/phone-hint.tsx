@@ -1,40 +1,38 @@
-import { Lightbulb, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
- * A revealed hint on a phone (SPECIFICATIONS-HINTS): above the answers, folded and
- * opened again by its owner alone — the projection is the host's.
+ * A revealed hint on a phone (SPECIFICATIONS-HINTS): a bar attached on top of the answer
+ * tiles, its text unfolding upwards over the question; folded and opened again by its
+ * owner alone — the projection is the host's.
  */
 export function PhoneHint({ text }: { text: string }) {
   const { t } = useTranslation('live');
   const [open, setOpen] = useState(true);
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="border-warning bg-warning/10 inline-flex w-fit items-center gap-[0.4em] self-start rounded-full border px-[0.8em] py-[0.2em] text-[0.9em]"
-      >
-        <Lightbulb className="size-[1em]" aria-hidden />
-        {t('hint.show')}
-      </button>
-    );
-  }
   return (
-    <div
-      role="status"
-      className="border-warning bg-warning/10 flex items-start gap-[0.5em] rounded-[0.5em] border px-[0.7em] py-[0.5em]"
-    >
-      <Lightbulb className="mt-[0.15em] size-[1.1em] shrink-0" aria-hidden />
-      <span className="flex-1 font-medium">{text}</span>
+    <div className="border-warning bg-warning/10 flex w-full flex-col overflow-hidden rounded-[0.6em] border">
+      {open ? (
+        <p role="status" className="px-[0.8em] pt-[0.6em] font-medium">
+          {text}
+        </p>
+      ) : null}
       <button
         type="button"
-        onClick={() => setOpen(false)}
-        aria-label={t('hint.fold')}
-        className="text-muted-foreground hover:text-foreground -m-1 rounded p-1"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+        className="text-warning-text flex w-full items-center gap-[0.4em] px-[0.8em] py-[0.4em] text-[0.9em] font-medium"
       >
-        <X className="size-[1em]" />
+        <Lightbulb className="size-[1.1em]" aria-hidden />
+        {t('hint.label')}
+        <span className="ml-auto inline-flex items-center gap-[0.2em]">
+          {open ? t('hint.fold') : t('hint.show')}
+          {open ? (
+            <ChevronDown className="size-[1em]" aria-hidden />
+          ) : (
+            <ChevronUp className="size-[1em]" aria-hidden />
+          )}
+        </span>
       </button>
     </div>
   );

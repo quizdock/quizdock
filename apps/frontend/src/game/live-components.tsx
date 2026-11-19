@@ -24,6 +24,7 @@ import {
 import { usePodiumMotion, useRevealMotion, useStandingsMotion } from './motion/primitives';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { mediaFrame, type Reveal, useRevealStyle } from './media/media-frame';
 import { Markdown } from '@/components/markdown';
 import {
   COLOR_BG,
@@ -538,15 +539,21 @@ export function QuestionMedia({
   media,
   className,
   zoomable = false,
+  reveal = null,
 }: {
   media: QuestionStartPayload['media'] | undefined;
   className?: string;
   /** A phone's picture: a tap opens it over the whole screen, another closes it. */
   zoomable?: boolean;
+  /** Its progressive reveal: blurred as on the projection, never opened sharp meanwhile. */
+  reveal?: Reveal | null;
 }) {
   const { t } = useTranslation('live');
   const visual = media?.visual;
+  const revealed = useRevealStyle(visual?.kind === 'image' ? reveal : null, false);
   if (visual?.kind !== 'image') return null;
+  // Framed, filled and cropped as the author set it (SPECIFICATIONS-QUESTION-PICTURE).
+  const look = mediaFrame(media?.style, false);
   // What the author wrote (#43), or a generic label saying an image is there —
   // never an empty alt, which would hide the image from a screen reader entirely
   // while it carries the question for everyone else.
@@ -555,9 +562,18 @@ export function QuestionMedia({
     <img
       src={visual.url}
       alt={alt}
-      className={cn('mx-auto rounded-lg object-contain', className)}
+      className={cn(
+        'mx-auto rounded-lg',
+        look.fill === 'cover' ? 'object-cover' : 'object-contain',
+        className,
+      )}
+      style={{ aspectRatio: look.ratio ?? undefined, objectPosition: look.focus, ...revealed }}
     />
   );
+  // Revealing: clipped, its blur kept in its place, and not opened over the screen.
+  if (revealed) {
+    return <div className="mx-auto w-fit max-w-full overflow-hidden rounded-lg">{img}</div>;
+  }
   return zoomable ? (
     <ZoomableImage src={visual.url} alt={alt}>
       {img}

@@ -871,6 +871,12 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               {r.correct ? t('player.correct') : t('player.wrong')}
             </p>
             <p className="text-[1.25em]">{t('player.points', { points: r.points })}</p>
+            {r.hint ? (
+              // What the hint took: its share, and the points it cost.
+              <p className="text-warning-text text-[1em]">
+                {t('hint.penaltyApplied', { penalty: r.hint.penaltyPct, lost: r.hint.lost })}
+              </p>
+            ) : null}
             {r.closestRank ? (
               <p className="text-muted-foreground text-[1em]">
                 {t('player.yourClosest', {
@@ -975,9 +981,6 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
           >
             {question.prompt}
           </Markdown>
-          {view.hint?.questionIndex === question.questionIndex ? (
-            <PhoneHint key={question.questionIndex} text={view.hint.text} />
-          ) : null}
           {playsHere ? (
             <QuestionMediaStage
               key={question.questionIndex}
@@ -996,7 +999,12 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             />
           ) : (
             <>
-              <QuestionMedia media={question.media} zoomable className="max-h-[18dvh] w-auto" />
+              <QuestionMedia
+                media={question.media}
+                zoomable
+                reveal={revealOf(question, !!view.paused)}
+                className="max-h-[18dvh] w-auto"
+              />
               {/* In the room the sound plays on the projection; its playhead shows here only
                   when the sound is the question (listen first), not a background (#92). */}
               {question.media?.audio && question.listenFirst ? (
@@ -1017,6 +1025,10 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             tiled && 'on-backdrop:rounded-t-[0.75em]',
           )}
         >
+          {/* The hint, attached on top of the tiles: it unfolds upwards, over the question. */}
+          {view.hint?.questionIndex === question.questionIndex ? (
+            <PhoneHint key={question.questionIndex} text={view.hint.text} />
+          ) : null}
           <AnswerRules question={question} />
           {reading ? (
             <OpeningCountdown

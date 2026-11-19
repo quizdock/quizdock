@@ -536,7 +536,9 @@
     "enable": "开启",
     "onProjection": "在投影上",
     "costs": "提示——此后的作答将失去本题 {{penalty}}% 的分数",
-    "show": "提示",
-    "fold": "收起提示"
+    "show": "显示",
+    "fold": "收起",
+    "label": "提示",
+    "penaltyApplied": "提示：−{{penalty}}%（少 {{lost}} 分）"
   }
 }

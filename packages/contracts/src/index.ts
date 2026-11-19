@@ -432,6 +432,8 @@ export interface PersonalResult {
   /** Numeric `closest`: own proximity rank and distance to the target. */
   closestRank?: number;
   distance?: number;
+  /** Answered after the hint: its share (%) and the points it took (SPECIFICATIONS-HINTS). */
+  hint?: { penaltyPct: number; lost: number };
 }
 
 /** One row of the proximity ranking of a `closest` numeric question. */

@@ -739,6 +739,21 @@ describe('GameEngine (characterization)', () => {
       expect(answers.get('p2')!.pointsAwarded).toBe(
         Math.round(answers.get('p1')!.pointsAwarded * 0.75),
       );
+      expect(answers.get('p2')!.hintLost).toBe(
+        answers.get('p1')!.pointsAwarded - answers.get('p2')!.pointsAwarded,
+      );
+    });
+
+    it('time taken by the host moves the clock on: a hint now due comes at once', async () => {
+      const t0 = await startedAt(hinted(15), { p1: player('Ann') });
+      expect(roomOf('question:hint')).toHaveLength(0);
+      await engine.adjustTime(pin, HOST, -10);
+      const m = await meta();
+      // The whole stays 20 s: the opening went back with the end.
+      expect(m.questionEndsAt - m.questionStartedAt).toBe(20_000);
+      expect(m.questionStartedAt).toBe(t0 - 10_000);
+      await engine.adjustTime(pin, HOST, -6);
+      await eventually(async () => roomOf('question:hint').length > 0);
     });
 
     it('off, it waits; on late, it comes at once', async () => {

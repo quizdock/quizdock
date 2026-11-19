@@ -372,12 +372,16 @@ export interface AnswerRecord {
   receivedAt: number;
   /** Given after the question's hint was revealed: its points lost the hint's share. */
   hinted?: boolean;
+  /** The points the hint took from it (0 when it earned none). */
+  hintLost?: number;
 }
 
 /** Résultat de notation d'une soumission (sortie de la fonction pure §5). */
 export interface ScoreResult {
   correct: boolean;
   points: number;
+  /** The points the hint took (SPECIFICATIONS-HINTS); absent without one. */
+  hintLost?: number;
   newStreak: number;
   /** Share of the credit earned, 0..1. */
   credit: number;
