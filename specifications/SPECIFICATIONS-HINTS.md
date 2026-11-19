@@ -13,7 +13,8 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
 - A hint is **multimedia** by nature: a text, and later a media of the library (an image, a sound), placed on the
   question's timeline at a **fixed position**, with its duration.
 - **Off by default**: a quiz without hints plays exactly as today.
-- A hint applies to **the whole room** (collective): everyone sees it, everyone's points for the question are reduced.
+- A hint applies to **the whole room** (collective): everyone sees it; the answers given after it lose part of their
+  points (2026-11-19), the ones given before keep theirs.
 - Two states, kept apart:
   - **revealed**: held by the server, final for the question, the one that triggers the penalty;
   - **displayed**: the hint overlay shown or hidden, visual only. A participant toggles it on their own device; the
@@ -22,11 +23,13 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
 
 ## 2. Decisions taken (2026-11-18)
 
-- **Penalty**: a factor on the **question's points only**, configurable, with a floor so a hinted answer is still
-  worth something. The **streak bonus is never reduced**, and a right answer with a hint keeps the streak growing.
+- **Penalty** (2026-11-19): a percentage taken off the points earned on the question, for the answers given after
+  the hint; no floor. The **streak bonus is never reduced**, and a right answer with a hint keeps the streak growing.
   A wrong answer stays at 0; an unrevealed hint costs nothing.
-- **A hint belongs to its question** (2026-11-18): its penalty and floor are set on the question, and penalise that
-  question only.
+- **A hint belongs to its question** (2026-11-18): its penalty is set on the question, and penalises that question
+  only.
+- **Its start** (2026-11-19): set in seconds after the answers open, on the timeline; it reveals itself then, when the
+  host's switch is on. Turned on later, it reveals at once.
 - **The 50:50 strikes the answers the author chose** (2026-11-18); a random mode, drawn by the server, may come
   later. Either way the server sends only the struck options, never the right answer before the reveal.
 - **The author decides, the engine does not arbitrate.** The timeline flags overlaps on the hint itself (QUESTION-TIMELINE §3).
@@ -42,8 +45,8 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
 
 ## 3. Lots
 
-1. **Text hint.** One text hint per question, on the timeline; collective; configurable penalty with a floor; the
-   host's switch and reminder.
+1. **Text hint.** One text hint per question, on the timeline; collective; configurable penalty; the host's switch
+   and reminder, the projection's show/hide; a phone folds it.
 2. **50:50 and report.** A hint that strikes out wrong answers (choice questions only), with its own configurable
    penalty once shown; hint usage in the post-game report.
 3. **Room vote.** When a hint is available, each player has a toggle to vote for it, and can withdraw the vote until
