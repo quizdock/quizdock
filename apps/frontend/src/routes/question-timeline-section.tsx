@@ -1,30 +1,24 @@
 import {
-  AUDIO_TARGETS,
   type Audio,
-  type AudioTarget,
   effectiveTimeLimitS,
   HINT_PENALTY_DEFAULT,
   TIME_LIMIT_BY_TYPE,
   MEDIA_POSITIONS,
   type QuestionMedia,
-  WAVEFORM_SIZES,
-  type WaveformSize,
 } from '@quiz-dock/contracts';
 import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownEditor } from '@/components/markdown-editor';
 import { FieldMessage } from '@/components/ui/field-message';
-import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import type { FieldIssue } from '@/lib/question-issues';
 import { cn } from '@/lib/utils';
 import { appConfig } from '../config';
-import { Waveform } from '../game/media/waveform';
 import { MediaDetailsFields, MediaUpload, type UploadedMedia } from './media-upload';
 import { mediaHasSound, type QuestionFormApi, READ_DELAY_DEFAULT_MS } from './question-form-model';
 import { HintFields } from './hint-fields';
 import { PictureStyleFields, REVEAL_DEFAULT_S } from './picture-style-fields';
+import { AudioTargetField, WaveformSizeField } from './sound-fields';
 import { QuestionTimingFields } from './question-timing-section';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
 import {
@@ -367,61 +361,19 @@ function hasElement(media: QuestionMedia, kind: TimelineSelection | null): boole
 
 /** How the sound plays: on which devices, and an audio's waveform, previewed at its size. */
 function PlaybackFields({ form, peaks }: { form: QuestionFormApi; peaks: number[] | null }) {
-  const { t } = useTranslation(['editor', 'common']);
   return (
     <>
       <form.Field name="audioTarget">
-        {(field) => (
-          <Label title={t('questionForm.audioTargetHint')}>
-            {t('questionForm.audioTargetLabel')}
-            <Select
-              value={field.state.value ?? ''}
-              onChange={(e) =>
-                field.handleChange(e.target.value === '' ? null : (e.target.value as AudioTarget))
-              }
-            >
-              <option value="">{t('questionForm.audioTargetDefault')}</option>
-              {AUDIO_TARGETS.map((target) => (
-                <option key={target} value={target}>
-                  {t(`settings.audioTarget.${target}`)}
-                </option>
-              ))}
-            </Select>
-          </Label>
-        )}
+        {(field) => <AudioTargetField value={field.state.value} onChange={field.handleChange} />}
       </form.Field>
       {peaks ? (
         <form.Field name="waveformSize">
           {(field) => (
-            <div className="flex flex-col gap-1.5">
-              <Label title={t('questionForm.waveformSizeHint')}>
-                {t('questionForm.waveformSizeLabel')}
-                <Select
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value as WaveformSize)}
-                >
-                  {WAVEFORM_SIZES.map((size) => (
-                    <option key={size} value={size}>
-                      {t(`questionForm.waveformSize.${size}`)}
-                    </option>
-                  ))}
-                </Select>
-              </Label>
-              {/* As the screens will draw it, at their type size — or, hidden,
-                  the one place it still shows (faded, with why). */}
-              {field.state.value === 'hidden' ? (
-                <p className="text-muted-foreground text-xs">
-                  {t('questionForm.waveformHiddenNote')}
-                </p>
-              ) : null}
-              <Waveform
-                peaks={peaks}
-                progress={0}
-                size={field.state.value}
-                className={cn('text-base', field.state.value === 'hidden' && 'opacity-40')}
-                label={t('questionForm.waveformPreview')}
-              />
-            </div>
+            <WaveformSizeField
+              value={field.state.value}
+              onChange={field.handleChange}
+              peaks={peaks}
+            />
           )}
         </form.Field>
       ) : null}

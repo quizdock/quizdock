@@ -1,21 +1,17 @@
 import {
-  AUDIO_TARGETS,
   type AudioTarget,
   MEDIA_POSITIONS,
   type MediaPosition,
   type MediaStyle,
-  WAVEFORM_SIZES,
   type WaveformSize,
 } from '@quiz-dock/contracts';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckboxField } from '@/components/ui/checkbox-field';
-import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { Waveform } from '../game/media/waveform';
 import { MediaDetailsFields, MediaUpload } from './media-upload';
 import { PictureStyleEditor } from './picture-style-fields';
+import { AudioTargetField, WaveformSizeField } from './sound-fields';
 import { DisplayTimeFields } from './slide-display-time';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
 import {
@@ -257,7 +253,12 @@ export function SlideTimelineSection({
                     : t('slideForm.videoSoundHint')
                 }
               />
-              {videoTakesSound ? <AudioTargetField value={value} onChange={onChange} /> : null}
+              {videoTakesSound ? (
+                <AudioTargetField
+                  value={value.audioTarget}
+                  onChange={(audioTarget) => onChange({ audioTarget })}
+                />
+              ) : null}
               <PictureStyleEditor
                 value={value.mediaStyle}
                 onChange={(mediaStyle) => onChange({ mediaStyle })}
@@ -294,69 +295,19 @@ export function SlideTimelineSection({
           />
           {audioMediaId ? (
             <>
-              <AudioTargetField value={value} onChange={onChange} />
-              <Label title={t('questionForm.waveformSizeHint')}>
-                {t('questionForm.waveformSizeLabel')}
-                <Select
-                  value={value.waveformSize}
-                  onChange={(e) => onChange({ waveformSize: e.target.value as WaveformSize })}
-                >
-                  {WAVEFORM_SIZES.map((size) => (
-                    <option key={size} value={size}>
-                      {t(`questionForm.waveformSize.${size}`)}
-                    </option>
-                  ))}
-                </Select>
-              </Label>
-              {value.waveformSize === 'hidden' ? (
-                <p className="text-muted-foreground text-xs">
-                  {t('questionForm.waveformHiddenNote')}
-                </p>
-              ) : null}
-              {peaks ? (
-                <Waveform
-                  peaks={peaks}
-                  progress={0}
-                  size={value.waveformSize}
-                  className={cn('text-base', value.waveformSize === 'hidden' && 'opacity-40')}
-                  label={t('questionForm.waveformPreview')}
-                />
-              ) : null}
+              <AudioTargetField
+                value={value.audioTarget}
+                onChange={(audioTarget) => onChange({ audioTarget })}
+              />
+              <WaveformSizeField
+                value={value.waveformSize}
+                onChange={(waveformSize) => onChange({ waveformSize })}
+                peaks={peaks}
+              />
             </>
           ) : null}
         </ElementPanel>
       ) : null}
     </div>
-  );
-}
-
-/** Which devices play the slide's sound, the video's or its own. */
-function AudioTargetField({
-  value,
-  onChange,
-}: {
-  value: SlideMediaValue;
-  onChange: (patch: Partial<SlideMediaValue>) => void;
-}) {
-  const { t } = useTranslation(['editor', 'common']);
-  return (
-    <Label title={t('questionForm.audioTargetHint')}>
-      {t('questionForm.audioTargetLabel')}
-      <Select
-        value={value.audioTarget ?? ''}
-        onChange={(e) =>
-          onChange({
-            audioTarget: e.target.value === '' ? null : (e.target.value as AudioTarget),
-          })
-        }
-      >
-        <option value="">{t('questionForm.audioTargetDefault')}</option>
-        {AUDIO_TARGETS.map((target) => (
-          <option key={target} value={target}>
-            {t(`settings.audioTarget.${target}`)}
-          </option>
-        ))}
-      </Select>
-    </Label>
   );
 }
