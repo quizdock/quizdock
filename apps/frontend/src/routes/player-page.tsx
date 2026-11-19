@@ -1027,7 +1027,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         >
           {/* The hint, attached on top of the tiles: it unfolds upwards, over the question. */}
           {view.hint?.questionIndex === question.questionIndex ? (
-            <PhoneHint key={question.questionIndex} text={view.hint.text} />
+            <PhoneHint key={question.questionIndex} text={view.hint.text} image={view.hint.image} />
           ) : null}
           <AnswerRules question={question} />
           {reading ? (

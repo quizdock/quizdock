@@ -539,6 +539,7 @@
     "show": "Anzeigen",
     "fold": "Einklappen",
     "label": "Hinweis",
-    "penaltyApplied": "Hinweis: −{{penalty}} % ({{lost}} Punkte weniger)"
+    "penaltyApplied": "Hinweis: −{{penalty}} % ({{lost}} Punkte weniger)",
+    "imageAlt": "Das Bild des Hinweises"
   }
 }

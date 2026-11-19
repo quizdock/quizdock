@@ -533,7 +533,8 @@
       "textHint": "{{n}} / {{max}} karakter",
       "afterS": "Açılıştan sonra (sn)",
       "penalty": "Ceza (%)",
-      "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir."
+      "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir.",
+      "image": "Resim (metin varsa isteğe bağlı)"
     },
     "removeElement": "Bu öğeyi kaldır",
     "embeddedVideo": "Gömülü bir video: yalnızca kaldırılabilir.",

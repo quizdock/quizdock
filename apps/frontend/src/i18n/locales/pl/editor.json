@@ -543,7 +543,8 @@
       "textHint": "{{n}} / {{max}} znaków",
       "afterS": "Po otwarciu (s)",
       "penalty": "Kara (%)",
-      "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi."
+      "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi.",
+      "image": "Obraz (opcjonalny, jeśli jest tekst)"
     },
     "removeElement": "Usuń ten element",
     "embeddedVideo": "Osadzone wideo: można je tylko usunąć.",

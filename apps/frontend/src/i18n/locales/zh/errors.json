@@ -140,7 +140,8 @@
     },
     "true_false": {
       "two_options": "判断题需要恰好 2 个答案。"
-    }
+    },
+    "hint_empty": "提示需要文字或图片。"
   },
   "validation": "部分字段无效。",
   "internal": "内部错误。",

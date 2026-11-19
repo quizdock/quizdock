@@ -61,6 +61,19 @@ describe('the hint in play (SPECIFICATIONS-HINTS)', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it('a picture alone, or with words: on the projection and the phone', () => {
+    const image = { url: '/m/anitkabir.webp' };
+    render(<HintOverlay text="" image={image} penaltyPct={25} />);
+    expect(screen.getByRole('img', { name: 'L’image de l’indice' })).toHaveAttribute(
+      'src',
+      image.url,
+    );
+    cleanup();
+    render(<PhoneHint text="Choisie en 1923" image={image} />);
+    expect(screen.getByRole('img', { name: 'Choisie en 1923' })).toBeInTheDocument();
+    expect(screen.getByText('Choisie en 1923')).toBeInTheDocument();
+  });
+
   it('projection: the hint and what it costs', () => {
     render(<HintOverlay text="Elle a été choisie en 1923" penaltyPct={25} />);
     expect(screen.getByRole('status')).toHaveTextContent('perdent 25 %');

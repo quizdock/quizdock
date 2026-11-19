@@ -563,6 +563,7 @@
     "show": "Pokaż",
     "fold": "Zwiń",
     "label": "Podpowiedź",
-    "penaltyApplied": "Podpowiedź: −{{penalty}} % ({{lost}} pkt mniej)"
+    "penaltyApplied": "Podpowiedź: −{{penalty}} % ({{lost}} pkt mniej)",
+    "imageAlt": "Obraz podpowiedzi"
   }
 }

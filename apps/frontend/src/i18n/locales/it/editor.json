@@ -540,7 +540,8 @@
       "textHint": "{{n}} / {{max}} caratteri",
       "afterS": "Dopo l'apertura (s)",
       "penalty": "Penalità (%)",
-      "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi."
+      "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi.",
+      "image": "Immagine (facoltativa se c'è un testo)"
     },
     "removeElement": "Rimuovi questo elemento",
     "embeddedVideo": "Un video incorporato: può solo essere rimosso.",

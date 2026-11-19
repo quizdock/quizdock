@@ -1920,6 +1920,7 @@ export class GameEngine {
     this.server.to(ref.pin).emit('question:hint', {
       questionIndex: index,
       text: hint.text,
+      ...(hint.imageUrl ? { image: { url: hint.imageUrl } } : {}),
       penaltyPct: hint.penaltyPct,
       revealedAt,
       shown: true,
@@ -1933,6 +1934,7 @@ export class GameEngine {
     return {
       questionIndex: meta.currentIndex,
       text: hint.text,
+      ...(hint.imageUrl ? { image: { url: hint.imageUrl } } : {}),
       penaltyPct: hint.penaltyPct,
       revealedAt: meta.hintRevealedAt,
       shown: !meta.hintHidden,

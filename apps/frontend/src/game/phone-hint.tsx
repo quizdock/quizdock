@@ -7,15 +7,22 @@ import { useTranslation } from 'react-i18next';
  * tiles, its text unfolding upwards over the question; folded and opened again by its
  * owner alone — the projection is the host's.
  */
-export function PhoneHint({ text }: { text: string }) {
+export function PhoneHint({ text, image }: { text: string; image?: { url: string } }) {
   const { t } = useTranslation('live');
   const [open, setOpen] = useState(true);
   return (
     <div className="border-warning bg-warning/10 flex w-full flex-col overflow-hidden rounded-[0.6em] border">
       {open ? (
-        <p role="status" className="px-[0.8em] pt-[0.6em] font-medium">
-          {text}
-        </p>
+        <div role="status" className="flex flex-col gap-[0.4em] px-[0.8em] pt-[0.6em]">
+          {image ? (
+            <img
+              src={image.url}
+              alt={text || t('hint.imageAlt')}
+              className="max-h-[25dvh] w-auto self-start rounded-[0.4em] object-contain"
+            />
+          ) : null}
+          {text ? <p className="font-medium">{text}</p> : null}
+        </div>
       ) : null}
       <button
         type="button"

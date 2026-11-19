@@ -469,8 +469,10 @@ export function slideTitle(blocks: SlideBlock[]): string {
   return '';
 }
 
-/** A stored hint as the game plays it: none when unreadable. */
-function hintOf(stored: unknown): { hint?: QuestionHint } {
+/** A stored hint as the game plays it, its picture's address resolved: none when unreadable. */
+function hintOf(stored: unknown): { hint?: QuestionHint & { imageUrl?: string } } {
   const parsed = questionHintSchema.safeParse(stored);
-  return parsed.success ? { hint: parsed.data } : {};
+  if (!parsed.success) return {};
+  const id = parsed.data.imageMediaId;
+  return { hint: { ...parsed.data, ...(id ? { imageUrl: mediaUrl(id) } : {}) } };
 }

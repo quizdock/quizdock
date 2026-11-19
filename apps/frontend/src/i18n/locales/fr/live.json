@@ -551,6 +551,7 @@
     "show": "Afficher",
     "fold": "Replier",
     "label": "Indice",
-    "penaltyApplied": "Indice : −{{penalty}} % ({{lost}} points en moins)"
+    "penaltyApplied": "Indice : −{{penalty}} % ({{lost}} points en moins)",
+    "imageAlt": "L’image de l’indice"
   }
 }

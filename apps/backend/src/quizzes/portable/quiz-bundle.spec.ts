@@ -351,6 +351,24 @@ describe('quiz bundle', () => {
     });
   });
 
+  it('carries a hint’s picture and a slide’s as files of the bundle, out and back in', () => {
+    const src = makeQuiz();
+    const HINT_IMG = '01ARZ3NDEKTSV4RRFFQ69G5FAY';
+    const SLIDE_IMG = '01ARZ3NDEKTSV4RRFFQ69G5FAZ';
+    src.questions[0].hint = { text: '', imageMediaId: HINT_IMG, afterS: 5, penaltyPct: 20 };
+    Object.assign(src.slides[0], { imageMediaId: SLIDE_IMG, mediaPosition: 'behind' });
+    expect([...collectMediaIds(src)]).toEqual(expect.arrayContaining([HINT_IMG, SLIDE_IMG]));
+    const bundle = toBundle(src, pathFor);
+    expect([...collectMediaPaths(bundle)]).toEqual(
+      expect.arrayContaining([pathFor(HINT_IMG), pathFor(SLIDE_IMG)]),
+    );
+    expect(fromBundle(bundle, idFor).questions[0].hint).toMatchObject({
+      imageMediaId: HINT_IMG,
+      afterS: 5,
+      penaltyPct: 20,
+    });
+  });
+
   it('carries a question’s hint, in version 9', () => {
     const src = makeQuiz();
     const hint = { text: 'Choisie en 1923', afterS: 10, penaltyPct: 25 };

@@ -539,6 +539,7 @@
     "show": "Show",
     "fold": "Fold",
     "label": "Hint",
-    "penaltyApplied": "Hint: −{{penalty}} % ({{lost}} points less)"
+    "penaltyApplied": "Hint: −{{penalty}} % ({{lost}} points less)",
+    "imageAlt": "The hint's picture"
   }
 }

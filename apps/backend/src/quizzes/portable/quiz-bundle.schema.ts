@@ -3,7 +3,7 @@ import {
   OPTION_ALT_MAX,
   MEDIA_POSITIONS,
   mediaStyleSchema,
-  questionHintSchema,
+  HINT_TEXT_MAX,
   WAVEFORM_SIZES,
   audioPeaksSchema,
   loudnessSchema,
@@ -218,8 +218,15 @@ export const questionBundleSchema = z.object({
   mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
   /** How its picture or video is framed and revealed (version 9); absent = as its file is. */
   mediaStyle: mediaStyleSchema.optional(),
-  /** Its hint (version 9): a text, its start after the answers open, its penalty. */
-  hint: questionHintSchema.optional(),
+  /** Its hint (version 9): a text and/or a picture, its start after the answers open, its penalty. */
+  hint: z
+    .object({
+      text: z.string().max(HINT_TEXT_MAX).default(''),
+      image: mediaPathSchema.optional(),
+      afterS: z.number().int().min(0).max(240),
+      penaltyPct: z.number().int().min(0).max(100),
+    })
+    .optional(),
   /** The timer starts when the media ends (version 3); absent = with the question. */
   timerAfterMedia: z.boolean().optional(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']).optional(),

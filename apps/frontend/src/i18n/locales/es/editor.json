@@ -539,7 +539,8 @@
       "textHint": "{{n}} / {{max}} caracteres",
       "afterS": "Tras la apertura (s)",
       "penalty": "Penalización (%)",
-      "rule": "Las respuestas dadas tras la pista pierden un {{penalty}} % de los puntos de la pregunta; la racha no se toca. El presentador puede desactivar las pistas."
+      "rule": "Las respuestas dadas tras la pista pierden un {{penalty}} % de los puntos de la pregunta; la racha no se toca. El presentador puede desactivar las pistas.",
+      "image": "Imagen (opcional si hay texto)"
     },
     "removeElement": "Quitar este elemento",
     "embeddedVideo": "Un vídeo incrustado: solo se puede quitar.",

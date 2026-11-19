@@ -551,6 +551,7 @@
     "show": "Mostrar",
     "fold": "Plegar",
     "label": "Pista",
-    "penaltyApplied": "Pista: −{{penalty}} % ({{lost}} puntos menos)"
+    "penaltyApplied": "Pista: −{{penalty}} % ({{lost}} puntos menos)",
+    "imageAlt": "La imagen de la pista"
   }
 }

@@ -41,6 +41,10 @@ export const QUIZ_MEDIA_REFS = Prisma.sql`
     CROSS JOIN LATERAL (VALUES (x.visual_media_id), (x.audio_media_id), (x.background_media_id)) v (media_id)
     WHERE v.media_id IS NOT NULL
   UNION ALL
+  -- A hint's picture (SPECIFICATIONS-HINTS), kept in the question's hint.
+  SELECT x.quiz_id, x.hint->>'imageMediaId' FROM question x
+    WHERE x.hint->>'imageMediaId' IS NOT NULL
+  UNION ALL
   SELECT x.quiz_id, o.media_id FROM answer_option o JOIN question x ON x.id = o.question_id
     WHERE o.media_id IS NOT NULL
   UNION ALL
@@ -72,7 +76,7 @@ export function shownInText(id: string): Prisma.Sql {
   const pattern = `%${id}%`;
   return Prisma.sql`(
     EXISTS (SELECT 1 FROM quiz WHERE description LIKE ${pattern})
-    OR EXISTS (SELECT 1 FROM question WHERE prompt LIKE ${pattern} OR answer_explanation LIKE ${pattern})
+    OR EXISTS (SELECT 1 FROM question WHERE prompt LIKE ${pattern} OR answer_explanation LIKE ${pattern} OR hint::text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM answer_option WHERE text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM slide WHERE blocks::text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM game_session_log WHERE quiz_snapshot::text LIKE ${pattern})

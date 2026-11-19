@@ -142,7 +142,8 @@
     },
     "true_false": {
       "two_options": "Vrai ou faux prend exactement 2 réponses."
-    }
+    },
+    "hint_empty": "Un indice a besoin d’un texte ou d’une image."
   },
   "validation": "Certains champs sont invalides.",
   "internal": "Erreur interne.",

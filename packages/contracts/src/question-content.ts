@@ -114,16 +114,23 @@ export const HINT_TEXT_MAX = 140;
 export const HINT_PENALTY_DEFAULT = 25;
 
 /**
- * A question's hint (SPECIFICATIONS-HINTS, lot 1): a text revealed to the whole room
- * `afterS` seconds after the answers open, when the host's hints are on. The answers
- * given after it lose `penaltyPct` % of the points they earn on the question; the
+ * A question's hint (SPECIFICATIONS-HINTS): a text, a picture, or both, revealed to the
+ * whole room `afterS` seconds after the answers open, when the host's hints are on. The
+ * answers given after it lose `penaltyPct` % of the points they earn on the question; the
  * streak bonus is never touched.
  */
-export const questionHintSchema = z.object({
-  text: z.string().trim().min(1).max(HINT_TEXT_MAX),
-  afterS: z.number().int().min(0).max(240),
-  penaltyPct: z.number().int().min(0).max(100),
-});
+export const questionHintSchema = z
+  .object({
+    text: z.string().trim().max(HINT_TEXT_MAX).default(''),
+    /** A picture of the library, shown with or without a text. */
+    imageMediaId: z.string().length(26).nullable().optional(),
+    afterS: z.number().int().min(0).max(240),
+    penaltyPct: z.number().int().min(0).max(100),
+  })
+  .refine((h) => h.text.length > 0 || !!h.imageMediaId, {
+    message: 'question.hint_empty',
+    path: ['text'],
+  });
 export type QuestionHint = z.infer<typeof questionHintSchema>;
 
 export const POINTS_MODES = ['standard', 'double', 'none', 'fixed'] as const;

@@ -539,6 +539,7 @@
     "show": "Göster",
     "fold": "Kapat",
     "label": "İpucu",
-    "penaltyApplied": "İpucu: −%{{penalty}} ({{lost}} puan eksik)"
+    "penaltyApplied": "İpucu: −%{{penalty}} ({{lost}} puan eksik)",
+    "imageAlt": "İpucunun resmi"
   }
 }

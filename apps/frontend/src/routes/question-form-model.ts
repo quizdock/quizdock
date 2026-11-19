@@ -237,8 +237,11 @@ export function buildPayload(v: FormValues) {
     waveformSize: v.waveformSize,
     mediaPosition: v.mediaPosition,
     mediaStyle: styleToSend(v),
-    // A hint without words is none.
-    hint: v.hint && v.hint.text.trim() ? { ...v.hint, text: v.hint.text.trim() } : null,
+    // A hint without words nor picture is none.
+    hint:
+      v.hint && (v.hint.text.trim() || v.hint.imageMediaId)
+        ? { ...v.hint, text: v.hint.text.trim(), imageMediaId: v.hint.imageMediaId ?? null }
+        : null,
     // Only with a media to wait for; the server also falls back when its length is unknown.
     timerAfterMedia: mediaHasSound(v.media) && v.timerAfterMedia,
     // 'none' is a poll's: a restored draft may still carry it after a change of type.

@@ -563,6 +563,7 @@
     "show": "Показать",
     "fold": "Свернуть",
     "label": "Подсказка",
-    "penaltyApplied": "Подсказка: −{{penalty}} % ({{lost}} очк. меньше)"
+    "penaltyApplied": "Подсказка: −{{penalty}} % ({{lost}} очк. меньше)",
+    "imageAlt": "Изображение подсказки"
   }
 }

@@ -141,7 +141,8 @@
     },
     "true_false": {
       "two_options": "True or false takes exactly 2 answers."
-    }
+    },
+    "hint_empty": "A hint needs a text or a picture."
   },
   "validation": "Some fields are invalid.",
   "internal": "Internal error.",

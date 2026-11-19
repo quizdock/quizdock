@@ -807,9 +807,13 @@
                 "type": "object",
                 "properties": {
                   "text": {
+                    "default": "",
                     "type": "string",
-                    "minLength": 1,
                     "maxLength": 140
+                  },
+                  "image": {
+                    "type": "string",
+                    "pattern": "^media\\/[A-Za-z0-9][A-Za-z0-9._-]{0,120}$"
                   },
                   "afterS": {
                     "type": "integer",
@@ -823,7 +827,6 @@
                   }
                 },
                 "required": [
-                  "text",
                   "afterS",
                   "penaltyPct"
                 ]

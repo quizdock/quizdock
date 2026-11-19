@@ -55,7 +55,7 @@ export function quizTimeline(items: QuizItem[], pace: QuizPace): QuizTimelineSte
       },
       pace,
     );
-    const hint = q.hint as { text?: string } | null | undefined;
+    const hint = q.hint as { text?: string; imageMediaId?: string | null } | null | undefined;
     return {
       id: item.id,
       kind: 'question',
@@ -70,7 +70,7 @@ export function quizTimeline(items: QuizItem[], pace: QuizPace): QuizTimelineSte
       marks: [
         ...(media.visual ? ([media.visual.kind] as const) : []),
         ...(media.audio ? (['audio'] as const) : []),
-        ...(hint?.text ? (['hint'] as const) : []),
+        ...(hint?.text || hint?.imageMediaId ? (['hint'] as const) : []),
         ...(q.type !== 'poll' && q.answerExplanation?.trim() ? (['explanation'] as const) : []),
       ],
     };

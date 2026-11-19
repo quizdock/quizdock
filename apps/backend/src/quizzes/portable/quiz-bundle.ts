@@ -126,6 +126,7 @@ export function collectMediaIds(quiz: ExportableQuiz): Set<string> {
     add(q.visualMediaId);
     add(q.audioMediaId);
     add(q.backgroundMediaId);
+    add((q.hint as { imageMediaId?: string } | null)?.imageMediaId);
     scan(q.prompt);
     scan(q.answerExplanation);
     for (const o of q.options) {
@@ -232,7 +233,11 @@ function questionOut(
   const style = mediaStyleSchema.safeParse(q.mediaStyle ?? {});
   if (style.success && Object.keys(style.data).length > 0) item.mediaStyle = style.data;
   const hint = questionHintSchema.safeParse(q.hint);
-  if (hint.success) item.hint = hint.data;
+  if (hint.success) {
+    // Its picture as a file of the bundle, as every other media.
+    const { imageMediaId, ...rest } = hint.data;
+    item.hint = { ...rest, ...(imageMediaId ? { image: pathFor(imageMediaId) } : {}) };
+  }
   if (q.timerAfterMedia) item.timerAfterMedia = true;
   if (q.numericValue !== null) item.numericValue = Number(q.numericValue);
   if (q.numericTolerance !== null) item.numericTolerance = Number(q.numericTolerance);
@@ -433,9 +438,11 @@ export function collectMediaPaths(bundle: QuizBundle): Set<string> {
       add(it.video);
       add(it.audio);
     }
+    if (it.kind === 'slide') add(it.image);
     if (it.kind === 'question') {
       add(it.media);
       add(it.audio);
+      add(it.hint?.image);
       scan(it.prompt);
       scan(it.answerExplanation);
       for (const o of it.options ?? []) {
@@ -562,7 +569,14 @@ export function fromBundle(
           waveformSize: it.waveformSize,
           mediaPosition: it.mediaPosition,
           mediaStyle: it.mediaStyle ?? null,
-          hint: it.hint ?? null,
+          hint: it.hint
+            ? {
+                text: it.hint.text,
+                afterS: it.hint.afterS,
+                penaltyPct: it.hint.penaltyPct,
+                imageMediaId: it.hint.image ? idFor(it.hint.image) : null,
+              }
+            : null,
           timerAfterMedia: it.timerAfterMedia,
           pointsMode: it.pointsMode,
           scoring: it.scoring,

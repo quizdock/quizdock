@@ -142,7 +142,8 @@
     },
     "true_false": {
       "two_options": "Verdadero o falso lleva exactamente 2 respuestas."
-    }
+    },
+    "hint_empty": "Una pista necesita un texto o una imagen."
   },
   "validation": "Algunos campos no son válidos.",
   "internal": "Error interno.",

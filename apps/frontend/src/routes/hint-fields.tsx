@@ -2,11 +2,12 @@ import { HINT_TEXT_MAX, type QuestionHint } from '@quiz-dock/contracts';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { MediaUpload } from './media-upload';
 import type { QuestionFormApi } from './question-form-model';
 
 /**
- * A question's text hint (SPECIFICATIONS-HINTS, lot 1): its words, when it comes after
- * the answers open, and the share of the question's points an answer given after it
+ * A question's hint (SPECIFICATIONS-HINTS): its words, its picture, or both; when it comes
+ * after the answers open, and the share of the question's points an answer given after it
  * loses. The room gets it at that time, when the host's hints are on.
  */
 export function HintFields({
@@ -40,6 +41,16 @@ export function HintFields({
             <p className="text-muted-foreground -mt-2 text-xs">
               {t('timeline.hint.textHint', { n: hint.text.length, max: HINT_TEXT_MAX })}
             </p>
+            {/* A picture of the library, with or without words. */}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium">{t('timeline.hint.image')}</span>
+              <MediaUpload
+                value={hint.imageMediaId ?? null}
+                onChange={(id) => set({ imageMediaId: id })}
+                kind="image"
+                label={t('media.addImage')}
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <Label>
                 {t('timeline.hint.afterS')}

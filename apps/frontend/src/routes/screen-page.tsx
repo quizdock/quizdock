@@ -656,7 +656,9 @@ export function ScreenSurface({
         : null;
     stage = (
       <div className="relative flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
-        {hint ? <HintOverlay text={hint.text} penaltyPct={hint.penaltyPct} /> : null}
+        {hint ? (
+          <HintOverlay text={hint.text} image={hint.image} penaltyPct={hint.penaltyPct} />
+        ) : null}
         {side ? (
           <div
             className={cn(

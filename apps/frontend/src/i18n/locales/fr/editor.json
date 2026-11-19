@@ -539,7 +539,8 @@
       "textHint": "{{n}} / {{max}} caractères",
       "afterS": "Après l’ouverture (s)",
       "penalty": "Pénalité (%)",
-      "rule": "Les réponses données après l’indice perdent {{penalty}} % des points de la question ; la série n’est pas touchée. L’animateur peut couper les indices."
+      "rule": "Les réponses données après l’indice perdent {{penalty}} % des points de la question ; la série n’est pas touchée. L’animateur peut couper les indices.",
+      "image": "Image (facultative s’il y a un texte)"
     },
     "removeElement": "Retirer cet élément",
     "embeddedVideo": "Une vidéo intégrée : elle peut seulement être retirée.",

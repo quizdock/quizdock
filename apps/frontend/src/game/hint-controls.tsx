@@ -64,6 +64,9 @@ export function HintControls({
       ) : null}
       {out ? (
         <div className="flex flex-wrap items-center gap-3">
+          {out.image ? (
+            <img src={out.image.url} alt="" className="h-12 w-auto rounded object-contain" />
+          ) : null}
           <p className="min-w-0 flex-1 font-medium">{out.text}</p>
           <label className="text-muted-foreground flex items-center gap-2 text-xs">
             <Switch

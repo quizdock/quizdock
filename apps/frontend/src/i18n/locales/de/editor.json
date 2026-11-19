@@ -535,7 +535,8 @@
       "textHint": "{{n}} / {{max}} Zeichen",
       "afterS": "Nach dem Öffnen (s)",
       "penalty": "Abzug (%)",
-      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten."
+      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten.",
+      "image": "Bild (optional, wenn es einen Text gibt)"
     },
     "removeElement": "Dieses Element entfernen",
     "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden.",

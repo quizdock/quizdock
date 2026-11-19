@@ -157,7 +157,10 @@ export interface PlayerPeek {
 /** A revealed hint (`question:hint`). */
 export interface QuestionHintPayload {
   questionIndex: number;
+  /** Its words; empty when the hint is a picture alone. */
   text: string;
+  /** Its picture, when it has one. */
+  image?: { url: string };
   penaltyPct: number;
   /** When it was revealed (server ms epoch): the answers after it lose `penaltyPct` %. */
   revealedAt: number;

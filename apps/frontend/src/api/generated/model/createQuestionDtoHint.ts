@@ -10,11 +10,14 @@
  * @nullable
  */
 export type CreateQuestionDtoHint = {
+  /** @maxLength 140 */
+  text?: string;
   /**
-     * @minLength 1
-     * @maxLength 140
+     * @minLength 26
+     * @maxLength 26
+     * @nullable
      */
-  text: string;
+  imageMediaId?: string | null;
   /**
      * @minimum 0
      * @maximum 240

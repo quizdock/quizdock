@@ -539,6 +539,7 @@
     "show": "दिखाएँ",
     "fold": "समेटें",
     "label": "संकेत",
-    "penaltyApplied": "संकेत: −{{penalty}} % ({{lost}} अंक कम)"
+    "penaltyApplied": "संकेत: −{{penalty}} % ({{lost}} अंक कम)",
+    "imageAlt": "संकेत की इमेज"
   }
 }

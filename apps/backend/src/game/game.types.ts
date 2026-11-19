@@ -54,7 +54,7 @@ export interface SnapshotQuestion {
   revealDelayS: number | null;
   /** Listen first: the answers open when the media ends (frozen with the substance). */
   /** Its hint (SPECIFICATIONS-HINTS); absent = none. Its text never leaves before it is revealed. */
-  hint?: QuestionHint;
+  hint?: QuestionHint & { imageUrl?: string };
   timerAfterMedia?: boolean;
   /** Which devices play its sound; null (or absent, older snapshots) = the game's default. */
   audioTarget?: AudioTarget | null;

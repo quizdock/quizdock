@@ -4902,9 +4902,15 @@
                   "type": "object",
                   "properties": {
                     "text": {
+                      "default": "",
                       "type": "string",
-                      "minLength": 1,
                       "maxLength": 140
+                    },
+                    "imageMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
                     },
                     "afterS": {
                       "type": "integer",
@@ -4918,7 +4924,6 @@
                     }
                   },
                   "required": [
-                    "text",
                     "afterS",
                     "penaltyPct"
                   ],
@@ -9553,9 +9558,15 @@
                   "type": "object",
                   "properties": {
                     "text": {
+                      "default": "",
                       "type": "string",
-                      "minLength": 1,
                       "maxLength": 140
+                    },
+                    "imageMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
                     },
                     "afterS": {
                       "type": "integer",
@@ -9569,7 +9580,6 @@
                     }
                   },
                   "required": [
-                    "text",
                     "afterS",
                     "penaltyPct"
                   ],
@@ -10839,9 +10849,15 @@
                   "type": "object",
                   "properties": {
                     "text": {
+                      "default": "",
                       "type": "string",
-                      "minLength": 1,
                       "maxLength": 140
+                    },
+                    "imageMediaId": {
+                      "type": "string",
+                      "minLength": 26,
+                      "maxLength": 26,
+                      "nullable": true
                     },
                     "afterS": {
                       "type": "integer",
@@ -10855,7 +10871,6 @@
                     }
                   },
                   "required": [
-                    "text",
                     "afterS",
                     "penaltyPct"
                   ],
@@ -11958,9 +11973,15 @@
             "type": "object",
             "properties": {
               "text": {
+                "default": "",
                 "type": "string",
-                "minLength": 1,
                 "maxLength": 140
+              },
+              "imageMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
               },
               "afterS": {
                 "type": "integer",
@@ -11974,7 +11995,6 @@
               }
             },
             "required": [
-              "text",
               "afterS",
               "penaltyPct"
             ],
@@ -12483,9 +12503,15 @@
             "type": "object",
             "properties": {
               "text": {
+                "default": "",
                 "type": "string",
-                "minLength": 1,
                 "maxLength": 140
+              },
+              "imageMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
               },
               "afterS": {
                 "type": "integer",
@@ -12499,7 +12525,6 @@
               }
             },
             "required": [
-              "text",
               "afterS",
               "penaltyPct"
             ],
@@ -13011,9 +13036,15 @@
             "type": "object",
             "properties": {
               "text": {
+                "default": "",
                 "type": "string",
-                "minLength": 1,
                 "maxLength": 140
+              },
+              "imageMediaId": {
+                "type": "string",
+                "minLength": 26,
+                "maxLength": 26,
+                "nullable": true
               },
               "afterS": {
                 "type": "integer",
@@ -13027,7 +13058,6 @@
               }
             },
             "required": [
-              "text",
               "afterS",
               "penaltyPct"
             ],

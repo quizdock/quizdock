@@ -70,6 +70,8 @@ export class QuestionsService {
       dto.options.map((o) => o.mediaId),
     );
     await assertAssets(this.prisma, ownerId, expectImage(dto.backgroundMediaId));
+    // Its hint's picture, the author's (SPECIFICATIONS-HINTS).
+    await assertAssets(this.prisma, ownerId, expectImage(dto.hint?.imageMediaId));
     const [{ id }] = await this.prisma.$transaction([
       this.prisma.question.create({
         data: { quizId, ...questionCreateData(dto, orderIndex, media) },
@@ -106,6 +108,9 @@ export class QuestionsService {
     );
     await assertAssets(this.prisma, ownerId, expectImage(dto.backgroundMediaId), [
       current.backgroundMediaId,
+    ]);
+    await assertAssets(this.prisma, ownerId, expectImage(dto.hint?.imageMediaId), [
+      (current.hint as { imageMediaId?: string } | null)?.imageMediaId ?? null,
     ]);
     const data = questionData(dto);
     const options = optionsData(dto);
@@ -210,6 +215,7 @@ export class QuestionsService {
         visualMediaId: true,
         audioMediaId: true,
         backgroundMediaId: true,
+        hint: true,
         options: { select: { mediaId: true } },
       },
     });
