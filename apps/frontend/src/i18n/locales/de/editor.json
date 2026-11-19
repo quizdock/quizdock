@@ -482,6 +482,31 @@
       "ratioFree": "Frei",
       "ratioFreeLabel": "Seitenverhältnis (B:H)",
       "ratioInvalid": "Ein Seitenverhältnis lautet B:H, ganze Zahlen, zwischen 1:4 und 4:1."
+    },
+    "view": {
+      "label": "Ansicht",
+      "timeline": "Zeitleiste",
+      "list": "Liste"
+    },
+    "list": {
+      "caption": "Elemente: {{n}} · insgesamt {{total}} s",
+      "element": "Element",
+      "channels": "Kanäle",
+      "start": "Beginn",
+      "length": "Dauer",
+      "note": "Was es tut",
+      "open": "Öffnen",
+      "settings": "Einstellen",
+      "openNamed": "Öffnen: {{name}}",
+      "settingsNamed": "Einstellen: {{name}}",
+      "flow": "Ablauf",
+      "untilEnd": "bis zum Ende ({{seconds}} s)",
+      "stretches": "verlängert die Frage um {{seconds}} s",
+      "channel": {
+        "time": "Zeit",
+        "visual": "Bild",
+        "audio": "Ton"
+      }
     }
   },
   "preview": {

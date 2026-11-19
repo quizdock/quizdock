@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n';
@@ -38,14 +39,16 @@ const base: SlideMediaValue = {
 
 const open = (value: SlideMediaValue, onChange = vi.fn()) => {
   render(
-    <SlideTimelineSection
-      value={value}
-      onChange={onChange}
-      peaks={null}
-      onPeaks={vi.fn()}
-      defaultS={5}
-      mediaTailS={1}
-    />,
+    <QueryClientProvider client={new QueryClient()}>
+      <SlideTimelineSection
+        value={value}
+        onChange={onChange}
+        peaks={null}
+        onPeaks={vi.fn()}
+        defaultS={5}
+        mediaTailS={1}
+      />
+    </QueryClientProvider>,
   );
   return onChange;
 };

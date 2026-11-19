@@ -490,6 +490,31 @@
       "ratioFree": "Своё",
       "ratioFreeLabel": "Соотношение (Ш:В)",
       "ratioInvalid": "Соотношение пишется Ш:В целыми числами, от 1:4 до 4:1."
+    },
+    "view": {
+      "label": "Вид",
+      "timeline": "Шкала времени",
+      "list": "Список"
+    },
+    "list": {
+      "caption": "Элементов: {{n}} · всего {{total}} с",
+      "element": "Элемент",
+      "channels": "Каналы",
+      "start": "Начало",
+      "length": "Длительность",
+      "note": "Что делает",
+      "open": "Открыть",
+      "settings": "Настроить",
+      "openNamed": "Открыть: {{name}}",
+      "settingsNamed": "Настроить: {{name}}",
+      "flow": "Ход",
+      "untilEnd": "до конца ({{seconds}} с)",
+      "stretches": "удлиняет вопрос на {{seconds}} с",
+      "channel": {
+        "time": "Время",
+        "visual": "Изображение",
+        "audio": "Звук"
+      }
     }
   },
   "preview": {

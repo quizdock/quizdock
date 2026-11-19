@@ -9,6 +9,13 @@ export const PARTICIPANT_ACCESS = ['account', 'open'] as const;
 export type ParticipantAccess = (typeof PARTICIPANT_ACCESS)[number];
 
 /**
+ * How the builder shows a step's media (SPECIFICATIONS-QUESTION-TIMELINE §4): on its
+ * timeline, or as a list of its elements, the accessible view.
+ */
+export const STEP_VIEWS = ['timeline', 'list'] as const;
+export type StepView = (typeof STEP_VIEWS)[number];
+
+/**
  * What an account remembers wherever it signs in (`user.preferences`). Only the
  * choices that follow the person live here; the layout of one screen (a folded
  * sidebar, a grid view) stays in that browser. Every key is optional: absent
@@ -25,6 +32,8 @@ export const userPreferencesSchema = z.object({
    * the instance's. Kept in `user.locale`, not with the other keys.
    */
   language: z.string().regex(LANGUAGE_RE).max(10).optional(),
+  /** How the builder shows a step's media; absent = the timeline. */
+  stepView: z.enum(STEP_VIEWS).optional(),
 });
 export type UserPreferences = z.infer<typeof userPreferencesSchema>;
 

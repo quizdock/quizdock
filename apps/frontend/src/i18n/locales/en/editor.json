@@ -482,6 +482,31 @@
       "ratioFree": "Free",
       "ratioFreeLabel": "Ratio (W:H)",
       "ratioInvalid": "A ratio reads W:H, whole numbers, between 1:4 and 4:1."
+    },
+    "view": {
+      "label": "View",
+      "timeline": "Timeline",
+      "list": "List"
+    },
+    "list": {
+      "caption": "Elements: {{n}} · total {{total}} s",
+      "element": "Element",
+      "channels": "Channels",
+      "start": "Start",
+      "length": "Length",
+      "note": "What it does",
+      "open": "Open",
+      "settings": "Set",
+      "openNamed": "Open: {{name}}",
+      "settingsNamed": "Set: {{name}}",
+      "flow": "Flow",
+      "untilEnd": "to the end ({{seconds}} s)",
+      "stretches": "stretches the question by {{seconds}} s",
+      "channel": {
+        "time": "Time",
+        "visual": "Visual",
+        "audio": "Audio"
+      }
     }
   },
   "preview": {

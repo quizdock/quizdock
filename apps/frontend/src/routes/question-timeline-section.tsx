@@ -30,6 +30,7 @@ import {
   LayoutModal,
 } from './step-timeline-editing';
 import { questionTimeline } from './step-timeline-model';
+import { useStepView } from './use-step-view';
 
 /**
  * The question's timeline, where its media are added and its flow set
@@ -54,6 +55,7 @@ export function QuestionTimelineSection({
   const listenFirst = useStore(form.store, (s) => s.values.timerAfterMedia);
   const [selected, setSelected] = useState<TimelineSelection | null>(null);
   const [adding, setAdding] = useState(false);
+  const [view, setView] = useStepView();
   const [layingOut, setLayingOut] = useState(false);
   const mediaPosition = useStore(form.store, (s) => s.values.mediaPosition);
   const mediaStyle = useStore(form.store, (s) => s.values.mediaStyle);
@@ -145,6 +147,7 @@ export function QuestionTimelineSection({
           // The reveal is the picture's: its panel holds it.
           onSelect: (s) => setSelected(s === 'reveal' ? 'image' : s),
           onAdd: () => setAdding(true),
+          view: { value: view, onChange: setView },
           onClear: visual || audio ? clear : null,
           layout: {
             open: () => setLayingOut(true),

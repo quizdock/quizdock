@@ -486,6 +486,31 @@
       "ratioFree": "Libre",
       "ratioFreeLabel": "Proporción (An:Al)",
       "ratioInvalid": "Una proporción se escribe An:Al, con números enteros, entre 1:4 y 4:1."
+    },
+    "view": {
+      "label": "Vista",
+      "timeline": "Línea de tiempo",
+      "list": "Lista"
+    },
+    "list": {
+      "caption": "Elementos: {{n}} · total {{total}} s",
+      "element": "Elemento",
+      "channels": "Canales",
+      "start": "Inicio",
+      "length": "Duración",
+      "note": "Qué hace",
+      "open": "Abrir",
+      "settings": "Ajustar",
+      "openNamed": "Abrir: {{name}}",
+      "settingsNamed": "Ajustar: {{name}}",
+      "flow": "Desarrollo",
+      "untilEnd": "hasta el final ({{seconds}} s)",
+      "stretches": "alarga la pregunta {{seconds}} s",
+      "channel": {
+        "time": "Tiempo",
+        "visual": "Visual",
+        "audio": "Audio"
+      }
     }
   },
   "preview": {

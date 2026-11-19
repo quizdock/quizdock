@@ -532,6 +532,28 @@ describe('QuestionForm — the timeline', () => {
     expect(modal.getByRole('button', { name: /^Image/ })).toBeEnabled();
   });
 
+  it('the list view: the flow and each element in words, the same panel, the choice kept', async () => {
+    withSound();
+    const fetchMock = mockApi([
+      { method: 'GET', path: '/me/preferences', body: {} },
+      { method: 'PATCH', path: '/me/preferences', body: { stepView: 'list' } },
+    ]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Liste' }));
+    const table = within(screen.getByRole('table'));
+    expect(table.getByText('Éléments : 1 · total 43 s')).toBeInTheDocument();
+    expect(table.getByText(/Son, 42 s · allonge la question de 19 s/)).toBeInTheDocument();
+    fireEvent.click(table.getByRole('button', { name: 'Ouvrir : Audio' }));
+    expect(screen.getByRole('region', { name: 'Audio' })).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        fetchMock.mock.calls.some(
+          ([url, o]) => String(url).includes('/me/preferences') && o?.method === 'PATCH',
+        ),
+      ).toBe(true),
+    );
+  });
+
   it('the layouts wait for a picture or a video, and say so', () => {
     withSound();
     mockApi([]);

@@ -16,6 +16,7 @@ import { DisplayTimeFields } from './slide-display-time';
 import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
 import { type AddChoice, AddElementModal, ElementPanel } from './step-timeline-editing';
 import { slideTimeline } from './step-timeline-model';
+import { useStepView } from './use-step-view';
 
 export interface SlideMediaValue {
   videoMediaId: string | null;
@@ -53,6 +54,7 @@ export function SlideTimelineSection({
   const { t } = useTranslation('editor');
   const [selected, setSelected] = useState<TimelineSelection | null>(null);
   const [adding, setAdding] = useState(false);
+  const [view, setView] = useStepView();
   const { videoMediaId, videoSound, audioMediaId } = value;
   const videoTakesSound = !!videoMediaId && videoSound;
   const videoMs = useAssetDurationMs(videoMediaId);
@@ -87,6 +89,7 @@ export function SlideTimelineSection({
           selected,
           onSelect: setSelected,
           onAdd: () => setAdding(true),
+          view: { value: view, onChange: setView },
           onClear:
             videoMediaId || audioMediaId
               ? () => {

@@ -487,6 +487,31 @@
       "ratioFree": "Libere",
       "ratioFreeLabel": "Proporzioni (L:A)",
       "ratioInvalid": "Le proporzioni si scrivono L:A, numeri interi, tra 1:4 e 4:1."
+    },
+    "view": {
+      "label": "Vista",
+      "timeline": "Timeline",
+      "list": "Elenco"
+    },
+    "list": {
+      "caption": "Elementi: {{n}} · totale {{total}} s",
+      "element": "Elemento",
+      "channels": "Canali",
+      "start": "Inizio",
+      "length": "Durata",
+      "note": "Cosa fa",
+      "open": "Apri",
+      "settings": "Imposta",
+      "openNamed": "Apri: {{name}}",
+      "settingsNamed": "Imposta: {{name}}",
+      "flow": "Svolgimento",
+      "untilEnd": "fino alla fine ({{seconds}} s)",
+      "stretches": "allunga la domanda di {{seconds}} s",
+      "channel": {
+        "time": "Tempo",
+        "visual": "Visivo",
+        "audio": "Audio"
+      }
     }
   },
   "preview": {

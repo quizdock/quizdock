@@ -486,6 +486,31 @@
       "ratioFree": "Libre",
       "ratioFreeLabel": "Ratio (L:H)",
       "ratioInvalid": "Un ratio s’écrit L:H, en nombres entiers, entre 1:4 et 4:1."
+    },
+    "view": {
+      "label": "Vue",
+      "timeline": "Timeline",
+      "list": "Liste"
+    },
+    "list": {
+      "caption": "Éléments : {{n}} · total {{total}} s",
+      "element": "Élément",
+      "channels": "Canaux",
+      "start": "Début",
+      "length": "Durée",
+      "note": "Ce qu’il fait",
+      "open": "Ouvrir",
+      "settings": "Régler",
+      "openNamed": "Ouvrir : {{name}}",
+      "settingsNamed": "Régler : {{name}}",
+      "flow": "Déroulé",
+      "untilEnd": "jusqu’à la fin ({{seconds}} s)",
+      "stretches": "allonge la question de {{seconds}} s",
+      "channel": {
+        "time": "Temps",
+        "visual": "Visuel",
+        "audio": "Audio"
+      }
     }
   },
   "preview": {

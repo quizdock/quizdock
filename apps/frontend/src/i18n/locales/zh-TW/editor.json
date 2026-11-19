@@ -482,6 +482,31 @@
       "ratioFree": "自訂",
       "ratioFreeLabel": "比例（寬:高）",
       "ratioInvalid": "比例寫作 寬:高，使用整數，範圍 1:4 到 4:1。"
+    },
+    "view": {
+      "label": "檢視",
+      "timeline": "時間軸",
+      "list": "清單"
+    },
+    "list": {
+      "caption": "元素：{{n}} · 共 {{total}} 秒",
+      "element": "元素",
+      "channels": "通道",
+      "start": "開始",
+      "length": "長度",
+      "note": "作用",
+      "open": "開啟",
+      "settings": "設定",
+      "openNamed": "開啟：{{name}}",
+      "settingsNamed": "設定：{{name}}",
+      "flow": "流程",
+      "untilEnd": "直到結束（{{seconds}} 秒）",
+      "stretches": "使題目延長 {{seconds}} 秒",
+      "channel": {
+        "time": "時間",
+        "visual": "視覺",
+        "audio": "音訊"
+      }
     }
   },
   "preview": {

@@ -480,6 +480,31 @@
       "ratioFree": "Serbest",
       "ratioFreeLabel": "Oran (G:Y)",
       "ratioInvalid": "Oran G:Y biçiminde, tam sayılarla, 1:4 ile 4:1 arasında yazılır."
+    },
+    "view": {
+      "label": "Görünüm",
+      "timeline": "Zaman çizelgesi",
+      "list": "Liste"
+    },
+    "list": {
+      "caption": "Öğe: {{n}} · toplam {{total}} sn",
+      "element": "Öğe",
+      "channels": "Kanallar",
+      "start": "Başlangıç",
+      "length": "Süre",
+      "note": "Ne yapar",
+      "open": "Aç",
+      "settings": "Ayarla",
+      "openNamed": "Aç: {{name}}",
+      "settingsNamed": "Ayarla: {{name}}",
+      "flow": "Akış",
+      "untilEnd": "sona kadar ({{seconds}} sn)",
+      "stretches": "soruyu {{seconds}} sn uzatır",
+      "channel": {
+        "time": "Zaman",
+        "visual": "Görsel",
+        "audio": "Ses"
+      }
     }
   },
   "preview": {

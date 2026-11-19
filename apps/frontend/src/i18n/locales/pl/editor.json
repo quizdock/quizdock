@@ -490,6 +490,31 @@
       "ratioFree": "Dowolne",
       "ratioFreeLabel": "Proporcje (S:W)",
       "ratioInvalid": "Proporcje zapisuje się S:W, liczbami całkowitymi, od 1:4 do 4:1."
+    },
+    "view": {
+      "label": "Widok",
+      "timeline": "Oś czasu",
+      "list": "Lista"
+    },
+    "list": {
+      "caption": "Elementy: {{n}} · razem {{total}} s",
+      "element": "Element",
+      "channels": "Kanały",
+      "start": "Początek",
+      "length": "Czas trwania",
+      "note": "Co robi",
+      "open": "Otwórz",
+      "settings": "Ustaw",
+      "openNamed": "Otwórz: {{name}}",
+      "settingsNamed": "Ustaw: {{name}}",
+      "flow": "Przebieg",
+      "untilEnd": "do końca ({{seconds}} s)",
+      "stretches": "wydłuża pytanie o {{seconds}} s",
+      "channel": {
+        "time": "Czas",
+        "visual": "Obraz",
+        "audio": "Dźwięk"
+      }
     }
   },
   "preview": {

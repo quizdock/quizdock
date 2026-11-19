@@ -2,8 +2,10 @@ import {
   Clock,
   Eraser,
   Eye,
+  GanttChart,
   Image as ImageIcon,
   LayoutTemplate,
+  List,
   Music,
   Plus,
   Sparkles,
@@ -11,10 +13,12 @@ import {
   Volume2,
 } from 'lucide-react';
 import { type CSSProperties, type ReactNode, useEffect, useState } from 'react';
+import { type TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import type { StepView } from '@quiz-dock/contracts';
 import { mediaControllerDescribe } from '../api/generated/media/media';
 import type { StepTimeline as Model, TimelineElement, TimelinePhase } from './step-timeline-model';
 
@@ -40,6 +44,8 @@ export interface TimelineEditing {
   onClear: (() => void) | null;
   /** The ready-made layouts; `refused` says why they do not apply yet. */
   layout?: { open: () => void; refused: string | null };
+  /** Timeline or list, the account's choice: the same elements, the same panel. */
+  view?: { value: StepView; onChange: (view: StepView) => void };
 }
 
 /**
@@ -85,6 +91,32 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
         <Chip tip={t('timeline.total', { seconds: round(T) })}>{round(T)} s</Chip>
         {edit ? (
           <span className="ml-auto flex items-center gap-0.5">
+            {edit.view ? (
+              <span
+                role="group"
+                aria-label={t('timeline.view.label')}
+                className="mr-1 inline-flex gap-0.5 rounded-md border p-0.5"
+              >
+                {(['timeline', 'list'] as const).map((v) => {
+                  const ViewIcon = v === 'timeline' ? GanttChart : List;
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      aria-pressed={edit.view!.value === v}
+                      onClick={() => edit.view!.onChange(v)}
+                      className={cn(
+                        'text-muted-foreground hover:text-foreground focus-visible:ring-ring flex items-center gap-1 rounded px-1.5 py-0.5 focus-visible:ring-2 focus-visible:outline-none [&_svg]:size-3.5',
+                        edit.view!.value === v && 'bg-accent text-foreground',
+                      )}
+                    >
+                      <ViewIcon aria-hidden />
+                      {t(`timeline.view.${v}`)}
+                    </button>
+                  );
+                })}
+              </span>
+            ) : null}
             {edit.layout ? (
               <Tool
                 icon={<LayoutTemplate />}
@@ -105,65 +137,69 @@ export function StepTimeline({ model, edit }: { model: Model; edit?: TimelineEdi
         ) : null}
       </div>
 
-      <div className="grid grid-cols-[22px_1fr] gap-x-1 select-none">
-        <span />
-        <div className="relative h-3.5">
-          {ticks.map((s, i) => (
-            <span
-              key={s}
-              className={cn(
-                'text-muted-foreground absolute top-0 text-[10px] whitespace-nowrap',
-                i === 0 ? '' : i === ticks.length - 1 ? '-translate-x-full' : '-translate-x-1/2',
-              )}
-              style={{ left: pct(s) }}
-            >
-              {i === ticks.length - 1 ? `${round(s)} s` : s}
-            </span>
-          ))}
-        </div>
-
-        <Row color="var(--timeline-time)" icon={<Clock />} tip={t('timeline.timeRow')}>
-          {/* The mouse's way to the step's settings; the keyboard's is the duration chip. */}
-          <div
-            className={cn(
-              'relative overflow-hidden',
-              edit && 'cursor-pointer',
-              edit?.selected === 'time' && 'ring-ring rounded-sm ring-2',
-            )}
-            style={{ height: ROW.time }}
-            onClick={edit ? () => edit.onSelect('time') : undefined}
-          >
-            {model.phases.map((p) => (
-              <Phase key={p.kind + p.from} phase={p} pct={pct} />
+      {edit?.view?.value === 'list' ? (
+        <StepList model={model} edit={edit} />
+      ) : (
+        <div className="grid grid-cols-[22px_1fr] gap-x-1 select-none">
+          <span />
+          <div className="relative h-3.5">
+            {ticks.map((s, i) => (
+              <span
+                key={s}
+                className={cn(
+                  'text-muted-foreground absolute top-0 text-[10px] whitespace-nowrap',
+                  i === 0 ? '' : i === ticks.length - 1 ? '-translate-x-full' : '-translate-x-1/2',
+                )}
+                style={{ left: pct(s) }}
+              >
+                {i === ticks.length - 1 ? `${round(s)} s` : s}
+              </span>
             ))}
           </div>
-        </Row>
-        <div className="col-span-2" style={{ height: ROW.gap }} />
-        <Row color={VISUAL} icon={<Eye />} tip={t('timeline.visualRow')}>
-          <div style={{ height: ROW.channel }} />
-        </Row>
-        <div className="col-span-2" style={{ height: ROW.gap }} />
-        <Row color={AUDIO} icon={<Volume2 />} tip={t('timeline.audioRow')}>
-          <div className="relative" style={{ height: ROW.channel }}>
-            {/* The elements, laid over both channel rows from here. */}
+
+          <Row color="var(--timeline-time)" icon={<Clock />} tip={t('timeline.timeRow')}>
+            {/* The mouse's way to the step's settings; the keyboard's is the duration chip. */}
             <div
-              className="absolute inset-x-0"
-              style={{ bottom: 0, height: ROW.channel * 2 + ROW.gap }}
+              className={cn(
+                'relative overflow-hidden',
+                edit && 'cursor-pointer',
+                edit?.selected === 'time' && 'ring-ring rounded-sm ring-2',
+              )}
+              style={{ height: ROW.time }}
+              onClick={edit ? () => edit.onSelect('time') : undefined}
             >
-              {model.elements.map((e, i) => (
-                <Element
-                  key={e.kind + i}
-                  element={e}
-                  pct={pct}
-                  z={i + 1}
-                  selected={edit?.selected === e.kind}
-                  onSelect={edit ? () => edit.onSelect(e.kind) : undefined}
-                />
+              {model.phases.map((p) => (
+                <Phase key={p.kind + p.from} phase={p} pct={pct} />
               ))}
             </div>
-          </div>
-        </Row>
-      </div>
+          </Row>
+          <div className="col-span-2" style={{ height: ROW.gap }} />
+          <Row color={VISUAL} icon={<Eye />} tip={t('timeline.visualRow')}>
+            <div style={{ height: ROW.channel }} />
+          </Row>
+          <div className="col-span-2" style={{ height: ROW.gap }} />
+          <Row color={AUDIO} icon={<Volume2 />} tip={t('timeline.audioRow')}>
+            <div className="relative" style={{ height: ROW.channel }}>
+              {/* The elements, laid over both channel rows from here. */}
+              <div
+                className="absolute inset-x-0"
+                style={{ bottom: 0, height: ROW.channel * 2 + ROW.gap }}
+              >
+                {model.elements.map((e, i) => (
+                  <Element
+                    key={e.kind + i}
+                    element={e}
+                    pct={pct}
+                    z={i + 1}
+                    selected={edit?.selected === e.kind}
+                    onSelect={edit ? () => edit.onSelect(e.kind) : undefined}
+                  />
+                ))}
+              </div>
+            </div>
+          </Row>
+        </div>
+      )}
       {edit?.onClear ? (
         <ConfirmDialog
           open={confirmClear}
@@ -348,31 +384,7 @@ function Element({
         ? `linear-gradient(${fill(VISUAL)} 0 ${split}px, ${fill(AUDIO)} ${split}px)`
         : fill(visual ? VISUAL : AUDIO);
   const border = visual ? VISUAL : AUDIO;
-  const seconds = e.lengthS === null ? null : round(e.lengthS);
-  const tip =
-    e.kind === 'image'
-      ? t('timeline.element.image')
-      : e.kind === 'reveal'
-        ? t('timeline.element.reveal', { seconds })
-        : e.kind === 'video'
-          ? e.loop
-            ? t('timeline.element.videoLoop')
-            : seconds === null
-              ? t('timeline.element.unknown')
-              : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
-          : seconds === null
-            ? t('timeline.element.unknown')
-            : t('timeline.element.audio', { seconds });
-  const Icon =
-    e.kind === 'video'
-      ? Video
-      : e.kind === 'audio'
-        ? Music
-        : e.kind === 'reveal'
-          ? Sparkles
-          : ImageIcon;
-  const label =
-    e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
+  const { tip, label, Icon } = elementText(e, t);
   const style: CSSProperties = {
     left: pct(e.from),
     width: pct(end - e.from),
@@ -467,4 +479,174 @@ export function useAssetDurationMs(id: string | null): number | null {
     };
   }, [id]);
   return id && known?.id === id ? known.ms : null;
+}
+
+/** What an element is called, in its tooltip and on its shape, and its icon: one wording for both views. */
+function elementText(e: TimelineElement, t: TFunction<'editor'>) {
+  const audio = e.audioTo !== null;
+  const seconds = e.lengthS === null ? null : round(e.lengthS);
+  const tip =
+    e.kind === 'image'
+      ? t('timeline.element.image')
+      : e.kind === 'reveal'
+        ? t('timeline.element.reveal', { seconds })
+        : e.kind === 'video'
+          ? e.loop
+            ? t('timeline.element.videoLoop')
+            : seconds === null
+              ? t('timeline.element.unknown')
+              : t(audio ? 'timeline.element.video' : 'timeline.element.videoMuted', { seconds })
+          : seconds === null
+            ? t('timeline.element.unknown')
+            : t('timeline.element.audio', { seconds });
+  const Icon =
+    e.kind === 'video'
+      ? Video
+      : e.kind === 'audio'
+        ? Music
+        : e.kind === 'reveal'
+          ? Sparkles
+          : ImageIcon;
+  const label =
+    e.kind === 'audio' ? (seconds === null ? '' : `${seconds} s`) : t(`timeline.label.${e.kind}`);
+  return { tip, label, Icon, seconds };
+}
+
+/**
+ * The accessible view of the same step (SPECIFICATIONS-QUESTION-TIMELINE §4): its flow,
+ * then one row per element — channels, start, length, what it does, in words. Each row
+ * opens the same panel as on the timeline: its button for the keyboard, the row for the mouse.
+ */
+function StepList({ model, edit }: { model: Model; edit: TimelineEditing }) {
+  const { t } = useTranslation('editor');
+  const stretch = model.phases.find((p) => p.kind === 'stretch');
+  const end = (e: TimelineElement) => Math.max(e.visualTo ?? 0, e.audioTo ?? 0);
+  const rows: {
+    key: TimelineSelection;
+    Icon: typeof Clock;
+    color: string;
+    name: string;
+    channels: ('time' | 'visual' | 'audio')[];
+    from: number;
+    length: string;
+    note: string;
+  }[] = [
+    {
+      key: 'time',
+      Icon: Clock,
+      color: 'var(--timeline-time)',
+      name: t('timeline.list.flow'),
+      channels: ['time'],
+      from: 0,
+      length: `${round(model.totalS)} s`,
+      note: model.phases
+        .map((p) => t(`timeline.phase.${p.kind}`, { seconds: round(p.to - p.from) }))
+        .join(' · '),
+    },
+    ...model.elements.map((e) => {
+      const { tip, Icon, seconds } = elementText(e, t);
+      const stretches =
+        stretch && e.kind !== 'image' && e.kind !== 'reveal' && end(e) >= stretch.to - 0.01;
+      return {
+        // The reveal is the picture's: its row opens the picture's panel.
+        key: e.kind,
+        Icon,
+        color: e.visualTo !== null ? VISUAL : AUDIO,
+        name: t(`timeline.choice.${e.kind}`),
+        channels: [
+          ...(e.visualTo !== null ? (['visual'] as const) : []),
+          ...(e.audioTo !== null ? (['audio'] as const) : []),
+        ],
+        from: e.from,
+        length:
+          seconds === null
+            ? t('timeline.list.untilEnd', { seconds: round(end(e)) })
+            : `${seconds} s`,
+        note: stretches
+          ? `${tip} · ${t('timeline.list.stretches', { seconds: round(stretch.to - stretch.from) })}`
+          : tip,
+      };
+    }),
+  ];
+  const CHANNEL = {
+    time: 'var(--timeline-time)',
+    visual: VISUAL,
+    audio: AUDIO,
+  } as const;
+  return (
+    <table className="w-full border-collapse text-sm tabular-nums">
+      <caption className="text-muted-foreground pb-1 text-left text-xs">
+        {t('timeline.list.caption', { n: model.elements.length, total: round(model.totalS) })}
+      </caption>
+      <thead>
+        <tr className="text-muted-foreground border-b text-left text-xs">
+          <th className="px-2 py-1 font-medium">{t('timeline.list.element')}</th>
+          <th className="px-2 py-1 font-medium">{t('timeline.list.channels')}</th>
+          <th className="px-2 py-1 font-medium">{t('timeline.list.start')}</th>
+          <th className="px-2 py-1 font-medium">{t('timeline.list.length')}</th>
+          <th className="px-2 py-1 font-medium">{t('timeline.list.note')}</th>
+          <th className="px-2 py-1">
+            <span className="sr-only">{t('timeline.list.open')}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => {
+          const opens = r.key === 'reveal' ? 'image' : r.key;
+          const selected = edit.selected === opens;
+          return (
+            <tr
+              key={r.key}
+              onClick={() => edit.onSelect(r.key)}
+              className={cn(
+                'hover:bg-accent cursor-pointer border-b',
+                selected && 'bg-primary/10 hover:bg-primary/10',
+              )}
+            >
+              <td className="px-2 py-1.5">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <r.Icon className="size-3.5 shrink-0" style={{ color: r.color }} aria-hidden />
+                  {r.name}
+                </span>
+              </td>
+              <td className="px-2 py-1.5">
+                <span className="flex gap-2">
+                  {r.channels.map((c) => (
+                    <span key={c} className="flex items-center gap-1 text-xs">
+                      <span
+                        className="size-2 rounded-[2px]"
+                        style={{ background: CHANNEL[c] }}
+                        aria-hidden
+                      />
+                      {t(`timeline.list.channel.${c}`)}
+                    </span>
+                  ))}
+                </span>
+              </td>
+              <td className="px-2 py-1.5">{round(r.from)} s</td>
+              <td className="px-2 py-1.5">{r.length}</td>
+              <td className="px-2 py-1.5">{r.note}</td>
+              <td className="px-2 py-1.5 text-right">
+                <button
+                  type="button"
+                  aria-pressed={selected}
+                  aria-label={t(
+                    r.key === 'time' ? 'timeline.list.settingsNamed' : 'timeline.list.openNamed',
+                    { name: r.name },
+                  )}
+                  className="hover:bg-accent focus-visible:ring-ring rounded-md border px-2 py-0.5 text-xs focus-visible:ring-2 focus-visible:outline-none"
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    edit.onSelect(r.key);
+                  }}
+                >
+                  {t(r.key === 'time' ? 'timeline.list.settings' : 'timeline.list.open')}
+                </button>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 }

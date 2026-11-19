@@ -483,6 +483,31 @@
       "ratioFree": "अपना",
       "ratioFreeLabel": "अनुपात (चौ:ऊँ)",
       "ratioInvalid": "अनुपात चौ:ऊँ के रूप में, पूर्ण संख्याओं में, 1:4 से 4:1 के बीच लिखें।"
+    },
+    "view": {
+      "label": "दृश्य",
+      "timeline": "टाइमलाइन",
+      "list": "सूची"
+    },
+    "list": {
+      "caption": "तत्व: {{n}} · कुल {{total}} से.",
+      "element": "तत्व",
+      "channels": "चैनल",
+      "start": "शुरुआत",
+      "length": "अवधि",
+      "note": "यह क्या करता है",
+      "open": "खोलें",
+      "settings": "सेट करें",
+      "openNamed": "खोलें: {{name}}",
+      "settingsNamed": "सेट करें: {{name}}",
+      "flow": "क्रम",
+      "untilEnd": "अंत तक ({{seconds}} से.)",
+      "stretches": "प्रश्न को {{seconds}} से. बढ़ाता है",
+      "channel": {
+        "time": "समय",
+        "visual": "दृश्य",
+        "audio": "ऑडियो"
+      }
     }
   },
   "preview": {

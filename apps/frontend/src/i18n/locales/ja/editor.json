@@ -482,6 +482,31 @@
       "ratioFree": "自由",
       "ratioFreeLabel": "縦横比（幅:高さ）",
       "ratioInvalid": "縦横比は「幅:高さ」の整数で、1:4〜4:1の範囲で入力してください。"
+    },
+    "view": {
+      "label": "表示",
+      "timeline": "タイムライン",
+      "list": "リスト"
+    },
+    "list": {
+      "caption": "要素：{{n}}・合計 {{total}} 秒",
+      "element": "要素",
+      "channels": "チャンネル",
+      "start": "開始",
+      "length": "長さ",
+      "note": "役割",
+      "open": "開く",
+      "settings": "設定",
+      "openNamed": "開く：{{name}}",
+      "settingsNamed": "設定：{{name}}",
+      "flow": "流れ",
+      "untilEnd": "最後まで（{{seconds}} 秒）",
+      "stretches": "問題を {{seconds}} 秒延ばします",
+      "channel": {
+        "time": "時間",
+        "visual": "映像",
+        "audio": "音声"
+      }
     }
   },
   "preview": {
