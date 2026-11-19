@@ -536,7 +536,9 @@
     "enable": "Turn on",
     "onProjection": "On the projection",
     "costs": "Hint — the answers from now on lose {{penalty}} % of the question's points",
-    "show": "Hint",
-    "fold": "Fold the hint"
+    "show": "Show",
+    "fold": "Fold",
+    "label": "Hint",
+    "penaltyApplied": "Hint: −{{penalty}} % ({{lost}} points less)"
   }
 }

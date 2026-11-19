@@ -750,10 +750,11 @@ export function ScreenSurface({
     // LOBBY (et état initial) : invitation à rejoindre + liste des joueurs (§4.1).
     // The room's next quiz (#89): what comes, and where the room stands.
     const nextInRoom = view.standings ? view.standings : null;
-    // Who said they are ready and has loaded what they play (the lobby's count, #104).
+    // Who said they are ready (#104), ringed green as on the console: their media loading
+    // is the console's to watch, not a reason to leave them unmarked.
     const readyIds = new Set(
       view.readiness?.lobby
-        ? view.readiness.players.filter((p) => p.ready).map((p) => p.playerId)
+        ? view.readiness.players.filter((p) => p.pressed).map((p) => p.playerId)
         : [],
     );
     top = band(

@@ -266,6 +266,33 @@ describe('ScreenPage: the branding hooks (lot 5)', () => {
     expect($('.qd-roster')).toHaveTextContent('Ada');
   });
 
+  it('the lobby rings green who said they are ready, their media loaded or not', async () => {
+    hookState.value = view({
+      state: GameState.Lobby,
+      players: [
+        { playerId: 'p1', nickname: 'Ada' },
+        { playerId: 'p2', nickname: 'Bob' },
+      ],
+      readiness: {
+        questionIndex: 0,
+        ready: 0,
+        total: 2,
+        lobby: true,
+        screens: { ready: 1, total: 1 },
+        players: [
+          { playerId: 'p1', ready: false, pressed: true },
+          { playerId: 'p2', ready: false, pressed: false },
+        ],
+      },
+    });
+    const { container } = renderApp('/session/482913/projection');
+    await screen.findByText('Ada');
+    const rings = [...container.querySelectorAll('.qd-roster li')].map((li) =>
+      li.innerHTML.includes('ring-success'),
+    );
+    expect(rings).toEqual([true, false]);
+  });
+
   it('the standings after a question: the top three apart, then down to the tenth', async () => {
     const top = Array.from({ length: 12 }, (_, i) => ({
       nickname: `P${i + 1}`,

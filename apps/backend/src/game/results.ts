@@ -84,6 +84,8 @@ export function personalReveal(
   records: Map<string, AnswerRecord>,
   ranking: Ranking,
   playerId: string | undefined,
+  /** The question's hint penalty (%), to say what it took from an answer after it. */
+  hintPenaltyPct?: number,
 ): QuestionRevealPayload {
   const you = yourLine(ranking, playerId);
   if (!you) return { ...common };
@@ -100,6 +102,9 @@ export function personalReveal(
         : {}),
       ...(rec?.closestRank !== undefined
         ? { closestRank: rec.closestRank, distance: rec.distance }
+        : {}),
+      ...(rec?.hinted && hintPenaltyPct !== undefined
+        ? { hint: { penaltyPct: hintPenaltyPct, lost: rec.hintLost ?? 0 } }
         : {}),
     },
   };

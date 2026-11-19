@@ -548,7 +548,9 @@
     "enable": "Activar",
     "onProjection": "En la proyección",
     "costs": "Pista: las respuestas desde ahora pierden un {{penalty}} % de los puntos de la pregunta",
-    "show": "Pista",
-    "fold": "Plegar la pista"
+    "show": "Mostrar",
+    "fold": "Plegar",
+    "label": "Pista",
+    "penaltyApplied": "Pista: −{{penalty}} % ({{lost}} puntos menos)"
   }
 }

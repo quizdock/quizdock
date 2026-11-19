@@ -548,7 +548,9 @@
     "enable": "Attiva",
     "onProjection": "Sulla proiezione",
     "costs": "Indizio — le risposte da ora perdono il {{penalty}} % dei punti della domanda",
-    "show": "Indizio",
-    "fold": "Chiudi l'indizio"
+    "show": "Mostra",
+    "fold": "Chiudi",
+    "label": "Indizio",
+    "penaltyApplied": "Indizio: −{{penalty}} % ({{lost}} punti in meno)"
   }
 }

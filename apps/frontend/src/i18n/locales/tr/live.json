@@ -536,7 +536,9 @@
     "enable": "Aç",
     "onProjection": "Projeksiyonda",
     "costs": "İpucu — bundan sonraki cevaplar sorunun puanının %{{penalty}}’ini kaybeder",
-    "show": "İpucu",
-    "fold": "İpucunu kapat"
+    "show": "Göster",
+    "fold": "Kapat",
+    "label": "İpucu",
+    "penaltyApplied": "İpucu: −%{{penalty}} ({{lost}} puan eksik)"
   }
 }
