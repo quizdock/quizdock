@@ -116,7 +116,7 @@ export function TextOptionsSection({
                   COLOR_BG[opt.color] ?? OPTION_BG_FALLBACK,
                 )}
               >
-                <ShapeIcon shape={opt.shape} />
+                <ShapeIcon shape={opt.shape} slot={opt.color} index={i} />
               </span>
               <MarkdownEditor
                 profile="inline"

@@ -78,6 +78,7 @@ import { apiErrorText } from '../api/http';
 import type { QuizDetailDto, UpdateQuizDto } from '../api/generated/model';
 import { QuizThemeField } from './quiz-theme-field';
 import { QuizThemeProvider, useQuizThemeValues } from '@/lib/quiz-theme';
+import { LiveThemeAnswers } from '../game/theme';
 import { quizItems, moveItem, slideLabel, type QuizItem } from '@/lib/quiz-items';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
@@ -158,7 +159,10 @@ function ThemedQuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const theme = useQuizThemeValues(quiz);
   return (
     <QuizThemeProvider value={theme}>
-      <QuizEditor quiz={quiz} />
+      {/* The answers' marks and colours as the room will see them, in the form too. */}
+      <LiveThemeAnswers theme={theme}>
+        <QuizEditor quiz={quiz} />
+      </LiveThemeAnswers>
     </QuizThemeProvider>
   );
 }
