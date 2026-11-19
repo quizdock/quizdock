@@ -119,12 +119,13 @@ const CHRONO_STEPS = [-5, -1, 1, 5] as const;
  * bottom of the screen whatever the height of the slide or question on screen.
  */
 // On a wide screen the console holds in the window: the header, the stage and the side
-// column (each scrolling on its own), the action bar; nothing slides under the bar.
-// The header (3.75rem) and the page's top margin (1.5rem) above it; below, the action
-// bar sits on the window's edge (the page's bottom margin taken back).
+// columns (each scrolling on its own), the action bar under the stage; nothing slides
+// under the bar. The header (3.75rem) and the page's top margin (1.5rem) above it; below,
+// the bar on the window's edge (the page's bottom margin taken back) — from 3xl, under the
+// stage alone, a short margin of its own.
 // No top padding of its own: the page's already sits under the top bar, as on every page.
 const CONSOLE_SECTION =
-  'flex min-h-[calc(100dvh-7rem)] flex-col pb-6 lg:-mb-6 lg:h-[calc(100dvh-5.25rem)] lg:min-h-0 lg:pb-0';
+  'flex min-h-[calc(100dvh-7rem)] flex-col pb-6 lg:-mb-6 lg:h-[calc(100dvh-5.25rem)] lg:min-h-0 lg:pb-0 3xl:pb-4';
 
 export function ControlPage() {
   const { pin } = useParams({ from: '/session/$pin/console' });
@@ -574,7 +575,10 @@ function HostConsole({
   // The players and the quiz's outline: side by side on a wide screen once a quiz is
   // picked, else one column and its tabs.
   const sidePanel = (panel: SideTab, tabs: boolean) => (
-    <aside key={panel} className="bg-card flex min-h-0 flex-col gap-2 rounded-xl border p-3">
+    <aside
+      key={panel}
+      className="bg-card 3xl:row-span-2 flex min-h-0 flex-col gap-2 rounded-xl border p-3"
+    >
       <div className="flex items-center gap-2">
         {tabs ? (
           <div role="tablist" className="bg-muted flex rounded-md p-0.5 text-sm">
@@ -1190,7 +1194,7 @@ function HostConsole({
       {/* Whatever the view, the participants and the quiz's outline stay beside it. */}
       <div
         className={cn(
-          'grid flex-1 items-start gap-5 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch',
+          'grid flex-1 items-start gap-5 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_22rem] lg:grid-rows-[minmax(0,1fr)_auto] lg:items-stretch lg:gap-y-0',
           wideSide && !noQuiz && '2xl:grid-cols-[minmax(0,1fr)_22rem_22rem]',
         )}
       >
@@ -1218,8 +1222,10 @@ function HostConsole({
           )}
         </div>
         {sideColumns}
+        {/* Across the page; from 3xl, under what it drives, the centre, beside the columns
+            going down to the end: on a very wide screen its two ends stay within reach. */}
+        <ActionBar controls={controls} status={status} primary={primary} />
       </div>
-      <ActionBar controls={controls} status={status} primary={primary} />
     </section>
   );
 }
@@ -1239,13 +1245,17 @@ function ActionBar({
   primary?: React.ReactNode;
 }) {
   return (
-    <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:-mx-10 lg:px-10">
+    // Short of room (a narrow centre), where the room is goes on a line of its own above:
+    // the controls stay on the left, the primary action on the right.
+    <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 @container sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:col-span-full lg:row-start-2 lg:-mx-10 lg:px-10 3xl:col-span-1 3xl:col-start-1 3xl:mx-0 3xl:px-0">
       {controls}
-      {controls && status ? <span className="bg-border h-6 w-px" aria-hidden /> : null}
-      <div className="text-muted-foreground flex min-w-0 flex-1 items-center gap-3 text-sm">
+      {controls && status ? (
+        <span className="bg-border hidden h-6 w-px @[48rem]:block" aria-hidden />
+      ) : null}
+      <div className="text-muted-foreground order-first flex min-w-0 basis-full items-center gap-3 text-sm @[48rem]:order-none @[48rem]:basis-auto @[48rem]:flex-1">
         {status}
       </div>
-      {primary}
+      <div className="ml-auto">{primary}</div>
     </div>
   );
 }
