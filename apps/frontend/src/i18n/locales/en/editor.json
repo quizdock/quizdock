@@ -232,7 +232,7 @@
   },
   "questionForm": {
     "typeLabel": "Type",
-    "promptLabel": "Prompt",
+    "promptLabel": "Question",
     "promptPlaceholder": "Your question…",
     "timingLegend": "Timing",
     "pointsLegend": "Points",
@@ -333,7 +333,7 @@
     "listenFirstLabel": "Start the timer when the media ends",
     "listenFirstHint": "Listen first, then answer: nobody can answer while the audio or video plays, and everyone gets the full time to think afterwards.",
     "listenFirstTime": "The media plays {{media}} s, then the {{time}} s of answering start.",
-    "promptImageNotice": "This image in the prompt would be better in the question’s media: framed on every screen, zoomable on phones, loaded ahead.",
+    "promptImageNotice": "This image in the question’s text would be better in the question’s media: framed on every screen, zoomable on phones, loaded ahead.",
     "promptImageMove": "Move to the media",
     "imagesLegend": "Pictures",
     "imageCountLabel": "How many",
