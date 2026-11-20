@@ -41,9 +41,10 @@ export const QUIZ_MEDIA_REFS = Prisma.sql`
     CROSS JOIN LATERAL (VALUES (x.visual_media_id), (x.audio_media_id), (x.background_media_id)) v (media_id)
     WHERE v.media_id IS NOT NULL
   UNION ALL
-  -- A hint's picture (SPECIFICATIONS-HINTS), kept in the question's hint.
-  SELECT x.quiz_id, x.hint->>'imageMediaId' FROM question x
-    WHERE x.hint->>'imageMediaId' IS NOT NULL
+  -- A hint's media (SPECIFICATIONS-HINTS), kept in the question's hint.
+  SELECT x.quiz_id, v.media_id FROM question x
+    CROSS JOIN LATERAL (VALUES (x.hint->>'imageMediaId'), (x.hint->>'videoMediaId'), (x.hint->>'audioMediaId')) v (media_id)
+    WHERE v.media_id IS NOT NULL
   UNION ALL
   SELECT x.quiz_id, o.media_id FROM answer_option o JOIN question x ON x.id = o.question_id
     WHERE o.media_id IS NOT NULL

@@ -542,6 +542,7 @@
     "fold": "閉じる",
     "label": "ヒント",
     "penaltyApplied": "ヒント：−{{penalty}} %（{{lost}} 点減点）",
-    "imageAlt": "ヒントの画像"
+    "imageAlt": "ヒントの画像",
+    "replay": "もう一度再生"
   }
 }

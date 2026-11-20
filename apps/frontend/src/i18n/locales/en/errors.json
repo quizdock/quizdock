@@ -142,7 +142,9 @@
     "true_false": {
       "two_options": "True or false takes exactly 2 answers."
     },
-    "hint_empty": "A hint needs a text or a picture."
+    "hint_empty": "A hint needs a text or a picture.",
+    "hint_two_visuals": "A hint shows a picture or a video, not both.",
+    "hint_two_sounds": "A hint's video brings its own sound: no other sound with it."
   },
   "validation": "Some fields are invalid.",
   "internal": "Internal error.",

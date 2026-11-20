@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -7,13 +7,23 @@ import { useTranslation } from 'react-i18next';
  * tiles, its text unfolding upwards over the question; folded and opened again by its
  * owner alone — the projection is the host's.
  */
-export function PhoneHint({ text, image }: { text: string; image?: { url: string } }) {
+export function PhoneHint({
+  text,
+  image,
+  media,
+}: {
+  text: string;
+  image?: { url: string };
+  /** Its video or sound, where this phone plays the question's. */
+  media?: ReactNode;
+}) {
   const { t } = useTranslation('live');
   const [open, setOpen] = useState(true);
   return (
     <div className="border-warning bg-warning/10 flex w-full flex-col overflow-hidden rounded-[0.6em] border">
       {open ? (
         <div role="status" className="flex flex-col gap-[0.4em] px-[0.8em] pt-[0.6em]">
+          {media}
           {image ? (
             <img
               src={image.url}

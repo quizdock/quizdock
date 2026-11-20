@@ -554,6 +554,7 @@
     "fold": "Chiudi",
     "label": "Indizio",
     "penaltyApplied": "Indizio: −{{penalty}} % ({{lost}} punti in meno)",
-    "imageAlt": "L'immagine dell'indizio"
+    "imageAlt": "L'immagine dell'indizio",
+    "replay": "Riproduci di nuovo"
   }
 }

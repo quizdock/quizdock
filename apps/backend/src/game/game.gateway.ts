@@ -639,6 +639,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     await this.engine.setHintShown(payload.pin, this.requireHostId(socket), payload.shown === true);
   }
 
+  /** `host:hint-replay`: the revealed hint's video or sound again from its beginning. */
+  @SubscribeMessage('host:hint-replay')
+  async hostHintReplay(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string },
+  ): Promise<void> {
+    await this.engine.replayHint(payload.pin, this.requireHostId(socket));
+  }
+
   /** `host:adjust-time` : ajoute/retire du temps au chrono de la question courante. */
   @SubscribeMessage('host:adjust-time')
   async hostAdjustTime(

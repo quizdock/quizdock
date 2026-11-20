@@ -114,22 +114,37 @@ export const HINT_TEXT_MAX = 140;
 export const HINT_PENALTY_DEFAULT = 25;
 
 /**
- * A question's hint (SPECIFICATIONS-HINTS): a text, a picture, or both, revealed to the
- * whole room `afterS` seconds after the answers open, when the host's hints are on. The
- * answers given after it lose `penaltyPct` % of the points they earn on the question; the
- * streak bonus is never touched.
+ * A question's hint (SPECIFICATIONS-HINTS): a text, a picture or a video, a sound, revealed
+ * to the whole room `afterS` seconds after the answers open, when the host's hints are on.
+ * Its sound — its own, or its video's — plays once at its reveal and takes over the
+ * question's; longer than the answer time, it stretches the question. The answers given
+ * after it lose `penaltyPct` % of the points they earn on the question; the streak bonus is
+ * never touched.
  */
 export const questionHintSchema = z
   .object({
     text: z.string().trim().max(HINT_TEXT_MAX).default(''),
     /** A picture of the library, shown with or without a text. */
     imageMediaId: z.string().length(26).nullable().optional(),
+    /** A video in the picture's place, with its own sound. */
+    videoMediaId: z.string().length(26).nullable().optional(),
+    /** A sound, alone or with a text or a picture. */
+    audioMediaId: z.string().length(26).nullable().optional(),
     afterS: z.number().int().min(0).max(240),
     penaltyPct: z.number().int().min(0).max(100),
   })
-  .refine((h) => h.text.length > 0 || !!h.imageMediaId, {
+  .refine((h) => h.text.length > 0 || !!h.imageMediaId || !!h.videoMediaId || !!h.audioMediaId, {
     message: 'question.hint_empty',
     path: ['text'],
+  })
+  // One visual, one sound: as a question's media.
+  .refine((h) => !(h.imageMediaId && h.videoMediaId), {
+    message: 'question.hint_two_visuals',
+    path: ['videoMediaId'],
+  })
+  .refine((h) => !(h.videoMediaId && h.audioMediaId), {
+    message: 'question.hint_two_sounds',
+    path: ['audioMediaId'],
   });
 export type QuestionHint = z.infer<typeof questionHintSchema>;
 

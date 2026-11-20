@@ -171,7 +171,8 @@ Contributors changing the bundle schema or a content schema run
   the same places as a question's, `behind` when absent, as a slide's video
   always was — and how it is framed (no `revealS` on a slide).
 - `hint` (version 9): a question's hint — `text` (140 characters at most),
-  `image` (a media path), one of them at least, `afterS` (seconds after the
+  `image` or `video` and `audio` (media paths; a video brings its own sound, so
+  never with an `audio`), one of them at least, `afterS` (seconds after the
   answers open) and `penaltyPct` (the share of the question's points an answer
   given after it loses, 0 to 100).
 - A step's `background` (version 8): its background as one object — `image` (a

@@ -534,7 +534,13 @@
       "afterS": "Açılıştan sonra (sn)",
       "penalty": "Ceza (%)",
       "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir.",
-      "image": "Resim (metin varsa isteğe bağlı)"
+      "image": "Resim (metin varsa isteğe bağlı)",
+      "video": "Video",
+      "audio": "Ses",
+      "videoExcludesImage": "Video resmin yerini alır.",
+      "videoExcluded": "Zaten bir resim ya da ses var: video ikisini birden getirir.",
+      "videoHasSound": "Videonun kendi sesi var.",
+      "soundRule": "Sesi gösterildiğinde bir kez çalar ve sorunun sesinin önüne geçer; cevap süresinden uzunsa soruyu uzatır."
     },
     "removeElement": "Bu öğeyi kaldır",
     "embeddedVideo": "Gömülü bir video: yalnızca kaldırılabilir.",
@@ -545,7 +551,9 @@
       "right": "Bloklar solda, resim ya da video yanında.",
       "behind": "Resim ya da video slaytı doldurur, bloklar üstünde (şimdiye kadarki slayt videosu).",
       "alone": "Blokların yerine yalnızca resim ya da video."
-    }
+    },
+    "conflicts": "Çakışma: {{n}}",
+    "conflictTip": "İpucunun sesi sorunun sesini örtüyor: oyunda ipucunun sesi öne geçer."
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",

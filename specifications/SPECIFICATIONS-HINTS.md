@@ -19,7 +19,10 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
   - **revealed**: held by the server, final for the question, the one that triggers the penalty;
   - **displayed**: the hint overlay shown or hidden, visual only. A participant toggles it on their own device; the
     host toggles it on the projection (a server event, kept in the snapshot for a reconnect).
-- A hint's sound plays **once, when the hint is revealed**; hiding or showing the overlay never plays nor stops it.
+- A hint's sound plays **from when the hint is revealed**. Hidden by the host, it is **paused** on every device that
+  plays it, the question's sound coming back meanwhile; shown again, it **goes on where it stopped**. The host can
+  **play it again** from its beginning (2026-11-19). A sound that outlasts the answers, the time hidden included,
+  stretches the question.
 
 ## 2. Decisions taken (2026-11-18)
 

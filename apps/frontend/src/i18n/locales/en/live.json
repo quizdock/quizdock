@@ -542,6 +542,7 @@
     "fold": "Fold",
     "label": "Hint",
     "penaltyApplied": "Hint: −{{penalty}} % ({{lost}} points less)",
-    "imageAlt": "The hint's picture"
+    "imageAlt": "The hint's picture",
+    "replay": "Replay"
   }
 }

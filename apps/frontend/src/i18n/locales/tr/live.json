@@ -542,6 +542,7 @@
     "fold": "Kapat",
     "label": "İpucu",
     "penaltyApplied": "İpucu: −%{{penalty}} ({{lost}} puan eksik)",
-    "imageAlt": "İpucunun resmi"
+    "imageAlt": "İpucunun resmi",
+    "replay": "Tekrar oynat"
   }
 }

@@ -142,7 +142,9 @@
     "true_false": {
       "two_options": "Wahr oder falsch hat genau 2 Antworten."
     },
-    "hint_empty": "Ein Hinweis braucht einen Text oder ein Bild."
+    "hint_empty": "Ein Hinweis braucht einen Text oder ein Bild.",
+    "hint_two_visuals": "Ein Hinweis zeigt ein Bild oder ein Video, nicht beides.",
+    "hint_two_sounds": "Das Video eines Hinweises hat eigenen Ton: kein anderes Audio dazu."
   },
   "validation": "Einige Felder sind ungültig.",
   "internal": "Interner Fehler.",

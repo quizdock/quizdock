@@ -141,7 +141,9 @@
     "true_false": {
       "two_options": "判断题需要恰好 2 个答案。"
     },
-    "hint_empty": "提示需要文字或图片。"
+    "hint_empty": "提示需要文字或图片。",
+    "hint_two_visuals": "提示只能显示图片或视频，不能两者都有。",
+    "hint_two_sounds": "提示的视频自带声音：不能再加其他音频。"
   },
   "validation": "部分字段无效。",
   "internal": "内部错误。",

@@ -756,6 +756,70 @@ describe('GameEngine (characterization)', () => {
       await eventually(async () => roomOf('question:hint').length > 0);
     });
 
+    it('a hint’s sound starts on one instant, takes the time it needs, and moves with a pause', async () => {
+      const sounding = snapshotOf([
+        question({
+          hint: {
+            text: '',
+            audioMediaId: 'a'.repeat(26),
+            audio: { url: '/m/hint.m4a', durationMs: 30_000, peaks: [], gainDb: 0 },
+            holdMs: 31_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(sounding, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ revealedAt: number; mediaStartAt: number; audio?: unknown }>(
+        'question:hint',
+      )[0];
+      expect(hint.audio).toBeTruthy();
+      expect(hint.mediaStartAt).toBeGreaterThanOrEqual(hint.revealedAt);
+      // 30 s of sound and the quiz's pause, from its start: past the 20 s, the question waits.
+      const m = await meta();
+      expect(m.questionEndsAt).toBe(hint.mediaStartAt + 31_000);
+      expect(roomOf<{ endsAt: number }>('question:time').at(-1)?.endsAt).toBe(m.questionEndsAt);
+      // Paused, then resumed: its start moves with the clock.
+      await engine.setPaused(pin, HOST, true);
+      await new Promise((r) => setTimeout(r, 30));
+      await engine.setPaused(pin, HOST, false);
+      const moved = roomOf<{ mediaStartAt: number }>('question:hint').at(-1)!;
+      expect(moved.mediaStartAt).toBeGreaterThan(hint.mediaStartAt);
+    });
+
+    it('hidden, a hint’s sound waits; shown, it goes on; replayed, it starts again', async () => {
+      const sounding = snapshotOf([
+        question({
+          hint: {
+            text: '',
+            audioMediaId: 'a'.repeat(26),
+            audio: { url: '/m/hint.m4a', durationMs: 5_000, peaks: [], gainDb: 0 },
+            holdMs: 6_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(sounding, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      type Hint = { revealedAt: number; mediaStartAt: number; shown: boolean };
+      const first = roomOf<Hint>('question:hint')[0];
+      await engine.setHintShown(pin, HOST, false);
+      await new Promise((r) => setTimeout(r, 40));
+      await engine.setHintShown(pin, HOST, true);
+      const resumed = roomOf<Hint>('question:hint').at(-1)!;
+      // Its start moved by the time it was hidden; its reveal, the points' reference, did not.
+      expect(resumed.shown).toBe(true);
+      expect(resumed.mediaStartAt - first.mediaStartAt).toBeGreaterThanOrEqual(40);
+      expect(resumed.revealedAt).toBe(first.revealedAt);
+      const before = Date.now();
+      await engine.replayHint(pin, HOST);
+      const replayed = roomOf<Hint>('question:hint').at(-1)!;
+      expect(replayed.mediaStartAt).toBeGreaterThanOrEqual(before);
+      expect(replayed.revealedAt).toBe(first.revealedAt);
+    });
+
     it('off, it waits; on late, it comes at once', async () => {
       const host = join();
       await seed(hinted(0), {}, { p1: player('Ann') });

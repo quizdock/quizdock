@@ -85,6 +85,33 @@ describe('questionTimeline', () => {
     expect(t.elements[0]).toEqual(expect.objectContaining({ kind: 'image', visualTo: 23 }));
   });
 
+  it('a hint’s sound: its own length from its time, flagged over the question’s, stretching it', () => {
+    const t = questionTimeline({
+      ...question,
+      audio: { peaks: [] },
+      mediaMs: 12_000,
+      hint: { afterS: 5, visual: true, soundMs: 20_000 },
+    });
+    // From 3 + 5 = 8 s, 20 s of sound: to 28 s, then the quiz's 1 s pause; past the 23 s.
+    const hint = t.elements.find((e) => e.kind === 'hint')!;
+    expect(hint).toMatchObject({ from: 8, audioTo: 28, visualTo: 29, conflict: true });
+    expect(t.milestones).toEqual([3, 29]);
+    expect(t.phases.slice(-2)).toEqual([
+      { kind: 'stretch', from: 23, to: 28 },
+      { kind: 'tail', from: 28, to: 29 },
+    ]);
+    // Without the question's sound under it, nothing to flag.
+    const quiet = questionTimeline({
+      ...question,
+      hint: { afterS: 5, visual: false, soundMs: 4_000 },
+    });
+    expect(quiet.elements.find((e) => e.kind === 'hint')).toMatchObject({
+      visualTo: null,
+      audioTo: 12,
+    });
+    expect(quiet.elements.find((e) => e.kind === 'hint')?.conflict).toBeUndefined();
+  });
+
   it('a video is one element over both rows', () => {
     const t = questionTimeline({ ...question, visual: 'video', mediaMs: 12_000 });
     expect(t.elements).toEqual([

@@ -143,7 +143,9 @@
     "true_false": {
       "two_options": "Vrai ou faux prend exactement 2 réponses."
     },
-    "hint_empty": "Un indice a besoin d’un texte ou d’une image."
+    "hint_empty": "Un indice a besoin d’un texte ou d’une image.",
+    "hint_two_visuals": "Un indice montre une image ou une vidéo, pas les deux.",
+    "hint_two_sounds": "La vidéo d’un indice a son propre son : pas d’autre audio avec elle."
   },
   "validation": "Certains champs sont invalides.",
   "internal": "Erreur interne.",

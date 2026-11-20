@@ -541,7 +541,13 @@
       "afterS": "Dopo l'apertura (s)",
       "penalty": "Penalità (%)",
       "rule": "Le risposte date dopo l'indizio perdono il {{penalty}} % dei punti della domanda; la serie non viene toccata. Il conduttore può disattivare gli indizi.",
-      "image": "Immagine (facoltativa se c'è un testo)"
+      "image": "Immagine (facoltativa se c'è un testo)",
+      "video": "Video",
+      "audio": "Suono",
+      "videoExcludesImage": "Un video prende il posto dell'immagine.",
+      "videoExcluded": "C'è già un'immagine o un suono: un video porta entrambi.",
+      "videoHasSound": "Il video porta il proprio suono.",
+      "soundRule": "Il suo suono parte una volta alla rivelazione e prevale su quello della domanda; più lungo delle risposte, allunga la domanda."
     },
     "removeElement": "Rimuovi questo elemento",
     "embeddedVideo": "Un video incorporato: può solo essere rimosso.",
@@ -552,7 +558,9 @@
       "right": "I blocchi a sinistra, l'immagine o il video accanto.",
       "behind": "L'immagine o il video riempie la slide, i blocchi sopra (il video di una slide finora).",
       "alone": "L'immagine o il video da solo, al posto dei blocchi."
-    }
+    },
+    "conflicts": "Conflitti: {{n}}",
+    "conflictTip": "Il suono dell'indizio copre quello della domanda: in gioco prevale l'indizio."
   },
   "preview": {
     "view": "Anteprima (vista del partecipante)",

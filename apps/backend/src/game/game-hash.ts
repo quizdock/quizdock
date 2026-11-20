@@ -91,6 +91,8 @@ export function deserializeGame(raw: Record<string, string>): GameFields {
     hintsOff: raw.hintsOff === '1',
     hintRevealedAt: raw.hintRevealedAt ? Number(raw.hintRevealedAt) : 0,
     hintHidden: raw.hintHidden === '1',
+    hintHiddenAt: raw.hintHiddenAt ? Number(raw.hintHiddenAt) : 0,
+    hintMediaShiftMs: raw.hintMediaShiftMs ? Number(raw.hintMediaShiftMs) : 0,
     slideIndex: raw.slideIndex ? Number(raw.slideIndex) : -1,
     slideMediaStartAt: raw.slideMediaStartAt ? Number(raw.slideMediaStartAt) : 0,
     slidePausedAt: raw.slidePausedAt ? Number(raw.slidePausedAt) : 0,

@@ -29,6 +29,7 @@ describe('the hint in play (SPECIFICATIONS-HINTS)', () => {
         enabled={false}
         onEnabled={onEnabled}
         onShown={vi.fn()}
+        onReplay={vi.fn()}
       />,
     );
     expect(screen.getByText('Indice à 10 s · −25 %')).toBeInTheDocument();
@@ -40,7 +41,14 @@ describe('the hint in play (SPECIFICATIONS-HINTS)', () => {
   it('console: once out, its text and whether the projection shows it', () => {
     const onShown = vi.fn();
     render(
-      <HintControls question={question} hint={out} enabled onEnabled={vi.fn()} onShown={onShown} />,
+      <HintControls
+        question={question}
+        hint={out}
+        enabled
+        onEnabled={vi.fn()}
+        onShown={onShown}
+        onReplay={vi.fn()}
+      />,
     );
     expect(screen.getByText('Elle a été choisie en 1923')).toBeInTheDocument();
     expect(screen.queryByRole('note')).toBeNull();
@@ -56,6 +64,7 @@ describe('the hint in play (SPECIFICATIONS-HINTS)', () => {
         enabled
         onEnabled={vi.fn()}
         onShown={vi.fn()}
+        onReplay={vi.fn()}
       />,
     );
     expect(container).toBeEmptyDOMElement();
@@ -112,5 +121,36 @@ describe('a picture revealed progressively, on a phone in the room', () => {
     // No reveal: the usual picture, opened over the screen on a tap.
     rerender(<QuestionMedia media={{ ...media, style: undefined }} zoomable />);
     expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+});
+
+describe('the hint’s sound takes over the question’s, while it plays', () => {
+  it('from its start to its end, never while the game is paused', async () => {
+    const { renderHook } = await import('@testing-library/react');
+    const { useHintSounding } = await import('./hint-media');
+    const hint = (startIn: number, durationMs = 5_000) => ({
+      ...out,
+      audio: { url: '/m/hint.m4a', durationMs, peaks: [], gainDb: 0 },
+      mediaStartAt: Date.now() + startIn,
+    });
+    expect(renderHook(() => useHintSounding(hint(-1_000), false)).result.current).toBe(true);
+    expect(renderHook(() => useHintSounding(hint(2_000), false)).result.current).toBe(false);
+    expect(renderHook(() => useHintSounding(hint(-10_000), false)).result.current).toBe(false);
+    expect(renderHook(() => useHintSounding(hint(-1_000), true)).result.current).toBe(false);
+    expect(renderHook(() => useHintSounding(null, false)).result.current).toBe(false);
+  });
+});
+
+describe('a hint hidden by the host', () => {
+  it('gives the floor back to the question’s sound', async () => {
+    const { renderHook } = await import('@testing-library/react');
+    const { useHintSounding } = await import('./hint-media');
+    const hidden = {
+      ...out,
+      shown: false,
+      audio: { url: '/m/hint.m4a', durationMs: 5_000, peaks: [], gainDb: 0 },
+      mediaStartAt: Date.now() - 1_000,
+    };
+    expect(renderHook(() => useHintSounding(hidden, false)).result.current).toBe(false);
   });
 });

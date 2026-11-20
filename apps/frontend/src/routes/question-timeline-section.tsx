@@ -94,6 +94,8 @@ export function QuestionTimelineSection({
   const explanation = useStore(form.store, (s) => s.values.answerExplanation);
   const explains = type !== 'poll' && explanation.trim() !== '';
   const hint = useStore(form.store, (s) => s.values.hint);
+  // Its sound's length (its own, or its video's), from the library: its place on the timeline.
+  const hintSoundMs = useAssetDurationMs(hint?.audioMediaId ?? hint?.videoMediaId ?? null);
   const defaultS = TIME_LIMIT_BY_TYPE[type];
   // Already at its type's defaults: nothing to bring back.
   const atDefaults =
@@ -171,7 +173,13 @@ export function QuestionTimelineSection({
           // In auto mode, the question's own time, else the instance's; without one, by hand.
           answerShownS: revealDelayS ?? appConfig.autoAdvanceS ?? null,
           explanation: explains,
-          hint: hint ? { afterS: hint.afterS } : null,
+          hint: hint
+            ? {
+                afterS: hint.afterS,
+                visual: !!(hint.text.trim() || hint.imageMediaId || hint.videoMediaId),
+                soundMs: hintSoundMs,
+              }
+            : null,
           audio: audio ? { peaks: audio.peaks } : null,
           mediaMs,
           tailS: mediaTailS,

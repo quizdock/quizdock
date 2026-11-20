@@ -142,7 +142,9 @@
     "true_false": {
       "two_options": "Doğru/yanlış sorusunda tam olarak 2 yanıt olmalıdır."
     },
-    "hint_empty": "Bir ipucunun metne ya da resme ihtiyacı var."
+    "hint_empty": "Bir ipucunun metne ya da resme ihtiyacı var.",
+    "hint_two_visuals": "Bir ipucu resim ya da video gösterir, ikisini birden değil.",
+    "hint_two_sounds": "İpucunun videosunun kendi sesi var: yanında başka ses olmaz."
   },
   "validation": "Bazı alanlar geçersiz.",
   "internal": "Dahili hata.",

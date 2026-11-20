@@ -566,6 +566,7 @@
     "fold": "Zwiń",
     "label": "Podpowiedź",
     "penaltyApplied": "Podpowiedź: −{{penalty}} % ({{lost}} pkt mniej)",
-    "imageAlt": "Obraz podpowiedzi"
+    "imageAlt": "Obraz podpowiedzi",
+    "replay": "Odtwórz ponownie"
   }
 }
