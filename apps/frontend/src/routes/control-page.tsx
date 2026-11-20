@@ -477,9 +477,11 @@ function HostConsole({
               onClick={toggle}
               aria-expanded={open}
               aria-label={t('control.invite')}
-              className="bg-muted hover:bg-accent flex items-center gap-1.5 rounded-full px-2.5 py-1 text-sm"
+              className="bg-muted hover:bg-accent flex items-center gap-2 rounded-full px-2.5 py-1 text-sm"
             >
               <span className="font-mono font-semibold tracking-widest">{pin}</span>
+              {/* The PIN read, then what the click does: two parts, a rule between them. */}
+              <span className="bg-muted-foreground/40 h-4 w-px" aria-hidden />
               <Share2 className="size-3.5" />
             </button>
           )}
