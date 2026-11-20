@@ -794,7 +794,7 @@ describe('ControlPage (console hôte)', () => {
     // Set once a session: behind the gear, beside the projection's window.
     const gear = await screen.findByRole('button', { name: 'Réglages du salon' });
     act(() => gear.click());
-    const motion = await screen.findByRole('switch', { name: 'Animations' });
+    const motion = await screen.findByRole('switch', { name: 'Transitions animées' });
     expect(motion).toHaveAttribute('aria-checked', 'true');
     act(() => motion.click());
     expect(fakeSocket.emit).toHaveBeenCalledWith('host:motion', { pin: '482913', on: false });

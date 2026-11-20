@@ -62,6 +62,8 @@ import { Markdown } from '@/components/markdown';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Notice } from '@/components/ui/notice';
+import { Disclosure } from '@/components/ui/disclosure';
+import { formatPercent } from '@/lib/format';
 import { PageTitle, SectionTitle } from '@/components/ui/page-title';
 import { MenuItem } from '@/components/ui/menu-item';
 import { Popover } from '@/components/ui/popover';
@@ -506,12 +508,8 @@ function HostConsole({
       sounds={view.sounds}
       theme={view.theme}
       onSounds={(patch) => socket?.emit('host:sounds', { pin, ...patch })}
-      motion={
-        <MotionSwitch
-          on={view.motion ?? appConfig.liveMotion !== false}
-          onToggle={(on) => socket?.emit('host:motion', { pin, on })}
-        />
-      }
+      motion={view.motion ?? appConfig.liveMotion !== false}
+      onMotion={(on) => socket?.emit('host:motion', { pin, on })}
     />
   );
   // Where the game is, at the head of the bottom bar's status, by what moves it on.
@@ -2080,18 +2078,6 @@ function LockButton({
  * what the projector copes with, and switches it for every screen at once — a
  * switch, like Autoplay, so on and off read apart.
  */
-function MotionSwitch({ on, onToggle }: { on: boolean; onToggle: (on: boolean) => void }) {
-  const { t } = useTranslation('live');
-  return (
-    <Tooltip label={on ? t('control.motionOnTooltip') : t('control.motionOffTooltip')}>
-      <label className="flex items-center gap-2 text-sm font-medium">
-        <Switch checked={on} onCheckedChange={onToggle} aria-label={t('control.motion')} />
-        {t('control.motion')}
-      </label>
-    </Tooltip>
-  );
-}
-
 /** Ajustement du chrono en direct : [-5 -1 ⏱ +1 +5] (§8). */
 function ChronoControls({
   clock,
@@ -2189,11 +2175,14 @@ function RoomSettingsButton({
   theme,
   onSounds,
   motion,
+  onMotion,
 }: {
   sounds: React.ComponentProps<typeof GameSoundsControls>['sounds'] | null | undefined;
   theme: React.ComponentProps<typeof GameSoundsControls>['theme'];
   onSounds: React.ComponentProps<typeof GameSoundsControls>['onChange'];
-  motion: React.ReactNode;
+  /** Whether the screens move between steps; a slow projector wants them still. */
+  motion: boolean;
+  onMotion: (on: boolean) => void;
 }) {
   const { t } = useTranslation('live');
   const [open, setOpen] = useState(false);
@@ -2213,17 +2202,50 @@ function RoomSettingsButton({
         </Button>
       </Tooltip>
       <SimpleDialog open={open} title={t('control.roomSettings')} onClose={() => setOpen(false)}>
+        {/* Each group folded, its setting on its line: the one to change is found at a glance. */}
         <div className="flex flex-col gap-4">
+          <Disclosure
+            title={t('control.motion')}
+            value={motion ? t('control.motionOn') : t('control.motionOff')}
+          >
+            <label className="flex items-center gap-3">
+              <Switch
+                checked={motion}
+                onCheckedChange={onMotion}
+                aria-label={t('control.motion')}
+              />
+              <span className="text-muted-foreground text-xs">
+                {motion ? t('control.motionOnTooltip') : t('control.motionOffTooltip')}
+              </span>
+            </label>
+          </Disclosure>
           {sounds ? (
-            <section className="flex flex-col gap-2">
-              <h3 className="text-sm font-semibold">{t('control.sounds.title')}</h3>
+            <Disclosure
+              title={t('control.sounds.title')}
+              value={
+                sounds.muted
+                  ? t('control.sounds.roomMuted')
+                  : (
+                      [
+                        ['media', sounds.mediaLevel, sounds.mediaMuted],
+                        ['music', sounds.musicLevel, sounds.musicMuted],
+                        ['effects', sounds.sfxLevel, sounds.sfxMuted],
+                      ] as const
+                    ).map(([bus, level, muted]) => (
+                      <span key={bus} className="flex items-center gap-1">
+                        {t(`control.sounds.${bus}`)}
+                        {muted ? (
+                          <VolumeX className="text-destructive size-3.5" aria-hidden />
+                        ) : (
+                          <span className="tabular-nums">{formatPercent(level)}</span>
+                        )}
+                      </span>
+                    ))
+              }
+            >
               <GameSoundsControls sounds={sounds} theme={theme} onChange={onSounds} />
-            </section>
+            </Disclosure>
           ) : null}
-          <section className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold">{t('control.motion')}</h3>
-            {motion}
-          </section>
         </div>
       </SimpleDialog>
     </>
