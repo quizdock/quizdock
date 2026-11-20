@@ -300,6 +300,23 @@ export function roomTests(ctx: GameContext): void {
     seen = count(0);
     await nextQuiz(host, pin, (await ctx.h.seedQuiz({ title: 'Ready again' })).id);
     expect(await seen).toMatchObject({ ready: 0, total: 1 });
+
+    // Back in a lobby with no quiz picked yet: the console still hears who is ready,
+    // and the quiz picked next keeps it.
+    await playParis(host, pin, [again]);
+    await toPodium(host, pin, again);
+    await host.emitWithAck('host:back-to-lobby', { pin, archive: false });
+    seen = count(1);
+    expect(await again.emitWithAck('player:ready', { pin, ready: true })).toEqual({ ok: true });
+    expect(await seen).toMatchObject({ ready: 1, total: 1, lobby: true });
+    seen = count(1);
+    const toldAgain = nextEvent<{ ready: boolean }>(again, 'lobby:you');
+    await host.emitWithAck('host:next-quiz', {
+      pin,
+      quizId: (await ctx.h.seedQuiz({ title: 'Ready kept' })).id,
+    });
+    expect(await seen).toMatchObject({ ready: 1, total: 1 });
+    expect(await toldAgain).toEqual({ ready: true });
     void ivy;
   });
 
