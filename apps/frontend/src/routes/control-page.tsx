@@ -616,7 +616,7 @@ function HostConsole({
         <span className="flex-1" />
         {/* Who may still come in, with who is there. */}
         {panel === 'players' ? (
-          <LockButton locked={view.joinLocked} onToggle={setJoinLocked} />
+          <LockButton locked={view.joinLocked} onToggle={setJoinLocked} compact={tabs} />
         ) : null}
         {panel === 'outline' && view.nav && canLookBack ? (
           <>
@@ -2048,9 +2048,12 @@ function PauseButton({
 function LockButton({
   locked,
   onToggle,
+  compact = false,
 }: {
   locked: boolean;
   onToggle: (locked: boolean) => void;
+  /** Beside the tabs, short of room: its padlock alone, said by its tooltip. */
+  compact?: boolean;
 }) {
   const { t } = useTranslation('live');
   return (
@@ -2061,10 +2064,11 @@ function LockButton({
         size="sm"
         aria-pressed={locked}
         aria-label={t('control.lockLabel')}
+        className={cn(compact && 'px-2')}
         onClick={() => onToggle(!locked)}
       >
         {locked ? <Lock className="size-4" /> : <LockOpen className="size-4" />}
-        {locked ? t('control.locked') : t('control.lock')}
+        {compact ? null : locked ? t('control.locked') : t('control.lock')}
       </Button>
     </Tooltip>
   );
