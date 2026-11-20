@@ -48,7 +48,7 @@ database. The product, its uses and its documentation are on
   provider with the same image: roles, a web administration, lockable settings, an audit
   trail. [More](https://quizdock.github.io/enterprise/)
 - **Video and audio.** Media in questions and slides, converted in the browser, started on
-  the server's clock; remote participants get them on their own device (experimental).
+  the server's clock; remote participants get them on their own device.
   [More](https://quizdock.github.io/media/)
 - **Open source, MIT.** Docker images for amd64 and arm64, twelve interface languages.
 
@@ -180,7 +180,7 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
 - **Host in control** — Console / Projection / Participant views, the space bar pauses and resumes the game, look back over played questions without replaying anything, layout edits reach a running session at its next step.
 - **The audio in the host's hands** — from the console, play / pause the question's audio or video on every device at once, click or drag its waveform to a point, or take it back to the top; a waveform can be hidden from the screens and still show on the console; every start and stop fades, no clicks. The background track never plays over a question's own audio: it steps out and comes back; every mixer has a mute per channel. The game's own effects, synthesised in the browser: a ding as a question appears, a tick per answer, a tick-tock on the last five seconds and a gong on zero — each can be switched off, previewed on the console, or replaced by an audio of the library.
 - **Your bank at a glance** — My quizzes and the templates as a list or a grid (each quiz showing its first slide), filtered by status, owner, language and tags, each quiz with its size, language, date, licence and tags; archived quizzes kept out of the way.
-- **Remote participants** _(experimental)_ — a participant following from home says so when joining and gets the whole question on their device, audio and video included; the console shows who is remote and whose media are loaded.
+- **Remote participants** — a participant following from home says so when joining and gets the whole question on their device, audio and video included; the console shows who is remote and whose media are loaded.
 - **The projection on your own device** — a participant shares the big screen to a tablet or a computer (a link or a QR code, never their seat): it follows the projection, muted on site, with audio for someone following from home. On the same phone, one tap switches between the answers and the big screen.
 - **Ready!** — participants say they are ready in the lobby; the host sees one count, including whose media are still loading, and still starts when they choose. The lobby's next quiz starts on its own once everyone is ready, or after 30 s unless the host stops the countdown.
 - **Game effects** — a tick at each answer, a gong at the reveal, a background track from your library while players answer (never over a question's own audio); set for the lobby, kept from one quiz to the next. An audio button on every screen that plays something, a mixer for the lobby on the console, and one per device; *Without audio* for whoever prefers silence.

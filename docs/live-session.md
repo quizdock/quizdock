@@ -62,7 +62,7 @@ Timers live in the server process: at boot the engine re-arms them from Redis
 re-attaches (host, projection, participant) and catches up on the current
 state — including the question when attaching at a reveal.
 
-## Media on every device (experimental)
+## Media on every device
 
 The media brief (`specifications/SPECIFICATIONS-MEDIA.md` §5) as built:
 
