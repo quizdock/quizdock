@@ -123,11 +123,10 @@ const CHRONO_STEPS = [-5, -1, 1, 5] as const;
 // On a wide screen the console holds in the window: the header, the stage and the side
 // columns (each scrolling on its own), the action bar under the stage; nothing slides
 // under the bar. The header (3.75rem) and the page's top margin (1.5rem) above it; below,
-// the bar on the window's edge (the page's bottom margin taken back) — from 3xl, under the
-// stage alone, a short margin of its own.
+// a short margin of its own in place of the page's.
 // No top padding of its own: the page's already sits under the top bar, as on every page.
 const CONSOLE_SECTION =
-  'flex min-h-[calc(100dvh-7rem)] flex-col pb-6 lg:-mb-6 lg:h-[calc(100dvh-5.25rem)] lg:min-h-0 lg:pb-0 3xl:pb-4';
+  'flex min-h-[calc(100dvh-7rem)] flex-col pb-6 lg:-mb-6 lg:h-[calc(100dvh-5.25rem)] lg:min-h-0 lg:pb-4';
 
 export function ControlPage() {
   const { pin } = useParams({ from: '/session/$pin/console' });
@@ -582,7 +581,7 @@ function HostConsole({
   const sidePanel = (panel: SideTab, tabs: boolean) => (
     <aside
       key={panel}
-      className="bg-card 3xl:row-span-2 flex min-h-0 flex-col gap-2 rounded-xl border p-3"
+      className="bg-card flex min-h-0 flex-col gap-2 rounded-xl border p-3 lg:row-span-2"
     >
       <div className="flex items-center gap-2">
         {tabs ? (
@@ -1211,8 +1210,10 @@ function HostConsole({
           {/* What I look at, and the projection's own window, over what it shows. */}
           <div className="flex flex-wrap items-center gap-2">
             <ViewSwitch tab={tab} onTab={setTab} />
-            {screenButton}
-            {roomLook}
+            <div className="ml-auto flex items-center gap-2">
+              {screenButton}
+              {roomLook}
+            </div>
           </div>
           {tab === 'screen' ? (
             // The projection's 16:9, scaled to the column. The console's own session: a
@@ -1232,8 +1233,8 @@ function HostConsole({
           )}
         </div>
         {sideColumns}
-        {/* Across the page; from 3xl, under what it drives, the centre, beside the columns
-            going down to the end: on a very wide screen its two ends stay within reach. */}
+        {/* Under what it drives, the centre, beside the columns going down to the end: its
+            primary action never strays far from the stage. */}
         <ActionBar controls={controls} phase={phasePill} status={status} primary={primary} />
       </div>
     </section>
@@ -1259,7 +1260,7 @@ function ActionBar({
   return (
     // Short of room (a narrow centre), where the room is goes on a line of its own above:
     // the controls stay on the left, the primary action on the right.
-    <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 @container sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:col-span-full lg:row-start-2 lg:-mx-10 lg:px-10 3xl:col-span-1 3xl:col-start-1 3xl:mx-0 3xl:px-0">
+    <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 @container sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:col-start-1 lg:row-start-2 lg:mx-0 lg:px-0">
       {controls}
       {controls && (phase || status) ? (
         <span className="bg-border hidden h-6 w-px @[48rem]:block" aria-hidden />
@@ -2035,7 +2036,8 @@ function PauseButton({
     >
       {paused ? <Play className="size-4" /> : <Pause className="size-4" />}
       {paused ? t('control.resume') : t('control.pause')}
-      <kbd className="text-muted-foreground rounded border px-1 text-[0.65rem] font-normal">
+      {/* Its key, said while the bar has room (the bar is its container). */}
+      <kbd className="text-muted-foreground rounded border px-1 text-[0.65rem] font-normal @max-[44rem]:hidden">
         {t('control.spaceKey')}
       </kbd>
     </Button>
