@@ -165,6 +165,7 @@
     "AUTH_MODE": "Режим аутентификации",
     "DEMO_MODE": "Публичная демоверсия",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "Участники без аккаунта",
+    "LOBBY_LISTING": "Открытые комнаты на главной странице",
     "OIDC_ISSUER": "Поставщик удостоверений (issuer)",
     "OIDC_CLIENT_ID": "Идентификатор клиента",
     "OIDC_CLIENT_SECRET": "Секрет клиента",

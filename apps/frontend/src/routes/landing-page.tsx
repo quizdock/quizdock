@@ -6,6 +6,7 @@ import { docsLink, feedbackLinks, starLink } from '@/lib/feedback';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@tanstack/react-router';
 import { JoinPin } from '@/components/join-pin';
+import { ListedLobbies } from '@/components/listed-lobbies';
 import { useRole } from '../auth/use-role';
 import { PageTitle } from '@/components/ui/page-title';
 import { Notice } from '@/components/ui/notice';
@@ -28,6 +29,7 @@ export function LandingPage() {
           <JoinPin />
         </CardContent>
       </Card>
+      <ListedLobbies />
       {/* A host lands here too: their way on, or the way in for one who is not signed in. */}
       {isHost ? (
         <Link to="/quizzes" className="text-link text-sm font-medium">

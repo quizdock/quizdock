@@ -119,6 +119,8 @@ services:
       OIDC_NAME_CLAIM: ${OIDC_NAME_CLAIM:-}
       TRUST_PROXY: ${TRUST_PROXY:-}
       ALLOW_ANONYMOUS_PARTICIPANTS: ${ALLOW_ANONYMOUS_PARTICIPANTS:-false}
+      # The home page lists the open lobbies, joined in one click.
+      LOBBY_LISTING: ${LOBBY_LISTING:-unlisted}
     depends_on:
       postgres:
         condition: service_healthy

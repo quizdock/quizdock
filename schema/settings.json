@@ -93,6 +93,15 @@
           "preset": "audience"
         },
         {
+          "key": "LOBBY_LISTING",
+          "default": "`unlisted`",
+          "level": "C3",
+          "description": "Whether the home page lists the open lobbies under the PIN field, joined in one click: `listed`, handy on a private instance. Each lobby opened from then on is listed; its host takes it off the list, or puts it back, at any time (console, lobby settings). A lobby closed to newcomers is not listed. `unlisted`: a lobby is reached by its PIN, link or QR code only. `listed` in the `:standalone` image.",
+          "accepts": "`unlisted` · `listed`",
+          "applies": "next-room",
+          "administration": true
+        },
+        {
           "key": "OIDC_ISSUER",
           "default": "—",
           "level": "C1",

@@ -152,6 +152,11 @@ export interface GameView {
   sounds: RoomSoundsPayload | null;
   /** Whether the room's screens move between steps (UI system §1.8); null until told. */
   motion: boolean | null;
+  /**
+   * Whether the home page lists the room (`LOBBY_LISTING`), told to the console only;
+   * `offered: false` = the instance lists no lobby. Null until told.
+   */
+  listed: { on: boolean; offered: boolean } | null;
   /** The current question's hint once revealed (SPECIFICATIONS-HINTS); null before. */
   hint: QuestionHintPayload | null;
   /** Whether the game's hints are on (the host's switch); on until told. */
@@ -237,6 +242,7 @@ export const INITIAL_VIEW: GameView = {
   lobbyCount: null,
   sounds: null,
   motion: null,
+  listed: null,
   hint: null,
   hintsEnabled: true,
   roomName: null,
@@ -489,6 +495,7 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
     const onLobbyCount = (p: { ready: number; total: number }) => patch({ lobbyCount: p });
     const onSounds = (p: RoomSoundsPayload) => patch({ sounds: p });
     const onMotion = (p: { on: boolean }) => patch({ motion: p.on });
+    const onListed = (p: { on: boolean; offered: boolean }) => patch({ listed: p });
     // The host paired this projection window: its token keeps it so through reloads.
     const onPaired = (p: { token: string }) => {
       storeScreenToken(pin, p.token);
@@ -584,6 +591,7 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
       'lobby:count': onLobbyCount,
       'room:sounds': onSounds,
       'room:motion': onMotion,
+      'room:listed': onListed,
       'screen:paired': onPaired,
       'game:ended': onEnded,
       notice: onNotice,

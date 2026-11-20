@@ -62,6 +62,8 @@ export function deserializeRoom(raw: Record<string, string>): RoomMeta {
     motion: raw.motion === undefined ? liveMotionDefault() : raw.motion === '1',
     audienceLanguage: raw.audienceLanguage ?? '',
     selectionId: raw.selectionId ?? '',
+    // A room opened before the instance listed lobbies stays off the list.
+    listed: raw.listed === '1',
   };
 }
 

@@ -1,7 +1,19 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { configureDemo, configureStandalone } from '../config';
 import { mockApi, renderApp } from '../test/harness';
+
+// The home page's socket, as the server would drive it: its handlers kept, its emits seen.
+const listeners = new Map<string, () => void>();
+const fakeSocket = {
+  on: vi.fn((event: string, fn: () => void) => listeners.set(event, fn)),
+  off: vi.fn(),
+  emit: vi.fn(),
+};
+vi.mock('../game/game-client', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../game/game-client')>()),
+  ensureGameSocket: () => Promise.resolve(fakeSocket),
+}));
 
 /**
  * A public demo has to say what it does *not* do, once, where people land —
@@ -69,6 +81,55 @@ describe('LandingPage — the PIN', () => {
       'href',
       '/login',
     );
+  });
+});
+
+describe('LandingPage — the open lobbies (LOBBY_LISTING)', () => {
+  const lobby = {
+    pin: '482913',
+    roomName: null,
+    hostName: 'Ada',
+    quizTitle: 'Harbours',
+    playing: false,
+    playerCount: 3,
+    participantAccess: 'account',
+  };
+
+  it('lists them under the PIN, each leading where its PIN would', async () => {
+    mockApi([
+      {
+        path: '/games/listed',
+        body: {
+          listing: true,
+          lobbies: [lobby, { ...lobby, pin: '771204', roomName: 'Friday', playing: true }],
+        },
+      },
+    ]);
+    renderApp('/');
+    expect(await screen.findByRole('heading', { name: 'Salons ouverts' })).toBeInTheDocument();
+    const first = screen.getByRole('link', { name: /Salon de Ada/ });
+    expect(first).toHaveAttribute('href', '/join/482913');
+    expect(first).toHaveTextContent('En attente');
+    expect(screen.getAllByLabelText('Participants : 3')).toHaveLength(2);
+    expect(screen.getByRole('link', { name: /Friday/ })).toHaveTextContent('En cours');
+  });
+
+  it('reads the list again as soon as the server says it changed', async () => {
+    mockApi([{ path: '/games/listed', body: { listing: true, lobbies: [lobby] } }]);
+    renderApp('/');
+    expect(await screen.findByRole('link', { name: /Salon de Ada/ })).toBeInTheDocument();
+    await waitFor(() => expect(fakeSocket.emit).toHaveBeenCalledWith('listing:watch'));
+    // The host took it off the list.
+    mockApi([{ path: '/games/listed', body: { listing: true, lobbies: [] } }]);
+    act(() => listeners.get('lobbies:changed')?.());
+    await waitFor(() => expect(screen.queryByRole('link', { name: /Salon de Ada/ })).toBeNull());
+  });
+
+  it('shows nothing while no lobby is listed', async () => {
+    mockApi([{ path: '/games/listed', body: { listing: false, lobbies: [] } }]);
+    renderApp('/');
+    expect(await screen.findByText(/Rejoindre un salon/i)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Salons ouverts' })).toBeNull();
   });
 });
 

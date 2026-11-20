@@ -122,3 +122,13 @@ The QR code and join link point at the base URL the host picked in the lobby
 the page's own origin, or anything typed. It is stored on the session, sent to
 every screen, frozen once the session starts, and remembered by the host's
 browser. See [networking](https://quizdock.github.io/docs/operator/networking/) for what each setup offers.
+
+## Home page list
+
+With `LOBBY_LISTING=listed`, a room opened from then on is listed (`listed` in its
+hash, its PIN in the `rooms:listed` set); the home page shows the listed rooms
+still open to newcomers (`GET /games/listed`, public, polled every 10 s), each
+card leading to `/join/{pin}`. The host switches it at any time
+(`host:listed`); `room:listed` tells the console, on attach too, with whether the
+instance lists lobbies at all. Back to `unlisted`, the list is empty at once; a room
+over, gone or taken off leaves the set as the list is read.

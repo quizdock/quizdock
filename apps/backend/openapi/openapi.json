@@ -2869,6 +2869,32 @@
         ]
       }
     },
+    "/api/v1/games/listed": {
+      "get": {
+        "operationId": "GameController_listed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LobbyListingDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "games"
+        ]
+      }
+    },
     "/api/v1/games/join-addresses": {
       "get": {
         "operationId": "GameController_joinAddresses",
@@ -14962,6 +14988,63 @@
           "title",
           "state",
           "playerCount"
+        ]
+      },
+      "LobbyListingDto": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "type": "boolean"
+          },
+          "lobbies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pin": {
+                  "type": "string"
+                },
+                "roomName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "hostName": {
+                  "type": "string"
+                },
+                "quizTitle": {
+                  "type": "string"
+                },
+                "playing": {
+                  "type": "boolean"
+                },
+                "playerCount": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "participantAccess": {
+                  "type": "string",
+                  "enum": [
+                    "account",
+                    "open"
+                  ]
+                }
+              },
+              "required": [
+                "pin",
+                "roomName",
+                "hostName",
+                "quizTitle",
+                "playing",
+                "playerCount",
+                "participantAccess"
+              ]
+            }
+          }
+        },
+        "required": [
+          "listing",
+          "lobbies"
         ]
       },
       "JoinAddressesDto": {

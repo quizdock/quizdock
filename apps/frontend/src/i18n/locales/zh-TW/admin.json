@@ -165,6 +165,7 @@
     "AUTH_MODE": "驗證模式",
     "DEMO_MODE": "公開示範",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "沒有帳號的參與者",
+    "LOBBY_LISTING": "在首頁列出開放的房間",
     "OIDC_ISSUER": "身分提供者（簽發者）",
     "OIDC_CLIENT_ID": "用戶端識別碼",
     "OIDC_CLIENT_SECRET": "用戶端密碼",

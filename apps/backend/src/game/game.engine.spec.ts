@@ -343,6 +343,41 @@ describe('GameEngine (characterization)', () => {
       await expect(engine.setMotion(pin, 'someone-else', true)).rejects.toThrow();
     });
 
+    it('host:listed takes the room off the home page, or back, at any time (LOBBY_LISTING)', async () => {
+      await seed(snapshotOf([question()]));
+      await engine.start(pin, HOST);
+      await engine.setListed(pin, HOST, true);
+      expect((await game.getRoom(pin))?.listed).toBe(true);
+      expect(roomOf('room:listed').at(-1)).toEqual({ on: true, offered: false });
+      await engine.setListed(pin, HOST, false);
+      expect((await game.getRoom(pin))?.listed).toBe(false);
+      await expect(engine.setListed(pin, 'someone-else', true)).rejects.toThrow();
+      // An instance that lists no lobby tells no home page.
+      expect(roomOf('lobbies:changed')).toHaveLength(0);
+      await redis.del(gameKeys.listedRooms());
+    });
+
+    it('tells the home pages when a listed lobby changes, at once (LOBBY_LISTING=listed)', async () => {
+      const env = process.env;
+      process.env = { ...env, LOBBY_LISTING: 'listed' };
+      try {
+        await seed(snapshotOf([question()]));
+        // Not listed: closing it to newcomers changes no list.
+        await engine.setJoinLocked(pin, HOST, true);
+        expect(roomOf('lobbies:changed')).toHaveLength(0);
+        await engine.setListed(pin, HOST, true);
+        expect(roomOf('room:listed').at(-1)).toEqual({ on: true, offered: true });
+        await engine.setJoinLocked(pin, HOST, false);
+        await engine.start(pin, HOST);
+        // Taken off: the pages hear it too, as they must drop it.
+        await engine.setListed(pin, HOST, false);
+        expect(roomOf('lobbies:changed')).toHaveLength(4);
+      } finally {
+        process.env = env;
+        await redis.del(gameKeys.listedRooms());
+      }
+    });
+
     it('host:room-name trims the name in the lobby, and is refused once started', async () => {
       await seed(snapshotOf([question()]));
       await engine.setRoomName(pin, HOST, '  Friday   night ');

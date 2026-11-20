@@ -36,6 +36,7 @@ import {
   LockOpen,
   Eye,
   ExternalLink,
+  House,
   MonitorPlay,
   Pause,
   Pencil,
@@ -499,6 +500,12 @@ function HostConsole({
         <Users className="size-4" />
         <span data-testid="player-count">{view.players.length}</span>
       </button>
+      {view.listed?.offered ? (
+        <ListedButton
+          listed={view.listed.on}
+          onToggle={(on) => socket?.emit('host:listed', { pin, on })}
+        />
+      ) : null}
     </div>
   );
 
@@ -2085,6 +2092,32 @@ function LockButton({
         {locked ? <Lock className="size-4" /> : <LockOpen className="size-4" />}
         {compact ? null : locked ? t('control.locked') : t('control.lock')}
       </Button>
+    </Tooltip>
+  );
+}
+
+/**
+ * Whether the home page lists the lobby (`LOBBY_LISTING`), beside its PIN and its
+ * participants: the host sees it with the lobby's own information, and switches
+ * it at any time. Shown only when the instance lists lobbies.
+ */
+function ListedButton({ listed, onToggle }: { listed: boolean; onToggle: (on: boolean) => void }) {
+  const { t } = useTranslation('live');
+  return (
+    <Tooltip label={listed ? t('control.listedOnTooltip') : t('control.listedOffTooltip')}>
+      <button
+        type="button"
+        aria-pressed={listed}
+        aria-label={t('control.listed')}
+        onClick={() => onToggle(!listed)}
+        className={cn(
+          'hover:bg-accent flex items-center gap-1.5 rounded-full px-2.5 py-1 text-sm',
+          listed ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground',
+        )}
+      >
+        <House className="size-4" aria-hidden />
+        {listed ? t('control.listedOn') : t('control.listedOff')}
+      </button>
     </Tooltip>
   );
 }

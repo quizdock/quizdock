@@ -72,6 +72,8 @@ export const gameKeys = {
   tokens: (pin: string) => `room:${pin}:tokens`,
   /** Set of a host's open rooms, by PIN (resumed from the dashboard §6.2). */
   hostGames: (userId: string) => `host:${userId}:games`,
+  /** Set of the rooms listed on the home page, by PIN (`LOBBY_LISTING`), cleaned as it is read. */
+  listedRooms: () => 'rooms:listed',
 
   // ── Game (game id) ──
   /** The game hash: state machine, current step, timings, pace. */

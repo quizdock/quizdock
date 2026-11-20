@@ -165,6 +165,7 @@
     "AUTH_MODE": "Authentication mode",
     "DEMO_MODE": "Public demo",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "Participants without an account",
+    "LOBBY_LISTING": "Open lobbies on the home page",
     "OIDC_ISSUER": "Identity provider (issuer)",
     "OIDC_CLIENT_ID": "Client identifier",
     "OIDC_CLIENT_SECRET": "Client secret",

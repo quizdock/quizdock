@@ -189,6 +189,8 @@ export interface RoomMeta {
   audienceLanguage: string;
   /** The selection the room was opened from (SPECIFICATIONS-SELECTION); absent or '' = none. */
   selectionId?: string;
+  /** Listed on the home page (`LOBBY_LISTING`); the host takes it off, or back, at any time. */
+  listed: boolean;
 }
 
 /** The room's game sounds as kept: the host's choices (media ids) and their URLs. */
@@ -245,6 +247,20 @@ export const DEFAULT_ROOM_SOUNDS: RoomSounds = {
   muted: false,
 };
 
+/** A lobby as the home page lists it (`LOBBY_LISTING`): what a passer-by needs to pick it. */
+export interface ListedLobby {
+  pin: string;
+  /** The room's own name, null for the default ("<host>'s lobby", said by the page). */
+  roomName: string | null;
+  hostName: string;
+  /** The quiz it plays, or played last. */
+  quizTitle: string;
+  /** A quiz under way; false while the lobby waits. */
+  playing: boolean;
+  playerCount: number;
+  participantAccess: ParticipantAccess;
+}
+
 /** The room fields, as the game view (`GameMeta`) carries them. */
 export const ROOM_FIELDS = [
   'roomId',
@@ -264,6 +280,7 @@ export const ROOM_FIELDS = [
   'motion',
   'audienceLanguage',
   'selectionId',
+  'listed',
 ] as const;
 
 /**

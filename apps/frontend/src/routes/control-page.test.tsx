@@ -71,6 +71,7 @@ const view = (partial: Partial<GameView>): GameView => ({
   youReady: false,
   sounds: null,
   motion: null,
+  listed: null,
   hint: null,
   hintsEnabled: true,
   roomName: null,
@@ -798,6 +799,32 @@ describe('ControlPage (console hôte)', () => {
     expect(motion).toHaveAttribute('aria-checked', 'true');
     act(() => motion.click());
     expect(fakeSocket.emit).toHaveBeenCalledWith('host:motion', { pin: '482913', on: false });
+  });
+
+  it('ANSWERING: beside the PIN, the host takes the lobby off the home page, or back (LOBBY_LISTING)', async () => {
+    localStorage.setItem('live.localUser', 'Animateur');
+    hookState.value = view({
+      state: GameState.Answering,
+      questionIndex: 0,
+      totalQuestions: 3,
+      question: { prompt: 'Capitale ?' } as never,
+      answerCount: { answered: 0, total: 1 },
+      listed: { on: true, offered: true },
+    });
+    renderApp('/session/482913/console');
+    const listed = await screen.findByRole('button', { name: "Page d'accueil" });
+    expect(listed).toHaveAttribute('aria-pressed', 'true');
+    expect(listed).toHaveTextContent('Affiché');
+    act(() => listed.click());
+    expect(fakeSocket.emit).toHaveBeenCalledWith('host:listed', { pin: '482913', on: false });
+  });
+
+  it('LOBBY: nothing about the home page when the instance lists no lobby', async () => {
+    localStorage.setItem('live.localUser', 'Animateur');
+    hookState.value = view({ listed: { on: false, offered: false } });
+    renderApp('/session/482913/console');
+    await screen.findByTestId('player-count');
+    expect(screen.queryByRole('button', { name: "Page d'accueil" })).toBeNull();
   });
 
   it('LOBBY: open access greys personal tracking out, and says why (#57)', async () => {

@@ -12,6 +12,13 @@ describe('a room as Redis keeps it', () => {
     expect(deserializeRoom({ ...raw, ...roomHash({ motion: true }) }).motion).toBe(true);
   });
 
+  it('keeps whether the home page lists it; a room from before LOBBY_LISTING is not listed', () => {
+    expect(deserializeRoom({ ...raw, ...roomHash({ listed: true }) }).listed).toBe(true);
+    expect(deserializeRoom({ ...raw, ...roomHash({ listed: false }) }).listed).toBe(false);
+    process.env = { ...env, LOBBY_LISTING: 'listed' };
+    expect(deserializeRoom(raw).listed).toBe(false);
+  });
+
   it('a room opened before the setting existed follows the instance (LIVE_MOTION)', () => {
     process.env = { ...env, LIVE_MOTION: 'off' };
     expect(deserializeRoom(raw).motion).toBe(false);

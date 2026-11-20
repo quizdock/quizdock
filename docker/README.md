@@ -81,6 +81,7 @@ The variables most instances set:
 | `AUTH_MODE` | `none` | `none`: local mode, no identity provider, one host seat. `oidc`: sign-in with your provider. |
 | `APP_PUBLIC_URL` | — | The public address, offered first as the invitation address (QR code, join link). |
 | `ALLOW_ANONYMOUS_PARTICIPANTS` | `false` | OIDC mode only: lets hosts open a game to a PIN and a nickname. |
+| `LOBBY_LISTING` | `unlisted` (`listed` in `:standalone`) | `listed`: the home page lists the open lobbies, joined in one click; each host can take theirs off the list. |
 | `MEDIA_LIBRARY_LINKS` | seven free libraries | The free media libraries the editor links to; `none` hides them. |
 | `UPDATE_CHECK` | `true` | Asks GitHub, at most once a day, whether a newer release is out; `false` turns it off. |
 

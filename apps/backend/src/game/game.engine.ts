@@ -49,6 +49,7 @@ import {
   gameKeys,
 } from './game.keys';
 import { gameHash, roomHash } from './game-hash';
+import { LISTING_WATCHERS, listsLobbies } from './lobby-listing';
 import type {
   AnswerRecord,
   GameMeta,
@@ -288,6 +289,7 @@ export class GameEngine {
       if (counting) await this.clearLobbyCountdown(ref);
       const snapshot = await this.requireSnapshot(ref.id, true);
       await this.enterStep(ref, snapshot, 0);
+      await this.announceListing(ref.pin);
     } catch (err) {
       await this.redis.del(lock); // nothing started: Start can be tried again
       throw err;
@@ -393,6 +395,7 @@ export class GameEngine {
     }
     await this.redis.hset(gameKeys.room(pin), roomHash({ joinLocked: locked }));
     this.server.to(pin).emit('notice', noticeOf({ ...meta, joinLocked: locked }));
+    await this.announceListing(pin);
   }
 
   /**
@@ -1342,6 +1345,10 @@ export class GameEngine {
     const room = await this.game.getRoom(pin);
     if (room) socket.emit('room:sounds', soundsPayload(room.sounds));
     if (room) socket.emit('room:motion', { on: room.motion });
+    // Only the console switches it; the instance may list no lobby at all.
+    if (room && socket.data.isHostControl) {
+      socket.emit('room:listed', { on: room.listed, offered: listsLobbies() });
+    }
     socket.emit('game:hints', { enabled: !meta.hintsOff });
     const snapshot = await this.game.getSnapshot(meta.id);
     // Every device asks for sound at once when the quiz will need it (a phone too: the
@@ -1630,6 +1637,7 @@ export class GameEngine {
       .to(pin)
       .emit('game:state', { state: GameState.Ended, questionIndex: -1, totalQuestions: 0 });
     this.server.to(pin).emit('game:ended', await this.endedPayload(ref.id));
+    await this.announceListing(pin);
   }
 
   /**
@@ -1719,6 +1727,7 @@ export class GameEngine {
       .to(pin)
       .emit('game:state', { state: GameState.Ended, questionIndex: -1, totalQuestions: 0 });
     this.server.to(pin).emit('game:ended', await this.endedPayload(meta.id));
+    await this.announceListing(pin);
   }
 
   /**
@@ -1745,6 +1754,7 @@ export class GameEngine {
       this.timers.cancelAll(pin);
       this.answerCounts.delete(pin);
       await this.game.openGameWith(pin, snapshot, line?.mode);
+      await this.announceListing(pin);
       // A lobby with no quiz is one a quiz went back to; so is one already counting.
       const follows = !meta.quizId || Boolean(meta.lobbyStartAt);
       const opened = await this.game.getMeta(pin);
@@ -1793,6 +1803,7 @@ export class GameEngine {
       throw err;
     }
     await this.sendLobby(pin);
+    await this.announceListing(pin);
   }
 
   /**
@@ -1860,6 +1871,7 @@ export class GameEngine {
     const name = oneLine(raw).slice(0, ROOM_NAME_MAX);
     await this.redis.hset(gameKeys.room(pin), roomHash({ name }));
     this.server.to(pin).emit('room:info', { name: name || null, hostName: meta.hostName });
+    await this.announceListing(pin);
   }
 
   /**
@@ -2037,6 +2049,25 @@ export class GameEngine {
     await this.requireHost(pin, hostUserId);
     await this.redis.hset(gameKeys.room(pin), roomHash({ motion: on === true }));
     this.server.to(pin).emit('room:motion', { on: on === true });
+  }
+
+  /** `host:listed`: the room on the home page's list, or off it (`LOBBY_LISTING`), at any time. */
+  async setListed(pin: string, hostUserId: string, on: boolean): Promise<void> {
+    await this.requireHost(pin, hostUserId);
+    await this.game.setListed(pin, on === true);
+    this.server.to(pin).emit('room:listed', { on: on === true, offered: listsLobbies() });
+    await this.announceListing(pin, true);
+  }
+
+  /**
+   * Tells the home pages watching the list (`LOBBY_LISTING`) that it changed, so they
+   * read it again at once: a listed room that opened, started, closed to newcomers,
+   * was renamed or ended — or any room the host just put on the list or took off.
+   */
+  async announceListing(pin: string, always = false): Promise<void> {
+    if (!listsLobbies()) return;
+    if (!always && (await this.redis.hget(gameKeys.room(pin), 'listed')) !== '1') return;
+    this.server.to(LISTING_WATCHERS).emit('lobbies:changed');
   }
 
   async setSounds(pin: string, hostUserId: string, patch: RoomSoundsSettings): Promise<void> {

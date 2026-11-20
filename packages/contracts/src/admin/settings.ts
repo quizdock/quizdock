@@ -385,6 +385,18 @@ export const SETTINGS = {
       requires: { key: 'AUTH_MODE', value: 'oidc' },
     },
   }),
+  LOBBY_LISTING: define({
+    key: 'LOBBY_LISTING',
+    description:
+      'Whether the home page lists the open lobbies under the PIN field, joined in one click: `listed`, handy on a private instance. Each lobby opened from then on is listed; its host takes it off the list, or puts it back, at any time (console, lobby settings). A lobby closed to newcomers is not listed. `unlisted`: a lobby is reached by its PIN, link or QR code only. `listed` in the `:standalone` image.',
+    category: 'access',
+    criticality: 'C3',
+    schema: oneOf(['unlisted', 'listed'] as const, (raw) => raw.trim().toLowerCase()),
+    accepts: '`unlisted` · `listed`',
+    default: 'unlisted' as 'unlisted' | 'listed',
+    applies: 'next-room',
+    overridable: true,
+  }),
   OIDC_ISSUER: define({
     key: 'OIDC_ISSUER',
     description:

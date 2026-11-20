@@ -671,6 +671,11 @@ export interface ClientToServerEvents {
   'host:sounds': (p: { pin: string } & RoomSoundsSettings) => void;
   /** Whether the room's screens move between steps (UI system §1.8), at any time. */
   'host:motion': (p: { pin: string; on: boolean }) => void;
+  /** The room on the home page's list, or off it (`LOBBY_LISTING`), at any time. */
+  'host:listed': (p: { pin: string; on: boolean }) => void;
+  /** A home page follows the list of lobbies (`LOBBY_LISTING`), or stops. */
+  'listing:watch': () => void;
+  'listing:unwatch': () => void;
   /** The participant is ready (or not yet) in the lobby (#104); never blocks the start. */
   'player:ready': (p: { pin: string; ready: boolean }, ack: (res: { ok: boolean }) => void) => void;
   /** The room's own name (≤ 60 characters), from its lobby; blank = the default. */
@@ -897,6 +902,13 @@ export interface ServerToClientEvents {
    * when the host switches it. A new room starts from the instance's `LIVE_MOTION`.
    */
   'room:motion': (p: { on: boolean }) => void;
+  /**
+   * Whether the home page lists the room (`LOBBY_LISTING`), to the console: on attach,
+   * and when the host switches it. `offered`: the instance lists lobbies at all.
+   */
+  'room:listed': (p: { on: boolean; offered: boolean }) => void;
+  /** To the home pages watching it: the list of lobbies changed, read it again. */
+  'lobbies:changed': () => void;
   /**
    * To a projection window the host just paired: it is the room's projection now;
    * `token` keeps it so when it reconnects (`spectator:join.screen`).
