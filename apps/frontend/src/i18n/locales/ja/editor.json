@@ -45,6 +45,10 @@
       "everyone": "すべての端末"
     },
     "sharingLegend": "言語と共有",
+    "feedbackDescription": "参加者がクイズをどう思ったか。ゲームの最後に5段階で評価し、コメントを残せます。",
+    "themeDescription": "待合室から表彰台まで、プロジェクションとプレイヤーのスマートフォンでのクイズの見た目です。",
+    "soundDescription": "クイズの音声と動画の再生方法：問題ごとに同じ音量で、選んだ端末で、次へ進む前に間を置いて再生します。",
+    "sharingDescription": "クイズの言語と、誰が見られるか。ライセンスとタグを付けると、テンプレートとして提供できます。",
     "sharingSummary_one": "{{license}}・タグ {{count}}件",
     "sharingSummary_other": "{{license}}・タグ {{count}}件",
     "noLicense": "ライセンスなし",
@@ -83,6 +87,7 @@
     "enableLabel": "参加者のレビューを許可",
     "enableHelp": "クイズを実施するたびに、終了時に評価パネルが表示されます。",
     "title": "参加者のレビュー",
+    "off": "オフ",
     "empty": "レビューはまだありません。",
     "anonymous": "匿名",
     "starsAriaLabel": "5点中{{value}}点",

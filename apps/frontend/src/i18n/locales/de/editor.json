@@ -45,6 +45,10 @@
       "everyone": "Alle Geräte"
     },
     "sharingLegend": "Sprache & Teilen",
+    "feedbackDescription": "Was die Teilnehmenden vom Quiz halten: Am Ende einer Partie können sie es mit bis zu 5 Sternen bewerten und einen Kommentar hinterlassen.",
+    "themeDescription": "Das Aussehen des Quiz auf der Projektion und den Handys der Spieler, vom Raum bis zum Podium.",
+    "soundDescription": "Wie Audio und Videos des Quiz abgespielt werden: in gleicher Lautstärke von Frage zu Frage, auf den gewählten Geräten, mit einer Pause vor dem Weitergehen.",
+    "sharingDescription": "Die Sprache, in der das Quiz geschrieben ist, und wer es sehen kann. Mit Lizenz und Tags können Sie es als Vorlage anbieten.",
     "sharingSummary_one": "{{license}} · {{count}} Schlagwort",
     "sharingSummary_other": "{{license}} · {{count}} Schlagwörter",
     "noLicense": "Keine Lizenz",
@@ -83,6 +87,7 @@
     "enableLabel": "Bewertungen der Teilnehmenden erlauben",
     "enableHelp": "Am Ende des Quiz wird bei jedem Spielen ein Bewertungsfeld angeboten.",
     "title": "Bewertungen der Teilnehmenden",
+    "off": "Aus",
     "empty": "Noch keine Bewertungen.",
     "anonymous": "Anonym",
     "starsAriaLabel": "{{value}} von 5",

@@ -79,6 +79,13 @@ async function stepMenu(step: string, item: string) {
   fireEvent.click(screen.getAllByRole('button', { name: item }).at(-1)!);
 }
 
+/** Opens a group of the quiz's settings: each lives in its own modal. */
+const openSetting = async (name: RegExp) =>
+  fireEvent.click(await screen.findByRole('button', { name }));
+const FEEDBACK = /^Avis des participants/;
+const SOUND = /^Audio.*LUFS/;
+const SHARING = /^Langue et partage/;
+
 /** A step's row in the list (its ⋯ carries a label, the row does not). */
 const stepRow = (name: RegExp) =>
   screen.getAllByRole('button', { name }).find((b) => !b.hasAttribute('aria-label'))!;
@@ -137,7 +144,10 @@ describe('EditorPage', () => {
     ]);
     renderApp('/quizzes/q1');
 
-    // Plus de tiroir « Réglages » : le résumé des avis est à même la page.
+    // Plus de tiroir « Réglages » : le résumé des avis est à même la page, son détail
+    // dans sa modale.
+    expect(await screen.findByRole('button', { name: /4\.5 ★/ })).toBeInTheDocument();
+    await openSetting(FEEDBACK);
     expect(await screen.findByText('4.5')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Voir les 2 avis/ })).toHaveAttribute(
       'href',
@@ -340,6 +350,7 @@ describe('EditorPage', () => {
         .filter(([url, opts]) => String(url).endsWith('/quizzes/q1') && opts?.method === 'PUT')
         .map(([, opts]) => JSON.parse(String(opts?.body)) as Record<string, unknown>);
 
+    await openSetting(SHARING);
     fireEvent.change(await screen.findByLabelText('Licence', { selector: 'select' }), {
       target: { value: 'CC-BY-4.0' },
     });
@@ -360,6 +371,7 @@ describe('EditorPage', () => {
       { method: 'PUT', path: '/quizzes/q1', body: detail() },
     ]);
     renderApp('/quizzes/q1');
+    await openSetting(SHARING);
     const select = await screen.findByLabelText('Langue', { selector: 'select' });
     const options = within(select).getAllByRole('option');
     // Tests pin the UI to French: French is the instance's language, listed first.
@@ -388,6 +400,7 @@ describe('EditorPage', () => {
     const title = await screen.findByDisplayValue('Mon quiz');
     fireEvent.change(title, { target: { value: 'Mon quiz révisé' } });
     // The language is changed on its own, then the title is saved.
+    await openSetting(SHARING);
     fireEvent.change(screen.getByLabelText('Langue', { selector: 'select' }), {
       target: { value: 'de' },
     });
@@ -488,6 +501,7 @@ describe('EditorPage', () => {
         name: 'the feedback switch',
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
+          await openSetting(FEEDBACK);
           fireEvent.click(await screen.findByLabelText('Autoriser les avis des participants'));
         },
       },
@@ -495,6 +509,7 @@ describe('EditorPage', () => {
         name: 'the sound levelling',
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
+          await openSetting(SOUND);
           fireEvent.change(
             await screen.findByLabelText('Égalisation de l’audio', { selector: 'select' }),
             {
@@ -507,6 +522,7 @@ describe('EditorPage', () => {
         name: 'the licence',
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
+          await openSetting(SHARING);
           fireEvent.change(await screen.findByLabelText('Licence', { selector: 'select' }), {
             target: { value: 'CC0-1.0' },
           });
@@ -516,6 +532,7 @@ describe('EditorPage', () => {
         name: 'the language',
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
+          await openSetting(SHARING);
           fireEvent.change(await screen.findByLabelText('Langue', { selector: 'select' }), {
             target: { value: 'de' },
           });
@@ -525,6 +542,7 @@ describe('EditorPage', () => {
         name: 'a tag',
         request: ['PUT', '/quizzes/q1'],
         act: async () => {
+          await openSetting(SHARING);
           const input = await screen.findByPlaceholderText('Ajouter un tag…');
           fireEvent.change(input, { target: { value: 'histoire' } });
           fireEvent.keyDown(input, { key: 'Enter' });
@@ -606,6 +624,7 @@ describe('EditorPage', () => {
         { method: 'GET', path: '/quizzes/q1', body: detail() },
       ]);
       renderApp('/quizzes/q1');
+      await openSetting(SHARING);
       fireEvent.change(await screen.findByLabelText('Licence', { selector: 'select' }), {
         target: { value: 'CC0-1.0' },
       });

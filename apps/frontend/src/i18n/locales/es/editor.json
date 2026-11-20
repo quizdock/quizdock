@@ -45,6 +45,10 @@
       "everyone": "Todos los dispositivos"
     },
     "sharingLegend": "Idioma y uso compartido",
+    "feedbackDescription": "Lo que los jugadores piensan del quiz: al final de una partida, pueden puntuarlo sobre 5 y dejar un comentario.",
+    "themeDescription": "El aspecto del quiz en la proyección y en los teléfonos de los jugadores, desde la sala hasta el podio.",
+    "soundDescription": "Cómo se reproducen el audio y los vídeos del quiz: al mismo nivel de una pregunta a otra, en los dispositivos elegidos, con una pausa antes de seguir.",
+    "sharingDescription": "El idioma en que está escrito el quiz y quién puede verlo. Una licencia y etiquetas te permiten ofrecerlo como plantilla.",
     "sharingSummary_one": "{{license}} · {{count}} etiqueta",
     "sharingSummary_many": "{{license}} · {{count}} etiquetas",
     "sharingSummary_other": "{{license}} · {{count}} etiquetas",
@@ -84,6 +88,7 @@
     "enableLabel": "Permitir opiniones de los participantes",
     "enableHelp": "Se ofrece un panel de valoración al final del quiz, cada vez que se juega.",
     "title": "Opiniones de los jugadores",
+    "off": "Desactivadas",
     "empty": "Aún no hay opiniones.",
     "anonymous": "Anónimo",
     "starsAriaLabel": "{{value}} de 5",

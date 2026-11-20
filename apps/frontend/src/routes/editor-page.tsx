@@ -76,7 +76,7 @@ import { useLaunchSession } from '../game/use-launch-session';
 import { downloadFile } from '../api/download';
 import { apiErrorText } from '../api/http';
 import type { QuizDetailDto, UpdateQuizDto } from '../api/generated/model';
-import { QuizThemeField } from './quiz-theme-field';
+import { QuizThemeField, useQuizThemeSummary } from './quiz-theme-field';
 import { QuizThemeProvider, useQuizThemeValues } from '@/lib/quiz-theme';
 import { LiveThemeAnswers } from '../game/theme';
 import { READ_DELAY_DEFAULT_MS } from './question-form-model';
@@ -88,7 +88,7 @@ import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { languageName, licenseName } from '@/lib/quiz-terms';
 import { ChromiumNotice } from '@/components/chromium-notice';
 import { Notice } from '@/components/ui/notice';
-import { Disclosure } from '@/components/ui/disclosure';
+import { SettingsLine } from '@/components/ui/settings-line';
 import { Drawer } from '@/components/ui/drawer';
 import { QuestionForm } from './question-form';
 import { PublicationDialog } from './publication-export';
@@ -171,7 +171,12 @@ function ThemedQuizEditor({ quiz }: { quiz: QuizDetailDto }) {
 }
 
 function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
-  const { t, i18n } = useTranslation(['editor', 'common']);
+  const { t, i18n } = useTranslation(['editor', 'common', 'themes']);
+  const themeSummary = useQuizThemeSummary({
+    themeId: quiz.themeId,
+    themeBuiltin: quiz.themeBuiltin,
+  });
+  const feedback = useFeedbackSummary(quiz.id);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const update = useQuizzesControllerUpdate();
@@ -636,8 +641,8 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
           </div>
         </div>
         {shareNote ? <p className="text-muted-foreground text-sm">{shareNote}</p> : null}
-        <div className={cn('grid items-start gap-x-8 gap-y-4', PAGE_COLUMNS)}>
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               {t('settings.descriptionLabel')}
             </span>
@@ -670,162 +675,198 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
               </button>
             )}
           </div>
-          {/* À droite de la description, les réglages du quiz dans une carte : les avis
-                en clair sur une rangée, le son replié sur la suivante. */}
-          <Section className="bg-muted/30 min-w-0 rounded-lg border px-3 py-2">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <label className="flex items-center gap-2 text-sm" title={t('feedback.enableHelp')}>
-                <Switch
-                  checked={quiz.feedbackEnabled}
-                  disabled={update.isPending}
-                  onCheckedChange={(checked) => void setFeedbackEnabled(checked)}
-                  aria-label={t('feedback.enableLabel')}
-                />
-                <span className="font-medium">{t('feedback.enableLabel')}</span>
-              </label>
-              <FeedbackSection quizId={quiz.id} />
-            </div>
-            {/* Its look on the live screens (docs/themes.md). */}
-            <QuizThemeField
-              value={{ themeId: quiz.themeId, themeBuiltin: quiz.themeBuiltin }}
-              disabled={update.isPending}
-              onChange={(theme) => void setTheme(theme)}
-            />
-            <Disclosure
-              flush
-              className="-mx-3 border-t px-3 pt-1"
-              title={t('settings.soundLegend')}
-              value={t('settings.soundSummary', {
-                lufs: String(quiz.loudnessTargetLufs).replace('-', '−'),
-                target: t(`settings.audioTarget.${quiz.audioTarget}`),
-                tail: quiz.mediaTailS,
-              })}
-            >
-              {/* Ouvert, les trois réglages se lisent sur une ligne. */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <MediaTailField
-                  value={quiz.mediaTailS}
-                  disabled={update.isPending}
-                  onSave={(mediaTailS) => void setMediaTailS(mediaTailS)}
-                />
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.loudnessHelp')}
-                >
-                  <span className="font-medium">{t('settings.loudnessLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={String(quiz.loudnessTargetLufs)}
+          {/* À droite, sous les actions, les réglages secondaires du quiz : des
+                résumés, chacun ouvrant sa modale. */}
+          <SettingsLine
+            className="lg:max-w-xl lg:justify-end"
+            items={[
+              {
+                key: 'feedback',
+                title: t('feedback.title'),
+                description: t('settings.feedbackDescription'),
+                value: [
+                  quiz.feedbackEnabled ? null : t('feedback.off'),
+                  feedback && feedback.count > 0
+                    ? `${feedback.average.toFixed(1)} ★ · ${t('feedback.count', { count: feedback.count })}`
+                    : quiz.feedbackEnabled && feedback
+                      ? t('feedback.empty')
+                      : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · '),
+                content: (
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <label
+                      className="flex items-center gap-2 text-sm"
+                      title={t('feedback.enableHelp')}
+                    >
+                      <Switch
+                        checked={quiz.feedbackEnabled}
+                        disabled={update.isPending}
+                        onCheckedChange={(checked) => void setFeedbackEnabled(checked)}
+                        aria-label={t('feedback.enableLabel')}
+                      />
+                      <span className="font-medium">{t('feedback.enableLabel')}</span>
+                    </label>
+                    <FeedbackSection quizId={quiz.id} />
+                  </div>
+                ),
+              },
+              {
+                key: 'theme',
+                title: t('themes:picker.legend'),
+                description: t('settings.themeDescription'),
+                wide: true,
+                value: themeSummary,
+                content: (
+                  /* Its look on the live screens (docs/themes.md). */
+                  <QuizThemeField
+                    value={{ themeId: quiz.themeId, themeBuiltin: quiz.themeBuiltin }}
                     disabled={update.isPending}
-                    onChange={(e) => void setLoudness(Number(e.target.value) as LoudnessTarget)}
-                  >
-                    {LOUDNESS_TARGETS.map((lufs) => (
-                      <option key={lufs} value={lufs}>
-                        {t(`settings.loudness.${-lufs}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-                <label
-                  className="flex flex-wrap items-center gap-2 text-[1em]"
-                  title={t('settings.audioTargetHelp')}
-                >
-                  <span className="font-medium">{t('settings.audioTargetLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.audioTarget}
-                    disabled={update.isPending}
-                    onChange={(e) => void setAudioTarget(e.target.value as AudioTarget)}
-                  >
-                    {AUDIO_TARGETS.map((target) => (
-                      <option key={target} value={target}>
-                        {t(`settings.audioTarget.${target}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-              </div>
-            </Disclosure>
-            {/* The terms the quiz is shared under: required before sharing it as a template. */}
-            <Disclosure
-              flush
-              className="-mx-3 border-t px-3 pt-1"
-              title={t('settings.sharingLegend')}
-              value={[
-                quiz.shared ? t('settings.sharedOn') : t('settings.sharedOff'),
-                languageName(quiz.language, i18n.language),
-                quiz.license
-                  ? t('settings.sharingSummary', {
-                      license: licenseName(quiz.license),
-                      count: quiz.tags.length,
-                    })
-                  : t('settings.noLicense'),
-              ].join(' · ')}
-            >
-              {/* Private by default: the other hosts see nothing of it until it is shared. */}
-              <CheckboxField
-                className="mb-2"
-                checked={quiz.shared}
-                disabled={update.isPending}
-                onChange={(shared) => void setShared(shared)}
-                label={t('settings.sharedLabel')}
-                hint={t('settings.sharedHelp')}
-              />
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.languageHelp')}
-                >
-                  <span className="font-medium">{t('settings.languageLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.language}
-                    disabled={update.isPending}
-                    onChange={(e) => void setLanguage(e.target.value)}
-                  >
-                    {languageOptions(quiz.language, i18n.language).map(({ code, name }) => (
-                      <option key={code} value={code}>
-                        {name}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.licenseHelp')}
-                >
-                  <span className="font-medium">{t('settings.licenseLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.license ?? ''}
-                    disabled={update.isPending}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === '' || isQuizLicense(value)) void setLicense(value || null);
-                    }}
-                  >
-                    <option value="">{t('settings.noLicense')}</option>
-                    {QUIZ_LICENSES.map((license) => (
-                      <option key={license} value={license}>
-                        {t(`settings.license.${LICENSE_KEYS[license]}`)}
-                      </option>
-                    ))}
-                    {/* An imported quiz may carry a licence no longer offered: shown, not lost. */}
-                    {quiz.license && !isQuizLicense(quiz.license) ? (
-                      <option value={quiz.license} disabled>
-                        {quiz.license}
-                      </option>
-                    ) : null}
-                  </Select>
-                </label>
-                <TagsField
-                  value={quiz.tags}
-                  disabled={update.isPending}
-                  onSave={(tags) => void setTags(tags)}
-                />
-              </div>
-            </Disclosure>
-          </Section>
+                    onChange={(theme) => void setTheme(theme)}
+                  />
+                ),
+              },
+              {
+                key: 'sound',
+                title: t('settings.soundLegend'),
+                description: t('settings.soundDescription'),
+                value: t('settings.soundSummary', {
+                  lufs: String(quiz.loudnessTargetLufs).replace('-', '−'),
+                  target: t(`settings.audioTarget.${quiz.audioTarget}`),
+                  tail: quiz.mediaTailS,
+                }),
+                content: (
+                  <div className="flex flex-col items-start gap-3">
+                    <MediaTailField
+                      value={quiz.mediaTailS}
+                      disabled={update.isPending}
+                      onSave={(mediaTailS) => void setMediaTailS(mediaTailS)}
+                    />
+                    <label
+                      className="flex flex-wrap items-center gap-2 text-[1em]"
+                      title={t('settings.loudnessHelp')}
+                    >
+                      <span className="font-medium">{t('settings.loudnessLabel')}</span>
+                      <Select
+                        className="h-8 w-auto"
+                        value={String(quiz.loudnessTargetLufs)}
+                        disabled={update.isPending}
+                        onChange={(e) => void setLoudness(Number(e.target.value) as LoudnessTarget)}
+                      >
+                        {LOUDNESS_TARGETS.map((lufs) => (
+                          <option key={lufs} value={lufs}>
+                            {t(`settings.loudness.${-lufs}`)}
+                          </option>
+                        ))}
+                      </Select>
+                    </label>
+                    <label
+                      className="flex flex-wrap items-center gap-2 text-[1em]"
+                      title={t('settings.audioTargetHelp')}
+                    >
+                      <span className="font-medium">{t('settings.audioTargetLabel')}</span>
+                      <Select
+                        className="h-8 w-auto"
+                        value={quiz.audioTarget}
+                        disabled={update.isPending}
+                        onChange={(e) => void setAudioTarget(e.target.value as AudioTarget)}
+                      >
+                        {AUDIO_TARGETS.map((target) => (
+                          <option key={target} value={target}>
+                            {t(`settings.audioTarget.${target}`)}
+                          </option>
+                        ))}
+                      </Select>
+                    </label>
+                  </div>
+                ),
+              },
+              {
+                /* The terms the quiz is shared under: required before sharing it as a template. */
+                key: 'sharing',
+                title: t('settings.sharingLegend'),
+                description: t('settings.sharingDescription'),
+                value: [
+                  quiz.shared ? t('settings.sharedOn') : t('settings.sharedOff'),
+                  languageName(quiz.language, i18n.language),
+                  quiz.license
+                    ? t('settings.sharingSummary', {
+                        license: licenseName(quiz.license),
+                        count: quiz.tags.length,
+                      })
+                    : t('settings.noLicense'),
+                ].join(' · '),
+                content: (
+                  <>
+                    {/* Private by default: the other hosts see nothing of it until it is shared. */}
+                    <CheckboxField
+                      className="mb-2"
+                      checked={quiz.shared}
+                      disabled={update.isPending}
+                      onChange={(shared) => void setShared(shared)}
+                      label={t('settings.sharedLabel')}
+                      hint={t('settings.sharedHelp')}
+                    />
+                    <div className="flex flex-col items-start gap-3">
+                      <label
+                        className="flex flex-wrap items-center gap-2 text-[1em]"
+                        title={t('settings.languageHelp')}
+                      >
+                        <span className="font-medium">{t('settings.languageLabel')}</span>
+                        <Select
+                          className="h-8 w-auto"
+                          value={quiz.language}
+                          disabled={update.isPending}
+                          onChange={(e) => void setLanguage(e.target.value)}
+                        >
+                          {languageOptions(quiz.language, i18n.language).map(({ code, name }) => (
+                            <option key={code} value={code}>
+                              {name}
+                            </option>
+                          ))}
+                        </Select>
+                      </label>
+                      <label
+                        className="flex flex-wrap items-center gap-2 text-[1em]"
+                        title={t('settings.licenseHelp')}
+                      >
+                        <span className="font-medium">{t('settings.licenseLabel')}</span>
+                        <Select
+                          className="h-8 w-auto"
+                          value={quiz.license ?? ''}
+                          disabled={update.isPending}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === '' || isQuizLicense(value))
+                              void setLicense(value || null);
+                          }}
+                        >
+                          <option value="">{t('settings.noLicense')}</option>
+                          {QUIZ_LICENSES.map((license) => (
+                            <option key={license} value={license}>
+                              {t(`settings.license.${LICENSE_KEYS[license]}`)}
+                            </option>
+                          ))}
+                          {/* An imported quiz may carry a licence no longer offered: shown, not lost. */}
+                          {quiz.license && !isQuizLicense(quiz.license) ? (
+                            <option value={quiz.license} disabled>
+                              {quiz.license}
+                            </option>
+                          ) : null}
+                        </Select>
+                      </label>
+                      <TagsField
+                        value={quiz.tags}
+                        disabled={update.isPending}
+                        onSave={(tags) => void setTags(tags)}
+                      />
+                    </div>
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
         {/* Où en est le quiz, et l'action qui suit : toute la largeur, sous la
               description et les réglages — l'accès live s'affiche ici pendant une session. */}
@@ -1214,25 +1255,14 @@ function ImportReportNotice({ quizId }: { quizId: string }) {
   );
 }
 
-function Section({
-  title,
-  className,
-  children,
-}: {
-  title?: string;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className={cn('flex flex-col gap-2', className)}>
-      {title ? (
-        <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-          {title}
-        </h2>
-      ) : null}
-      {children}
-    </section>
-  );
+/** The quiz's feedback summary, once the API has one. */
+function useFeedbackSummary(quizId: string) {
+  const { data, isLoading } = useQuizzesControllerFeedback(quizId, { page: 1, pageSize: 1 });
+  const summary = data?.data;
+  // Sans `count`, la réponse n'est pas (encore) un résumé : on se tait plutôt que
+  // d'afficher une moyenne inventée.
+  if (isLoading || typeof summary?.count !== 'number') return null;
+  return summary;
 }
 
 /**
@@ -1241,11 +1271,8 @@ function Section({
  */
 function FeedbackSection({ quizId }: { quizId: string }) {
   const { t } = useTranslation(['editor', 'common']);
-  const { data, isLoading } = useQuizzesControllerFeedback(quizId, { page: 1, pageSize: 1 });
-  const summary = data?.data;
-  // Sans `count`, la réponse n'est pas (encore) un résumé : on se tait plutôt que
-  // d'afficher une moyenne inventée.
-  if (isLoading || typeof summary?.count !== 'number') return null;
+  const summary = useFeedbackSummary(quizId);
+  if (!summary) return null;
   if (summary.count === 0)
     return <p className="text-muted-foreground text-xs">{t('feedback.empty')}</p>;
   return (

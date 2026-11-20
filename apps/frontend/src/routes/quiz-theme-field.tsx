@@ -1,6 +1,5 @@
 import { BUILTIN_THEMES } from '@quiz-dock/contracts';
 import { useTranslation } from 'react-i18next';
-import { Disclosure } from '@/components/ui/disclosure';
 import {
   builtinValues,
   isAccessible,
@@ -21,19 +20,10 @@ export interface QuizThemeValue {
 }
 
 /**
- * The quiz's look on the live screens (docs/themes.md): a thumbnail per theme, the
- * instance's default first, then the shipped themes, then the hosts'. Only the
- * accessible ones say so.
+ * The themes a quiz can take: the instance's default first, then the shipped
+ * themes, then the hosts'; and the current one, by name.
  */
-export function QuizThemeField({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: QuizThemeValue;
-  disabled?: boolean;
-  onChange: (theme: { builtin?: string; id?: string } | null) => void;
-}) {
+function useQuizThemeChoices(value: QuizThemeValue) {
   const { t } = useTranslation('themes');
   const { data } = useThemesControllerList();
   const library = data?.data.themes ?? [];
@@ -82,43 +72,60 @@ export function QuizThemeField({
     })),
   ];
 
+  return { current, currentName, currentValues, choices };
+}
+
+/** The current theme on one line: its name, and whether it is accessible. */
+export function useQuizThemeSummary(value: QuizThemeValue): string {
+  const { t } = useTranslation('themes');
+  const { currentName, currentValues } = useQuizThemeChoices(value);
+  return `${currentName}${isAccessible(currentValues) ? ` · ${t('accessible').toLowerCase()}` : ''}`;
+}
+
+/**
+ * The quiz's look on the live screens (docs/themes.md): a thumbnail per theme.
+ * Only the accessible ones say so.
+ */
+export function QuizThemeField({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: QuizThemeValue;
+  disabled?: boolean;
+  onChange: (theme: { builtin?: string; id?: string } | null) => void;
+}) {
+  const { t } = useTranslation('themes');
+  const { current, currentValues, choices } = useQuizThemeChoices(value);
   return (
-    <Disclosure
-      flush
-      className="-mx-3 border-t px-3 pt-1"
-      title={t('picker.legend')}
-      rememberAs="quiz-theme"
-      value={`${currentName}${isAccessible(currentValues) ? ` · ${t('accessible').toLowerCase()}` : ''}`}
-    >
-      <div className="flex flex-col gap-2">
-        {isAccessible(currentValues) ? <AccessibleBadge /> : null}
-        <div
-          role="radiogroup"
-          aria-label={t('picker.legend')}
-          className="grid max-h-[26rem] grid-cols-2 gap-2 overflow-auto pr-1 sm:grid-cols-3"
-        >
-          {choices.map((c) => (
-            <button
-              key={c.key || 'default'}
-              type="button"
-              role="radio"
-              aria-checked={current === c.key}
-              disabled={disabled}
-              onClick={() => onChange(c.ref)}
-              className={cn(
-                'overflow-hidden rounded-md border text-left text-xs',
-                current === c.key ? 'ring-primary ring-2' : 'hover:ring-primary/50 hover:ring-1',
-              )}
-            >
-              <ThemeThumbnail theme={c.values} />
-              <span className="flex items-center justify-between gap-1 px-2 py-1">
-                <span className="truncate">{c.label}</span>
-              </span>
-            </button>
-          ))}
-        </div>
-        <ManageThemesLink />
+    <div className="flex flex-col gap-2">
+      {isAccessible(currentValues) ? <AccessibleBadge /> : null}
+      <div
+        role="radiogroup"
+        aria-label={t('picker.legend')}
+        className="grid max-h-[26rem] grid-cols-2 gap-2 overflow-auto pr-1 sm:grid-cols-3"
+      >
+        {choices.map((c) => (
+          <button
+            key={c.key || 'default'}
+            type="button"
+            role="radio"
+            aria-checked={current === c.key}
+            disabled={disabled}
+            onClick={() => onChange(c.ref)}
+            className={cn(
+              'overflow-hidden rounded-md border text-left text-xs',
+              current === c.key ? 'ring-primary ring-2' : 'hover:ring-primary/50 hover:ring-1',
+            )}
+          >
+            <ThemeThumbnail theme={c.values} />
+            <span className="flex items-center justify-between gap-1 px-2 py-1">
+              <span className="truncate">{c.label}</span>
+            </span>
+          </button>
+        ))}
       </div>
-    </Disclosure>
+      <ManageThemesLink />
+    </div>
   );
 }

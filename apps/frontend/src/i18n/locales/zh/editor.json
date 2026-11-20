@@ -45,6 +45,10 @@
       "everyone": "所有设备"
     },
     "sharingLegend": "语言与共享",
+    "feedbackDescription": "玩家对测验的看法：每局结束时，他们可以按 5 分制打分并留言。",
+    "themeDescription": "测验在投影和玩家手机上的外观，从房间到领奖台。",
+    "soundDescription": "测验的音频和视频如何播放：每道题音量一致，在所选设备上播放，继续之前留出停顿。",
+    "sharingDescription": "测验使用的语言，以及谁可以看到它。添加许可证和标签后，可将其作为模板提供。",
     "sharingSummary_one": "{{license}} · {{count}} 个标签",
     "sharingSummary_other": "{{license}} · {{count}} 个标签",
     "noLicense": "无许可协议",
@@ -83,6 +87,7 @@
     "enableLabel": "允许参与者评价",
     "enableHelp": "每次测验结束时向参与者提供评分面板。",
     "title": "玩家评价",
+    "off": "已关闭",
     "empty": "暂无评价。",
     "anonymous": "匿名",
     "starsAriaLabel": "5 星中的 {{value}} 星",

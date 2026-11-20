@@ -45,6 +45,10 @@
       "everyone": "Tutti i dispositivi"
     },
     "sharingLegend": "Lingua e condivisione",
+    "feedbackDescription": "Cosa pensano i partecipanti del quiz: alla fine di una partita, possono valutarlo su 5 e lasciare un commento.",
+    "themeDescription": "L’aspetto del quiz sulla proiezione e sui telefoni dei giocatori, dalla sala al podio.",
+    "soundDescription": "Come vengono riprodotti l’audio e i video del quiz: allo stesso livello da una domanda all’altra, sui dispositivi scelti, con una pausa prima di proseguire.",
+    "sharingDescription": "La lingua in cui è scritto il quiz e chi può vederlo. Una licenza e dei tag ti permettono di proporlo come modello.",
     "sharingSummary_one": "{{license}} · {{count}} tag",
     "sharingSummary_many": "{{license}} · {{count}} tag",
     "sharingSummary_other": "{{license}} · {{count}} tag",
@@ -84,6 +88,7 @@
     "enableLabel": "Consenti le recensioni dei partecipanti",
     "enableHelp": "Alla fine del quiz viene proposto un pannello di valutazione, ogni volta che viene giocato.",
     "title": "Recensioni dei partecipanti",
+    "off": "Disattivate",
     "empty": "Ancora nessuna recensione.",
     "anonymous": "Anonimo",
     "starsAriaLabel": "{{value}} su 5",

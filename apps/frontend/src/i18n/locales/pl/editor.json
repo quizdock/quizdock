@@ -45,6 +45,10 @@
       "everyone": "Każde urządzenie"
     },
     "sharingLegend": "Język i udostępnianie",
+    "feedbackDescription": "Co uczestnicy myślą o quizie: na koniec rozgrywki mogą ocenić go w skali do 5 i zostawić komentarz.",
+    "themeDescription": "Wygląd quizu na projekcji i telefonach graczy, od pokoju po podium.",
+    "soundDescription": "Jak odtwarzane są audio i filmy quizu: na tym samym poziomie od pytania do pytania, na wybranych urządzeniach, z przerwą przed przejściem dalej.",
+    "sharingDescription": "Język, w którym napisano quiz, i kto może go zobaczyć. Licencja i tagi pozwalają udostępnić go jako szablon.",
     "sharingSummary_one": "{{license}} · {{count}} tag",
     "sharingSummary_few": "{{license}} · {{count}} tagi",
     "sharingSummary_many": "{{license}} · {{count}} tagów",
@@ -85,6 +89,7 @@
     "enableLabel": "Zezwól uczestnikom na opinie",
     "enableHelp": "Na koniec quizu, przy każdym rozegraniu, pojawia się panel oceny.",
     "title": "Opinie uczestników",
+    "off": "Wyłączone",
     "empty": "Brak opinii.",
     "anonymous": "Anonimowo",
     "starsAriaLabel": "{{value}} na 5",

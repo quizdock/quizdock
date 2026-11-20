@@ -45,6 +45,10 @@
       "everyone": "Every device"
     },
     "sharingLegend": "Language & sharing",
+    "feedbackDescription": "What players think of the quiz: at the end of a game, they can rate it out of 5 and leave a comment.",
+    "themeDescription": "The look of the quiz on the projection and the players' phones, from the lobby to the podium.",
+    "soundDescription": "How the quiz's audio and videos are played: at the same level from one question to the next, on the devices you choose, with a pause before moving on.",
+    "sharingDescription": "The language the quiz is written in, and who can see it. A licence and tags let you offer it as a template.",
     "sharingSummary_one": "{{license}} · {{count}} tag",
     "sharingSummary_other": "{{license}} · {{count}} tags",
     "noLicense": "No licence",
@@ -83,6 +87,7 @@
     "enableLabel": "Allow player feedback",
     "enableHelp": "A rating panel is offered at the end of the quiz, every time it is played.",
     "title": "Player feedback",
+    "off": "Off",
     "empty": "No feedback yet.",
     "anonymous": "Anonymous",
     "starsAriaLabel": "{{value}} out of 5",

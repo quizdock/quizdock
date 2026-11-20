@@ -45,6 +45,10 @@
       "everyone": "所有裝置"
     },
     "sharingLegend": "語言與分享",
+    "feedbackDescription": "玩家對測驗的看法：每局結束時，他們可以按 5 分制評分並留言。",
+    "themeDescription": "測驗在投影和玩家手機上的外觀，從房間到頒獎台。",
+    "soundDescription": "測驗的音訊和影片如何播放：每道題音量一致，在所選裝置上播放，繼續之前留出停頓。",
+    "sharingDescription": "測驗使用的語言，以及誰可以看到它。加上授權條款和標籤後，可將其作為範本提供。",
     "sharingSummary_one": "{{license}} · {{count}} 個標籤",
     "sharingSummary_other": "{{license}} · {{count}} 個標籤",
     "noLicense": "無授權條款",
@@ -83,6 +87,7 @@
     "enableLabel": "允許參與者提供回饋",
     "enableHelp": "每次測驗結束時向參與者提供回饋界面。",
     "title": "玩家回饋",
+    "off": "已關閉",
     "empty": "暫無回饋。",
     "anonymous": "匿名",
     "starsAriaLabel": "{{value}} / 5 星",

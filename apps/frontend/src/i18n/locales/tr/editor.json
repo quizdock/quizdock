@@ -45,6 +45,10 @@
       "everyone": "Her cihaz"
     },
     "sharingLegend": "Dil ve paylaşım",
+    "feedbackDescription": "Katılımcıların quiz hakkındaki düşünceleri: bir oyunun sonunda 5 üzerinden puan verip yorum bırakabilirler.",
+    "themeDescription": "Quizin yansıtma ekranında ve oyuncuların telefonlarında görünümü, bekleme salonundan podyuma kadar.",
+    "soundDescription": "Quizin ses ve videolarının nasıl oynatıldığı: bir sorudan diğerine aynı seviyede, seçilen cihazlarda, devam etmeden önce bir duraklamayla.",
+    "sharingDescription": "Quizin yazıldığı dil ve onu kimlerin görebileceği. Lisans ve etiketler, onu şablon olarak sunmanızı sağlar.",
     "sharingSummary_one": "{{license}} · {{count}} etiket",
     "sharingSummary_other": "{{license}} · {{count}} etiket",
     "noLicense": "Lisans yok",
@@ -83,6 +87,7 @@
     "enableLabel": "Katılımcı geri bildirimine izin ver",
     "enableHelp": "Quiz tamamlandığında katılımcılara değerlendirme formu gösterilir.",
     "title": "Katılımcı değerlendirmeleri",
+    "off": "Kapalı",
     "empty": "Henüz geri bildirim yok.",
     "anonymous": "Anonim",
     "starsAriaLabel": "5 üzerinden {{value}}",
