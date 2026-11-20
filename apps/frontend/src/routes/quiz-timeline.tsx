@@ -1,7 +1,7 @@
 import {
-  AlignLeft,
   Image as ImageIcon,
   Lightbulb,
+  MessageCircle,
   type LucideIcon,
   Music,
   Video,
@@ -17,7 +17,7 @@ const MARK_ICON: Record<StepMark, LucideIcon> = {
   video: Video,
   audio: Music,
   hint: Lightbulb,
-  explanation: AlignLeft,
+  explanation: MessageCircle,
 };
 
 /** Where a mark sits on its block: what helps the players on top, the media below. */
