@@ -549,26 +549,23 @@ export class GameEngine {
   ): Promise<MediaReadinessPayload | null> {
     const { pin } = ref;
     const snapshot = await this.game.getSnapshot(ref.id);
-    // The lobby counts who said they are ready, media or not, a quiz picked or not
-    // (nothing to load then); the media wait only media.
+    // The lobby counts who said they are ready, media or not; the media wait only media.
     if (
-      !lobby &&
-      (!snapshot || !step || !stepMediaForDevice(snapshot, step, 'projection', 'screen'))
+      !snapshot ||
+      !step ||
+      (!lobby && !stepMediaForDevice(snapshot, step, 'projection', 'screen'))
     ) {
       return null;
     }
-    const gameTarget = snapshot ? await this.gameTarget(ref.id, snapshot) : null;
-    const ready = new Set(
-      step ? await this.redis.smembers(gameKeys.ready(ref.id, mediaStepKey(step))) : [],
-    );
+    const gameTarget = await this.gameTarget(ref.id, snapshot);
+    const ready = new Set(await this.redis.smembers(gameKeys.ready(ref.id, mediaStepKey(step))));
     const sockets = await this.server.in(pin).fetchSockets();
-    const screens =
-      snapshot && step && stepHasPlayback(snapshot, step)
-        ? sockets.filter((s) => {
-            // The room's projection windows; not a console, not a copy (#104).
-            return (s.data as { projection?: boolean }).projection === true;
-          })
-        : [];
+    const screens = stepHasPlayback(snapshot, step)
+      ? sockets.filter((s) => {
+          // The room's projection windows; not a console, not a copy (#104).
+          return (s.data as { projection?: boolean }).projection === true;
+        })
+      : [];
     const screensReady = screens.filter((s) => ready.has(`screen:${s.id}`)).length;
     const players: { playerId: string; ready: boolean; pressed?: boolean }[] = [];
     // The players of this game, as the answer count has them (not those waiting for the next).
@@ -576,10 +573,7 @@ export class GameEngine {
     const pressed = lobby ? new Set(await this.redis.smembers(gameKeys.pressed(ref.id))) : null;
     for (const [playerId, rec] of await this.connectedPlayers(pin)) {
       if (!inGame.has(playerId)) continue;
-      const own =
-        snapshot && step && gameTarget
-          ? stepMediaForDevice(snapshot, step, gameTarget, rec.presence ?? 'room')
-          : null;
+      const own = stepMediaForDevice(snapshot, step, gameTarget, rec.presence ?? 'room');
       const plays = !!own && (hasSoundOrVideo(own.media) || own.videos.length > 0);
       if (pressed) {
         const said = pressed.has(playerId);
@@ -591,7 +585,7 @@ export class GameEngine {
     if (pressed) {
       // One count for the host: the participants; the projection says its own state.
       return {
-        ...(step ? stepRef(step) : { questionIndex: 0 }),
+        ...stepRef(step),
         ready: players.filter((p) => p.ready).length,
         total: players.length,
         players,
@@ -600,7 +594,7 @@ export class GameEngine {
       };
     }
     return {
-      ...stepRef(step!), // the media wait always has its step (checked above)
+      ...stepRef(step),
       ready: screensReady + players.filter((p) => p.ready).length,
       total: screens.length + players.length,
       players,
@@ -613,14 +607,12 @@ export class GameEngine {
     const meta = await this.game.getMeta(pin);
     if (!meta || meta.state === GameState.Ended) return;
     const ref = refOf(pin, meta);
-    const lobby = meta.state === GameState.Lobby;
     const snapshot = await this.game.getSnapshot(meta.id);
-    // A lobby a quiz went back to has none yet: who says they are ready still counts.
-    if (!snapshot && !lobby) return;
+    if (!snapshot) return;
     const payload = await this.readiness(
       ref,
-      snapshot ? this.upcomingStep(meta, snapshot) : null,
-      lobby,
+      this.upcomingStep(meta, snapshot),
+      meta.state === GameState.Lobby,
     );
     if (!payload) return;
     // The participants hear the lobby's count only: who said they are ready, not whose media.
@@ -1756,8 +1748,6 @@ export class GameEngine {
       // A lobby with no quiz is one a quiz went back to; so is one already counting.
       const follows = !meta.quizId || Boolean(meta.lobbyStartAt);
       const opened = await this.game.getMeta(pin);
-      // Who said they are ready while no quiz was picked said it for this one.
-      if (!meta.quizId && opened) await this.carryPressed(meta.id, opened.id);
       if (follows && opened) {
         await this.armLobbyCountdown(refOf(pin, opened), Date.now() + NEXT_QUIZ_COUNTDOWN_MS);
       }
@@ -1766,18 +1756,6 @@ export class GameEngine {
       throw err;
     }
     await this.sendLobby(pin);
-  }
-
-  /** The participants ready in one lobby, ready in the game that replaces it. */
-  private async carryPressed(from: GameId, to: GameId): Promise<void> {
-    const pressed = await this.redis.smembers(gameKeys.pressed(from));
-    if (pressed.length === 0) return;
-    const key = gameKeys.pressed(to);
-    await this.redis
-      .multi()
-      .sadd(key, ...pressed)
-      .expire(key, GAME_TTL_S)
-      .exec();
   }
 
   /**
