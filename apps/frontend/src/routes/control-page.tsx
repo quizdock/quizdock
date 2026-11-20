@@ -524,22 +524,25 @@ function HostConsole({
     </span>
   );
 
-  // The pace, on the bottom bar's left (what decides when to move on): auto or not, play
-  // or pause, the next quiz in a lobby; then stopping — the quiz while one runs, closing
+  // On the bottom bar's left, what holds the game: play or pause, the next quiz in a
+  // lobby; then stopping — the quiz while one runs, closing
   // the lobby only from its menu; the lobby itself when no quiz runs.
   const quizRuns = !inLobby && phase !== 'podium';
+  // Who moves the quiz on, the host's click or the game itself: beside the primary action.
+  const autoplay = (
+    <Tooltip label={t('control.modeAutoTooltip')}>
+      <label className="flex items-center gap-2 text-sm font-medium">
+        {t('control.modeAuto')}
+        <Switch
+          checked={view.mode === 'auto'}
+          onCheckedChange={(auto) => setMode(auto ? 'auto' : 'manual')}
+          aria-label={t('control.modeAuto')}
+        />
+      </label>
+    </Tooltip>
+  );
   const controls = (
     <div className="flex flex-wrap items-center gap-3">
-      <Tooltip label={t('control.modeAutoTooltip')}>
-        <label className="flex items-center gap-2 text-sm font-medium">
-          {t('control.modeAuto')}
-          <Switch
-            checked={view.mode === 'auto'}
-            onCheckedChange={(auto) => setMode(auto ? 'auto' : 'manual')}
-            aria-label={t('control.modeAuto')}
-          />
-        </label>
-      </Tooltip>
       <PauseButton paused={view.paused} disabled={!pausable} onToggle={setPaused} />
       {inLobby && !noQuiz ? (
         <QuizPickButton
@@ -1234,7 +1237,13 @@ function HostConsole({
         {sideColumns}
         {/* Under what it drives, the centre, beside the columns going down to the end: its
             primary action never strays far from the stage. */}
-        <ActionBar controls={controls} phase={phasePill} status={status} primary={primary} />
+        <ActionBar
+          controls={controls}
+          phase={phasePill}
+          status={status}
+          autoplay={autoplay}
+          primary={primary}
+        />
       </div>
     </section>
   );
@@ -1249,16 +1258,19 @@ function ActionBar({
   controls,
   phase,
   status,
+  autoplay,
   primary,
 }: {
   controls?: React.ReactNode;
   phase?: React.ReactNode;
   status?: React.ReactNode;
+  /** Whether the game moves on by itself: read with the primary action, so it sits beside it. */
+  autoplay?: React.ReactNode;
   primary?: React.ReactNode;
 }) {
   return (
     // Short of room (a narrow centre), where the room is goes on a line of its own above:
-    // the controls stay on the left, the primary action on the right.
+    // the controls stay on the left, autoplay and the primary action on the right.
     <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 @container sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:col-start-1 lg:row-start-2 lg:mx-0 lg:px-0">
       {controls}
       {controls && (phase || status) ? (
@@ -1268,7 +1280,10 @@ function ActionBar({
         {phase}
         {status}
       </div>
-      <div className="ml-auto">{primary}</div>
+      <div className="ml-auto flex items-center gap-3">
+        {autoplay}
+        {primary}
+      </div>
     </div>
   );
 }
