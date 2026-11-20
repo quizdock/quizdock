@@ -1,5 +1,5 @@
 import {
-  AlignLeft,
+  MessageCircle,
   Clock,
   Eraser,
   Eye,
@@ -591,7 +591,7 @@ function elementText(e: TimelineElement, t: TFunction<'editor'>) {
         : e.kind === 'reveal'
           ? Sparkles
           : e.kind === 'explanation'
-            ? AlignLeft
+            ? MessageCircle
             : e.kind === 'hint'
               ? Lightbulb
               : ImageIcon;

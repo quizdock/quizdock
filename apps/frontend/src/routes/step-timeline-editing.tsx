@@ -1,5 +1,5 @@
 import {
-  AlignLeft,
+  MessageCircle,
   Image as ImageIcon,
   Lightbulb,
   type LucideIcon,
@@ -31,7 +31,7 @@ export const KIND_ICON: Record<AddableKind, LucideIcon> = {
   video: Video,
   audio: Music,
   reveal: Sparkles,
-  explanation: AlignLeft,
+  explanation: MessageCircle,
   hint: Lightbulb,
 };
 
