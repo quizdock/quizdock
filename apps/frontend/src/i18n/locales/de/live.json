@@ -271,7 +271,9 @@
     "backToLobbyDescription": "Die Teilnehmenden bleiben im Raum, wo Sie das nächste Quiz wählen; niemand gibt die PIN erneut ein.",
     "noQuizYetHint": "Der Raum wartet: Wählen Sie das Quiz, das er als nächstes spielt.",
     "columnRank": "Rang",
-    "seeResults": "Ergebnisse ansehen"
+    "seeResults": "Ergebnisse ansehen",
+    "stopMenu": "Weitere Möglichkeiten zum Beenden",
+    "roomSettings": "Lobby-Einstellungen"
   },
   "screen": {
     "sessionUnavailable": "Raum nicht verfügbar.",

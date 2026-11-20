@@ -261,6 +261,20 @@
   --container-content-md: 48rem;
   --container-content-sm: 28rem;
   --container-phone: 32rem;
+  /* Past Tailwind's 2xl: the large and UHD screens (often scaled 150 to 200 %). */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
+}
+/* The app widens with them; the pages that narrow themselves (`content-*`) keep theirs. */
+@media (width >= 120rem) {
+  :root {
+    --container-shell: 112rem;
+  }
+}
+@media (width >= 160rem) {
+  :root {
+    --container-shell: 150rem;
+  }
 }
 @utility content-shell {
   width: 100%;
