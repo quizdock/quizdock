@@ -29,7 +29,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  EllipsisVertical,
   Info,
   LayoutTemplate,
   Loader2,
@@ -275,7 +274,7 @@ function HostConsole({
             aria-expanded={open}
             aria-label={t('control.screenElsewhere')}
           >
-            <EllipsisVertical className="size-4" />
+            <Share2 className="size-4" />
           </Button>
         )}
       >
@@ -481,7 +480,7 @@ function HostConsole({
               className="bg-muted hover:bg-accent flex items-center gap-1.5 rounded-full px-2.5 py-1 text-sm"
             >
               <span className="font-mono font-semibold tracking-widest">{pin}</span>
-              <ChevronDown className="size-3.5" />
+              <Share2 className="size-3.5" />
             </button>
           )}
           className="w-80"
