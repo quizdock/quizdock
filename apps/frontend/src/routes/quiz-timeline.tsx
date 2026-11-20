@@ -167,27 +167,27 @@ export function QuizTimeline({
                             aria-hidden
                           />
                         ) : null}
-                        {(['top', 'bottom'] as const).map((at) => {
-                          const here = step.marks.filter(
-                            (m) => MEDIA_MARKS.has(m) === (at === 'bottom'),
-                          );
-                          return here.length ? (
-                            <span
-                              key={at}
-                              className={cn(
-                                'absolute right-1 flex gap-0.5 opacity-80 [&_svg]:size-2.5',
-                                at === 'top' ? 'top-0.5' : 'bottom-2.5',
-                              )}
-                            >
-                              {here.map((m) => {
-                                const Mark = MARK_ICON[m];
-                                return <Mark key={m} aria-hidden />;
-                              })}
-                            </span>
-                          ) : null;
-                        })}
                       </>
                     ) : null}
+                    {(['top', 'bottom'] as const).map((at) => {
+                      const here = step.marks.filter(
+                        (m) => MEDIA_MARKS.has(m) === (at === 'bottom'),
+                      );
+                      return here.length ? (
+                        <span
+                          key={at}
+                          className={cn(
+                            'absolute right-1 flex gap-0.5 opacity-80 [&_svg]:size-2.5',
+                            at === 'top' ? 'top-0.5' : 'bottom-2.5',
+                          )}
+                        >
+                          {here.map((m) => {
+                            const Mark = MARK_ICON[m];
+                            return <Mark key={m} aria-hidden />;
+                          })}
+                        </span>
+                      ) : null;
+                    })}
                   </span>
                   <span className="flex h-2 w-full" aria-hidden>
                     {step.phases.map((p, j) => (

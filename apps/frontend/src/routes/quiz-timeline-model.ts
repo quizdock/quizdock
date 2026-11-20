@@ -1,6 +1,7 @@
 import {
   type QuestionMedia,
   type QuizPace,
+  type SlideBlock,
   questionDurationS,
   questionPhasesS,
   slideDisplayS,
@@ -38,6 +39,11 @@ export function quizTimeline(items: QuizItem[], pace: QuizPace): QuizTimelineSte
         totalS: display,
         phases: [{ kind: 'display', s: display }],
         marks: [
+          ...((s.blocks as SlideBlock[])
+            .flatMap((b) => (b.type === 'columns' ? b.columns.flat() : [b]))
+            .some((b) => b.type === 'image')
+            ? (['image'] as const)
+            : []),
           ...(s.videoMediaId ? (['video'] as const) : []),
           ...(s.audioMediaId ? (['audio'] as const) : []),
         ],
