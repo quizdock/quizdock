@@ -8,6 +8,9 @@ export interface FeedbackLink {
   href: string;
 }
 
+/** Where QuizDock's interface is translated. */
+export const QUIZDOCK_TRANSLATIONS = 'https://hosted.weblate.org/engage/quizdock/';
+
 /** The interface languages, as the translation form lists them. */
 const LANGUAGE_OPTION: Record<string, string> = {
   en: 'English (en)',
@@ -51,8 +54,9 @@ export function describeBrowser(ua: string): string {
 /**
  * The home page's feedback links (`APP_FEEDBACK_URL`): none when it is `none`;
  * GitHub issue forms filled in with the version, browser and language for a
- * GitHub repository (the QuizDock one by default); a single link to any other
- * address, whose forms we know nothing of.
+ * GitHub repository (the QuizDock one by default, whose translations are fixed
+ * on Weblate instead); a single link to any other address, whose forms we know
+ * nothing of.
  */
 export function feedbackLinks(
   configured: string | undefined,
@@ -73,10 +77,12 @@ export function feedbackLinks(
     { kind: 'feature', href: issue('feature.yml', { version }) },
     {
       kind: 'translation',
-      href: issue('translation.yml', {
-        version,
-        ...(LANGUAGE_OPTION[context.lang] ? { language: LANGUAGE_OPTION[context.lang] } : {}),
-      }),
+      href: pointsToQuizDock(configured)
+        ? QUIZDOCK_TRANSLATIONS
+        : issue('translation.yml', {
+            version,
+            ...(LANGUAGE_OPTION[context.lang] ? { language: LANGUAGE_OPTION[context.lang] } : {}),
+          }),
     },
     { kind: 'question', href: `${repository}/discussions/new?category=q-a` },
   ];

@@ -134,7 +134,7 @@ describe('LandingPage — the open lobbies (LOBBY_LISTING)', () => {
 });
 
 describe('LandingPage — feedback', () => {
-  it('invites bug reports, feature ideas, translation fixes and questions, as filled-in forms, and a star', async () => {
+  it('invites bug reports, feature ideas, translation fixes on Weblate and questions, and a star', async () => {
     mockApi([]);
     renderApp('/');
     const bug = await screen.findByRole('link', { name: 'Signaler un bug' });
@@ -143,9 +143,10 @@ describe('LandingPage — feedback', () => {
     );
     expect(bug).toHaveAttribute('target', '_blank');
     expect(screen.getByRole('link', { name: 'Proposer une fonctionnalité' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'Corriger une traduction' }).getAttribute('href'),
-    ).toContain('language=Fran%C3%A7ais+%28fr%29');
+    expect(screen.getByRole('link', { name: 'Corriger une traduction' })).toHaveAttribute(
+      'href',
+      'https://hosted.weblate.org/engage/quizdock/',
+    );
     expect(screen.getByRole('link', { name: 'Poser une question' })).toHaveAttribute(
       'href',
       'https://github.com/quizdock/quizdock/discussions/new?category=q-a',

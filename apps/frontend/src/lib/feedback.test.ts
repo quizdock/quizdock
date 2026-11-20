@@ -24,14 +24,16 @@ describe('feedback links', () => {
       version: '0.7.1',
       browser: 'Chrome 143 on Windows',
     });
-    expect(new URL(links[2].href).searchParams.get('language')).toBe('Français (fr)');
+    expect(links[2].href).toBe('https://hosted.weblate.org/engage/quizdock/');
     expect(links[3].href).toBe('https://github.com/quizdock/quizdock/discussions/new?category=q-a');
   });
 
   it("leads to the operator's GitHub repository, or to any other address as one link", () => {
-    expect(feedbackLinks('https://github.com/acme/quiz/', context)[0].href).toMatch(
+    const acme = feedbackLinks('https://github.com/acme/quiz/', context);
+    expect(acme[0].href).toMatch(
       /^https:\/\/github\.com\/acme\/quiz\/issues\/new\?template=bug\.yml/,
     );
+    expect(new URL(acme[2].href).searchParams.get('language')).toBe('Français (fr)');
     expect(feedbackLinks('https://support.acme.org/quiz', context)).toEqual([
       { kind: 'bug', href: 'https://support.acme.org/quiz' },
     ]);

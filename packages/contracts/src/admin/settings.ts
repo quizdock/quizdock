@@ -306,7 +306,7 @@ export const SETTINGS = {
   APP_FEEDBACK_URL: define({
     key: 'APP_FEEDBACK_URL',
     description:
-      "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language, and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
+      "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language (translations fixed on Weblate), and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
     category: 'identity',
     criticality: 'C4',
     schema: text(),
