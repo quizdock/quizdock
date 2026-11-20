@@ -20,7 +20,7 @@ const MARK_ICON: Record<StepMark, LucideIcon> = {
   explanation: MessageCircle,
 };
 
-/** Where a mark sits on its block: what helps the players on top, the media below. */
+/** Where a mark sits on its block: the media on top, what helps the players below. */
 const MEDIA_MARKS = new Set<StepMark>(['image', 'video', 'audio']);
 
 /** A question type's colour (index.css), on its icon and, faint, over its block. */
@@ -50,7 +50,7 @@ function clock(s: number): string {
  * The whole quiz as the auto mode plays it (SPECIFICATIONS-QUESTION-TIMELINE): one block
  * per step, its width its length (or all alike), its phases in a thin band; slides by
  * their colour, questions by their number (ringed), their type's colour and icon, the
- * hint and explanation marks on top, the media below. The step open in the editor
+ * media marks on top, the hint and explanation below. The step open in the editor
  * is ringed; a block opens its step.
  */
 export function QuizTimeline({
@@ -170,9 +170,7 @@ export function QuizTimeline({
                       </>
                     ) : null}
                     {(['top', 'bottom'] as const).map((at) => {
-                      const here = step.marks.filter(
-                        (m) => MEDIA_MARKS.has(m) === (at === 'bottom'),
-                      );
+                      const here = step.marks.filter((m) => MEDIA_MARKS.has(m) === (at === 'top'));
                       return here.length ? (
                         <span
                           key={at}
