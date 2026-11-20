@@ -20,6 +20,12 @@ const MARK_ICON: Record<StepMark, LucideIcon> = {
   explanation: AlignLeft,
 };
 
+/** Where a mark sits on its block: what helps the players on top, the media below. */
+const MEDIA_MARKS = new Set<StepMark>(['image', 'video', 'audio']);
+
+/** A question type's colour (index.css), on its icon and, faint, over its block. */
+const typeColor = (type: string) => `var(--question-${type.replaceAll('_', '-')})`;
+
 const mix = (color: string, percent: number) =>
   `color-mix(in oklab, ${color} ${percent}%, var(--card))`;
 const TIME = 'var(--timeline-time)';
@@ -43,7 +49,8 @@ function clock(s: number): string {
 /**
  * The whole quiz as the auto mode plays it (SPECIFICATIONS-QUESTION-TIMELINE): one block
  * per step, its width its length (or all alike), its phases in a thin band; slides by
- * their colour, questions by their number, type and marks. The step open in the editor
+ * their colour, questions by their number (ringed), their type's colour and icon, the
+ * hint and explanation marks on top, the media below. The step open in the editor
  * is ringed; a block opens its step.
  */
 export function QuizTimeline({
@@ -137,27 +144,48 @@ export function QuizTimeline({
                   aria-current={selected === step.id ? 'step' : undefined}
                   onClick={() => onOpen(step.id)}
                   className={cn(
-                    'focus-visible:ring-ring flex size-full flex-col overflow-hidden rounded-md border-[1.5px] border-transparent text-left hover:brightness-110 focus-visible:ring-2 focus-visible:outline-none',
+                    'focus-visible:ring-ring relative flex size-full flex-col overflow-hidden rounded-md border-[1.5px] border-transparent text-left hover:brightness-110 focus-visible:ring-2 focus-visible:outline-none',
                     selected === step.id && 'border-primary ring-primary/40 ring-2',
                   )}
                   style={{
                     background:
                       step.kind === 'slide'
                         ? mix('var(--timeline-slide)', 55)
-                        : mix('var(--primary)', 32),
+                        : mix(step.type ? typeColor(step.type) : 'var(--primary)', 22),
                   }}
                 >
-                  <span className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden px-1.5 text-[11px] font-semibold whitespace-nowrap [&_svg]:size-3 [&_svg]:shrink-0">
+                  <span className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden px-1 text-[11px] font-semibold whitespace-nowrap [&_svg]:size-3 [&_svg]:shrink-0">
                     {step.kind === 'question' ? (
                       <>
-                        {number}
-                        {step.type ? <QuestionTypeIcon type={step.type} aria-hidden /> : null}
-                        <span className="ml-0.5 flex gap-0.5 opacity-80">
-                          {step.marks.map((m) => {
-                            const Mark = MARK_ICON[m];
-                            return <Mark key={m} aria-hidden />;
-                          })}
+                        <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-black/75 px-1 text-[10px] leading-none text-white">
+                          {number}
                         </span>
+                        {step.type ? (
+                          <QuestionTypeIcon
+                            type={step.type}
+                            style={{ color: typeColor(step.type) }}
+                            aria-hidden
+                          />
+                        ) : null}
+                        {(['top', 'bottom'] as const).map((at) => {
+                          const here = step.marks.filter(
+                            (m) => MEDIA_MARKS.has(m) === (at === 'bottom'),
+                          );
+                          return here.length ? (
+                            <span
+                              key={at}
+                              className={cn(
+                                'absolute right-1 flex gap-0.5 opacity-80 [&_svg]:size-2.5',
+                                at === 'top' ? 'top-0.5' : 'bottom-2.5',
+                              )}
+                            >
+                              {here.map((m) => {
+                                const Mark = MARK_ICON[m];
+                                return <Mark key={m} aria-hidden />;
+                              })}
+                            </span>
+                          ) : null;
+                        })}
                       </>
                     ) : null}
                   </span>

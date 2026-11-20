@@ -52,6 +52,15 @@
   --timeline-visual: oklch(0.55 0.2 255);
   --timeline-audio: oklch(0.55 0.14 155);
   --timeline-slide: oklch(0.62 0.12 185);
+  /* A question's type, by its colour: its icon, and its block in the quiz's timeline. */
+  --question-single-choice: oklch(0.55 0.17 262);
+  --question-multiple-choice: oklch(0.55 0.17 300);
+  --question-true-false: oklch(0.55 0.17 145);
+  --question-text-input: oklch(0.55 0.17 50);
+  --question-numeric: oklch(0.55 0.17 95);
+  --question-ordering: oklch(0.55 0.17 345);
+  --question-poll: oklch(0.55 0.17 220);
+  --question-image-choice: oklch(0.55 0.17 20);
   /* An answer's colour, as its author picked it: its identity on every screen. */
   --answer-red: oklch(57.7% 0.245 27.325);
   --answer-blue: oklch(54.6% 0.245 262.881);
@@ -114,6 +123,14 @@
   --timeline-visual: oklch(0.72 0.15 255);
   --timeline-audio: oklch(0.75 0.14 155);
   --timeline-slide: oklch(0.7 0.11 185);
+  --question-single-choice: oklch(0.72 0.14 262);
+  --question-multiple-choice: oklch(0.72 0.14 300);
+  --question-true-false: oklch(0.72 0.14 145);
+  --question-text-input: oklch(0.72 0.14 50);
+  --question-numeric: oklch(0.72 0.14 95);
+  --question-ordering: oklch(0.72 0.14 345);
+  --question-poll: oklch(0.72 0.14 220);
+  --question-image-choice: oklch(0.72 0.14 20);
 }
 
 /*
