@@ -272,7 +272,8 @@
     "noQuizYetHint": "Oda bekliyor: sıradaki quizi seçin.",
     "columnRank": "Sıra",
     "seeResults": "Sonuçları gör",
-    "stopMenu": "Diğer durdurma seçenekleri"
+    "stopMenu": "Diğer durdurma seçenekleri",
+    "roomSettings": "Lobi ayarları"
   },
   "screen": {
     "sessionUnavailable": "Oda kullanılamıyor.",

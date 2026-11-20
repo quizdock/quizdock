@@ -272,7 +272,8 @@
     "noQuizYetHint": "रूम इंतज़ार कर रहा है: वह आगे कौन-सा क्विज़ खेलेगा, चुनें।",
     "columnRank": "रैंक",
     "seeResults": "नतीजे देखें",
-    "stopMenu": "रोकने के और तरीके"
+    "stopMenu": "रोकने के और तरीके",
+    "roomSettings": "लॉबी सेटिंग्स"
   },
   "screen": {
     "sessionUnavailable": "रूम उपलब्ध नहीं है।",

@@ -282,7 +282,8 @@
     "noQuizYetHint": "Pokój czeka: wybierz quiz, który rozegra jako następny.",
     "columnRank": "Miejsce",
     "seeResults": "Zobacz wyniki",
-    "stopMenu": "Inne sposoby zatrzymania"
+    "stopMenu": "Inne sposoby zatrzymania",
+    "roomSettings": "Ustawienia poczekalni"
   },
   "screen": {
     "sessionUnavailable": "Pokój niedostępny.",

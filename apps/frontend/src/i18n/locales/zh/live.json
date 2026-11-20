@@ -272,7 +272,8 @@
     "noQuizYetHint": "房间正在等待：请选择接下来进行的测验。",
     "columnRank": "排名",
     "seeResults": "查看结果",
-    "stopMenu": "其他停止方式"
+    "stopMenu": "其他停止方式",
+    "roomSettings": "大厅设置"
   },
   "screen": {
     "sessionUnavailable": "房间不可用。",

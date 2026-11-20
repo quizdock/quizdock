@@ -272,7 +272,8 @@
     "noQuizYetHint": "ルームは待っています。次に実施するクイズを選んでください。",
     "columnRank": "順位",
     "seeResults": "結果を見る",
-    "stopMenu": "その他の停止方法"
+    "stopMenu": "その他の停止方法",
+    "roomSettings": "ロビーの設定"
   },
   "screen": {
     "sessionUnavailable": "ルームを利用できません。",

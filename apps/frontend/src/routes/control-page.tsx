@@ -1,4 +1,5 @@
-import { RoomSoundsButton } from '../game/game-sounds-panel';
+import { GameSoundsControls } from '../game/game-sounds-panel';
+import { SimpleDialog } from '../game/media/sound-button';
 import { languageName, supportedLngs } from '../i18n/languages';
 import { appConfig } from '../config';
 import { ImageChoiceGrid, optionLabel } from '../game/image-choice';
@@ -46,6 +47,7 @@ import {
   SkipForward,
   Smartphone,
   UserCheck,
+  Settings,
   VolumeX,
   Users,
   Wifi,
@@ -495,30 +497,34 @@ function HostConsole({
         <Users className="size-4" />
         <span data-testid="player-count">{view.players.length}</span>
       </button>
-      <span
-        className={cn(
-          'rounded-full px-2.5 py-1 text-xs font-semibold',
-          reviewing ? 'bg-warning/25 text-warning-text' : 'bg-primary text-primary-foreground',
-        )}
-      >
-        {t(`control.phase.${phase}`)}
-      </span>
     </div>
   );
 
-  // What the room sees and hears, beside the projection's window.
+  // What the room sees and hears, set once a session: behind a gear, beside the
+  // projection's window.
   const roomLook = (
-    <div className="flex flex-wrap items-center gap-2">
-      <RoomSoundsButton
-        sounds={view.sounds}
-        theme={view.theme}
-        onChange={(patch) => socket?.emit('host:sounds', { pin, ...patch })}
-      />
-      <MotionSwitch
-        on={view.motion ?? appConfig.liveMotion !== false}
-        onToggle={(on) => socket?.emit('host:motion', { pin, on })}
-      />
-    </div>
+    <RoomSettingsButton
+      sounds={view.sounds}
+      theme={view.theme}
+      onSounds={(patch) => socket?.emit('host:sounds', { pin, ...patch })}
+      motion={
+        <MotionSwitch
+          on={view.motion ?? appConfig.liveMotion !== false}
+          onToggle={(on) => socket?.emit('host:motion', { pin, on })}
+        />
+      }
+    />
+  );
+  // Where the game is, at the head of the bottom bar's status, by what moves it on.
+  const phasePill = (
+    <span
+      className={cn(
+        'rounded-full px-2.5 py-1 text-xs font-semibold',
+        reviewing ? 'bg-warning/25 text-warning-text' : 'bg-primary text-primary-foreground',
+      )}
+    >
+      {t(`control.phase.${phase}`)}
+    </span>
   );
 
   // The pace, on the bottom bar's left (what decides when to move on): auto or not, play
@@ -1228,7 +1234,7 @@ function HostConsole({
         {sideColumns}
         {/* Across the page; from 3xl, under what it drives, the centre, beside the columns
             going down to the end: on a very wide screen its two ends stay within reach. */}
-        <ActionBar controls={controls} status={status} primary={primary} />
+        <ActionBar controls={controls} phase={phasePill} status={status} primary={primary} />
       </div>
     </section>
   );
@@ -1241,10 +1247,12 @@ function HostConsole({
  */
 function ActionBar({
   controls,
+  phase,
   status,
   primary,
 }: {
   controls?: React.ReactNode;
+  phase?: React.ReactNode;
   status?: React.ReactNode;
   primary?: React.ReactNode;
 }) {
@@ -1253,10 +1261,11 @@ function ActionBar({
     // the controls stay on the left, the primary action on the right.
     <div className="bg-background/95 supports-[backdrop-filter]:bg-background/80 @container sticky bottom-0 z-10 -mx-6 mt-auto flex flex-wrap items-center gap-3 border-t px-6 py-3 backdrop-blur lg:col-span-full lg:row-start-2 lg:-mx-10 lg:px-10 3xl:col-span-1 3xl:col-start-1 3xl:mx-0 3xl:px-0">
       {controls}
-      {controls && status ? (
+      {controls && (phase || status) ? (
         <span className="bg-border hidden h-6 w-px @[48rem]:block" aria-hidden />
       ) : null}
       <div className="text-muted-foreground order-first flex min-w-0 basis-full items-center gap-3 text-sm @[48rem]:order-none @[48rem]:basis-auto @[48rem]:flex-1">
+        {phase}
         {status}
       </div>
       <div className="ml-auto">{primary}</div>
@@ -2161,5 +2170,55 @@ function ViewSwitch({ tab, onTab }: { tab: HostTab; onTab: (t: HostTab) => void 
         </button>
       ))}
     </div>
+  );
+}
+
+/**
+ * What the room sees and hears, set once a session (the lobby's sounds, the animations):
+ * behind a gear, in one dialog. A muted lobby says so on the gear.
+ */
+function RoomSettingsButton({
+  sounds,
+  theme,
+  onSounds,
+  motion,
+}: {
+  sounds: React.ComponentProps<typeof GameSoundsControls>['sounds'] | null | undefined;
+  theme: React.ComponentProps<typeof GameSoundsControls>['theme'];
+  onSounds: React.ComponentProps<typeof GameSoundsControls>['onChange'];
+  motion: React.ReactNode;
+}) {
+  const { t } = useTranslation('live');
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Tooltip label={t('control.roomSettings')}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="px-2"
+          aria-label={t('control.roomSettings')}
+          onClick={() => setOpen(true)}
+        >
+          <Settings className="size-4" />
+          {sounds?.muted ? <VolumeX className="text-muted-foreground size-4" /> : null}
+        </Button>
+      </Tooltip>
+      <SimpleDialog open={open} title={t('control.roomSettings')} onClose={() => setOpen(false)}>
+        <div className="flex flex-col gap-4">
+          {sounds ? (
+            <section className="flex flex-col gap-2">
+              <h3 className="text-sm font-semibold">{t('control.sounds.title')}</h3>
+              <GameSoundsControls sounds={sounds} theme={theme} onChange={onSounds} />
+            </section>
+          ) : null}
+          <section className="flex flex-col gap-2">
+            <h3 className="text-sm font-semibold">{t('control.motion')}</h3>
+            {motion}
+          </section>
+        </div>
+      </SimpleDialog>
+    </>
   );
 }

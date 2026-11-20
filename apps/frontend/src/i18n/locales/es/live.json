@@ -277,7 +277,8 @@
     "noQuizYetHint": "La sala espera: elige el quiz que juega a continuación.",
     "columnRank": "Posición",
     "seeResults": "Ver los resultados",
-    "stopMenu": "Otras formas de detener"
+    "stopMenu": "Otras formas de detener",
+    "roomSettings": "Ajustes de la sala"
   },
   "screen": {
     "sessionUnavailable": "Sala no disponible.",

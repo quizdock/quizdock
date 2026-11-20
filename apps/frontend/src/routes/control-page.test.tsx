@@ -791,6 +791,9 @@ describe('ControlPage (console hôte)', () => {
     });
     renderApp('/session/482913/console');
 
+    // Set once a session: behind the gear, beside the projection's window.
+    const gear = await screen.findByRole('button', { name: 'Réglages du salon' });
+    act(() => gear.click());
     const motion = await screen.findByRole('switch', { name: 'Animations' });
     expect(motion).toHaveAttribute('aria-checked', 'true');
     act(() => motion.click());

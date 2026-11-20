@@ -277,7 +277,8 @@
     "noQuizYetHint": "Le salon attend : choisissez le quiz qu’il joue ensuite.",
     "columnRank": "Rang",
     "seeResults": "Voir les résultats",
-    "stopMenu": "Autres façons d’arrêter"
+    "stopMenu": "Autres façons d’arrêter",
+    "roomSettings": "Réglages du salon"
   },
   "screen": {
     "sessionUnavailable": "Salon indisponible.",

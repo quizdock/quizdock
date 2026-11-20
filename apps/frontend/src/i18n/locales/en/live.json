@@ -272,7 +272,8 @@
     "noQuizYetHint": "The lobby is waiting: choose the quiz it plays next.",
     "columnRank": "Rank",
     "seeResults": "See the results",
-    "stopMenu": "More ways to stop"
+    "stopMenu": "More ways to stop",
+    "roomSettings": "Lobby settings"
   },
   "screen": {
     "sessionUnavailable": "Lobby unavailable.",

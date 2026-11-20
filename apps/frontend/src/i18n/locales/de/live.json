@@ -272,7 +272,8 @@
     "noQuizYetHint": "Der Raum wartet: Wählen Sie das Quiz, das er als nächstes spielt.",
     "columnRank": "Rang",
     "seeResults": "Ergebnisse ansehen",
-    "stopMenu": "Weitere Möglichkeiten zum Beenden"
+    "stopMenu": "Weitere Möglichkeiten zum Beenden",
+    "roomSettings": "Lobby-Einstellungen"
   },
   "screen": {
     "sessionUnavailable": "Raum nicht verfügbar.",
