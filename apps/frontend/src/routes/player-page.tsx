@@ -1205,9 +1205,10 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         </div>
       ) : null}
 
-      {/* "Ready!" (#104): the host sees one count and still starts when they choose. */}
+      {/* "Ready!" (#104): the host sees one count and still starts when they choose.
+          Ready for a quiz only: none asked while the host has not picked the next. */}
       <div className="mt-auto flex w-full flex-col items-center gap-2">
-        {view.youReady ? (
+        {!view.quizTitle ? null : view.youReady ? (
           <Button
             type="button"
             variant="outline"
