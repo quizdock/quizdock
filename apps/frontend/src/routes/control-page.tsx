@@ -1207,7 +1207,7 @@ function HostConsole({
           wideSide && !noQuiz && '2xl:grid-cols-[minmax(0,1fr)_22rem_22rem]',
         )}
       >
-        <div className="flex min-w-0 flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
+        <div className="flex min-w-0 flex-col gap-3 lg:min-h-0 lg:overflow-x-hidden lg:overflow-y-auto">
           {/* What I look at, and the projection's own window, over what it shows. */}
           <div className="flex flex-wrap items-center gap-2">
             <ViewSwitch tab={tab} onTab={setTab} />
