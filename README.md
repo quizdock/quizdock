@@ -222,7 +222,10 @@ German, Hindi, Italian, Japanese, Polish and Russian; the last six are machine-a
 wait for a native reviewer.
 Missing your language, or spotted an awkward word? Translate it on
 [Weblate](https://hosted.weblate.org/engage/quizdock/), right in the browser, no setup needed;
-new languages are welcome. Changes come back as pull requests to `dev`. Questions about a
+new languages are welcome. Changes come back as pull requests to `dev`. To see your work in
+the app, the [translation staging](https://quizdock-l10n-standalone.onrender.com) runs `dev`
+with the translations not merged yet, at most an hour after they were typed; asleep when
+unused, it takes about a minute to wake up. Questions about a
 term? Ask in the [translation discussion](https://github.com/orgs/quizdock/discussions/243).
 
 <a href="https://hosted.weblate.org/engage/quizdock/"><img alt="Translation status" src="https://hosted.weblate.org/widget/quizdock/horizontal-auto.svg" /></a>
