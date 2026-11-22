@@ -31,6 +31,13 @@ By default we **stay in `0.x`**: fixes as PATCH, features (planned or emergent) 
 
 A git tag per milestone (`v0.1.0`, `v0.2.0`, …). The CHANGELOG is updated at every iteration (technique §18).
 
+### Schema deprecation
+
+A release can be rolled back to any of the three before it (SPECIFICATIONS-ROLLBACK). Hence, in `0.x` as after:
+a column or table renamed or no longer read is **deprecated**, not dropped: it stays, still written, through the
+next three releases, and a later release drops it. The CHANGELOG lists each deprecation, and each drop with the
+release that announced it.
+
 ---
 
 ## 2. Overview of the milestones

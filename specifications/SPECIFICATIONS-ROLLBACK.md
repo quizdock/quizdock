@@ -15,8 +15,14 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
   same directory; Prisma reads only `migration.sql` and checksums only it.
 - The rollback runs with the **current image**: it is the only one that knows the `down.sql` of the migrations it
   added. It undoes them newest first, then the target image starts; its `migrate deploy` has nothing left to apply.
-- **What a rollback keeps**: everything the target release could hold. **What it loses**: only what nothing but a
-  newer release could represent (a value added to an enum, a new kind of block), said before it runs.
+- **A rollback keeps, it does not drop.** What a newer release added stays in the database as a **ghost** the target
+  does not read: its columns and tables are left in place, a value it cannot hold is mapped and its original kept
+  aside. The target runs on what it knows; an upgrade again finds the ghosts and gets the data back.
+- **What a rollback loses** is therefore narrow and said before it runs: what the target cannot show meanwhile (a
+  question's hint is not played while on the older release), and what an edit in the target overwrites (a JSON it
+  saves without the parts it does not know; a mapped value it changes).
+- **It stays in QuizDock's own perimeter**: the QuizDock image and its database. The infrastructure (Postgres, Redis,
+  Keycloak, Authentik and their Compose files) stays as it runs; their databases only migrate forward.
 - The administration **installs nothing**, as for the upgrade: it says whether a rollback is possible, to which
   release, what it would lose, and how to run it from the terminal. The server runs it. If the running release is
   too unstable to serve the administration, the terminal stays the way: `./quizdock rollback --check` says the same.
@@ -36,74 +42,85 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
 ### 2026-11-22
 
 - **No rollback from the web.** The administration assesses and explains, at little cost; it starts nothing.
+- **Ghosts rather than drops** (§1, §3), and the schema deprecation joins the versioning policy (roadmap §1).
+- **The infrastructure is not rolled back** (§1).
 - **What the administration shows**: the reachable releases in a list; for the one picked, what the rollback would
-  lose, counted from the data (rows that use what the down removes or maps), and the terminal steps. Without a
-  `down.sql` path, the restore point instead: what was entered since the upgrade, counted from `updated_at` after
-  the last applied migration.
-- **Restore points**: every `upgrade` keeps its backup as a restore point named after the release it leaves, apart
-  from the manual backups. The last **3** are kept, older ones deleted; `QUIZDOCK_RESTORE_POINTS` raises the number.
-  Each one holds the database, the media and the env, so its size multiplies the disk use: `upgrade` says it.
+  lose (§1), counted from the data, and the terminal steps. Through a restore point instead: what was entered since
+  the upgrade, counted from the restore point's date. Deletions made since cannot be counted (a quiz deleted since
+  comes back): the figure says it is approximate.
+- **Restore points, off by default**: `QUIZDOCK_RESTORE_POINTS` (`0` by default) sets how many to keep. Set, every
+  `upgrade` keeps its backup as a restore point named after the release it leaves, apart from the manual backups.
+  Older ones are deleted **only once the upgrade has succeeded**; an upgrade to the running release takes no new
+  one. Unset, `upgrade` keeps its plain backup, as today. The administration says which, and how to turn them on.
+- **Backups are made by the terminal only.** The app never creates one: it lists, serves, deletes and receives restore
+  points. The script gives their files to the app's user.
 - **Their space is watched and cleaned**: the administration shows each restore point (release left, date, size)
   and their total against the free disk, and lets the admin delete one, after saying what it is for (the only way
   back to that release beyond the `down.sql`) and what deleting it risks.
-- **Download and upload**: a restore point can be downloaded as one archive, to keep it off the server and delete
-  it there; an archive downloaded this way can be uploaded again from the administration when it is needed.
-- **Not in standalone mode**: no restore points (`upgrade` keeps its plain backup); the administration shows none of
-  the above.
-- **The directory of the restore points is mounted read-write in the app container**, owned so that the app's
-  user can write it: the administration sees, serves and receives them there.
-- **A downloaded archive leaves the env out**, and the administration says the rest is sensitive: the dump holds
-  password hashes and, in full mode, the identity provider's database (client secrets).
-- **An upload is accepted only if this instance produced it**: the archive is signed with a key of the instance; a
-  restore replays its SQL as the database owner.
 - **A restore point hard-links the media unchanged since the previous one**: they are named by their hash
   (`media_blob`), so only the new ones take space.
+- **Download and upload**: a restore point can be downloaded as one archive, streamed as it is built (no copy on the
+  disk), to keep it off the server and delete it there. The archive leaves the env out; the administration says the
+  rest is sensitive (password hashes, and in full mode the identity provider's database with its client secrets).
+- **An upload from the administration is accepted only if this instance produced it** (the archive is signed with a
+  key of the instance), and only if the disk has the room: a restore replays its SQL as the database owner. An
+  archive from elsewhere (a server rebuilt after a loss) goes through `./quizdock restore` in the terminal, on the
+  operator's responsibility.
+- **The directory of the restore points is mounted read-write in the app container.**
+- **Not in standalone mode**: no restore points; the administration shows none of the above. `./quizdock rollback`
+  does nothing there before lot 4 (§7), and says so.
 - **Built in lots** (§7), each one useful on its own.
 
 ## 3. Writing migrations from now on
 
 - Every new migration has its `down.sql`, **written and read by hand**, the generated diff as a draft
   (`prisma migrate diff`, schema N → schema N-1).
-- **The down rebuilds what the target reads from the current data.** A change whose down cannot do it is split over
-  releases so that it can:
-  - a column the code stops using is **dropped three releases later** at the earliest, and written meanwhile
-    (expand/contract);
-  - a rewritten value (`roles` replacing `role`) keeps a derivable source until the window has passed.
-- **A value added to an enum**: the down recreates the type without it and maps the rows that use it to a stated
-  value, or deletes them when nothing fits; the `down.sql` says which in a comment, the rollback quotes it.
+- **The down leaves ghosts** (§1):
+  - an added column or table stays; the down only relaxes what would make the target fail on its own writes: a
+    `NOT NULL` without default, a restrictive foreign key (the target could no longer delete a user who owns a
+    selection), a check, a unique index;
+  - **a value added to an enum**: the down recreates the type without it, maps the rows that use it to a stated value
+    and keeps the original in a ghost column; the `down.sql` says the mapping in a comment, the rollback quotes it;
+  - the same for a value the target does not know inside a JSON column (a position, a kind of block).
+- **The up runs again over its ghosts**: `IF NOT EXISTS` on what it creates, guards on its constraints, and it puts
+  back the mapped values whose row still holds the value the down set.
+- **A column renamed or no longer read is a ghost of the newer release**: it stays and is still written through the
+  window, then dropped by a later release (roadmap §1). A rewritten value (`roles` replacing `role`) keeps its source
+  written the same way.
 
 ## 4. The pieces
 
 | Piece | What it does |
 |-------|--------------|
-| `migrations/<name>/down.sql` | The reverse of the migration, in one transaction. |
+| `migrations/<name>/down.sql` | The reverse of the migration, leaving its ghosts, in one transaction. |
 | Release manifest in the image | For each of the releases of the window: the list of its migrations. Built at release from the tags. |
 | CLI `db:rollback --to <version>` (in the image) | Undoes the applied migrations the target lacks, newest first; deletes their `_prisma_migrations` rows; `--check` only says what it would do and the losses. |
-| `./quizdock rollback [tag]` (server) | Backup → `db:rollback` with the current image → `QUIZDOCK_TAG` and the Compose files of the target (`refresh_files`) → restart → doctor. Without a tag: the previous one, kept by `upgrade` (`QUIZDOCK_PREVIOUS_TAG`). |
-| Restore points (server) | `upgrade` keeps its backup under a restore-point name with the release it leaves; keeps the last `QUIZDOCK_RESTORE_POINTS` (3). |
+| `./quizdock rollback [tag]` (server) | Backup → `db:rollback` with the current image → `QUIZDOCK_TAG` of the target, the infrastructure's Compose files kept → restart → doctor. Without a tag: the previous one, kept by `upgrade` (`QUIZDOCK_PREVIOUS_TAG`). |
+| Restore points (server) | `upgrade` keeps its backup under a restore-point name with the release it leaves, when `QUIZDOCK_RESTORE_POINTS` is set. |
 | Admin, Version card | A list of the releases of the window; for the one picked: possible or not, the losses counted, the terminal steps to copy. Read with `db:rollback --check`. Starts nothing. |
 | Admin, restore points | The list with sizes and the disk use; delete (with the warning), download, upload. Compose modes only. |
 
 ## 5. Tests
 
-- **CI, per migration of the window**: up → down → the schema equals the one before (`prisma migrate diff` empty);
-  up again → equal to after.
+- **CI, per migration of the window**: up → down → the target's schema is all there, unchanged (`prisma migrate
+  diff` shows only the ghosts); the target's writes pass on it; up again → equal to after, the ghosts' data back.
 - **CI, the rule**: a migration newer than the start (§2) without `down.sql` fails the build.
-- **Data**: the down of a migration that maps or deletes rows has a test with such rows.
+- **Data**: the down of a migration that maps rows has a test with such rows, and the up again gets them back.
 
 ## 6. Open points
 
-- **Uploads of several gigabytes** meet the reverse proxy's body limit: raise it for that route, or upload in parts.
-- The standalone mode (one container, no Compose): same flow, `docker run` of the target in place of `compose up`.
+- **Large restore points**: how to move one that is too big for the browser, to and from the server. To settle,
+  simple and pragmatic for ops (e.g. `scp` into the restore points' directory, the script taking it from there).
+- **To check in the prototype**: the up again over its ghosts (`IF NOT EXISTS`, enum values re-added, the mapped
+  values put back), and a ghost column whose type is the enum the down recreates.
 - Keycloak / Authentik: their own database is not migrated by QuizDock; a rollback leaves it as is. To check per
   release that an older QuizDock still works with it.
 
 ## 7. Lots
 
-1. **Restore points (server)**: `upgrade` names and keeps them, `QUIZDOCK_RESTORE_POINTS`, the size said;
-   `./quizdock rollback` back to the previous release through its restore point. From this lot on, every new
-   migration ships its `down.sql` and the CI checks it (§3, §5): what is not written when the migration is written
-   cannot be caught up.
+1. **Restore points (server)**: `QUIZDOCK_RESTORE_POINTS`, `upgrade` names and keeps them, the size said; `./quizdock rollback` back to the previous release through its restore point. From this
+   lot on, every new migration ships its `down.sql` with ghosts and the CI checks it (§3, §5): what is not written
+   when the migration is written cannot be caught up.
 2. **Admin, read only**: the Version card (reachable releases, what was entered since the upgrade, the terminal
    steps); the restore points with their sizes and the disk use.
 3. **Admin, management**: delete with the warning, download, upload.
