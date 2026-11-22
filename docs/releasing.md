@@ -14,6 +14,11 @@ git push origin v0.4.0
 
 That's it. The tag (`v*.*.*`) triggers, in one run:
 
+0. **The release checks** (`apps/backend/scripts/release-check.mjs`), against the stable tags
+   before it: released migrations unchanged, new ones after them, none in a patch, the upgrade
+   and the rollback from each release of the window played for real, a drop only of what the
+   window's oldest release marked `@deprecated` ([SPECIFICATIONS-ROLLBACK](../specifications/SPECIFICATIONS-ROLLBACK.md)).
+   If they fail, nothing below is published.
 1. **GitHub Release** — source of truth, created with auto notes, marked *latest*.
 2. **`CHANGELOG.md`** — regenerated from conventional commits ([git-cliff](https://git-cliff.org),
    config in [`cliff.toml`](../cliff.toml)) and committed back to `main` (`[skip ci]`).
@@ -32,8 +37,20 @@ SemVer, pre-1.0 (`0.MINOR.PATCH`). git-cliff groups the commits, it does not pic
 | Bump | When | Commits |
 |---|---|---|
 | **minor** `0.X.0` | a new user-facing capability ships (screen, game mode, gameplay feature) | at least one `feat:` |
-| **patch** `0.x.Y` | fixes or adjustments, no new capability | `fix:` |
+| **patch** `0.x.Y` | fixes or adjustments, no new capability, **no migration** (the checks refuse it) | `fix:` |
 | **no release** | CI, tooling or docs only: the published image does not change | `ci:` `chore:` `docs:` |
+
+## Try a release candidate first
+
+A tag `vX.Y.Z-rc.N` passes the same checks and publishes its own image only,
+`fchaussin/quizdock:X.Y.Z-rc.N` (and `:standalone-X.Y.Z-rc.N`), with a GitHub pre-release:
+no `:X.Y`, no `:latest`, no demo. Upgrade a server to it (`./quizdock upgrade X.Y.Z-rc.N`),
+then tag `vX.Y.Z` on the same commit. To run the checks before any tag, against the
+throwaway databases of a Postgres server:
+
+```bash
+DATABASE_URL=postgresql://… pnpm --filter @quiz-dock/backend release:check vX.Y.Z
+```
 
 ## Write the Upgrading section
 
