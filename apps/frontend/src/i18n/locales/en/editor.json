@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "The slide already has an audio: one at a time. Remove it to turn the video’s on.",
     "variablesLegend": "Variables",
     "variablesHint": "Write one in a heading or a text: it is replaced wherever the slide shows. The quiz’s appear filled in the preview, the lobby’s once the quiz is played.",
+    "variablesInsert": "Insert a variable",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Lobby"
+    },
     "variables": {
       "title": "The quiz’s title",
       "description": "The quiz’s description",

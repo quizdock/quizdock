@@ -4,7 +4,7 @@ import { Markdown as MarkdownExt } from '@tiptap/markdown';
 import { EditorContent, useEditor, useEditorState, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Bold, Code, Italic, List, ListOrdered, SquareCode } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type RefObject, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -27,6 +27,8 @@ export interface MarkdownEditorProps {
   placeholder?: string;
   'aria-label'?: string;
   className?: string;
+  /** Given a function that writes a text where the caret is (a slide's variables). */
+  insertRef?: RefObject<((text: string) => void) | null>;
 }
 
 /** Single-paragraph document for the inline profile (no Enter, no blocks). */
@@ -75,9 +77,11 @@ export function MarkdownEditor({
   placeholder,
   'aria-label': ariaLabel,
   className,
+  insertRef,
 }: MarkdownEditorProps) {
   const { t } = useTranslation('common');
   const [source, setSource] = useState(false);
+  const sourceRef = useRef<HTMLTextAreaElement>(null);
 
   const editor = useEditor({
     extensions: extensionsFor(profile),
@@ -99,6 +103,23 @@ export function MarkdownEditor({
     if (!editor || editor.getMarkdown() === value) return;
     editor.commands.setContent(value, { contentType: 'markdown', emitUpdate: false });
   }, [editor, value]);
+
+  useEffect(() => {
+    if (!insertRef) return;
+    insertRef.current = (text) => {
+      const area = sourceRef.current;
+      if (source && area) {
+        const next =
+          area.value.slice(0, area.selectionStart) + text + area.value.slice(area.selectionEnd);
+        const caret = area.selectionStart + text.length;
+        onChange(next);
+        requestAnimationFrame(() => {
+          area.focus();
+          area.setSelectionRange(caret, caret);
+        });
+      } else editor?.chain().focus().insertContent(text).run();
+    };
+  }, [insertRef, editor, source, onChange]);
 
   const isEmpty = useEditorState({ editor, selector: ({ editor: e }) => e?.isEmpty ?? true });
 
@@ -127,6 +148,7 @@ export function MarkdownEditor({
       </div>
       {source ? (
         <Textarea
+          ref={sourceRef}
           aria-label={ariaLabel}
           rows={profile === 'inline' ? 1 : 4}
           className={cn('font-mono resize-y', profile === 'inline' ? 'min-h-9' : 'min-h-24')}

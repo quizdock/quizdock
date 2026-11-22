@@ -194,6 +194,11 @@
     "audioExcludesVideoSound": "La slide ha già un audio: uno alla volta. Rimuovilo per attivare quello del video.",
     "variablesLegend": "Variabili",
     "variablesHint": "Scrivine una in un titolo o in un testo: viene sostituita ovunque la slide venga mostrata. Quelle del quiz appaiono compilate nell’anteprima, quelle della sala quando il quiz viene giocato.",
+    "variablesInsert": "Inserisci una variabile",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Sala"
+    },
     "variables": {
       "title": "Il titolo del quiz",
       "description": "La descrizione del quiz",

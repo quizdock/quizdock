@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "Die Folie hat bereits ein Audio: jeweils nur eines. Entfernen Sie es, um das des Videos einzuschalten.",
     "variablesLegend": "Variablen",
     "variablesHint": "In eine Überschrift oder einen Text schreiben: Sie wird überall ersetzt, wo die Folie erscheint. Die des Quiz erscheinen in der Vorschau ausgefüllt, die des Raums, sobald das Quiz gespielt wird.",
+    "variablesInsert": "Variable einfügen",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Raum"
+    },
     "variables": {
       "title": "Der Titel des Quiz",
       "description": "Die Beschreibung des Quiz",

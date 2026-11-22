@@ -194,6 +194,11 @@
     "audioExcludesVideoSound": "La diapositiva ya tiene un audio: uno solo a la vez. Quítalo para activar el del vídeo.",
     "variablesLegend": "Variables",
     "variablesHint": "Escríbela en un título o un texto: se sustituye allí donde se muestra la diapositiva. Las del quiz aparecen en la vista previa; las de la sala, al jugarlo.",
+    "variablesInsert": "Insertar una variable",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Sala"
+    },
     "variables": {
       "title": "El título del quiz",
       "description": "La descripción del quiz",

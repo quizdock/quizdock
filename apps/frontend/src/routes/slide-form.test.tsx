@@ -1,17 +1,21 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockApi } from '../test/harness';
 import type { QuizDetailDtoSlidesItem } from '../api/generated/model';
 import { SlideForm } from './slide-form';
 
-function renderForm(quizStatus: 'draft' | 'ready' = 'draft', onClose = vi.fn()) {
+function renderForm(
+  quizStatus: 'draft' | 'ready' = 'draft',
+  onClose = vi.fn(),
+  quizFields?: { title: string; questionCount?: number },
+) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   render(
     <QueryClientProvider client={queryClient}>
-      <SlideForm quizId="q1" quizStatus={quizStatus} onClose={onClose} />
+      <SlideForm quizId="q1" quizStatus={quizStatus} onClose={onClose} quizFields={quizFields} />
     </QueryClientProvider>,
   );
   return onClose;
@@ -40,6 +44,43 @@ describe('SlideForm (UI system §3)', () => {
       target: { value: 'Bienvenue' },
     });
     expect(screen.queryByText('Vide — ignoré à l’enregistrement.')).toBeNull();
+  });
+
+  it('a variable picked from a heading’s bar is written where the caret is', () => {
+    mockApi([]);
+    renderForm();
+    const heading = screen.getByPlaceholderText('Titre…') as HTMLInputElement;
+    fireEvent.change(heading, { target: { value: 'Bienvenue' } });
+    heading.setSelectionRange(0, 0);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Insérer une variable' })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /\{title\}/ }));
+    expect(heading).toHaveValue('{title}Bienvenue');
+  });
+
+  it('the picker shows what the quiz’s variables read, the lobby’s described', () => {
+    mockApi([]);
+    renderForm('draft', vi.fn(), { title: 'Discover France', questionCount: 12 });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Insérer une variable' })[0]);
+    expect(screen.getByRole('button', { name: '{title} Discover France' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '{questions} 12' })).toBeInTheDocument();
+    const lobby = screen.getByRole('group', { name: 'Salon' });
+    expect(within(lobby).getByRole('button', { name: /^\{pin\} Le PIN/ })).toBeInTheDocument();
+    expect(within(screen.getByRole('group', { name: 'Quiz' })).queryByText('{pin}')).toBeNull();
+  });
+
+  it('a variable picked from a text’s bar is saved as written', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/slides', status: 201, body: {} },
+    ]);
+    const onClose = renderForm();
+    fireEvent.change(screen.getByPlaceholderText('Titre…'), { target: { value: 'Bienvenue' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Texte' }));
+    const pickers = screen.getAllByRole('button', { name: 'Insérer une variable' });
+    fireEvent.click(pickers[pickers.length - 1]);
+    fireEvent.click(screen.getByRole('button', { name: /\{questions\}/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ajouter' }));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(JSON.stringify(posted(fetchMock)[0].blocks)).toContain('"md":"{questions}"');
   });
 
   it('a removed block can be taken back', () => {

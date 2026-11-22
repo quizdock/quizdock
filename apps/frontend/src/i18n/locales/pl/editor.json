@@ -198,6 +198,11 @@
     "audioExcludesVideoSound": "Slajd ma już nagranie: jedno naraz. Usuń je, aby włączyć dźwięk filmu.",
     "variablesLegend": "Zmienne",
     "variablesHint": "Wpisz zmienną w nagłówku lub tekście: zostanie zastąpiona wszędzie, gdzie slajd jest wyświetlany. Zmienne quizu są wypełnione w podglądzie, zmienne pokoju — gdy quiz jest rozgrywany.",
+    "variablesInsert": "Wstaw zmienną",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Pokój"
+    },
     "variables": {
       "title": "Tytuł quizu",
       "description": "Opis quizu",

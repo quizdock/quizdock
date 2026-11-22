@@ -83,6 +83,7 @@ import { READ_DELAY_DEFAULT_MS } from './question-form-model';
 import { QuizTimeline } from './quiz-timeline';
 import { quizTimeline } from './quiz-timeline-model';
 import { quizItems, moveItem, slideLabel, type QuizItem } from '@/lib/quiz-items';
+import { slideQuizFieldsOf } from './quiz-stage-preview';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { languageName, licenseName } from '@/lib/quiz-terms';
@@ -442,16 +443,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const editingItem = items.find((it) => it.id === editing);
   const editingIndex = items.findIndex((it) => it.id === editing);
   // What a slide's quiz variables read in the builder's preview (`{title}`, `{questions}`…).
-  const slideQuizFields = quiz
-    ? {
-        title: quiz.title,
-        description: quiz.description,
-        questionCount: quiz.questionCount,
-        ...(quiz.ownerName ? { author: quiz.ownerName } : {}),
-        tags: quiz.tags,
-        license: quiz.license,
-      }
-    : undefined;
+  const slideQuizFields = slideQuizFieldsOf(quiz);
   const openForm: ReactNode =
     editing === 'new' ? (
       <QuestionForm
@@ -899,7 +891,10 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         })}
         labels={items.map((item, i) => ({
           number: questionNumber(items, i),
-          name: item.kind === 'question' ? item.question.prompt : slideLabel(item.slide),
+          name:
+            item.kind === 'question'
+              ? item.question.prompt
+              : slideLabel(item.slide, slideQuizFields),
         }))}
         selected={editing}
         onOpen={(id) => requestEditing(id)}
@@ -929,7 +924,10 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
             <ul className="flex flex-col items-center gap-1">
               {items.map((item, i) => {
                 const n = questionNumber(items, i);
-                const label = item.kind === 'slide' ? slideLabel(item.slide) : item.question.prompt;
+                const label =
+                  item.kind === 'slide'
+                    ? slideLabel(item.slide, slideQuizFields)
+                    : item.question.prompt;
                 const active = editing === item.id;
                 return (
                   <li key={item.id}>
@@ -958,7 +956,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                 label={t('questions.itemActions', {
                   label:
                     editingItem.kind === 'slide'
-                      ? slideLabel(editingItem.slide)
+                      ? slideLabel(editingItem.slide, slideQuizFields)
                       : editingItem.question.prompt,
                 })}
                 deleteLabel={
@@ -1030,6 +1028,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                       {(handle) => (
                         <ItemRow
                           item={item}
+                          quiz={slideQuizFields}
                           unfinished={unfinished.some((u) => u.item.id === item.id)}
                           active={editing === item.id}
                           number={questionNumber(items, i)}
@@ -1108,7 +1107,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         description={t('deleteItemConfirm.description', {
           label: pendingDelete
             ? pendingDelete.kind === 'slide'
-              ? slideLabel(pendingDelete.slide)
+              ? slideLabel(pendingDelete.slide, slideQuizFields)
               : pendingDelete.question.prompt
             : '',
         })}
@@ -1171,7 +1170,10 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         steps={unfinished.map((u) => ({
           id: u.item.id,
           number: u.number,
-          label: u.item.kind === 'question' ? u.item.question.prompt : slideLabel(u.item.slide),
+          label:
+            u.item.kind === 'question'
+              ? u.item.question.prompt
+              : slideLabel(u.item.slide, slideQuizFields),
           slide: u.item.kind === 'slide',
           texts: [...new Set(u.issues.map((i) => validationText(i.code)))],
         }))}
@@ -1314,8 +1316,11 @@ function ItemRow({
   onMove,
   onEdit,
   onDelete,
+  quiz,
 }: {
   item: QuizItem;
+  /** What its slide's variables read (`{title}`…). */
+  quiz: Parameters<typeof slideLabel>[1];
   /** Misses something to be played: publishing waits for it. */
   unfinished?: boolean;
   number: number | null;
@@ -1330,7 +1335,7 @@ function ItemRow({
 }) {
   const { t } = useTranslation('editor');
   const isSlide = item.kind === 'slide';
-  const label = isSlide ? slideLabel(item.slide) : item.question.prompt;
+  const label = isSlide ? slideLabel(item.slide, quiz) : item.question.prompt;
   // Same shape for both kinds: "<kind> · <effective duration>".
   const meta = isSlide
     ? `${t('slides.kind')} · ${

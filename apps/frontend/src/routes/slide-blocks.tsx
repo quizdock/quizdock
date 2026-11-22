@@ -5,7 +5,7 @@ import type {
   SlideTextAlign,
   SlideTextSize,
 } from '@quiz-dock/contracts';
-import { SLIDE_VARIABLES } from '@quiz-dock/contracts';
+import { QUIZ_VARIABLES, ROOM_VARIABLES, type SlideVariable } from '@quiz-dock/contracts';
 import {
   AlignCenter,
   AlignLeft,
@@ -19,10 +19,11 @@ import {
   Text,
   X,
 } from 'lucide-react';
-import { createContext, type ReactNode, useContext } from 'react';
+import { createContext, type ReactNode, useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Disclosure } from '@/components/ui/disclosure';
+import { MenuItem } from '@/components/ui/menu-item';
+import { Popover } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MarkdownEditor } from '@/components/markdown-editor';
@@ -92,26 +93,77 @@ export function complete(blocks: SlideBlock[]): SlideBlock[] {
   });
 }
 
+/** The variables in the picker: the quiz's, then the room's. */
+const VARIABLE_GROUPS: { group: 'quiz' | 'room'; names: readonly SlideVariable[] }[] = [
+  { group: 'quiz', names: QUIZ_VARIABLES },
+  { group: 'room', names: ROOM_VARIABLES },
+];
+
+/** What the quiz's variables read in this editor (`{title}`…); the room's are not known. */
+export const SlideVariablesContext = createContext<
+  Partial<Record<SlideVariable, string | number | null | undefined>>
+>({});
+
 /**
- * The variables a heading or a text may hold, each with what it becomes: the
- * quiz's are shown filled in the preview, the room's once the quiz is played.
+ * The variables a heading or a text may hold, offered from its own bar: each with what
+ * it becomes, the one picked written where the caret is. The quiz's are shown filled in
+ * the preview, the room's once the quiz is played.
  */
-export function VariablesHelp() {
+function VariablePicker({ onPick }: { onPick: (variable: string) => void }) {
   const { t } = useTranslation('editor');
+  const values = useContext(SlideVariablesContext);
   return (
-    <Disclosure title={t('slideForm.variablesLegend')} value={`{${SLIDE_VARIABLES[0]}} …`}>
-      <p className="text-muted-foreground text-xs">{t('slideForm.variablesHint')}</p>
-      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
-        {SLIDE_VARIABLES.map((name) => (
-          <div key={name} className="contents">
-            <dt>
-              <code className="bg-muted rounded px-1">{`{${name}}`}</code>
-            </dt>
-            <dd className="text-muted-foreground">{t(`slideForm.variables.${name}`)}</dd>
+    <Popover
+      className="w-80 p-2"
+      trigger={({ open, toggle }) => (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 px-2 font-mono text-xs"
+          aria-label={t('slideForm.variablesInsert')}
+          title={t('slideForm.variablesInsert')}
+          aria-expanded={open}
+          onClick={toggle}
+        >
+          {'{…}'}
+        </Button>
+      )}
+    >
+      {(close) => (
+        <div className="flex flex-col gap-1">
+          <p className="text-muted-foreground px-2 pb-1 text-xs">{t('slideForm.variablesHint')}</p>
+          <div className="max-h-72 overflow-y-auto">
+            {VARIABLE_GROUPS.map(({ group, names }) => (
+              <div key={group} role="group" aria-label={t(`slideForm.variablesGroup.${group}`)}>
+                <p className="text-muted-foreground px-2 pt-2 pb-1 text-xs font-semibold">
+                  {t(`slideForm.variablesGroup.${group}`)}
+                </p>
+                {names.map((name) => (
+                  <MenuItem
+                    key={name}
+                    onClick={() => {
+                      close();
+                      onPick(`{${name}}`);
+                    }}
+                  >
+                    <code className="bg-muted shrink-0 rounded px-1">{`{${name}}`}</code>
+                    {/* What it reads here; the room's, known only once played, are described. */}
+                    {values[name] != null && String(values[name]) !== '' ? (
+                      <span className="truncate">{String(values[name])}</span>
+                    ) : (
+                      <span className="text-muted-foreground truncate">
+                        {t(`slideForm.variables.${name}`)}
+                      </span>
+                    )}
+                  </MenuItem>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
-      </dl>
-    </Disclosure>
+        </div>
+      )}
+    </Popover>
   );
 }
 
@@ -318,6 +370,8 @@ function LeafFields({
   onChange: (next: SlideLeafBlock) => void;
 }) {
   const { t } = useTranslation('editor');
+  const headingRef = useRef<HTMLInputElement>(null);
+  const insertRef = useRef<((text: string) => void) | null>(null);
   switch (block.type) {
     case 'heading':
       return (
@@ -337,8 +391,21 @@ function LeafFields({
               <option value="2">H2</option>
             </Select>
             <AlignPicker value={block.align} onChange={(align) => onChange({ ...block, align })} />
+            <VariablePicker
+              onPick={(v) => {
+                const input = headingRef.current;
+                const at = input?.selectionStart ?? block.text.length;
+                const end = input?.selectionEnd ?? at;
+                onChange({ ...block, text: block.text.slice(0, at) + v + block.text.slice(end) });
+                requestAnimationFrame(() => {
+                  input?.focus();
+                  input?.setSelectionRange(at + v.length, at + v.length);
+                });
+              }}
+            />
           </div>
           <Input
+            ref={headingRef}
             aria-label={t('slideForm.block.heading')}
             placeholder={t('slideForm.headingPlaceholder')}
             className={block.level === 1 ? 'text-lg font-bold' : 'font-semibold'}
@@ -356,8 +423,11 @@ function LeafFields({
             </span>
             <AlignPicker value={block.align} onChange={(align) => onChange({ ...block, align })} />
             <SizePicker value={block.size} onChange={(size) => onChange({ ...block, size })} />
+            {/* Not at the far end: the text's own bar floats there while it is written in. */}
+            <VariablePicker onPick={(v) => insertRef.current?.(v)} />
           </div>
           <MarkdownEditor
+            insertRef={insertRef}
             aria-label={t('slideForm.block.text')}
             placeholder={t('slideForm.bodyPlaceholder')}
             value={block.md}

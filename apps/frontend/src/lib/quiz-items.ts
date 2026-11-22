@@ -1,4 +1,4 @@
-import type { SlideBlock } from '@quiz-dock/contracts';
+import { type SlideBlock, fillVariables, quizVariables } from '@quiz-dock/contracts';
 import type { QuizDetailDtoQuestionsItem, QuizDetailDtoSlidesItem } from '../api/generated/model';
 
 /**
@@ -42,14 +42,20 @@ export function moveItem(items: QuizItem[], index: number, direction: -1 | 1): Q
   return next;
 }
 
-/** What to call a slide in a list: its first heading, else its first text, else nothing. */
-export function slideLabel(slide: Pick<QuizDetailDtoSlidesItem, 'blocks'>): string {
+/**
+ * What to call a slide in a list: its first heading, else its first text, else nothing,
+ * with the quiz's variables filled (`{…}` show as written only in the editor's fields).
+ */
+export function slideLabel(
+  slide: Pick<QuizDetailDtoSlidesItem, 'blocks'>,
+  quiz: Parameters<typeof quizVariables>[0],
+): string {
   const leaves = (slide.blocks as SlideBlock[]).flatMap((b) =>
     b.type === 'columns' ? b.columns.flat() : [b],
   );
-  return (
+  const label =
     leaves.find((b) => b.type === 'heading')?.text ??
     leaves.find((b) => b.type === 'text')?.md ??
-    ''
-  );
+    '';
+  return fillVariables(label, quizVariables(quiz));
 }

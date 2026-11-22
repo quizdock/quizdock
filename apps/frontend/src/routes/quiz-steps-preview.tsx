@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 import type { QuizDetailDtoQuestionsItem, QuizDetailDtoSlidesItem } from '../api/generated/model';
 import { ParticipantPreview } from '../game/participant-preview';
 import { ScaledStage } from '../game/slide-stage';
-import type { StepQuiz } from './quiz-stage-preview';
+import { type StepQuiz, slideQuizFieldsOf } from './quiz-stage-preview';
 import { ScreenSurface } from './screen-page';
 import { stepView } from './step-view';
 import type { GameView } from '../game/use-game-session';
@@ -81,7 +81,12 @@ export function QuizStepsPreview({
         <p className="text-muted-foreground">{t('preview.noQuestions')}</p>
       ) : (
         <div className="grid items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <StepList items={items} current={index} onPick={setIndex} />
+          <StepList
+            items={items}
+            quiz={slideQuizFieldsOf(quiz)}
+            current={index}
+            onPick={setIndex}
+          />
           <div
             ref={ref}
             className={cn(
@@ -184,10 +189,13 @@ export function QuizStepsPreview({
 /** The steps, numbered like the editor's list; the one on stage is marked. */
 function StepList({
   items,
+  quiz,
   current,
   onPick,
 }: {
   items: QuizItem[];
+  /** What its slides' variables read (`{title}`…). */
+  quiz: Parameters<typeof slideLabel>[1];
   current: number;
   onPick: (index: number) => void;
 }) {
@@ -227,7 +235,7 @@ function StepList({
                 )}
               </span>
               <Markdown profile="inline" className="line-clamp-2 min-w-0 flex-1">
-                {(isSlide ? slideLabel(item.slide) : item.question.prompt) || '—'}
+                {(isSlide ? slideLabel(item.slide, quiz) : item.question.prompt) || '—'}
               </Markdown>
             </button>
           </li>

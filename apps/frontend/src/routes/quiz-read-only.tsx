@@ -20,7 +20,7 @@ import type { QuizDetailDto } from '../api/generated/model';
 import { useRole } from '../auth/use-role';
 import { useCopyQuiz } from './use-copy-quiz';
 import { useLaunchSession } from '../game/use-launch-session';
-import { StepStage } from './quiz-stage-preview';
+import { StepStage, slideQuizFieldsOf } from './quiz-stage-preview';
 import { QuestionProperties, SlideProperties } from './step-properties';
 import { PageTitle } from '@/components/ui/page-title';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -163,7 +163,9 @@ export function QuizReadOnly({ quiz }: { quiz: QuizDetailDto }) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <Markdown profile="inline" className="line-clamp-2 block text-sm font-medium">
-                        {isSlide ? slideLabel(item.slide) : item.question.prompt}
+                        {isSlide
+                          ? slideLabel(item.slide, slideQuizFieldsOf(quiz))
+                          : item.question.prompt}
                       </Markdown>
                       <span className="text-muted-foreground mt-0.5 block truncate text-xs">
                         {meta}

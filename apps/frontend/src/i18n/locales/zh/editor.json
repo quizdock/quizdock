@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "幻灯片已有音频：一次只能有一个。移除它才能打开视频的音频。",
     "variablesLegend": "变量",
     "variablesHint": "写在标题或文本中：幻灯片显示时会被替换。测验的变量在预览中显示，房间的变量在进行测验时显示。",
+    "variablesInsert": "插入变量",
+    "variablesGroup": {
+      "quiz": "测验",
+      "room": "房间"
+    },
     "variables": {
       "title": "测验标题",
       "description": "测验说明",

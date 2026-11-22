@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "簡報已有音訊：一次只能有一個。移除它才能開啟影片的音訊。",
     "variablesLegend": "變數",
     "variablesHint": "寫在標題或文字中：簡報顯示時會被替換。測驗的變數在預覽中顯示，房間的變數在進行測驗時顯示。",
+    "variablesInsert": "插入變數",
+    "variablesGroup": {
+      "quiz": "測驗",
+      "room": "房間"
+    },
     "variables": {
       "title": "測驗標題",
       "description": "測驗說明",

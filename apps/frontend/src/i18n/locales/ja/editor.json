@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "スライドにはすでに音声があります。音声は一度に1つです。動画の音声をオンにするには、その音声を削除してください。",
     "variablesLegend": "変数",
     "variablesHint": "見出しやテキストに書くと、スライドが表示されるたびに置き換えられます。クイズの変数はプレビューで値が入り、ルームの変数はクイズの実施時に値が入ります。",
+    "variablesInsert": "変数を挿入",
+    "variablesGroup": {
+      "quiz": "クイズ",
+      "room": "ルーム"
+    },
     "variables": {
       "title": "クイズのタイトル",
       "description": "クイズの説明",

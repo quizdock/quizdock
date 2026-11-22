@@ -190,6 +190,11 @@
     "audioExcludesVideoSound": "Slaytta zaten bir ses var: aynı anda yalnızca biri çalabilir. Videonun sesini açmak için onu kaldırın.",
     "variablesLegend": "Değişkenler",
     "variablesHint": "Başlığa veya metne bir değişken yazın: slaytın gösterildiği her yerde değeriyle değiştirilir. Quizinkiler önizlemede, odanınkiler quiz oynatıldığında dolu görünür.",
+    "variablesInsert": "Değişken ekle",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Oda"
+    },
     "variables": {
       "title": "Quizin başlığı",
       "description": "Quizin açıklaması",
