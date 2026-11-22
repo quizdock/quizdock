@@ -73,8 +73,9 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
 
 ## 3. Writing migrations from now on
 
-- Every new migration has its `down.sql`, **written and read by hand**, the generated diff as a draft
-  (`prisma migrate diff`, schema N → schema N-1).
+- Every new migration has its `down.sql`, **written and read by hand**, the generated diff as a draft: Prisma's own
+  workflow (*Generating down migrations*: `prisma migrate diff --script`, schema N → schema N-1; applied with
+  `prisma db execute --file`).
 - **The down leaves ghosts** (§1):
   - an added column or table stays; the down only relaxes what would make the target fail on its own writes: a
     `NOT NULL` without default, a restrictive foreign key (the target could no longer delete a user who owns a
@@ -84,7 +85,7 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
   - the same for a value the target does not know inside a JSON column (a position, a kind of block).
 - **The up runs again over its ghosts**: `IF NOT EXISTS` on what it creates, guards on its constraints, and it puts
   back the mapped values whose row still holds the value the down set.
-- **A column renamed or no longer read is a ghost of the newer release**: it stays and is still written through the
+- **A column renamed or no longer read is a ghost of the newer release** (Prisma's *expand and contract*): it stays and is still written through the
   window, then dropped by a later release (roadmap §1). A rewritten value (`roles` replacing `role`) keeps its source
   written the same way.
 
@@ -94,7 +95,7 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
 |-------|--------------|
 | `migrations/<name>/down.sql` | The reverse of the migration, leaving its ghosts, in one transaction. |
 | Release manifest in the image | For each of the releases of the window: the list of its migrations. Built at release from the tags. |
-| CLI `db:rollback --to <version>` (in the image) | Undoes the applied migrations the target lacks, newest first; deletes their `_prisma_migrations` rows; `--check` only says what it would do and the losses. |
+| CLI `db:rollback --to <version>` (in the image) | Undoes the applied migrations the target lacks, newest first; deletes their `_prisma_migrations` rows (Prisma's `migrate resolve --rolled-back` only takes a failed migration); `--check` only says what it would do and the losses. |
 | `./quizdock rollback [tag]` (server) | Backup → `db:rollback` with the current image → `QUIZDOCK_TAG` of the target, the infrastructure's Compose files kept → restart → doctor. Without a tag: the previous one, kept by `upgrade` (`QUIZDOCK_PREVIOUS_TAG`). |
 | Restore points (server) | `upgrade` keeps its backup under a restore-point name with the release it leaves, when `QUIZDOCK_RESTORE_POINTS` is set. |
 | Admin, Version card | A list of the releases of the window; for the one picked: possible or not, the losses counted, the terminal steps to copy. Read with `db:rollback --check`. Starts nothing. |
@@ -113,16 +114,22 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
   simple and pragmatic for ops (e.g. `scp` into the restore points' directory, the script taking it from there).
 - **To check in the prototype**: the up again over its ghosts (`IF NOT EXISTS`, enum values re-added, the mapped
   values put back), and a ghost column whose type is the enum the down recreates.
+- **Prisma 8** (a release candidate on 2026-11-22; Prisma 7 supported 18 months after its release) changes the
+  ground: migrations form a graph of states, going back is a migration planned to the state before
+  (`migration plan --to "<dir>^"`), every operation is checked before and after (so it runs again safely), data
+  transforms are built in, and *refs* name states (a release manifest for free). It checks the database's state by
+  a hash of its schema (`db verify`): whether the ghosts pass is the first thing to prototype. Lot 4 waits for that.
 - Keycloak / Authentik: their own database is not migrated by QuizDock; a rollback leaves it as is. To check per
   release that an older QuizDock still works with it.
 
 ## 7. Lots
 
-1. **Restore points (server)**: `QUIZDOCK_RESTORE_POINTS`, `upgrade` names and keeps them, the size said; `./quizdock rollback` back to the previous release through its restore point. From this
-   lot on, every new migration ships its `down.sql` with ghosts and the CI checks it (§3, §5): what is not written
+1. **Restore points (server)**: `QUIZDOCK_RESTORE_POINTS`, `upgrade` names and keeps them, the size said;
+   `./quizdock rollback` back to the previous release through its restore point. From this lot on, every new migration ships its `down.sql` with ghosts and the CI checks it (§3, §5): what is not written
    when the migration is written cannot be caught up.
 2. **Admin, read only**: the Version card (reachable releases, what was entered since the upgrade, the terminal
    steps); the restore points with their sizes and the disk use.
 3. **Admin, management**: delete with the warning, download, upload.
 4. **Rollback through the `down.sql`**: the release manifest, `db:rollback` and `--check`, the losses counted per
-   migration; `./quizdock rollback` takes this path when it exists, the restore point otherwise.
+   migration; `./quizdock rollback` takes this path when it exists, the restore point otherwise. Built once Prisma 8
+   is settled (§6): on Prisma 7, it would be built twice.
