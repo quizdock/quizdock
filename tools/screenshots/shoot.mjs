@@ -305,6 +305,14 @@ async function authoring(browser, quizzes) {
     await page.getByText('Lavender season').filter({ visible: true }).first().click();
     await shot(page, 'editor-slide');
   });
+  // The slide's ready-made layouts, a media placement picked.
+  await attempt('editor-slide-layouts', async () => {
+    await page.getByRole('button', { name: 'Layouts', exact: true }).first().click();
+    const modal = page.getByRole('dialog', { name: 'Slide layouts' });
+    await modal.getByRole('button', { name: 'Media right' }).click();
+    await shot(page, 'editor-slide-layouts');
+    await page.keyboard.press('Escape');
+  });
 
   await page.goto(`${URL}/profile`);
   await shot(page, 'preferences');
@@ -328,7 +336,7 @@ async function authoring(browser, quizzes) {
   await page.goto(`${URL}/quizzes/${quizzes.france}/preview`);
   const stage = page.locator('div.aspect-video').first();
   const types = [
-    ['types/slide-intro', 'Discover France', false],
+    ['types/slide-intro', '\\{title\\}', false],
     ['types/single-choice', 'What is the capital of France?', false],
     ['types/true-false', 'France shares a land border', false],
     ['types/multiple-choice', 'Which of these rivers', false],
