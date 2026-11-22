@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover France",
     "description": "Sample quiz — geography, history and culture of France.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 3,
+    "revision": 4,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -146,7 +146,12 @@
       "numericTolerance": 5,
       "options": [],
       "acceptedAnswers": [],
-      "media": "media/eiffel.webp"
+      "media": "media/eiffel.webp",
+      "hint": {
+        "text": "It was the tallest structure in the world until 1930.",
+        "afterS": 15,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",
@@ -236,7 +241,12 @@
           "isCorrect": false
         }
       ],
-      "acceptedAnswers": []
+      "acceptedAnswers": [],
+      "hint": {
+        "text": "The Bastille fell on 14 July of that year.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "slide",

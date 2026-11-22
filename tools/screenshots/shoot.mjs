@@ -244,14 +244,24 @@ async function authoring(browser, quizzes) {
   await shot(page, 'templates');
 
   await page.goto(`${URL}/quizzes/${quizzes.france}`);
-  await page.getByText('How tall is the Eiffel Tower', { exact: false }).first().click();
+  await page
+    .getByText('How tall is the Eiffel Tower', { exact: false })
+    .filter({ visible: true })
+    .first()
+    .click();
   await shot(page, 'editor');
-  // The library opens from a question without a picture yet.
+  // The library opens from a question without a picture yet, through its timeline.
+  // (The quiz's flow repeats each step's title in hidden tips: the list's own is clicked.)
   await attempt('media-library', async () => {
-    await page.getByText('France shares a land border', { exact: false }).first().click();
     await page
-      .getByText(/^Question media/)
+      .getByText('France shares a land border', { exact: false })
+      .filter({ visible: true })
       .first()
+      .click();
+    await page.getByRole('button', { name: 'Add an element' }).first().click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /^Picture/ })
       .click();
     await page.getByRole('button', { name: 'My images' }).first().click();
     await shot(page, 'media-library');
@@ -260,12 +270,39 @@ async function authoring(browser, quizzes) {
     await page.keyboard.press('Escape');
   });
 
+  // A question's timeline: its sound, its explanation, the flow drawn to scale.
+  await attempt('editor-timeline', async () => {
+    await page.getByText('Which anthem is this?').filter({ visible: true }).first().click();
+    await page
+      .getByRole('region', { name: 'Timeline' })
+      .first()
+      .evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await shot(page, 'editor-timeline');
+  });
+
+  // A question's hint (the sample quizzes carry a few): its fields, under its timeline.
+  await attempt('editor-hint', async () => {
+    await page
+      .getByText('How tall is the Eiffel Tower', { exact: false })
+      .filter({ visible: true })
+      .first()
+      .click();
+    const timeline = page.getByRole('region', { name: 'Timeline' }).first();
+    await timeline.getByRole('button', { name: /Hint/ }).first().click();
+    await timeline.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+    await shot(page, 'editor-hint');
+  });
+
   await attempt('editor-image-choice', async () => {
-    await page.getByText('Which of these is the Mont-Saint-Michel?').first().click();
+    await page
+      .getByText('Which of these is the Mont-Saint-Michel?')
+      .filter({ visible: true })
+      .first()
+      .click();
     await shot(page, 'editor-image-choice');
   });
   await attempt('editor-slide', async () => {
-    await page.getByText('Lavender season').first().click();
+    await page.getByText('Lavender season').filter({ visible: true }).first().click();
     await shot(page, 'editor-slide');
   });
 
@@ -446,6 +483,19 @@ async function live(browser, quizzes) {
       await sleep(1200);
       await shot(screen, 'projection-question');
       await shot(consolePage, 'console-question');
+    }
+    // The Eiffel Tower's hint comes halfway through its 30 s: the room, the console, a phone.
+    if (i === 3) {
+      await attempt('hint', async () => {
+        await screen
+          .getByText('tallest structure in the world', { exact: false })
+          .first()
+          .waitFor({ timeout: 40_000 });
+        await sleep(1200);
+        await shot(screen, 'projection-hint');
+        await shot(consolePage, 'console-hint');
+        await shot(lea, 'player-hint');
+      });
     }
     if (i === 4) {
       await lea

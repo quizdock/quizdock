@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Türkiye",
     "description": "Sample quiz — geography, history and culture of Türkiye.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 3,
+    "revision": 4,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -137,7 +137,12 @@
       "media": "media/agri-dagi.webp",
       "numericValue": 5137,
       "numericTolerance": 100,
-      "answerExplanation": "At 5,137 metres, Mount Ararat is the highest mountain in Türkiye."
+      "answerExplanation": "At 5,137 metres, Mount Ararat is the highest mountain in Türkiye.",
+      "hint": {
+        "text": "It is Türkiye's highest peak, a little over 5,000 m.",
+        "afterS": 15,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",
@@ -189,7 +194,12 @@
         "Istanbul",
         "İstanbul"
       ],
-      "answerExplanation": "The Ottomans took the city in 1453; the name Istanbul became official in 1930."
+      "answerExplanation": "The Ottomans took the city in 1453; the name Istanbul became official in 1930.",
+      "hint": {
+        "text": "The Bosphorus runs through it.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "slide",
