@@ -1,13 +1,12 @@
 import { DndContext, closestCenter, type DragEndEvent, type SensorDescriptor } from '@dnd-kit/core';
-import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import { IMAGE_CHOICE_OPTION_COUNTS, OPTION_ALT_MAX } from '@quiz-dock/contracts';
-import { GripVertical } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CorrectToggle } from '@/components/ui/correct-toggle';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
+import { SortableRow } from '@/components/sortable-row';
 import { cn } from '@/lib/utils';
 import { mediaControllerDescribe } from '../api/generated/media/media';
 import { ImageTile } from '../game/image-choice';
@@ -210,35 +209,20 @@ export function ImageChoiceOptions<T extends ImageOptionValue>({
 /** A sortable answer: the grip above its tile, keyboard-sortable too. */
 function SortableTile({ id, children }: { id: string; children: ReactNode }) {
   const { t } = useTranslation('editor');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
   return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn(
-        'flex flex-col gap-2 rounded-md border p-2',
-        isDragging && 'bg-background relative z-10 shadow-md',
-      )}
+    <SortableRow
+      as="div"
+      id={id}
+      handleLabel={t('questionForm.dragOption')}
+      handleClassName="w-fit"
+      className="flex flex-col gap-2 rounded-md border p-2"
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        aria-label={t('questionForm.dragOption')}
-        className="text-muted-foreground hover:text-foreground w-fit cursor-grab touch-none rounded p-1 active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="size-4" />
-      </button>
-      {children}
-    </div>
+      {(handle) => (
+        <>
+          {handle}
+          {children}
+        </>
+      )}
+    </SortableRow>
   );
 }

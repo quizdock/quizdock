@@ -1,22 +1,17 @@
 import { DndContext, closestCenter, useSensors, type DragEndEvent } from '@dnd-kit/core';
-import {
-  SortableContext,
-  arrayMove,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ACCEPTED_ANSWERS_MAX, OPTIONS_MAX } from '@quiz-dock/contracts';
 import { useStore } from '@tanstack/react-form';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowDown, ArrowUp, EllipsisVertical, GripVertical, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, EllipsisVertical, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MarkdownEditor } from '@/components/markdown-editor';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { COLOR_BG, OPTION_BG_FALLBACK } from '@/lib/option-style';
+import { SortableRow } from '@/components/sortable-row';
 import { cn } from '@/lib/utils';
 import { FieldMessage } from '@/components/ui/field-message';
 import { type FieldIssue, issuesFor } from '@/lib/question-issues';
@@ -40,36 +35,21 @@ export const SECTION_LEGEND =
 /** Sortable option row: grip handle on the left, keyboard-sortable too. */
 function SortableOption({ id, children }: { id: string; children: ReactNode }) {
   const { t } = useTranslation('editor');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
   return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn(
-        'flex flex-wrap items-center gap-2 rounded-md',
-        isDragging && 'bg-background relative z-10 shadow-md',
-      )}
+    <SortableRow
+      as="div"
+      id={id}
+      handleLabel={t('questionForm.dragOption')}
+      handleClassName=""
+      className="flex flex-wrap items-center gap-2 rounded-md"
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        aria-label={t('questionForm.dragOption')}
-        className="text-muted-foreground hover:text-foreground cursor-grab touch-none rounded p-1 active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="size-4" />
-      </button>
-      {children}
-    </div>
+      {(handle) => (
+        <>
+          {handle}
+          {children}
+        </>
+      )}
+    </SortableRow>
   );
 }
 

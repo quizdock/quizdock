@@ -1,5 +1,3 @@
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import type {
   SlideBlock,
   SlideColumnsRatio,
@@ -14,7 +12,6 @@ import {
   AlignRight,
   Columns2,
   Columns3,
-  GripVertical,
   Heading1,
   Heading2,
   Image as ImageIcon,
@@ -30,7 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MarkdownEditor } from '@/components/markdown-editor';
 import { Select } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { SortableRow } from '@/components/sortable-row';
 import { columnsTemplate } from '../game/live-components';
 import { MediaUpload } from './media-upload';
 import { Segmented } from '@/components/ui/segmented';
@@ -127,46 +124,31 @@ export function SortableBlock({
   children: ReactNode;
 }) {
   const { t } = useTranslation('editor');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
   return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn(
-        'bg-background flex items-start gap-2 rounded-lg border p-2',
-        isDragging && 'relative z-10 shadow-md',
-      )}
+    <SortableRow
+      as="div"
+      id={id}
+      handleLabel={t('slideForm.dragBlock')}
+      handleClassName="mt-2"
+      className="bg-background flex items-start gap-2 rounded-lg border p-2"
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        aria-label={t('slideForm.dragBlock')}
-        className="text-muted-foreground hover:text-foreground mt-2 cursor-grab touch-none rounded p-1 active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="size-4" />
-      </button>
-      <div className="min-w-0 flex-1">{children}</div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="mt-1 size-7"
-        aria-label={t('slideForm.removeBlock')}
-        onClick={onRemove}
-      >
-        <X className="size-4" />
-      </Button>
-    </div>
+      {(handle) => (
+        <>
+          {handle}
+          <div className="min-w-0 flex-1">{children}</div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="mt-1 size-7"
+            aria-label={t('slideForm.removeBlock')}
+            onClick={onRemove}
+          >
+            <X className="size-4" />
+          </Button>
+        </>
+      )}
+    </SortableRow>
   );
 }
 

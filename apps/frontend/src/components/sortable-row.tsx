@@ -5,19 +5,24 @@ import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Sortable `<li>` of a dnd-kit list: hands its drag handle to the row, which keeps
- * its arrows for the keyboard and assistive technologies.
+ * Sortable row of a dnd-kit list (an `<li>`, or a `<div>`): hands its drag handle to the
+ * row, which keeps its arrows for the keyboard and assistive technologies.
  */
 export function SortableRow({
   id,
   handleLabel,
+  as: Tag = 'li',
   className,
+  handleClassName = '-ml-1',
   children,
 }: {
   id: string;
   /** What the handle is for, read by screen readers. */
   handleLabel: string;
+  as?: 'li' | 'div';
   className?: string;
+  /** Where the handle sits in the row. */
+  handleClassName?: string;
   children: (handle: ReactNode) => ReactNode;
 }) {
   const {
@@ -34,7 +39,10 @@ export function SortableRow({
       type="button"
       ref={setActivatorNodeRef}
       aria-label={handleLabel}
-      className="text-muted-foreground hover:text-foreground -ml-1 cursor-grab touch-none rounded p-1 active:cursor-grabbing"
+      className={cn(
+        'text-muted-foreground hover:text-foreground cursor-grab touch-none rounded p-1 active:cursor-grabbing',
+        handleClassName,
+      )}
       {...attributes}
       {...listeners}
     >
@@ -42,12 +50,12 @@ export function SortableRow({
     </button>
   );
   return (
-    <li
+    <Tag
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(className, isDragging && 'bg-background relative z-10 shadow-md')}
     >
       {children(handle)}
-    </li>
+    </Tag>
   );
 }
