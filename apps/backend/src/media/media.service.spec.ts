@@ -93,6 +93,8 @@ describe('MediaService', () => {
       prisma as unknown as PrismaService,
       redis as unknown as RedisService,
     );
+    // The database is this release's (newer-data.spec covers the reading).
+    jest.spyOn(service, 'newerData').mockResolvedValue([]);
   });
 
   it('refuse un upload sans fichier', async () => {
@@ -258,6 +260,13 @@ describe('MediaService', () => {
       );
     });
 
+    it('deletes nothing while the database holds a newer release’s data (a rollback)', async () => {
+      prisma.mediaAsset.findUnique.mockResolvedValue(unused);
+      jest.spyOn(service, 'newerData').mockResolvedValue(['question.hint']);
+      await service.releaseUnused(['m1']);
+      expect(prisma.mediaAsset.delete).not.toHaveBeenCalled();
+    });
+
     it('leaves what the saved element still holds, without asking the database', async () => {
       prisma.mediaAsset.findUnique.mockResolvedValue(unused);
       await service.releaseUnused(['m1', 'm2', null], ['m2', null]);
@@ -390,6 +399,8 @@ describe('MediaService', () => {
         prisma as unknown as PrismaService,
         redis as unknown as RedisService,
       );
+      // The database is this release's (newer-data.spec covers the reading).
+      jest.spyOn(service, 'newerData').mockResolvedValue([]);
       const old = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
       for (const name of [KNOWN, STRAY, 'README.txt']) {
         await fs.writeFile(join(dir, name), 'x');

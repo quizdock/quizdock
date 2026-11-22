@@ -31,6 +31,18 @@ By default we **stay in `0.x`**: fixes as PATCH, features (planned or emergent) 
 
 A git tag per milestone (`v0.1.0`, `v0.2.0`, …). The CHANGELOG is updated at every iteration (technique §18).
 
+### Schema deprecation
+
+A release can be rolled back to the releases of the three minors before it (SPECIFICATIONS-ROLLBACK). Hence, in
+`0.x` as after:
+
+- a migration comes with a minor, never with a patch;
+- a column or table renamed or no longer read is **deprecated**, not dropped: it stays, still written, marked
+  `/// @deprecated` in `schema.prisma`; a release drops it once every release of its window has the mark (three
+  minors later). The CHANGELOG lists each deprecation, and each drop with the release that announced it.
+
+The release checks enforce both before anything is published (docs/releasing.md).
+
 ---
 
 ## 2. Overview of the milestones

@@ -25,3 +25,11 @@ Thanks for helping! A few things make a pull request easy to take in.
   is in OIDC.
 - Code, comments, commits and documentation are in English; user-facing text
   goes through the translations, in every language of `apps/frontend/src/i18n/locales`.
+- A database migration ships a `down.sql` beside its `migration.sql`, and runs again
+  over what that down leaves: the rules are in
+  [SPECIFICATIONS-ROLLBACK §3](specifications/SPECIFICATIONS-ROLLBACK.md);
+  `pnpm --filter @quiz-dock/backend rollback:check` tries them (the CI does too). If
+  `prisma migrate dev` says a `20261119…` migration was modified after it was applied,
+  it was made to run again before its release: set its checksum in your database,
+  `UPDATE _prisma_migrations SET checksum = '<sha256 of its migration.sql>' WHERE
+  migration_name = '<its name>';`.

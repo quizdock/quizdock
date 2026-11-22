@@ -34,6 +34,7 @@ Read them in this order to discover the project:
 | 18 | **[SPECIFICATIONS-HINTS.md](./SPECIFICATIONS-HINTS.md)** | Hints (draft, discussion #288): a collective clue on the timeline, a configurable penalty on the question's points, the host's switch, three lots | Product, backend, frontend |
 | 19 | **[SPECIFICATIONS-QUESTION-PICTURE.md](./SPECIFICATIONS-QUESTION-PICTURE.md)** | How a question's picture is shown (draft): ratio (presets or free), fill, crop point, progressive reveal; one `mediaStyle` field | Product, frontend, backend |
 | 20 | **[SPECIFICATIONS-STEP-EDITOR.md](./SPECIFICATIONS-STEP-EDITOR.md)** | One editor for every step (draft): questions and slides share the frame, the preview, the timeline and the media model; the data stay apart; three lots | Product, frontend |
+| 21 | **[SPECIFICATIONS-ROLLBACK.md](./SPECIFICATIONS-ROLLBACK.md)** | Version rollback (draft): a `down.sql` per migration, three releases back at least, the backup as fallback; the admin says and gives the command, the server runs it | DevOps, backend, product |
 
 > The documents refer to one another (for instance `technique §5`, `RG-13`, `données §2.10`). Any change of behaviour must update **the document it concerns, in the same commit** (see the "test & document" policy, technique §18).
 
