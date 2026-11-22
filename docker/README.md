@@ -128,6 +128,7 @@ One release, one version, the same QuizDock in every image.
 | `latest` | The current stable release. |
 | `standalone` | The all-in-one image of the current stable release. |
 | `standalone-X.Y.Z` | The all-in-one image of an exact release. |
+| `X.Y.Z-rc.N`, `standalone-X.Y.Z-rc.N` | A release candidate, to try before the release: never `X.Y`, `latest` or `standalone`. |
 
 Every image is published for `linux/amd64` and `linux/arm64`. The main image is
 distroless and runs as a non-root user.

@@ -133,7 +133,10 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
 - **A real quiz builder** — eight question types (single/multi choice, true-false,
   text, numeric, reorder, poll, and image choice — pictures as the answers), images with
   alternative text, Markdown everywhere, content
-  slides between questions, backgrounds, answer explanations at the reveal. A new quiz
+  slides between questions, backgrounds, answer explanations at the reveal. Each step's
+  media are laid out on a timeline drawn to scale (or as a list), and the whole quiz's on
+  another, its length estimated; a picture is framed, cropped, and can sharpen progressively
+  as the answers open; a slide places its own picture as a question does. A new quiz
   starts from a draft: an intro slide and a first question to complete. Twelve sample
   quizzes wait in the templates, one per country, every question
   type in them, with pictures and audio from Wikimedia Commons.
@@ -150,6 +153,10 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   uploaded; **global media** are what the instance provides to every host; each media
   carries its **credit** (author, licence, source), shown with the quiz and under the
   podium. Links to free libraries (Openverse, Wikimedia Commons, Freesound…).
+- **Hints** — a question can carry a hint, a text, a picture, a sound or a video, revealed
+  to the whole room at its place on the timeline; the answers given after it lose a share
+  of the question's points, set per question, never the streak bonus. The host switches
+  hints off or on during the game and hides or replays them on the projection.
 - **Scoring that rewards speed** — time-weighted points, streak bonuses, the standings
   after each question, final podium; per-question rules (*closest answer wins*, partial
   credit, typo-tolerant text, double or fixed points).
@@ -185,6 +192,7 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
 - **Ready!** — participants say they are ready in the lobby; the host sees one count, including whose media are still loading, and still starts when they choose. The lobby's next quiz starts on its own once everyone is ready, or after 30 s unless the host stops the countdown.
 - **Game effects** — a tick at each answer, a gong at the reveal, a background track from your library while players answer (never over a question's own audio); set for the lobby, kept from one quiz to the next. An audio button on every screen that plays something, a mixer for the lobby on the console, and one per device; *Without audio* for whoever prefers silence.
 - **Players without an account** — where everyone signs in, a host can still open a game to the PIN and a nickname alone, for visitors or trainees who have no account; chosen at each launch, or once and for all in *My account*.
+- **Open lobbies on the home page** — on a private instance (`LOBBY_LISTING=listed`), the lobbies open to newcomers are listed under the PIN field, joined in one click; a host takes theirs off the list at any time.
 - **Keep the lobby to itself** — close the game to newcomers once everyone is in (or during play), remove a player, and guessing PINs is slowed down.
 - **Invitation address** — the QR code and join link point where participants can actually reach the instance (public URL, LAN IP, or any address), chosen from the console.
 - **Player feedback** — players rate the quiz (stars + optional comment) at the end; hosts see the distribution and browse the reviews. Can be switched off per quiz.

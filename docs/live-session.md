@@ -115,6 +115,23 @@ The media brief (`specifications/SPECIFICATIONS-MEDIA.md` §5) as built:
   relays it from the room's projection only. Screens showing a sound without playing it move their playhead with
   it; a device starting late jumps there.
 
+## Hints
+
+A question's hint (SPECIFICATIONS-HINTS) is in the snapshot whole; `question:start`
+carries only when it comes (`afterS`, after the answers open) and its `penaltyPct`,
+never its content. At that time, when the game's hints are on, the server reveals it
+to the whole room: `question:hint` with its text, picture, video or sound, `revealedAt`
+(what the points are reckoned from, see [scoring](scoring.md)) and `shown`. Its video or
+sound starts on one instant for every device that plays it (`mediaStartAt`) and holds
+the question its length plus the quiz's pause (`question:time` moves the deadline); while
+it plays, it takes over the question's own sound.
+
+From the console: `host:hints` switches the game's hints off or on (`game:hints`; on
+late, a hint whose time has passed comes at once), `host:hint-shown` hides or shows it on
+the screens (its media paused while hidden, its start moved by that time, `revealedAt`
+unchanged), `host:hint-replay` plays its media again from the start. A screen that
+attaches gets the hint as the host left it. A phone folds and unfolds it on its own.
+
 ## Invitation address
 
 The QR code and join link point at the base URL the host picked in the lobby
