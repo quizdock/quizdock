@@ -9,8 +9,8 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
 
 ## 1. The model
 
-- A rollback goes back to one of **the three releases before the running one** at least (any release: minor or
-  patch). Further back, the backup.
+- A rollback goes back to any release of **the three minors before the running one**, their patches included, and
+  to the patches before it in its own minor. Further back, the backup.
 - Prisma Migrate only goes forward. Each migration therefore ships a **`down.sql`** next to its `migration.sql`, in the
   same directory; Prisma reads only `migration.sql` and checksums only it.
 - The rollback runs with the **current image**: it is the only one that knows the `down.sql` of the migrations it
@@ -86,6 +86,12 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
   does not know, it deletes no media (the hourly sweep, the release on save), since a ghost may use them. From the
   next release on; a rollback to 0.17.x does not have it, and its sweep deletes, after 24 h, the media only hints
   and slide pictures use: a loss said before it runs.
+- **The window counts minors** (three, with their patches), and **a patch adds no migration**: a migration comes
+  with a minor, so a window is a span of time, not three patches out in a week.
+- **Releases are checked before anything is published** (`scripts/release-check.mjs`, first job of the release
+  workflow): released migrations unchanged, new ones after them, none in a patch, upgrade and rollback from each
+  release of the window, a drop only of what the window's oldest release marked `@deprecated`. A release candidate
+  (`vX.Y.Z-rc.N`) passes them and publishes its own image only, to try on a server first.
 - **Nothing of the rollback is shown or announced yet**: the next release ships what makes it work at its release
   (§7, lot 0).
 
@@ -105,9 +111,9 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
 - **The up runs again over its ghosts**: `IF NOT EXISTS` on what it creates, guards on its constraints, and it puts
   back the mapped values whose row still holds the value the down set, then drops the ghost column that kept them.
   `20261119090000_media_position_behind_alone` shows both sides.
-- **A column renamed or no longer read is a ghost of the newer release** (Prisma's *expand and contract*): it stays and is still written through the
-  window, then dropped by a later release (roadmap §1). A rewritten value (`roles` replacing `role`) keeps its source
-  written the same way.
+- **A column renamed or no longer read is a ghost of the newer release** (Prisma's *expand and contract*): it stays,
+  still written, marked `/// @deprecated` in `schema.prisma`; a release drops it once every release of its window
+  has the mark (roadmap §1). A rewritten value (`roles` replacing `role`) keeps its source written the same way.
 
 ## 4. The pieces
 
