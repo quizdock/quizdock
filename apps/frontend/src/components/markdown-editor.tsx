@@ -3,10 +3,11 @@ import Image from '@tiptap/extension-image';
 import { Markdown as MarkdownExt } from '@tiptap/markdown';
 import { EditorContent, useEditor, useEditorState, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Bold, Code, Italic, List, ListOrdered, SquareCode } from 'lucide-react';
-import { type RefObject, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Bold, Eraser, Italic, List, ListOrdered } from 'lucide-react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
+import { VariablePicker } from '@/components/variable-picker';
 import { cn } from '@/lib/utils';
 import type { MarkdownProfile } from './markdown';
 
@@ -18,7 +19,8 @@ import type { MarkdownProfile } from './markdown';
  * The allowed formatting mirrors the rendering profile of `Markdown`:
  * `block` = bold, italic, lists, inline/block code, block images; `inline` = bold,
  * italic, inline code in a single paragraph. No links: content is displayed live, on a
- * projected screen or a phone mid-answer, where a link is unusable at best.
+ * projected screen or a phone mid-answer, where a link is unusable at best. The bar
+ * keeps to bold, italic and lists: code, rarer, is typed in the Markdown source.
  */
 export interface MarkdownEditorProps {
   value: string;
@@ -27,8 +29,12 @@ export interface MarkdownEditorProps {
   placeholder?: string;
   'aria-label'?: string;
   className?: string;
-  /** Given a function that writes a text where the caret is (a slide's variables). */
-  insertRef?: RefObject<((text: string) => void) | null>;
+  /** Offers the variables (`{title}`, `{pin}`…) from its bar, written where the caret is. */
+  variables?: boolean;
+  /** Settings of the field's own put in its bar (a slide text's alignment and size). */
+  tools?: ReactNode;
+  /** The text's alignment, as it will show (a slide's text); left by default. */
+  align?: 'left' | 'center' | 'right';
 }
 
 /** Single-paragraph document for the inline profile (no Enter, no blocks). */
@@ -77,7 +83,9 @@ export function MarkdownEditor({
   placeholder,
   'aria-label': ariaLabel,
   className,
-  insertRef,
+  variables,
+  tools,
+  align,
 }: MarkdownEditorProps) {
   const { t } = useTranslation('common');
   const [source, setSource] = useState(false);
@@ -104,39 +112,61 @@ export function MarkdownEditor({
     editor.commands.setContent(value, { contentType: 'markdown', emitUpdate: false });
   }, [editor, value]);
 
-  useEffect(() => {
-    if (!insertRef) return;
-    insertRef.current = (text) => {
-      const area = sourceRef.current;
-      if (source && area) {
-        const next =
-          area.value.slice(0, area.selectionStart) + text + area.value.slice(area.selectionEnd);
-        const caret = area.selectionStart + text.length;
-        onChange(next);
-        requestAnimationFrame(() => {
-          area.focus();
-          area.setSelectionRange(caret, caret);
-        });
-      } else editor?.chain().focus().insertContent(text).run();
-    };
-  }, [insertRef, editor, source, onChange]);
+  // Writes a text where the caret is, in either mode (a variable picked from the bar).
+  const insert = (text: string) => {
+    const area = sourceRef.current;
+    if (!source || !area) {
+      editor?.chain().focus().insertContent(text).run();
+      return;
+    }
+    const caret = area.selectionStart + text.length;
+    onChange(area.value.slice(0, area.selectionStart) + text + area.value.slice(area.selectionEnd));
+    requestAnimationFrame(() => {
+      area.focus();
+      area.setSelectionRange(caret, caret);
+    });
+  };
+
+  // The formatting buttons, in visual mode only (the source is typed as it is).
+  const marks = editor && !source ? editor : null;
 
   const isEmpty = useEditorState({ editor, selector: ({ editor: e }) => e?.isEmpty ?? true });
 
   return (
     <div data-markdown-editor className={cn('group relative flex flex-col gap-1', className)}>
-      {/* The toolbar stays out of the way until the field has focus (source mode keeps its toggle).
-          In visual mode it floats over the field's top edge instead of pushing it down: a
-          toolbar that took space on focus and gave it back on blur moved everything under
-          the pointer — a click on "correct" right after typing an option landed elsewhere. */}
+      {/* A text field's bar is always there, above it: its formatting, its own settings,
+          its variables. An option's (inline) stays out of the way until the field has
+          focus, floating over its top edge instead of pushing it down: a bar that took
+          space on focus and gave it back on blur moved everything under the pointer — a
+          click on "correct" right after typing an option landed elsewhere. */}
       <div
         className={cn(
           'flex flex-wrap items-center gap-1',
-          !source &&
+          profile === 'inline' &&
+            !source &&
             'bg-background absolute right-0 bottom-full z-10 mb-1 hidden rounded-md border px-1 py-0.5 shadow-sm group-focus-within:flex',
         )}
       >
-        {editor && !source ? <Toolbar editor={editor} profile={profile} /> : null}
+        {marks ? <Toolbar editor={editor} profile={profile} /> : null}
+        {tools ? (
+          <>
+            {marks ? <ToolSeparator /> : null}
+            {tools}
+          </>
+        ) : null}
+        {variables ? (
+          <>
+            {marks || tools ? <ToolSeparator /> : null}
+            <VariablePicker onPick={insert} />
+          </>
+        ) : null}
+        {/* Last and apart: it undoes all the formatting of the selection, marks and lists. */}
+        {marks ? (
+          <>
+            <ToolSeparator />
+            <ClearFormatting editor={marks} />
+          </>
+        ) : null}
         <button
           type="button"
           className="text-muted-foreground ml-auto text-xs underline-offset-2 hover:underline"
@@ -160,12 +190,13 @@ export function MarkdownEditor({
         <div
           className={cn(
             'border-input bg-background focus-within:ring-ring relative rounded-md border shadow-sm focus-within:ring-1',
+            align && ALIGN_CLASS[align],
             // Block fields are resizable vertically, like a textarea.
             profile === 'inline' ? 'min-h-9' : 'min-h-24 resize-y overflow-auto',
           )}
         >
           {isEmpty && placeholder ? (
-            <span className="text-muted-foreground pointer-events-none absolute top-2 left-3 text-[1em]">
+            <span className="text-muted-foreground pointer-events-none absolute inset-x-3 top-2 text-[1em]">
               {placeholder}
             </span>
           ) : null}
@@ -183,8 +214,6 @@ function Toolbar({ editor, profile }: { editor: Editor; profile: MarkdownProfile
     selector: ({ editor: e }) => ({
       bold: e.isActive('bold'),
       italic: e.isActive('italic'),
-      code: e.isActive('code'),
-      codeBlock: e.isActive('codeBlock'),
       bulletList: e.isActive('bulletList'),
       orderedList: e.isActive('orderedList'),
     }),
@@ -207,15 +236,9 @@ function Toolbar({ editor, profile }: { editor: Editor; profile: MarkdownProfile
       >
         <Italic className="size-4" />
       </ToolButton>
-      <ToolButton
-        label={t('markdownEditor.code')}
-        active={active.code}
-        onClick={() => chain().toggleCode().run()}
-      >
-        <Code className="size-4" />
-      </ToolButton>
       {profile === 'block' ? (
         <>
+          <ToolSeparator />
           <ToolButton
             label={t('markdownEditor.bulletList')}
             active={active.bulletList}
@@ -230,13 +253,6 @@ function Toolbar({ editor, profile }: { editor: Editor; profile: MarkdownProfile
           >
             <ListOrdered className="size-4" />
           </ToolButton>
-          <ToolButton
-            label={t('markdownEditor.codeBlock')}
-            active={active.codeBlock}
-            onClick={() => chain().toggleCodeBlock().run()}
-          >
-            <SquareCode className="size-4" />
-          </ToolButton>
         </>
       ) : null}
     </>
@@ -250,7 +266,8 @@ function ToolButton({
   children,
 }: {
   label: string;
-  active: boolean;
+  /** A toggle's state; none for an action (clearing). */
+  active?: boolean;
   onClick: () => void;
   children: ReactNode;
 }) {
@@ -270,4 +287,23 @@ function ToolButton({
       {children}
     </button>
   );
+}
+
+function ClearFormatting({ editor }: { editor: Editor }) {
+  const { t } = useTranslation('common');
+  return (
+    <ToolButton
+      label={t('markdownEditor.clear')}
+      onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
+    >
+      <Eraser className="size-4" />
+    </ToolButton>
+  );
+}
+
+const ALIGN_CLASS = { left: 'text-left', center: 'text-center', right: 'text-right' } as const;
+
+/** Between two groups of the bar: the text's marks, its blocks, the field's settings, the variables. */
+function ToolSeparator() {
+  return <span aria-hidden className="bg-border mx-1 h-4 w-px shrink-0" />;
 }

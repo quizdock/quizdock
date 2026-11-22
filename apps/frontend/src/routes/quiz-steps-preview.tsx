@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 import type { QuizDetailDtoQuestionsItem, QuizDetailDtoSlidesItem } from '../api/generated/model';
 import { ParticipantPreview } from '../game/participant-preview';
 import { ScaledStage } from '../game/slide-stage';
-import { type StepQuiz, slideQuizFieldsOf } from './quiz-stage-preview';
+import { QuizVariables, type StepQuiz, slideQuizFieldsOf } from './quiz-stage-preview';
 import { ScreenSurface } from './screen-page';
 import { stepView } from './step-view';
 import type { GameView } from '../game/use-game-session';
@@ -75,114 +75,116 @@ export function QuizStepsPreview({
     [quiz, index, answer, url, theme],
   );
   return (
-    <div className="flex w-full flex-col gap-6">
-      {header}
-      {total === 0 ? (
-        <p className="text-muted-foreground">{t('preview.noQuestions')}</p>
-      ) : (
-        <div className="grid items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <StepList
-            items={items}
-            quiz={slideQuizFieldsOf(quiz)}
-            current={index}
-            onPick={setIndex}
-          />
-          <div
-            ref={ref}
-            className={cn(
-              'flex min-w-0 flex-col gap-3',
-              // Full screen: the stage and its buttons only, centred (a projector, a big screen).
-              isFullscreen && 'bg-background justify-center overflow-auto p-6 sm:p-12',
-            )}
-          >
-            {/* Above the stage: the buttons stay put whatever the step shows. */}
-            <nav className="flex items-center justify-between gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={index === 0}
-                onClick={() => step(-1)}
-              >
-                <ChevronLeft className="size-4" />
-                {t('preview.previous')}
-              </Button>
-              <span className="text-muted-foreground text-sm tabular-nums">
-                {t('preview.questionPosition', { index: index + 1, total })}
-              </span>
-              <div className="flex items-center gap-2">
-                {supported ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    aria-label={
-                      isFullscreen ? t('preview.exitFullscreen') : t('preview.fullscreen')
-                    }
-                    title={isFullscreen ? t('preview.exitFullscreen') : t('preview.fullscreen')}
-                    onClick={() => void toggle()}
-                  >
-                    {isFullscreen ? (
-                      <Minimize className="size-4" />
-                    ) : (
-                      <Maximize className="size-4" />
-                    )}
-                  </Button>
-                ) : null}
+    <QuizVariables quiz={quiz}>
+      <div className="flex w-full flex-col gap-6">
+        {header}
+        {total === 0 ? (
+          <p className="text-muted-foreground">{t('preview.noQuestions')}</p>
+        ) : (
+          <div className="grid items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
+            <StepList
+              items={items}
+              quiz={slideQuizFieldsOf(quiz)}
+              current={index}
+              onPick={setIndex}
+            />
+            <div
+              ref={ref}
+              className={cn(
+                'flex min-w-0 flex-col gap-3',
+                // Full screen: the stage and its buttons only, centred (a projector, a big screen).
+                isFullscreen && 'bg-background justify-center overflow-auto p-6 sm:p-12',
+              )}
+            >
+              {/* Above the stage: the buttons stay put whatever the step shows. */}
+              <nav className="flex items-center justify-between gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  disabled={index >= total - 1}
-                  onClick={() => step(1)}
+                  disabled={index === 0}
+                  onClick={() => step(-1)}
                 >
-                  {t('preview.next')}
-                  <ChevronRight className="size-4" />
+                  <ChevronLeft className="size-4" />
+                  {t('preview.previous')}
                 </Button>
+                <span className="text-muted-foreground text-sm tabular-nums">
+                  {t('preview.questionPosition', { index: index + 1, total })}
+                </span>
+                <div className="flex items-center gap-2">
+                  {supported ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      aria-label={
+                        isFullscreen ? t('preview.exitFullscreen') : t('preview.fullscreen')
+                      }
+                      title={isFullscreen ? t('preview.exitFullscreen') : t('preview.fullscreen')}
+                      onClick={() => void toggle()}
+                    >
+                      {isFullscreen ? (
+                        <Minimize className="size-4" />
+                      ) : (
+                        <Maximize className="size-4" />
+                      )}
+                    </Button>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={index >= total - 1}
+                    onClick={() => step(1)}
+                  >
+                    {t('preview.next')}
+                    <ChevronRight className="size-4" />
+                  </Button>
+                </div>
+              </nav>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <Segmented
+                  size="sm"
+                  label={t('preview.device')}
+                  value={device}
+                  onChange={setDevice}
+                  options={[
+                    { value: 'projection', label: t('preview.projection'), icon: Monitor },
+                    { value: 'phone', label: t('preview.phone'), icon: Smartphone },
+                  ]}
+                />
+                {item.kind === 'question' ? (
+                  <label className="flex items-center gap-2 text-sm">
+                    <Switch
+                      checked={answer}
+                      onCheckedChange={setAnswer}
+                      aria-label={t('preview.showAnswer')}
+                    />
+                    {t('preview.showAnswer')}
+                  </label>
+                ) : null}
               </div>
-            </nav>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <Segmented
-                size="sm"
-                label={t('preview.device')}
-                value={device}
-                onChange={setDevice}
-                options={[
-                  { value: 'projection', label: t('preview.projection'), icon: Monitor },
-                  { value: 'phone', label: t('preview.phone'), icon: Smartphone },
-                ]}
-              />
-              {item.kind === 'question' ? (
-                <label className="flex items-center gap-2 text-sm">
-                  <Switch
-                    checked={answer}
-                    onCheckedChange={setAnswer}
-                    aria-label={t('preview.showAnswer')}
-                  />
-                  {t('preview.showAnswer')}
-                </label>
-              ) : null}
+              {view === null ? null : (
+                // 16:9 like the projection, as wide as the window's height allows: the whole
+                // stage stays in view under the buttons.
+                <div
+                  className="mx-auto w-full"
+                  style={{
+                    maxWidth:
+                      device === 'projection'
+                        ? `calc((100dvh - ${isFullscreen ? 10 : 16}rem) * 16 / 9)`
+                        : undefined,
+                  }}
+                >
+                  <RoomScreen view={view} device={device} />
+                </div>
+              )}
             </div>
-            {view === null ? null : (
-              // 16:9 like the projection, as wide as the window's height allows: the whole
-              // stage stays in view under the buttons.
-              <div
-                className="mx-auto w-full"
-                style={{
-                  maxWidth:
-                    device === 'projection'
-                      ? `calc((100dvh - ${isFullscreen ? 10 : 16}rem) * 16 / 9)`
-                      : undefined,
-                }}
-              >
-                <RoomScreen view={view} device={device} />
-              </div>
-            )}
           </div>
-        </div>
-      )}
-      {footer}
-    </div>
+        )}
+        {footer}
+      </div>
+    </QuizVariables>
   );
 }
 

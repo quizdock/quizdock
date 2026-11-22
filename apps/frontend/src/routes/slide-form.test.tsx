@@ -3,6 +3,8 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockApi } from '../test/harness';
 import type { QuizDetailDtoSlidesItem } from '../api/generated/model';
+import { quizVariables } from '@quiz-dock/contracts';
+import { VariablesContext } from '@/lib/variables';
 import { SlideForm } from './slide-form';
 
 function renderForm(
@@ -15,7 +17,10 @@ function renderForm(
   });
   render(
     <QueryClientProvider client={queryClient}>
-      <SlideForm quizId="q1" quizStatus={quizStatus} onClose={onClose} quizFields={quizFields} />
+      {/* The quiz's values, as the editor gives them. */}
+      <VariablesContext.Provider value={quizFields ? quizVariables(quizFields) : {}}>
+        <SlideForm quizId="q1" quizStatus={quizStatus} onClose={onClose} />
+      </VariablesContext.Provider>
     </QueryClientProvider>,
   );
   return onClose;
@@ -283,7 +288,7 @@ describe('SlideForm — blocks', () => {
     localStorage.clear();
   });
 
-  it('saves the blocks in order, a heading at its level, empty columns left out', async () => {
+  it('saves the blocks in order, a heading at its level', async () => {
     const fetchMock = mockApi([
       { method: 'POST', path: '/quizzes/q1/slides', status: 201, body: {} },
     ]);
@@ -291,16 +296,26 @@ describe('SlideForm — blocks', () => {
     fireEvent.change(screen.getByPlaceholderText('Titre…'), {
       target: { value: 'Bienvenue' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Sous-titre' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Titre' }));
+    fireEvent.change(screen.getAllByRole('combobox', { name: 'Niveau' })[1], {
+      target: { value: '2' },
+    });
     fireEvent.change(screen.getAllByPlaceholderText('Titre…')[1], {
       target: { value: 'Programme' },
     });
-    fireEvent.click(screen.getByRole('button', { name: '3 colonnes' }));
     fireEvent.click(screen.getByRole('button', { name: 'Ajouter' }));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(posted(fetchMock)[0].blocks).toEqual([
       expect.objectContaining({ type: 'heading', text: 'Bienvenue', level: 1 }),
       expect.objectContaining({ type: 'heading', text: 'Programme', level: 2 }),
     ]);
+  });
+
+  it('adds only headings and texts: columns and the media come with the layouts', () => {
+    mockApi([]);
+    renderForm();
+    for (const gone of ['Sous-titre', 'Média', '2 colonnes', '3 colonnes'])
+      expect(screen.queryByRole('button', { name: gone })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Texte' })).toBeInTheDocument();
   });
 });

@@ -427,9 +427,7 @@ export function ScreenSurface({
             onPosition: playMedia ? sayPosition : undefined,
           }}
         >
-          <RoomVariables view={view} pin={pin}>
-            <SlideView key={slide.slideIndex} slide={slide} />
-          </RoomVariables>
+          <SlideView key={slide.slideIndex} slide={slide} />
         </SlidePlaybackContext.Provider>
         {/* The one element of the frame a slide keeps: how to join (UI system §2.2). */}
         {view.joinLocked ? null : (
@@ -951,61 +949,63 @@ export function ScreenSurface({
         : null;
 
   return (
-    <LiveTheme theme={view.theme}>
-      <LiveMotion on={view.motion}>
-        <div
-          ref={ref}
-          data-state={view.state ?? 'none'}
-          className={cn(
-            'qd-screen bg-background relative flex flex-col',
-            boxed ? 'h-full w-full overflow-hidden' : 'min-h-dvh',
-            // A question fits the screen exactly; the rest may grow.
-            !boxed &&
-              (view.state === 'ANSWERING' ||
-                view.state === 'QUESTION_SHOW' ||
-                view.state === 'REVEAL' ||
-                view.state === 'LEADERBOARD') &&
-              'h-dvh',
-            // One typographic base for the whole projected page; everything inside is in em.
-            boxed ? TYPE_BASE.stage : TYPE_BASE.screen,
-          )}
-        >
-          {fullscreenBtn}
-          {soundButton ? (
-            <SoundButton
-              size="lg"
-              align="start"
-              className={cn('absolute top-4 left-4 z-40', BACKDROP_EDGE)}
-              onUnmute={() => void unlockAudio()}
-            />
-          ) : null}
-          {/* A quiz with sound asks for the unlocking click as soon as this window opens,
+    <RoomVariables view={view} pin={pin}>
+      <LiveTheme theme={view.theme}>
+        <LiveMotion on={view.motion}>
+          <div
+            ref={ref}
+            data-state={view.state ?? 'none'}
+            className={cn(
+              'qd-screen bg-background relative flex flex-col',
+              boxed ? 'h-full w-full overflow-hidden' : 'min-h-dvh',
+              // A question fits the screen exactly; the rest may grow.
+              !boxed &&
+                (view.state === 'ANSWERING' ||
+                  view.state === 'QUESTION_SHOW' ||
+                  view.state === 'REVEAL' ||
+                  view.state === 'LEADERBOARD') &&
+                'h-dvh',
+              // One typographic base for the whole projected page; everything inside is in em.
+              boxed ? TYPE_BASE.stage : TYPE_BASE.screen,
+            )}
+          >
+            {fullscreenBtn}
+            {soundButton ? (
+              <SoundButton
+                size="lg"
+                align="start"
+                className={cn('absolute top-4 left-4 z-40', BACKDROP_EDGE)}
+                onUnmute={() => void unlockAudio()}
+              />
+            ) : null}
+            {/* A quiz with sound asks for the unlocking click as soon as this window opens,
           whatever the moment of the session; a silent quiz never asks. */}
-          {(playMedia || (role === 'follow' && sound)) &&
-          !soundUnlocked &&
-          !deviceSound.muted &&
-          (view.quizHasSound || soundsOn) &&
-          view.state !== 'ENDED' ? (
-            // The projection cannot be muted from here: the console does it.
-            <SoundUnlockOverlay allowSilent={role === 'follow'} />
-          ) : null}
-          {backdrop ? (
-            // The step's background owns the surface, bands included: a question's own, else
-            // the quiz theme's (docs/themes.md).
-            <Surface
-              background={backdrop.background}
-              textTone={backdrop.textTone}
-              textOutline={backdrop.textOutline}
-              className={ownBackground ? 'absolute inset-0' : 'flex-1'}
-            >
-              {frame}
-            </Surface>
-          ) : (
-            frame
-          )}
-          <BackdropFade stepKey={stepKey} backdrop={backdropOf(view, onBackground, view.theme)} />
-        </div>
-      </LiveMotion>
-    </LiveTheme>
+            {(playMedia || (role === 'follow' && sound)) &&
+            !soundUnlocked &&
+            !deviceSound.muted &&
+            (view.quizHasSound || soundsOn) &&
+            view.state !== 'ENDED' ? (
+              // The projection cannot be muted from here: the console does it.
+              <SoundUnlockOverlay allowSilent={role === 'follow'} />
+            ) : null}
+            {backdrop ? (
+              // The step's background owns the surface, bands included: a question's own, else
+              // the quiz theme's (docs/themes.md).
+              <Surface
+                background={backdrop.background}
+                textTone={backdrop.textTone}
+                textOutline={backdrop.textOutline}
+                className={ownBackground ? 'absolute inset-0' : 'flex-1'}
+              >
+                {frame}
+              </Surface>
+            ) : (
+              frame
+            )}
+            <BackdropFade stepKey={stepKey} backdrop={backdropOf(view, onBackground, view.theme)} />
+          </div>
+        </LiveMotion>
+      </LiveTheme>
+    </RoomVariables>
   );
 }

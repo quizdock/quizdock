@@ -469,6 +469,17 @@ describe('buildSnapshot', () => {
     });
     expect(cols.columns[1][0]).toMatchObject({ md: 'PIN {pin}, {unknown}' });
   });
+
+  it('prompts: the quiz’s variables are filled, the room’s left to the screens', () => {
+    const snap = buildSnapshot(
+      quiz({
+        title: 'Capitales',
+        questions: [{ ...baseQuestion, prompt: '{title}, question {question} of {questions}' }],
+        slides: [],
+      } as never),
+    );
+    expect(snap.questions[0].prompt).toBe('Capitales, question {question} of 1');
+  });
 });
 
 describe('slideTitle', () => {

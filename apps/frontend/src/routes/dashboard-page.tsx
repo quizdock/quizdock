@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { QuizStatusBadge } from '@/components/quiz-status-badge';
 import { cn } from '@/lib/utils';
 import { Button, twoLineButton } from '@/components/ui/button';
+import { ArchiveQuizDialog } from '@/components/archive-quiz-dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { MenuItem, MenuSeparator } from '@/components/ui/menu-item';
 import { Popover } from '@/components/ui/popover';
@@ -205,6 +206,7 @@ export function DashboardPage() {
   const transition = useQuizzesControllerTransition();
   const remove = useQuizzesControllerRemove();
   const [pendingDelete, setPendingDelete] = useState<QuizDto | null>(null);
+  const [pendingArchive, setPendingArchive] = useState<QuizDto | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const act = async (action: () => Promise<unknown>) => {
     setActionError(null);
@@ -543,7 +545,9 @@ export function DashboardPage() {
               <QuizMenu
                 quiz={quiz}
                 own={!readOnly && !managerOnly}
-                onStatus={(status) => void setStatus(quiz, status)}
+                onStatus={(status) =>
+                  status === 'archived' ? setPendingArchive(quiz) : void setStatus(quiz, status)
+                }
                 onDelete={() => setPendingDelete(quiz)}
               />
             </span>
@@ -613,6 +617,15 @@ export function DashboardPage() {
         })}
       </ul>
 
+      <ArchiveQuizDialog
+        title={pendingArchive?.title ?? null}
+        onCancel={() => setPendingArchive(null)}
+        onConfirm={() => {
+          const quiz = pendingArchive;
+          setPendingArchive(null);
+          if (quiz) void setStatus(quiz, 'archived');
+        }}
+      />
       <ConfirmDialog
         open={pendingDelete !== null}
         destructive

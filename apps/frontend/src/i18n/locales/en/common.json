@@ -16,7 +16,8 @@
     "code": "Code",
     "codeBlock": "Code block",
     "bulletList": "Bulleted list",
-    "orderedList": "Numbered list"
+    "orderedList": "Numbered list",
+    "clear": "Clear formatting"
   },
   "captureConfirm": {
     "title": "Turn on full answer capture?",

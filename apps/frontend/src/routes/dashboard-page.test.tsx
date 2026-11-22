@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockApi, renderApp } from '../test/harness';
 
@@ -152,9 +152,14 @@ describe('DashboardPage', () => {
     expect(screen.getByRole('button', { name: /Présenter/ })).toBeInTheDocument();
     const publish = screen.getByRole('button', { name: /Publier pour présenter/ });
 
-    // Archive, from the ready one's ⋮.
+    // Archive, from the ready one's ⋮: it asks first.
     fireEvent.click(screen.getByRole('button', { name: 'Actions pour « Prêt »' }));
     fireEvent.click(screen.getByRole('button', { name: 'Archiver' }));
+    const ask = await screen.findByRole('dialog', { name: 'Archiver ce quiz ?' });
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith('/quizzes/r1/status'))).toBe(
+      false,
+    );
+    fireEvent.click(within(ask).getByRole('button', { name: 'Archiver' }));
     await waitFor(() =>
       expect(
         fetchMock.mock.calls.some(

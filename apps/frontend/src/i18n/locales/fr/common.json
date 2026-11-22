@@ -16,7 +16,8 @@
     "code": "Code",
     "codeBlock": "Bloc de code",
     "bulletList": "Liste à puces",
-    "orderedList": "Liste numérotée"
+    "orderedList": "Liste numérotée",
+    "clear": "Effacer la mise en forme"
   },
   "captureConfirm": {
     "title": "Activer la capture intégrale ?",

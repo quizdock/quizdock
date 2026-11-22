@@ -258,6 +258,11 @@
     "description": "«{{title}}» e le sue domande verranno eliminati definitivamente. Questa azione non può essere annullata.",
     "confirmLabel": "Elimina"
   },
+  "archiveConfirm": {
+    "title": "Archiviare questo quiz?",
+    "description": "«{{title}}» non può più essere presentato ed esce dall’elenco (il suo filtro lo mostra di nuovo). Ripristinato, torna in bozza, da pubblicare di nuovo.",
+    "confirmLabel": "Archivia"
+  },
   "questionForm": {
     "typeLabel": "Tipo",
     "promptLabel": "Testo della domanda",

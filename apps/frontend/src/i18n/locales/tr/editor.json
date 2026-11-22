@@ -254,6 +254,11 @@
     "description": "“{{title}}” ve soruları kalıcı olarak silinecek. Bu eylem geri alınamaz.",
     "confirmLabel": "Sil"
   },
+  "archiveConfirm": {
+    "title": "Bu quiz arşivlensin mi?",
+    "description": "“{{title}}” artık sunulamaz ve listeden çıkar (filtresi onu yeniden gösterir). Geri yüklendiğinde taslak olarak döner, yeniden yayımlanması gerekir.",
+    "confirmLabel": "Arşiv"
+  },
   "questionForm": {
     "typeLabel": "Tür",
     "promptLabel": "Soru metni",

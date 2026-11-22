@@ -560,6 +560,8 @@ describe('EditorPage', () => {
         request: ['PATCH', '/quizzes/q1/status'],
         act: async () => {
           await more('Archiver');
+          const ask = await screen.findByRole('dialog', { name: 'Archiver ce quiz ?' });
+          fireEvent.click(within(ask).getByRole('button', { name: 'Archiver' }));
         },
       },
       {

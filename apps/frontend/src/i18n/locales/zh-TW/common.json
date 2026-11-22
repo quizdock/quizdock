@@ -16,7 +16,8 @@
     "code": "程式碼",
     "codeBlock": "程式碼區塊",
     "bulletList": "無序清單",
-    "orderedList": "有序清單"
+    "orderedList": "有序清單",
+    "clear": "清除格式"
   },
   "captureConfirm": {
     "title": "啟用完整作答紀錄？",

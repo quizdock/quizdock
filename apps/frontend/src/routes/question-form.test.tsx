@@ -69,6 +69,18 @@ describe('QuestionForm', () => {
     expect(payload.revealDelayS).toBeNull();
   });
 
+  it('the prompt offers the variables from its bar, saved as written', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Insérer une variable' }));
+    fireEvent.click(screen.getByRole('button', { name: /\{title\}/ }));
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).prompt).toBe('{title}');
+  });
+
   it('a draft saves unfinished (no right answer), then says what is left to finish', async () => {
     const fetchMock = mockApi([
       { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },

@@ -16,7 +16,8 @@
     "code": "Codice",
     "codeBlock": "Blocco di codice",
     "bulletList": "Elenco puntato",
-    "orderedList": "Elenco numerato"
+    "orderedList": "Elenco numerato",
+    "clear": "Cancella formattazione"
   },
   "captureConfirm": {
     "title": "Attivare la registrazione completa delle risposte?",
