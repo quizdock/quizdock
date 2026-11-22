@@ -823,6 +823,35 @@ describe('GameEngine (characterization)', () => {
       expect(moved.mediaStartAt).toBeGreaterThan(hint.mediaStartAt);
     });
 
+    it('a hint’s video plays as its sound would: one start, the question held its length', async () => {
+      const watching = snapshotOf([
+        question({
+          hint: {
+            text: 'Regardez',
+            videoMediaId: 'v'.repeat(26),
+            video: { url: '/m/hint.mp4', gainDb: -6, durationMs: 30_000 },
+            holdMs: 31_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(watching, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ revealedAt: number; mediaStartAt: number; video?: unknown }>(
+        'question:hint',
+      )[0];
+      expect(hint.video).toEqual({ url: '/m/hint.mp4', gainDb: -6, durationMs: 30_000 });
+      expect(hint.mediaStartAt).toBeGreaterThanOrEqual(hint.revealedAt);
+      const m = await meta();
+      expect(m.questionEndsAt).toBe(hint.mediaStartAt + 31_000);
+      const before = Date.now();
+      await engine.replayHint(pin, HOST);
+      expect(
+        roomOf<{ mediaStartAt: number }>('question:hint').at(-1)!.mediaStartAt,
+      ).toBeGreaterThanOrEqual(before);
+    });
+
     it('hidden, a hint’s sound waits; shown, it goes on; replayed, it starts again', async () => {
       const sounding = snapshotOf([
         question({
