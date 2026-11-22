@@ -5,7 +5,7 @@
 > taken, and the words. It comes before the selections
 > ([SPECIFICATIONS-SELECTION.md](./SPECIFICATIONS-SELECTION.md) §4.5), which depend on it.
 
-Status: **delivered on `dev`** (2026-10-14), not released yet.
+Status: **delivered** in v0.16.0.
 
 ---
 

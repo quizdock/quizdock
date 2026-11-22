@@ -4,7 +4,7 @@
 > [discussion #288](https://github.com/orgs/quizdock/discussions/288). Hints are a track on the question timeline
 > ([SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)), which comes first.
 
-Status: **draft** — decisions of 2026-11-18, nothing built.
+Status: **lot 1 delivered on `dev`** (2026-11-19), with hints holding a picture, a sound or a video (2026-11-20); not released yet. Lot 2 waits for the answers asked in discussion #288.
 
 ---
 
@@ -56,7 +56,7 @@ Status: **draft** — decisions of 2026-11-18, nothing built.
    the hint is revealed. One player alone does not change the game; a group can, under conditions the host controls.
    Anonymous tally.
 
-Deferred: media hints (image, sound), on the roadmap backlog (ROADMAP §7). Ruled out for now: several hints per
+Media hints (a picture, a sound or a video) came with lot 1. Ruled out for now: several hints per
 question, a private hint for the players who asked, progressive penalty shapes, an instance-wide hint configuration.
 
 ## 4. Open questions

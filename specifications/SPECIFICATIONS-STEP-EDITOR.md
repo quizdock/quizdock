@@ -3,7 +3,7 @@
 > Questions and slides are edited in one editor: the same frame, the same preview, the same timeline, the same media.
 > A slide is a question without answers, points, hint nor explanation, its blocks in place of the prompt.
 
-Status: **draft** — decisions of 2026-11-19, lot 1 in progress.
+Status: **delivered on `dev`** (2026-11-22, the three lots), not released yet.
 
 ---
 

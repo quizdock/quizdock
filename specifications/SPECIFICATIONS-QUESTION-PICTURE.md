@@ -4,7 +4,7 @@
 > ([SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)): its frame, how it fills it, where it
 > is cropped, and a progressive reveal.
 
-Status: **draft** — decisions of 2026-11-19.
+Status: **delivered on `dev`** (2026-11-19), not released yet.
 
 ---
 

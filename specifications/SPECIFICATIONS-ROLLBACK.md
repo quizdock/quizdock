@@ -3,7 +3,7 @@
 > Going back to an earlier release after an upgrade, **without the backup** whenever the migrations allow it, the
 > backup staying the safety net. Assessed in the administration, run from the terminal.
 
-Status: **draft** — decisions of 2026-11-21 and 2026-11-22, nothing built.
+Status: **draft** — decisions of 2026-11-21 and 2026-11-22. Lot 0 (§7) and the release checks are on `dev`; nothing is shown yet.
 
 ---
 

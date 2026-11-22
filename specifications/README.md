@@ -4,7 +4,7 @@
 
 > **A Kahoot clone**: real-time interactive quizzes, timed, scored on how fast people answer. 10–200 participants per session.
 
-🚧 **Status: specification phase** (no code yet). These design documents are authoritative for the development.
+Each brief gives its own status: draft, delivered on `dev`, or delivered in a release. They are intent: [../docs/](../docs/README.md) describes what the code does.
 
 ---
 
@@ -28,13 +28,13 @@ Read them in this order to discover the project:
 | 12 | **[SPECIFICATIONS-IMAGE-CHOICE.md](./SPECIFICATIONS-IMAGE-CHOICE.md)** | Image choice (`image_choice`): answers that are pictures, the decisions taken (alt per option, single or multiple, tiles, bundle v6), the phases | Backend, frontend, product |
 | 13 | **[SPECIFICATIONS-UI-SYSTEM.md](./SPECIFICATIONS-UI-SYSTEM.md)** | UI system: the cross-cutting rules (actions, vocabulary, frames, contrast, permissive validation in four levels) and the three-lot rework (live, authoring, entry/account/back office), decisions taken, open points | Design, frontend, product |
 | 14 | **[SPECIFICATIONS-THEMING.md](./SPECIFICATIONS-THEMING.md)** | Theming: quiz themes (library, child themes of shipped themes, slots, icons, fonts, sounds, motion), bundle v8 and the theme bundle, instance branding and interface theme, dark mode, themes in the store | Design, frontend, backend, product |
-| 15 | **[SPECIFICATIONS-SELECTION.md](./SPECIFICATIONS-SELECTION.md)** | Selections (delivered on `dev`): a named, saved, shareable list of quizzes launched into a room; the word chosen, what it holds (only what depends on the quizzes), references not copies, the queue, what each one sees, saving a room, launches compared | Product, backend, frontend |
-| 16 | **[SPECIFICATIONS-SHARED-PLAY.md](./SPECIFICATIONS-SHARED-PLAY.md)** | Presenting a shared quiz (delivered on `dev`): other hosts present it as it is, keeping nothing; ratings without nicknames; *share* vs *offer as a template* | Product, backend, frontend |
-| 17 | **[SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)** | The question timeline (draft): the builder interface that places a question's media and lays out its flow to scale; conflicts flagged, never arbitrated | Product, frontend |
-| 18 | **[SPECIFICATIONS-HINTS.md](./SPECIFICATIONS-HINTS.md)** | Hints (draft, discussion #288): a collective clue on the timeline, a configurable penalty on the question's points, the host's switch, three lots | Product, backend, frontend |
-| 19 | **[SPECIFICATIONS-QUESTION-PICTURE.md](./SPECIFICATIONS-QUESTION-PICTURE.md)** | How a question's picture is shown (draft): ratio (presets or free), fill, crop point, progressive reveal; one `mediaStyle` field | Product, frontend, backend |
-| 20 | **[SPECIFICATIONS-STEP-EDITOR.md](./SPECIFICATIONS-STEP-EDITOR.md)** | One editor for every step (draft): questions and slides share the frame, the preview, the timeline and the media model; the data stay apart; three lots | Product, frontend |
-| 21 | **[SPECIFICATIONS-ROLLBACK.md](./SPECIFICATIONS-ROLLBACK.md)** | Version rollback (draft): a `down.sql` per migration, three releases back at least, the backup as fallback; the admin says and gives the command, the server runs it | DevOps, backend, product |
+| 15 | **[SPECIFICATIONS-SELECTION.md](./SPECIFICATIONS-SELECTION.md)** | Selections (delivered): a named, saved, shareable list of quizzes launched into a room; the word chosen, what it holds (only what depends on the quizzes), references not copies, the queue, what each one sees, saving a room, launches compared | Product, backend, frontend |
+| 16 | **[SPECIFICATIONS-SHARED-PLAY.md](./SPECIFICATIONS-SHARED-PLAY.md)** | Presenting a shared quiz (delivered): other hosts present it as it is, keeping nothing; ratings without nicknames; *share* vs *offer as a template* | Product, backend, frontend |
+| 17 | **[SPECIFICATIONS-QUESTION-TIMELINE.md](./SPECIFICATIONS-QUESTION-TIMELINE.md)** | The question timeline (delivered on `dev`): the builder interface that places a question's media and lays out its flow to scale; conflicts flagged, never arbitrated | Product, frontend |
+| 18 | **[SPECIFICATIONS-HINTS.md](./SPECIFICATIONS-HINTS.md)** | Hints (lot 1 delivered on `dev`, discussion #288): a collective clue on the timeline, with a picture, a sound or a video, a configurable penalty on the question's points, the host's switch, three lots | Product, backend, frontend |
+| 19 | **[SPECIFICATIONS-QUESTION-PICTURE.md](./SPECIFICATIONS-QUESTION-PICTURE.md)** | How a question's picture is shown (delivered on `dev`): ratio (presets or free), fill, crop point, progressive reveal; one `mediaStyle` field | Product, frontend, backend |
+| 20 | **[SPECIFICATIONS-STEP-EDITOR.md](./SPECIFICATIONS-STEP-EDITOR.md)** | One editor for every step (delivered on `dev`): questions and slides share the frame, the preview, the timeline and the media model; the data stay apart; three lots | Product, frontend |
+| 21 | **[SPECIFICATIONS-ROLLBACK.md](./SPECIFICATIONS-ROLLBACK.md)** | Version rollback (draft, groundwork on `dev`): a `down.sql` per migration leaving ghosts, three minors back, restore points as fallback, release checks; the admin says and gives the command, the server runs it | DevOps, backend, product |
 
 > The documents refer to one another (for instance `technique §5`, `RG-13`, `données §2.10`). Any change of behaviour must update **the document it concerns, in the same commit** (see the "test & document" policy, technique §18).
 

@@ -4,7 +4,7 @@
 > unfolds, drawn to scale. It comes first, for the media that exist today; the hints
 > ([SPECIFICATIONS-HINTS.md](./SPECIFICATIONS-HINTS.md)) are a new element laid on it afterwards.
 
-Status: **draft** — decisions of 2026-11-18, nothing built.
+Status: **delivered on `dev`** (2026-11-19), not released yet; the open questions (§5) stay open.
 
 ---
 
