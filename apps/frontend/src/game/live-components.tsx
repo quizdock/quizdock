@@ -38,7 +38,7 @@ import { cn } from '@/lib/utils';
 import { Avatar } from './avatar';
 import { BACKDROP_EDGE, BACKDROP_PANEL, PICKED_RING, Surface } from './surface';
 import { themeBackdrop, useLiveTheme } from './theme';
-import { SlideVariablesContext } from './slide-variables';
+import { VariablesContext } from '@/lib/variables';
 import { SlidePlaybackContext, SlideSound, SlideVideoLayer, showsVideo } from './media/slide-media';
 import { ShapeIcon } from '@/components/shape-icon';
 import { optionLabel } from './image-choice';
@@ -815,7 +815,7 @@ export function AnswerExplanation({
 export function SlideView({ slide }: { slide: SlideShowPayload }) {
   const playback = useContext(SlidePlaybackContext);
   // The room's variables, filled here (the quiz's came filled from the server).
-  const variables = useContext(SlideVariablesContext);
+  const variables = useContext(VariablesContext);
   const blocks = fillSlideBlocks(slide.blocks, variables);
   // A phone in the room shows the slide's background, not its video (the big screen does).
   const video = slide.video && showsVideo(slide.video, playback) ? slide.video : null;

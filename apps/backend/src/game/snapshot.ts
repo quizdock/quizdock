@@ -18,6 +18,7 @@ import {
   LOUDNESS_TARGET_LUFS,
   effectiveTimeLimitS,
   fillSlideBlocks,
+  fillVariables,
   quizVariables,
   mediaDurationMs,
   playbackGainDb,
@@ -131,6 +132,9 @@ export function buildSnapshot(
   /** The media its hints hold, by id (they live in the hints, not in a relation). */
   hintMedia: Map<string, MediaAsset> = new Map(),
 ): QuizSnapshot {
+  // A prompt naming the quiz (`{title}`, `{questions}`…) reads its current values;
+  // the room's are filled by each screen.
+  const variables = quizVariables(slideQuizFields(quiz));
   return {
     quizId: quiz.id,
     title: quiz.title,
@@ -147,7 +151,7 @@ export function buildSnapshot(
         id: q.id,
         orderIndex: q.orderIndex,
         type: q.type as QuestionType,
-        prompt: q.prompt,
+        prompt: fillVariables(q.prompt, variables),
         media,
         answerExplanation: q.answerExplanation ?? null,
         background: backdropOf(q.backgroundMedia, q.backgroundGradient, q.backgroundStyle),
@@ -291,10 +295,10 @@ function backdropOf(
   return style ? { ...base, style: style as BackgroundStyle } : base;
 }
 
-/** What a slide's variables read of the quiz (see `quizVariables`). */
+/** What a slide's or a prompt's variables read of the quiz (see `quizVariables`). */
 type SlideQuizFields = Parameters<typeof quizVariables>[0];
 
-/** The quiz's fields for its slides' variables, from the rows the snapshot reads. */
+/** The quiz's fields for its variables, from the rows the snapshot reads. */
 function slideQuizFields(quiz: QuizWithContent): SlideQuizFields {
   return {
     title: quiz.title,

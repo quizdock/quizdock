@@ -374,6 +374,7 @@ export function QuestionForm({
               value={field.state.value}
               onChange={field.handleChange}
               placeholder={t('questionForm.promptPlaceholder')}
+              variables
             />
             <FieldMessage issues={issuesAt('prompt')} />
             {type === 'image_choice' ? null : (

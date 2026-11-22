@@ -8,6 +8,7 @@ import {
   quizVariables,
 } from '@quiz-dock/contracts';
 import { AudioLines } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Markdown } from '@/components/markdown';
 import { COLOR_BG, OPTION_BG_FALLBACK } from '@/lib/option-style';
@@ -26,6 +27,7 @@ import { stepBackground } from '@/lib/step-background';
 import { QuizThemeProvider, useQuizTheme, useQuizThemeValues } from '@/lib/quiz-theme';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { Surface } from '../game/surface';
+import { VariablesContext } from '@/lib/variables';
 
 /**
  * A quiz's steps as they will show, still: what the preview walks through and
@@ -48,6 +50,15 @@ export function slideQuizFieldsOf(quiz: StepQuiz) {
     tags: quiz.tags,
     license: quiz.license,
   };
+}
+
+/** Gives what's inside the quiz's variables (`{title}`…); the room's stay as written. */
+export function QuizVariables({ quiz, children }: { quiz: StepQuiz; children: ReactNode }) {
+  return (
+    <VariablesContext.Provider value={quizVariables(slideQuizFieldsOf(quiz))}>
+      {children}
+    </VariablesContext.Provider>
+  );
 }
 
 /** A slide, stored or being edited, as the screens would get it, the quiz's variables filled. */

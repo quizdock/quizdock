@@ -138,7 +138,9 @@ export function ControlPage() {
       <ConnectionLost lost={session.view.connectionLost} />
       {/* A hook for override.css, with the game's state (no box: the layout is the page's). */}
       <div className="qd-console contents" data-state={session.view.state ?? 'none'}>
-        <HostConsole pin={pin} session={session} />
+        <RoomVariables view={session.view} pin={pin}>
+          <HostConsole pin={pin} session={session} />
+        </RoomVariables>
       </div>
     </>
   );
@@ -955,9 +957,7 @@ function HostConsole({
               follow: followed(view, step),
             }}
           >
-            <RoomVariables view={view} pin={pin}>
-              <SlideView key={slide.slideIndex} slide={slide} />
-            </RoomVariables>
+            <SlideView key={slide.slideIndex} slide={slide} />
           </SlidePlaybackContext.Provider>
         </ScaledStage>
         {soundMedia ? (

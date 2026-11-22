@@ -262,6 +262,11 @@
     "description": "„{{title}}” i jego pytania zostaną trwale usunięte. Tej operacji nie można cofnąć.",
     "confirmLabel": "Usuń"
   },
+  "archiveConfirm": {
+    "title": "Zarchiwizować ten quiz?",
+    "description": "„{{title}}” nie może być już prezentowany i znika z listy (jej filtr pokaże go ponownie). Przywrócony wraca jako szkic do ponownej publikacji.",
+    "confirmLabel": "Archiwizuj"
+  },
   "questionForm": {
     "typeLabel": "Typ",
     "promptLabel": "Treść pytania",

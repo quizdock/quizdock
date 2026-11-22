@@ -1,7 +1,9 @@
-import type { ComponentProps, HTMLAttributes } from 'react';
+import { fillVariables } from '@quiz-dock/contracts';
+import { type ComponentProps, type HTMLAttributes, useContext } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import { cn } from '@/lib/utils';
 import { MEDIA_PATH, useMediaUrl } from '@/lib/media-url';
+import { VariablesContext } from '@/lib/variables';
 
 /**
  * **Restricted** Markdown rendering for text fields typed in the builder (#4).
@@ -72,8 +74,10 @@ export interface MarkdownProps extends Omit<HTMLAttributes<HTMLElement>, 'childr
  * `block` renders a `<div>` (spaced paragraphs); `inline` a `<span>`. A
  * semantic heading is set with `role="heading"` + `aria-level` on the wrapper:
  * an `<h1>` cannot contain the `<p>` elements the `block` profile emits.
+ * The variables the surrounding `VariablesContext` knows are filled in.
  */
 export function Markdown({ children, profile = 'block', className, ...rest }: MarkdownProps) {
+  const variables = useContext(VariablesContext);
   if (!children) return null;
   const content = (
     <ReactMarkdown
@@ -82,7 +86,7 @@ export function Markdown({ children, profile = 'block', className, ...rest }: Ma
       skipHtml
       components={COMPONENTS}
     >
-      {children}
+      {fillVariables(children, variables)}
     </ReactMarkdown>
   );
   return profile === 'inline' ? (

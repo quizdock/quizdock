@@ -16,7 +16,8 @@
     "code": "Code",
     "codeBlock": "Codeblock",
     "bulletList": "Aufzählung",
-    "orderedList": "Nummerierte Liste"
+    "orderedList": "Nummerierte Liste",
+    "clear": "Formatierung entfernen"
   },
   "captureConfirm": {
     "title": "Vollständige Antworterfassung einschalten?",

@@ -16,7 +16,8 @@
     "code": "Código",
     "codeBlock": "Bloque de código",
     "bulletList": "Lista con viñetas",
-    "orderedList": "Lista numerada"
+    "orderedList": "Lista numerada",
+    "clear": "Borrar el formato"
   },
   "captureConfirm": {
     "title": "¿Activar la captura completa de respuestas?",

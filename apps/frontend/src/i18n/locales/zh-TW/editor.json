@@ -254,6 +254,11 @@
     "description": "「{{title}}」及其題目將被永久刪除。此操作不可撤銷。",
     "confirmLabel": "刪除"
   },
+  "archiveConfirm": {
+    "title": "歸檔此測驗？",
+    "description": "「{{title}}」將無法再展示，並從清單中移出（篩選可再次顯示）。還原後會變回草稿，需要重新發布。",
+    "confirmLabel": "歸檔"
+  },
   "questionForm": {
     "typeLabel": "類型",
     "promptLabel": "題目",

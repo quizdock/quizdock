@@ -258,6 +258,11 @@
     "description": "« {{title}} » et ses questions seront définitivement supprimés. Cette action est irréversible.",
     "confirmLabel": "Supprimer"
   },
+  "archiveConfirm": {
+    "title": "Archiver ce quiz ?",
+    "description": "« {{title}} » ne peut plus être présenté et quitte la liste (son filtre le montre encore). Restauré, il revient en brouillon, à republier.",
+    "confirmLabel": "Archiver"
+  },
   "questionForm": {
     "typeLabel": "Type",
     "promptLabel": "Énoncé",

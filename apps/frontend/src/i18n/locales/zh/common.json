@@ -16,7 +16,8 @@
     "code": "代码",
     "codeBlock": "代码块",
     "bulletList": "无序列表",
-    "orderedList": "有序列表"
+    "orderedList": "有序列表",
+    "clear": "清除格式"
   },
   "captureConfirm": {
     "title": "开启完整答题记录？",

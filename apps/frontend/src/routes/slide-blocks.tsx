@@ -5,15 +5,11 @@ import type {
   SlideTextAlign,
   SlideTextSize,
 } from '@quiz-dock/contracts';
-import { QUIZ_VARIABLES, ROOM_VARIABLES, type SlideVariable } from '@quiz-dock/contracts';
 import {
   AlignCenter,
   AlignLeft,
   AlignRight,
-  Columns2,
-  Columns3,
   Heading1,
-  Heading2,
   Image as ImageIcon,
   Plus,
   Text,
@@ -22,8 +18,8 @@ import {
 import { createContext, type ReactNode, useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { MenuItem } from '@/components/ui/menu-item';
-import { Popover } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { VariablePicker } from '@/components/variable-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MarkdownEditor } from '@/components/markdown-editor';
@@ -93,93 +89,12 @@ export function complete(blocks: SlideBlock[]): SlideBlock[] {
   });
 }
 
-/** The variables in the picker: the quiz's, then the room's. */
-const VARIABLE_GROUPS: { group: 'quiz' | 'room'; names: readonly SlideVariable[] }[] = [
-  { group: 'quiz', names: QUIZ_VARIABLES },
-  { group: 'room', names: ROOM_VARIABLES },
-];
-
-/** What the quiz's variables read in this editor (`{title}`…); the room's are not known. */
-export const SlideVariablesContext = createContext<
-  Partial<Record<SlideVariable, string | number | null | undefined>>
->({});
-
-/**
- * The variables a heading or a text may hold, offered from its own bar: each with what
- * it becomes, the one picked written where the caret is. The quiz's are shown filled in
- * the preview, the room's once the quiz is played.
- */
-function VariablePicker({ onPick }: { onPick: (variable: string) => void }) {
-  const { t } = useTranslation('editor');
-  const values = useContext(SlideVariablesContext);
-  return (
-    <Popover
-      className="w-80 p-2"
-      trigger={({ open, toggle }) => (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="h-7 px-2 font-mono text-xs"
-          aria-label={t('slideForm.variablesInsert')}
-          title={t('slideForm.variablesInsert')}
-          aria-expanded={open}
-          onClick={toggle}
-        >
-          {'{…}'}
-        </Button>
-      )}
-    >
-      {(close) => (
-        <div className="flex flex-col gap-1">
-          <p className="text-muted-foreground px-2 pb-1 text-xs">{t('slideForm.variablesHint')}</p>
-          <div className="max-h-72 overflow-y-auto">
-            {VARIABLE_GROUPS.map(({ group, names }) => (
-              <div key={group} role="group" aria-label={t(`slideForm.variablesGroup.${group}`)}>
-                <p className="text-muted-foreground px-2 pt-2 pb-1 text-xs font-semibold">
-                  {t(`slideForm.variablesGroup.${group}`)}
-                </p>
-                {names.map((name) => (
-                  <MenuItem
-                    key={name}
-                    onClick={() => {
-                      close();
-                      onPick(`{${name}}`);
-                    }}
-                  >
-                    <code className="bg-muted shrink-0 rounded px-1">{`{${name}}`}</code>
-                    {/* What it reads here; the room's, known only once played, are described. */}
-                    {values[name] != null && String(values[name]) !== '' ? (
-                      <span className="truncate">{String(values[name])}</span>
-                    ) : (
-                      <span className="text-muted-foreground truncate">
-                        {t(`slideForm.variables.${name}`)}
-                      </span>
-                    )}
-                  </MenuItem>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </Popover>
-  );
-}
-
 /** Buttons to append a block of each kind. */
 export function AddBlockBar({ onAdd }: { onAdd: (b: SlideBlock) => void }) {
   const { t } = useTranslation('editor');
-  const { placed } = useContext(SlideMediaContext);
-  const btn = (label: string, icon: ReactNode, make: () => SlideBlock, refused?: string) => (
-    <Button
-      type="button"
-      variant="outline"
-      size="sm"
-      disabled={!!refused}
-      title={refused}
-      onClick={() => onAdd(make())}
-    >
+  // Columns and the media come with the layouts; a written slide gets more text here.
+  const btn = (label: string, icon: ReactNode, make: () => SlideBlock) => (
+    <Button type="button" variant="outline" size="sm" onClick={() => onAdd(make())}>
       {icon}
       {label}
     </Button>
@@ -188,26 +103,7 @@ export function AddBlockBar({ onAdd }: { onAdd: (b: SlideBlock) => void }) {
     <div className="flex flex-wrap items-center gap-2">
       <Plus className="text-muted-foreground size-4" />
       {btn(t('slideForm.block.heading'), <Heading1 className="size-4" />, () => newLeaf('heading'))}
-      {btn(t('slideForm.block.subheading'), <Heading2 className="size-4" />, () =>
-        newLeaf('heading', 2),
-      )}
       {btn(t('slideForm.block.text'), <Text className="size-4" />, () => newLeaf('text'))}
-      {btn(
-        t('slideForm.block.media'),
-        <ImageIcon className="size-4" />,
-        () => newLeaf('media'),
-        placed ? t('slideForm.media.onlyOne') : undefined,
-      )}
-      {btn(t('slideForm.block.columns2'), <Columns2 className="size-4" />, () => ({
-        type: 'columns',
-        id: blockId(),
-        columns: [[newLeaf('text')], [newLeaf(placed ? 'text' : 'media')]],
-      }))}
-      {btn(t('slideForm.block.columns3'), <Columns3 className="size-4" />, () => ({
-        type: 'columns',
-        id: blockId(),
-        columns: [[newLeaf('text')], [newLeaf('text')], [newLeaf('text')]],
-      }))}
     </div>
   );
 }
@@ -263,7 +159,6 @@ export function BlockEditor({
   onRemoving: () => void;
 }) {
   const { t } = useTranslation('editor');
-  const { placed } = useContext(SlideMediaContext);
   if (block.type !== 'columns') return <LeafEditor block={block} onChange={onChange} />;
   const setCol = (i: number, col: SlideLeafBlock[]) =>
     onChange({ ...block, columns: block.columns.map((c, idx) => (idx === i ? col : c)) });
@@ -320,15 +215,13 @@ export function BlockEditor({
               </div>
             ))}
             <div className="flex flex-wrap gap-1">
-              {(['heading', 'text', 'media'] as LeafKind[]).map((kind) => (
+              {(['heading', 'text'] as LeafKind[]).map((kind) => (
                 <Button
                   key={kind}
                   type="button"
                   variant="ghost"
                   size="sm"
                   className="h-7 px-2 text-xs"
-                  disabled={kind === 'media' && placed}
-                  title={kind === 'media' && placed ? t('slideForm.media.onlyOne') : undefined}
                   onClick={() => setCol(i, [...col, newLeaf(kind, kind === 'heading' ? 2 : 1)])}
                 >
                   <Plus className="size-3" />
@@ -371,7 +264,6 @@ function LeafFields({
 }) {
   const { t } = useTranslation('editor');
   const headingRef = useRef<HTMLInputElement>(null);
-  const insertRef = useRef<((text: string) => void) | null>(null);
   switch (block.type) {
     case 'heading':
       return (
@@ -408,7 +300,13 @@ function LeafFields({
             ref={headingRef}
             aria-label={t('slideForm.block.heading')}
             placeholder={t('slideForm.headingPlaceholder')}
-            className={block.level === 1 ? 'text-lg font-bold' : 'font-semibold'}
+            className={cn(
+              block.level === 1 ? 'text-lg font-bold' : 'font-semibold',
+              // Aligned as it will show (centred by default).
+              { left: 'text-left', center: 'text-center', right: 'text-right' }[
+                block.align ?? 'center'
+              ],
+            )}
             value={block.text}
             onChange={(e) => onChange({ ...block, text: e.target.value })}
           />
@@ -417,21 +315,25 @@ function LeafFields({
     case 'text':
       return (
         <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-xs font-medium">
-              {t('slideForm.block.text')}
-            </span>
-            <AlignPicker value={block.align} onChange={(align) => onChange({ ...block, align })} />
-            <SizePicker value={block.size} onChange={(size) => onChange({ ...block, size })} />
-            {/* Not at the far end: the text's own bar floats there while it is written in. */}
-            <VariablePicker onPick={(v) => insertRef.current?.(v)} />
-          </div>
+          <span className="text-muted-foreground text-xs font-medium">
+            {t('slideForm.block.text')}
+          </span>
           <MarkdownEditor
-            insertRef={insertRef}
             aria-label={t('slideForm.block.text')}
             placeholder={t('slideForm.bodyPlaceholder')}
             value={block.md}
             onChange={(md) => onChange({ ...block, md })}
+            align={block.align ?? 'center'}
+            variables
+            tools={
+              <>
+                <AlignPicker
+                  value={block.align}
+                  onChange={(align) => onChange({ ...block, align })}
+                />
+                <SizePicker value={block.size} onChange={(size) => onChange({ ...block, size })} />
+              </>
+            }
           />
         </div>
       );

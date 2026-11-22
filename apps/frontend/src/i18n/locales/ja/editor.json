@@ -254,6 +254,11 @@
     "description": "「{{title}}」とその問題は完全に削除されます。この操作は元に戻せません。",
     "confirmLabel": "削除"
   },
+  "archiveConfirm": {
+    "title": "このクイズをアーカイブしますか？",
+    "description": "「{{title}}」は出題できなくなり、一覧から外れます（フィルターで再表示できます）。復元すると下書きに戻り、再度公開が必要です。",
+    "confirmLabel": "アーカイブ"
+  },
   "questionForm": {
     "typeLabel": "形式",
     "promptLabel": "問題文",

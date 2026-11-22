@@ -61,6 +61,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ArchiveQuizDialog } from '@/components/archive-quiz-dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { QuizStatusBadge } from '@/components/quiz-status-badge';
 import { MenuItem, MenuSeparator } from '@/components/ui/menu-item';
@@ -83,7 +84,7 @@ import { READ_DELAY_DEFAULT_MS } from './question-form-model';
 import { QuizTimeline } from './quiz-timeline';
 import { quizTimeline } from './quiz-timeline-model';
 import { quizItems, moveItem, slideLabel, type QuizItem } from '@/lib/quiz-items';
-import { slideQuizFieldsOf } from './quiz-stage-preview';
+import { QuizVariables, slideQuizFieldsOf } from './quiz-stage-preview';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { languageName, licenseName } from '@/lib/quiz-terms';
@@ -165,7 +166,9 @@ function ThemedQuizEditor({ quiz }: { quiz: QuizDetailDto }) {
     <QuizThemeProvider value={theme}>
       {/* The answers' marks and colours as the room will see them, in the form too. */}
       <LiveThemeAnswers theme={theme}>
-        <QuizEditor quiz={quiz} />
+        <QuizVariables quiz={quiz}>
+          <QuizEditor quiz={quiz} />
+        </QuizVariables>
       </LiveThemeAnswers>
     </QuizThemeProvider>
   );
@@ -338,6 +341,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const setTheme = (theme: { builtin?: string; id?: string } | null) =>
     saveSettings({ theme: theme as UpdateQuizDto['theme'] });
 
+  const [archiving, setArchiving] = useState(false);
   const changeStatus = (status: 'draft' | 'ready' | 'archived') =>
     guarded(async () => {
       await transition.mutateAsync({ id: quiz.id, data: { status } });
@@ -609,7 +613,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                       disabled={transition.isPending}
                       onClick={() => {
                         close();
-                        void changeStatus('archived');
+                        setArchiving(true);
                       }}
                     >
                       <Archive className="size-4" />
@@ -1096,6 +1100,14 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         )}
       </div>
 
+      <ArchiveQuizDialog
+        title={archiving ? quiz.title : null}
+        onCancel={() => setArchiving(false)}
+        onConfirm={() => {
+          setArchiving(false);
+          void changeStatus('archived');
+        }}
+      />
       <ConfirmDialog
         open={pendingDelete !== null}
         destructive

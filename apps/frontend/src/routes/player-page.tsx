@@ -6,7 +6,7 @@ import { LiveMotion } from '../game/motion/level';
 import { BackdropFade, StepEnter } from '../game/motion/step-transition';
 import { type Backdrop, stepKeyOf } from '../game/motion/step';
 import { FittedStage } from '../game/slide-stage';
-import { NICKNAME_MAX, type PlayerPresence, playsSound } from '@quiz-dock/contracts';
+import { NICKNAME_MAX, type PlayerPresence, fillVariables, playsSound } from '@quiz-dock/contracts';
 import {
   Ban,
   Check,
@@ -27,7 +27,8 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { APP_NAME } from '../config';
 import { ScreenSurface } from './screen-page';
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useContext, useEffect, useState } from 'react';
+import { VariablesContext } from '@/lib/variables';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Markdown } from '@/components/markdown';
@@ -126,11 +127,13 @@ export function PlayerPage() {
   return (
     <>
       <ConnectionLost lost={session.view.connectionLost} />
-      <PlayerAnnouncer view={session.view} />
-      {/* A hook for override.css, with the game's state (no box: the layout is the page's). */}
-      <div className="qd-player contents" data-state={session.view.state ?? 'none'}>
-        <PlayerView pin={pin} session={session} />
-      </div>
+      <RoomVariables view={session.view} pin={pin}>
+        <PlayerAnnouncer view={session.view} />
+        {/* A hook for override.css, with the game's state (no box: the layout is the page's). */}
+        <div className="qd-player contents" data-state={session.view.state ?? 'none'}>
+          <PlayerView pin={pin} session={session} />
+        </div>
+      </RoomVariables>
     </>
   );
 }
@@ -142,6 +145,7 @@ export function PlayerPage() {
  */
 function PlayerAnnouncer({ view }: { view: ReturnType<typeof useGameSession>['view'] }) {
   const { t } = useTranslation('live');
+  const variables = useContext(VariablesContext);
   const question = view.question;
   let said = '';
   if (view.state === 'ANSWERING' && question) {
@@ -149,7 +153,7 @@ function PlayerAnnouncer({ view }: { view: ReturnType<typeof useGameSession>['vi
       ? t('player.announce.pending')
       : view.answerAccepted
         ? t('player.announce.saved')
-        : t('player.announce.question', { prompt: question.prompt });
+        : t('player.announce.question', { prompt: fillVariables(question.prompt, variables) });
   } else if ((view.state === 'REVEAL' || view.state === 'LEADERBOARD') && view.result) {
     said = `${view.result.correct ? t('player.correct') : t('player.wrong')} ${t('player.points', {
       points: view.result.points,
@@ -779,9 +783,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             videos: remote,
           }}
         >
-          <RoomVariables view={view} pin={pin}>
-            <SlideView key={slide.slideIndex} slide={slide} />
-          </RoomVariables>
+          <SlideView key={slide.slideIndex} slide={slide} />
         </SlidePlaybackContext.Provider>
       </div>
     );

@@ -254,6 +254,11 @@
     "description": "“{{title}}” and its questions will be permanently deleted. This action cannot be undone.",
     "confirmLabel": "Delete"
   },
+  "archiveConfirm": {
+    "title": "Archive this quiz?",
+    "description": "“{{title}}” can no longer be presented and leaves the list (its filter shows it again). Restored, it comes back as a draft, to publish again.",
+    "confirmLabel": "Archive"
+  },
   "questionForm": {
     "typeLabel": "Type",
     "promptLabel": "Question",

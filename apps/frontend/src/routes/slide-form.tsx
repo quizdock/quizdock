@@ -26,7 +26,7 @@ import type {
 } from '@quiz-dock/contracts';
 import {
   MEDIA_TAIL_DEFAULT_S,
-  quizVariables,
+  type quizVariables,
   slideContentSchema,
   slideIssues,
 } from '@quiz-dock/contracts';
@@ -58,7 +58,6 @@ import {
   AddBlockBar,
   BlockEditor,
   SlideMediaContext,
-  SlideVariablesContext,
   SortableBlock,
   blockId,
   complete,
@@ -313,8 +312,6 @@ export function SlideForm({
     });
   };
   const visual = values.videoMediaId ? 'video' : values.imageMediaId ? 'image' : null;
-  // The picker shows what the quiz's variables read; the room's are described.
-  const variableValues = quizFields ? quizVariables(quizFields) : {};
   const mediaInfo = {
     visual: visual as 'image' | 'video' | null,
     placement:
@@ -383,52 +380,50 @@ export function SlideForm({
         onConfirm: () => void moveToDraftAndSave(),
       }}
     >
-      <SlideVariablesContext.Provider value={variableValues}>
-        <SlideMediaContext.Provider value={mediaInfo}>
-          <fieldset id="qf-blocks" className="flex flex-col gap-3">
-            <legend className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
-              {t('slideForm.blocksLegend')}
-            </legend>
-            <SlideLayoutsButton blocks={values.blocks} onApply={(laid) => patch(laid)} />
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-              <SortableContext
-                items={values.blocks.map((b) => b.id)}
-                strategy={verticalListSortingStrategy}
+      <SlideMediaContext.Provider value={mediaInfo}>
+        <fieldset id="qf-blocks" className="flex flex-col gap-3">
+          <legend className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+            {t('slideForm.blocksLegend')}
+          </legend>
+          <SlideLayoutsButton blocks={values.blocks} onApply={(laid) => patch(laid)} />
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+            <SortableContext
+              items={values.blocks.map((b) => b.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {values.blocks.map((b) => (
+                <SortableBlock key={b.id} id={b.id} onRemove={() => removeBlock(b.id)}>
+                  <BlockEditor
+                    block={b}
+                    onChange={(next) => setBlockPlacing(b.id, next)}
+                    onRemoving={() => setUndo(values.blocks)}
+                  />
+                </SortableBlock>
+              ))}
+            </SortableContext>
+          </DndContext>
+          {undo ? (
+            <div
+              role="status"
+              className="bg-foreground text-background flex items-center gap-3 self-center rounded-md px-3 py-1.5 text-sm"
+            >
+              {t('slideForm.blockRemoved')}
+              <button
+                type="button"
+                className="font-semibold underline"
+                onClick={() => {
+                  patch({ blocks: undo });
+                  setUndo(null);
+                }}
               >
-                {values.blocks.map((b) => (
-                  <SortableBlock key={b.id} id={b.id} onRemove={() => removeBlock(b.id)}>
-                    <BlockEditor
-                      block={b}
-                      onChange={(next) => setBlockPlacing(b.id, next)}
-                      onRemoving={() => setUndo(values.blocks)}
-                    />
-                  </SortableBlock>
-                ))}
-              </SortableContext>
-            </DndContext>
-            {undo ? (
-              <div
-                role="status"
-                className="bg-foreground text-background flex items-center gap-3 self-center rounded-md px-3 py-1.5 text-sm"
-              >
-                {t('slideForm.blockRemoved')}
-                <button
-                  type="button"
-                  className="font-semibold underline"
-                  onClick={() => {
-                    patch({ blocks: undo });
-                    setUndo(null);
-                  }}
-                >
-                  {t('slideForm.undo')}
-                </button>
-              </div>
-            ) : null}
-            <FieldMessage issues={issuesAt('blocks')} />
-            <AddBlockBar onAdd={addBlock} />
-          </fieldset>
-        </SlideMediaContext.Provider>
-      </SlideVariablesContext.Provider>
+                {t('slideForm.undo')}
+              </button>
+            </div>
+          ) : null}
+          <FieldMessage issues={issuesAt('blocks')} />
+          <AddBlockBar onAdd={addBlock} />
+        </fieldset>
+      </SlideMediaContext.Provider>
       {/* Media refusals point at the video or the sound: both lead here. */}
       <div id="qf-videoMediaId">
         <div id="qf-audioMediaId" className="flex flex-col gap-1.5">

@@ -254,6 +254,11 @@
     "description": "“{{title}}”及其题目将被永久删除。此操作不可撤销。",
     "confirmLabel": "删除"
   },
+  "archiveConfirm": {
+    "title": "归档此测验？",
+    "description": "“{{title}}”将无法再展示，并从列表中移出（筛选可再次显示）。恢复后它会变回草稿，需要重新发布。",
+    "confirmLabel": "归档"
+  },
   "questionForm": {
     "typeLabel": "类型",
     "promptLabel": "题干",

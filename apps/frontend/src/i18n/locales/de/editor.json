@@ -254,6 +254,11 @@
     "description": "„{{title}}“ und seine Fragen werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
     "confirmLabel": "Löschen"
   },
+  "archiveConfirm": {
+    "title": "Dieses Quiz archivieren?",
+    "description": "„{{title}}“ kann nicht mehr präsentiert werden und verschwindet aus der Liste (ihr Filter zeigt es wieder). Wiederhergestellt kommt es als Entwurf zurück und muss erneut veröffentlicht werden.",
+    "confirmLabel": "Archivieren"
+  },
   "questionForm": {
     "typeLabel": "Typ",
     "promptLabel": "Fragetext",
