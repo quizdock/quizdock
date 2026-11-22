@@ -273,7 +273,8 @@
 @theme {
   /* The app's typeface: a font of the brand's goes here (override.css). */
   --font-sans: var(--look-font, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif);
-  --container-shell: 90rem;
+  /* The app takes the width it is given, up to UHD screens where lines would run too long. */
+  --container-shell: 150rem;
   --container-content-lg: 72rem;
   --container-content-md: 48rem;
   --container-content-sm: 28rem;
@@ -281,17 +282,6 @@
   /* Past Tailwind's 2xl: the large and UHD screens (often scaled 150 to 200 %). */
   --breakpoint-3xl: 120rem;
   --breakpoint-4xl: 160rem;
-}
-/* The app widens with them; the pages that narrow themselves (`content-*`) keep theirs. */
-@media (width >= 120rem) {
-  :root {
-    --container-shell: 112rem;
-  }
-}
-@media (width >= 160rem) {
-  :root {
-    --container-shell: 150rem;
-  }
 }
 @utility content-shell {
   width: 100%;
