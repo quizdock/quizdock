@@ -230,7 +230,7 @@
         "none": "Dove va l’immagine o il video della slide: aggiungine uno nella timeline qui sotto.",
         "image": "L’immagine della slide, scelta nella timeline qui sotto, appare qui.",
         "video": "Il video della slide, scelto nella timeline qui sotto, viene riprodotto qui.",
-        "behind": "Il media della slide è dietro i blocchi: questo blocco non è usato. Scegli Nel contenuto nel layout della timeline per posizionarlo qui.",
+        "behind": "Il media della slide è dietro i blocchi: questo blocco non è usato. Scegli Media in alto o Media in basso in Layout per posizionarlo qui.",
         "alone": "Il media della slide è mostrato da solo: questo blocco non è usato."
       },
       "imageBlock": "Un blocco immagine di prima: l’immagine di una slide ora è il suo media, scelto nella timeline e posizionato da un blocco Media.",

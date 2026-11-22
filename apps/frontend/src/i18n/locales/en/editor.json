@@ -226,7 +226,7 @@
         "none": "Where the slide’s picture or video goes: add one on the timeline below.",
         "image": "The slide’s picture, set on the timeline below, shows here.",
         "video": "The slide’s video, set on the timeline below, plays here.",
-        "behind": "The slide’s media is behind the blocks: this block is not used. Choose In the content in the timeline’s layout to place it here.",
+        "behind": "The slide’s media is behind the blocks: this block is not used. Choose Media above or Media below in Layouts to place it here.",
         "alone": "The slide’s media is shown alone: this block is not used."
       },
       "imageBlock": "An image block of before: a slide’s picture is now its media, set on the timeline and placed by a Media block.",

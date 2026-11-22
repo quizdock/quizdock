@@ -165,8 +165,8 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   own after 30 s or once everyone is ready, and the lobby keeps its own standings across the
   quizzes, shown live and kept in *History* with the results.
 - **Self-hosted and private** — one Docker image (`amd64` / `arm64`), no SaaS, no
-  telemetry, no ads; interface in English, French, Spanish, Simplified and Traditional
-  Chinese, and Turkish — each host picks theirs, the big screen and the phones speak the
+  telemetry, no ads; interface in twelve languages (see [Translations](#translations)) —
+  each host picks theirs, the big screen and the phones speak the
   quiz's language or the lobby's; rebrand name, logo and CSS without a rebuild.
 - **An administration in the browser** — what is played right now and the last twelve
   months of use; every setting with its value, where it comes from and its help, changed
@@ -174,8 +174,8 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   quiz of the instance (hand one over, export, archive), the media, and an audit of every
   action. A fresh instance opens on a setup wizard. Each operation is a `qd` command too:
   [administration](https://quizdock.github.io/docs/admin/overview/).
-- **Rich text** — prompts, options and descriptions in Markdown with a visual editor (bold, lists, code).
-- **Content slides** — headings, text, images, 2–3 columns between questions; image or gradient backgrounds for slides and questions, with a faithful 16:9 preview. A slide can play a video behind its content (looped or once, with its audio or muted) and an audio, set like a question's; in automatic mode it waits for them to play. Its text, like a question's, can name the quiz and the lobby — `{title}`, `{pin}`, `{players}`, `{question}` and more, picked from the field's bar and filled wherever it shows.
+- **Rich text** — prompts, options and descriptions in Markdown with a visual editor (bold, italic, lists), the Markdown source a click away.
+- **Content slides** — ready-made layouts of headings, text and columns between questions, the slide's picture or video placed among them, beside them or behind them; image or gradient backgrounds for slides and questions, with a faithful 16:9 preview. A slide can play a video behind its content (looped or once, with its audio or muted) and an audio, set like a question's; in automatic mode it waits for them to play. Its text, like a question's, can name the quiz and the lobby — `{title}`, `{pin}`, `{players}`, `{question}` and more, picked from the field's bar and filled wherever it shows.
 - **Answer explanations** — shown at the reveal, with a per-question reveal delay in automatic mode.
 - **Preview** — rehearse your quiz exactly as it will look on the big screen, answers shown.
 - **Selections** — line quizzes up in a named, saved list and launch them into a lobby in one go: after each quiz, the lobby picks the next one not played yet, each with its pace, and you can still change it on the spot. Save a lobby you improvised as a selection, from its console or from the history; compare a selection's launches; share it with the other hosts, who present it or create their own from it.

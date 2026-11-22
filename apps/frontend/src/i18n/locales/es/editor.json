@@ -230,7 +230,7 @@
         "none": "Dónde va la imagen o el vídeo de la diapositiva: añade uno en la línea de tiempo de abajo.",
         "image": "La imagen de la diapositiva, elegida en la línea de tiempo de abajo, aparece aquí.",
         "video": "El vídeo de la diapositiva, elegido en la línea de tiempo de abajo, se reproduce aquí.",
-        "behind": "El medio de la diapositiva está detrás de los bloques: este bloque no se usa. Elige En el contenido en el diseño de la línea de tiempo para colocarlo aquí.",
+        "behind": "El medio de la diapositiva está detrás de los bloques: este bloque no se usa. Elige Medio arriba o Medio abajo en Diseños para colocarlo aquí.",
         "alone": "El medio de la diapositiva se muestra solo: este bloque no se usa."
       },
       "imageBlock": "Un bloque de imagen de antes: la imagen de una diapositiva es ahora su medio, elegido en la línea de tiempo y colocado por un bloque Medio.",

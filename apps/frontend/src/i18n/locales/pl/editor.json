@@ -234,7 +234,7 @@
         "none": "Miejsce obrazu lub wideo slajdu: dodaj je na osi czasu poniżej.",
         "image": "Obraz slajdu, wybrany na osi czasu poniżej, pojawia się tutaj.",
         "video": "Wideo slajdu, wybrane na osi czasu poniżej, jest odtwarzane tutaj.",
-        "behind": "Medium slajdu jest za blokami: ten blok nie jest używany. Wybierz W treści w układzie osi czasu, aby umieścić je tutaj.",
+        "behind": "Medium slajdu jest za blokami: ten blok nie jest używany. Wybierz Medium na górze lub Medium na dole w Układach, aby umieścić je tutaj.",
         "alone": "Medium slajdu jest wyświetlane samodzielnie: ten blok nie jest używany."
       },
       "imageBlock": "Dawny blok obrazu: obraz slajdu jest teraz jego medium, wybieranym na osi czasu i umieszczanym blokiem Medium.",

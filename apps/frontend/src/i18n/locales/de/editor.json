@@ -226,7 +226,7 @@
         "none": "Wo das Bild oder Video der Folie erscheint: Fügen Sie eines in der Zeitleiste unten hinzu.",
         "image": "Das Bild der Folie, in der Zeitleiste unten gewählt, erscheint hier.",
         "video": "Das Video der Folie, in der Zeitleiste unten gewählt, läuft hier.",
-        "behind": "Das Medium der Folie liegt hinter den Blöcken: Dieser Block wird nicht verwendet. Wählen Sie Im Inhalt im Layout der Zeitleiste, um es hier zu platzieren.",
+        "behind": "Das Medium der Folie liegt hinter den Blöcken: Dieser Block wird nicht verwendet. Wählen Sie in Layouts Medium oben oder Medium unten, um es hier zu platzieren.",
         "alone": "Das Medium der Folie wird allein gezeigt: Dieser Block wird nicht verwendet."
       },
       "imageBlock": "Ein Bildblock von früher: Das Bild einer Folie ist jetzt ihr Medium, in der Zeitleiste gewählt und durch einen Medium-Block platziert.",

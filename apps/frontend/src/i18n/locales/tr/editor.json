@@ -226,7 +226,7 @@
         "none": "Slaydın görselinin veya videosunun yeri: aşağıdaki zaman çizelgesinden bir tane ekleyin.",
         "image": "Aşağıdaki zaman çizelgesinde seçilen slayt görseli burada görünür.",
         "video": "Aşağıdaki zaman çizelgesinde seçilen slayt videosu burada oynar.",
-        "behind": "Slaydın medyası blokların arkasında: bu blok kullanılmıyor. Buraya yerleştirmek için zaman çizelgesinin yerleşiminde İçerikte seçeneğini seçin.",
+        "behind": "Slaydın medyası blokların arkasında: bu blok kullanılmıyor. Buraya yerleştirmek için Yerleşimler’de Medya üstte veya Medya altta seçeneğini seçin.",
         "alone": "Slaydın medyası tek başına gösteriliyor: bu blok kullanılmıyor."
       },
       "imageBlock": "Eski bir görsel bloğu: slaydın görseli artık zaman çizelgesinde seçilen ve bir Medya bloğuyla yerleştirilen medyasıdır.",
