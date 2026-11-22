@@ -3,7 +3,7 @@
 > A slide's media works as a question's: set on its timeline, one picture or one video and a sound. Its blocks
 > hold the text and say where the media goes; ready-made layouts lay a slide out in one click.
 
-Status: **built on `feat/slide-layouts`** (2026-11-22), to be tried; nothing released.
+Status: **built, on `dev`** (2026-11-22, add bar and text field 2026-11-23); nothing released.
 
 ---
 
@@ -29,6 +29,20 @@ showed one picture per slide at most: 24 sample slides, 12 with an image block, 
   yet); those that place the media (above, below, left, right, behind, alone) apply to any slide and only move the media block
   or set where the media sits. A layout never removes nor reorders a written block.
 
+## 2a. Decisions taken (2026-11-23)
+
+- **The add bar offers a heading and a text only**, at the top and in a column. Columns and the media
+  block come with the layouts: two ways of building the same slide were one too many. A written slide
+  still needs more text after its layout, hence these two. Slides already holding columns or a media
+  block are shown and edited as before.
+- **One rich text field** for a slide's text and a question's prompt: its bar always shows, in groups —
+  bold, italic | lists | the field's own settings (a slide text's alignment and size) | `{…}` | clear
+  formatting, last and apart. Code is typed in the Markdown source. The field is aligned as the text
+  will show.
+- **Variables in a question's prompt too**, picked from the same `{…}`: the quiz's shown with what they
+  read, the lobby's described. The server fills the quiz's, each screen the lobby's; rendered Markdown
+  fills what its context knows, the fields keep them as written.
+
 ## 3. The layouts
 
 | For an empty slide | Blocks | Media |
@@ -52,7 +66,7 @@ showed one picture per slide at most: 24 sample slides, 12 with an image block, 
 |-------|--------------|
 | `{ "type": "media", "id": … }` (contracts, bundle version 9) | The media block, top level or in a column. |
 | `SlideView` | Draws the media at its block when it is in the content; else as before. |
-| Slide editor | *Media* in the add bar and the columns (once), the block's state, *Layouts*, the image block's notice. |
+| Slide editor | *Heading* and *Text* in the add bar and the columns, the media block's state, *Layouts*, the image block's notice. |
 | Timeline layout (slides) | The same six places as the Layouts': above, below, left, right, behind, alone. |
 | Format guide | The media block is layout: a converted quiz leaves it out, as the image block. |
 
