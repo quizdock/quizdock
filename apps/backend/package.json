@@ -15,6 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
     "load-test": "node scripts/load-test.mjs",
+    "rollback:check": "node scripts/rollback-check.mjs",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
