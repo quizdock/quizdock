@@ -148,7 +148,8 @@
       "text": "Metin",
       "image": "Resim",
       "columns2": "2 sütun",
-      "columns3": "3 sütun"
+      "columns3": "3 sütun",
+      "media": "Medya"
     },
     "dragBlock": "Bloğu yeniden sıralamak için sürükleyin",
     "removeBlock": "Bloğu kaldır",
@@ -213,6 +214,19 @@
     "moveToDraft": {
       "title": "Bu boş slayt kaydedilsin mi?",
       "description": "Bu quiz yayımlandığı için her an sunulabilir: slaytta bir içerik olmalıdır. Bu slaytı olduğu gibi kaydetmek için quizi taslağa döndürün veya düzenlemeye devam edin."
+    },
+    "media": {
+      "onlyOne": "Slayt başına bir medya: zaten yerleştirildi.",
+      "state": {
+        "none": "Slaydın görselinin veya videosunun yeri: aşağıdaki zaman çizelgesinden bir tane ekleyin.",
+        "image": "Aşağıdaki zaman çizelgesinde seçilen slayt görseli burada görünür.",
+        "video": "Aşağıdaki zaman çizelgesinde seçilen slayt videosu burada oynar.",
+        "behind": "Slaydın medyası blokların arkasında: bu blok kullanılmıyor. Buraya yerleştirmek için zaman çizelgesinin yerleşiminde İçerikte seçeneğini seçin.",
+        "alone": "Slaydın medyası tek başına gösteriliyor: bu blok kullanılmıyor."
+      },
+      "imageBlock": "Eski bir görsel bloğu: slaydın görseli artık zaman çizelgesinde seçilen ve bir Medya bloğuyla yerleştirilen medyasıdır.",
+      "adopt": "Slaydın medyası yap",
+      "adoptRefused": "Slaydın zaten bir görseli veya videosu var."
     }
   },
   "formSaved": "Kaydedildi",
@@ -775,5 +789,60 @@
     "minute": "{{n}} dk",
     "slideTip": "Slayt “{{name}}” · {{time}}",
     "questionTip": "S{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Yerleşimler",
+    "title": "Slayt yerleşimleri",
+    "groupEmpty": "Boş bir slayt düzenle",
+    "groupMedia": "Medyayı yerleştir",
+    "emptyOnly": "boş bir slayt için: bu slaytta içerik var",
+    "welcomeTitle": "{title} etkinliğine hoş geldiniz",
+    "welcomeText": "{join} adresinden **{pin}** PIN’iyle katılın",
+    "layout": {
+      "title": "Başlık",
+      "titleSubtitle": "Başlık ve alt başlık",
+      "titleText": "Başlık ve metin",
+      "titleTextMedia": "Başlık, metin, medya",
+      "mediaTitle": "Medya ve başlık",
+      "textMedia": "Metin | medya",
+      "mediaText": "Medya | metin",
+      "behindTitle": "Medya üzerinde başlık",
+      "mediaAlone": "Yalnızca medya",
+      "twoColumns": "İki sütun",
+      "titleTwoColumns": "Başlık, iki sütun",
+      "threeColumns": "Üç sütun",
+      "section": "Bölüm",
+      "quote": "Alıntı",
+      "welcome": "Karşılama",
+      "mediaAbove": "Medya üstte",
+      "mediaBelow": "Medya altta",
+      "mediaLeft": "Medya solda",
+      "mediaRight": "Medya sağda",
+      "mediaBehind": "Medya arkada",
+      "mediaOnly": "Medya tek başına"
+    },
+    "description": {
+      "title": "Ortalanmış bir başlık.",
+      "titleSubtitle": "Bir başlık ve altında daha küçüğü.",
+      "titleText": "Bir metnin üzerinde bir başlık.",
+      "titleTextMedia": "Bir başlık, bir metin, altında slaydın görseli veya videosu.",
+      "mediaTitle": "Görsel veya video, altında başlığı.",
+      "textMedia": "Solda bir başlık ve metin, sağda görsel veya video.",
+      "mediaText": "Solda görsel veya video, sağda bir başlık ve metin.",
+      "behindTitle": "Görsel veya video slaydı doldurur, üzerinde bir başlık.",
+      "mediaAlone": "Yalnızca görsel veya video, slaydı doldurur.",
+      "twoColumns": "Her biri başlık ve metin içeren iki sütun.",
+      "titleTwoColumns": "İki metin sütununun üzerinde bir başlık.",
+      "threeColumns": "Her biri başlık ve metin içeren üç sütun.",
+      "section": "Büyük bir başlığın üzerinde küçük bir başlık: bir bölümün başlangıcı.",
+      "quote": "Büyük bir metin, altında sağda kaynağı.",
+      "welcome": "Quizin adı ve nasıl katılınacağı, lobi tarafından doldurulur.",
+      "mediaAbove": "Medya bloğu en üste gider; diğer bloklar olduğu gibi kalır.",
+      "mediaBelow": "Medya bloğu sona gider; diğer bloklar olduğu gibi kalır.",
+      "mediaLeft": "Görsel veya video solda, tüm blokların yanında; bloklar olduğu gibi kalır.",
+      "mediaRight": "Görsel veya video sağda, tüm blokların yanında; bloklar olduğu gibi kalır.",
+      "mediaBehind": "Görsel veya video, blokların arkasında slaydı doldurur.",
+      "mediaOnly": "Görsel veya video blokların yerinde; bloklar sonrası için saklanır."
+    }
   }
 }

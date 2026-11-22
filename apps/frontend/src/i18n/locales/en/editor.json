@@ -148,7 +148,8 @@
       "text": "Text",
       "image": "Image",
       "columns2": "2 columns",
-      "columns3": "3 columns"
+      "columns3": "3 columns",
+      "media": "Media"
     },
     "dragBlock": "Drag to reorder the block",
     "removeBlock": "Remove the block",
@@ -213,6 +214,19 @@
     "moveToDraft": {
       "title": "Save this empty slide?",
       "description": "This quiz is published, so it can be presented at any time: a slide must show something. Move the quiz back to draft to save this one as it is, or keep editing."
+    },
+    "media": {
+      "onlyOne": "One media per slide: it is placed already.",
+      "state": {
+        "none": "Where the slide’s picture or video goes: add one on the timeline below.",
+        "image": "The slide’s picture, set on the timeline below, shows here.",
+        "video": "The slide’s video, set on the timeline below, plays here.",
+        "behind": "The slide’s media is behind the blocks: this block is not used. Choose In the content in the timeline’s layout to place it here.",
+        "alone": "The slide’s media is shown alone: this block is not used."
+      },
+      "imageBlock": "An image block of before: a slide’s picture is now its media, set on the timeline and placed by a Media block.",
+      "adopt": "Make it the slide’s media",
+      "adoptRefused": "The slide has a picture or a video already."
     }
   },
   "formSaved": "Saved",
@@ -777,5 +791,60 @@
     "minute": "{{n}} min",
     "slideTip": "Slide “{{name}}” · {{time}}",
     "questionTip": "Q{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Layouts",
+    "title": "Slide layouts",
+    "groupEmpty": "Lay out an empty slide",
+    "groupMedia": "Place the media",
+    "emptyOnly": "for an empty slide: this one has content",
+    "welcomeTitle": "Welcome to {title}",
+    "welcomeText": "Join at {join} with the PIN **{pin}**",
+    "layout": {
+      "title": "Title",
+      "titleSubtitle": "Title and subtitle",
+      "titleText": "Title and text",
+      "titleTextMedia": "Title, text, media",
+      "mediaTitle": "Media and title",
+      "textMedia": "Text | media",
+      "mediaText": "Media | text",
+      "behindTitle": "Title over media",
+      "mediaAlone": "Media only",
+      "twoColumns": "Two columns",
+      "titleTwoColumns": "Title, two columns",
+      "threeColumns": "Three columns",
+      "section": "Section",
+      "quote": "Quote",
+      "welcome": "Welcome",
+      "mediaAbove": "Media above",
+      "mediaBelow": "Media below",
+      "mediaLeft": "Media left",
+      "mediaRight": "Media right",
+      "mediaBehind": "Media behind",
+      "mediaOnly": "Media alone"
+    },
+    "description": {
+      "title": "A heading, centred.",
+      "titleSubtitle": "A heading and a smaller one below it.",
+      "titleText": "A heading over a text.",
+      "titleTextMedia": "A heading, a text, then the slide’s picture or video below.",
+      "mediaTitle": "The picture or video, its heading below.",
+      "textMedia": "A heading and a text on the left, the picture or video on the right.",
+      "mediaText": "The picture or video on the left, a heading and a text on the right.",
+      "behindTitle": "The picture or video fills the slide, a heading over it.",
+      "mediaAlone": "The picture or video alone, filling the slide.",
+      "twoColumns": "Two columns, each with a heading and a text.",
+      "titleTwoColumns": "A heading over two columns of text.",
+      "threeColumns": "Three columns, each with a heading and a text.",
+      "section": "A small heading over a large one: the start of a part.",
+      "quote": "A large text, its source below on the right.",
+      "welcome": "The quiz’s title and how to join, filled in by the lobby.",
+      "mediaAbove": "The Media block moves to the top; the other blocks stay as they are.",
+      "mediaBelow": "The Media block moves to the end; the other blocks stay as they are.",
+      "mediaLeft": "The picture or video on the left, beside all the blocks; they stay as they are.",
+      "mediaRight": "The picture or video on the right, beside all the blocks; they stay as they are.",
+      "mediaBehind": "The picture or video fills the slide, behind the blocks.",
+      "mediaOnly": "The picture or video in the blocks’ place; the blocks are kept for later."
+    }
   }
 }

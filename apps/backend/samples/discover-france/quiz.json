@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of France.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 4,
+    "revision": 7,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover France",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *l’Hexagone* — from the Alps to the Atlantic.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -259,11 +266,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "lavender-picture",
-          "media": "media/lavender.webp",
-          "size": "large",
-          "align": "center"
+          "type": "media",
+          "id": "lavender-picture"
         },
         {
           "type": "text",
@@ -280,7 +284,9 @@
           "#4c1d95",
           "#1e1b4b"
         ]
-      }
+      },
+      "image": "media/lavender.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

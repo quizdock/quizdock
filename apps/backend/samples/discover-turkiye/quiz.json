@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Türkiye.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 4,
+    "revision": 7,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Türkiye",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "From Istanbul to Cappadocia, a few questions about Türkiye.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -212,11 +219,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "kapadokya-picture",
-          "media": "media/kapadokya.webp",
-          "size": "large",
-          "align": "center"
+          "type": "media",
+          "id": "kapadokya-picture"
         },
         {
           "type": "text",
@@ -233,7 +237,9 @@
           "#9a3412",
           "#431407"
         ]
-      }
+      },
+      "image": "media/kapadokya.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

@@ -148,7 +148,8 @@
       "text": "文字",
       "image": "圖片",
       "columns2": "兩欄",
-      "columns3": "三欄"
+      "columns3": "三欄",
+      "media": "媒體"
     },
     "dragBlock": "拖曳以重新排序區塊",
     "removeBlock": "移除區塊",
@@ -213,6 +214,19 @@
     "moveToDraft": {
       "title": "儲存這張空白投影片？",
       "description": "此測驗已發布，隨時可以演示，投影片必須顯示內容。改回草稿即可照原樣儲存，或繼續編輯。"
+    },
+    "media": {
+      "onlyOne": "每張簡報只能有一個媒體：它已放置。",
+      "state": {
+        "none": "簡報圖片或影片的位置：請在下方時間軸中新增。",
+        "image": "在下方時間軸中設定的簡報圖片會顯示在這裡。",
+        "video": "在下方時間軸中設定的簡報影片會在這裡播放。",
+        "behind": "簡報的媒體位於內容區塊後方：此區塊未被使用。在時間軸的版面配置中選擇「在內容中」即可將其放在這裡。",
+        "alone": "簡報的媒體單獨顯示：此區塊未被使用。"
+      },
+      "imageBlock": "舊的圖片區塊：簡報的圖片現在是它的媒體，在時間軸中設定，並由媒體區塊放置。",
+      "adopt": "設為簡報的媒體",
+      "adoptRefused": "此簡報已有圖片或影片。"
     }
   },
   "formSaved": "已儲存",
@@ -777,5 +791,60 @@
     "minute": "{{n}} 分鐘",
     "slideTip": "簡報「{{name}}」· {{time}}",
     "questionTip": "第 {{n}} 題 · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "版面配置",
+    "title": "簡報版面配置",
+    "groupEmpty": "編排空白簡報",
+    "groupMedia": "放置媒體",
+    "emptyOnly": "適用於空白簡報：這張已有內容",
+    "welcomeTitle": "歡迎來到 {title}",
+    "welcomeText": "在 {join} 輸入 PIN **{pin}** 加入",
+    "layout": {
+      "title": "標題",
+      "titleSubtitle": "標題和副標題",
+      "titleText": "標題和文字",
+      "titleTextMedia": "標題、文字、媒體",
+      "mediaTitle": "媒體和標題",
+      "textMedia": "文字 | 媒體",
+      "mediaText": "媒體 | 文字",
+      "behindTitle": "媒體上的標題",
+      "mediaAlone": "僅媒體",
+      "twoColumns": "兩欄",
+      "titleTwoColumns": "標題、兩欄",
+      "threeColumns": "三欄",
+      "section": "章節",
+      "quote": "引言",
+      "welcome": "歡迎",
+      "mediaAbove": "媒體在上",
+      "mediaBelow": "媒體在下",
+      "mediaLeft": "媒體在左",
+      "mediaRight": "媒體在右",
+      "mediaBehind": "媒體在後方",
+      "mediaOnly": "媒體單獨"
+    },
+    "description": {
+      "title": "置中的標題。",
+      "titleSubtitle": "一個標題，下方一個較小的標題。",
+      "titleText": "文字上方一個標題。",
+      "titleTextMedia": "一個標題、一段文字，下方是簡報的圖片或影片。",
+      "mediaTitle": "圖片或影片，下方是標題。",
+      "textMedia": "左側標題和文字，右側圖片或影片。",
+      "mediaText": "左側圖片或影片，右側標題和文字。",
+      "behindTitle": "圖片或影片佈滿簡報，上方疊加標題。",
+      "mediaAlone": "僅圖片或影片，佈滿簡報。",
+      "twoColumns": "兩欄，每欄一個標題和一段文字。",
+      "titleTwoColumns": "兩欄文字上方一個標題。",
+      "threeColumns": "三欄，每欄一個標題和一段文字。",
+      "section": "大標題上方一個小標題：一個部分的開始。",
+      "quote": "一段大字，右下方是出處。",
+      "welcome": "測驗標題和加入方式，由大廳自動填入。",
+      "mediaAbove": "媒體區塊移到頂部；其他區塊保持不變。",
+      "mediaBelow": "媒體區塊移到末尾；其他區塊保持不變。",
+      "mediaLeft": "圖片或影片位於所有內容區塊左側；內容區塊保持不變。",
+      "mediaRight": "圖片或影片位於所有內容區塊右側；內容區塊保持不變。",
+      "mediaBehind": "圖片或影片在內容區塊後方佈滿簡報。",
+      "mediaOnly": "圖片或影片取代內容區塊顯示；內容區塊保留以備後用。"
+    }
   }
 }

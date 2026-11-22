@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover India",
     "description": "Sample quiz — geography, history and culture of India.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 5,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover India",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *Bhārat* — from the Himalayas to the backwaters of Kerala.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -215,11 +222,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "tea-picture",
-          "media": "media/darjeeling-tea.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "tea-picture"
         },
         {
           "type": "text",
@@ -236,7 +240,9 @@
           "#166534",
           "#052e16"
         ]
-      }
+      },
+      "image": "media/darjeeling-tea.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

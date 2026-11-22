@@ -86,6 +86,8 @@ Status: **draft** — decisions of 2026-11-21 and 2026-11-22. Lot 0 (§7) and th
   does not know, it deletes no media (the hourly sweep, the release on save), since a ghost may use them. From the
   next release on; a rollback to 0.17.x does not have it, and its sweep deletes, after 24 h, the media only hints
   and slide pictures use: a loss said before it runs.
+  Back to 0.17.x, a slide holding a Media block (SPECIFICATIONS-SLIDE-LAYOUTS) plays, but its editor refuses to
+  save it.
 - **The window counts minors** (three, with their patches), and **a patch adds no migration**: a migration comes
   with a minor, so a window is a span of time, not three patches out in a week.
 - **Releases are checked before anything is published** (`scripts/release-check.mjs`, first job of the release

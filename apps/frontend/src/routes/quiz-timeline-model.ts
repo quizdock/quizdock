@@ -41,7 +41,7 @@ export function quizTimeline(items: QuizItem[], pace: QuizPace): QuizTimelineSte
         marks: [
           ...((s.blocks as SlideBlock[])
             .flatMap((b) => (b.type === 'columns' ? b.columns.flat() : [b]))
-            .some((b) => b.type === 'image')
+            .some((b) => b.type === 'image') || s.imageMediaId
             ? (['image'] as const)
             : []),
           ...(s.videoMediaId ? (['video'] as const) : []),

@@ -117,7 +117,7 @@ export const GUIDE_FIELDS = {
       'displayDelayS',
     ],
   },
-  block: { described: ['heading', 'text'], left: ['image', 'columns'] },
+  block: { described: ['heading', 'text'], left: ['image', 'media', 'columns'] },
 } as const;
 
 /** What each type asks for, beyond the fields every question shares. */

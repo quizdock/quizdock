@@ -35,6 +35,7 @@ Read them in this order to discover the project:
 | 19 | **[SPECIFICATIONS-QUESTION-PICTURE.md](./SPECIFICATIONS-QUESTION-PICTURE.md)** | How a question's picture is shown (delivered on `dev`): ratio (presets or free), fill, crop point, progressive reveal; one `mediaStyle` field | Product, frontend, backend |
 | 20 | **[SPECIFICATIONS-STEP-EDITOR.md](./SPECIFICATIONS-STEP-EDITOR.md)** | One editor for every step (delivered on `dev`): questions and slides share the frame, the preview, the timeline and the media model; the data stay apart; three lots | Product, frontend |
 | 21 | **[SPECIFICATIONS-ROLLBACK.md](./SPECIFICATIONS-ROLLBACK.md)** | Version rollback (draft, groundwork on `dev`): a `down.sql` per migration leaving ghosts, three minors back, restore points as fallback, release checks; the admin says and gives the command, the server runs it | DevOps, backend, product |
+| 22 | **[SPECIFICATIONS-SLIDE-LAYOUTS.md](./SPECIFICATIONS-SLIDE-LAYOUTS.md)** | Slide layouts (built on a branch): the media set on the timeline as a question's, a Media block placing it among the blocks, ready-made layouts, no migration | Product, frontend |
 
 > The documents refer to one another (for instance `technique §5`, `RG-13`, `données §2.10`). Any change of behaviour must update **the document it concerns, in the same commit** (see the "test & document" policy, technique §18).
 

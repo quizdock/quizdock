@@ -52,3 +52,65 @@ describe('a slide’s picture against its blocks (SPECIFICATIONS-STEP-EDITOR)', 
     expect(screen.getByRole('heading', { name: 'Cappadoce' }).closest('.sr-only')).not.toBeNull();
   });
 });
+
+describe('the media block: the slide’s media among its blocks (SPECIFICATIONS-SLIDE-LAYOUTS)', () => {
+  const order = (container: HTMLElement) =>
+    [...container.querySelectorAll('h1, img, p')].map((el) =>
+      el.tagName === 'IMG' ? 'media' : (el.textContent ?? ''),
+    );
+
+  it('in the content, the media sits where its block is, once', () => {
+    const { container } = render(
+      <SlideView
+        slide={slide({
+          image,
+          position: 'bottom',
+          blocks: [
+            { type: 'heading', id: 'h', text: 'Cappadoce', level: 1 },
+            { type: 'media', id: 'm' },
+            { type: 'text', id: 't', md: 'Des cheminées de fée' },
+          ],
+        })}
+      />,
+    );
+    expect(order(container)).toEqual(['Cappadoce', 'media', 'Des cheminées de fée']);
+  });
+
+  it('in a column, beside the text', () => {
+    const { container } = render(
+      <SlideView
+        slide={slide({
+          image,
+          position: 'bottom',
+          blocks: [
+            {
+              type: 'columns',
+              id: 'c',
+              columns: [[{ type: 'text', id: 't', md: 'À gauche' }], [{ type: 'media', id: 'm' }]],
+            },
+          ],
+        })}
+      />,
+    );
+    expect(order(container)).toEqual(['À gauche', 'media']);
+  });
+
+  it('behind or alone, the block is not used: the media is drawn once, as the layout says', () => {
+    const blocks: SlideShowPayload['blocks'] = [
+      { type: 'heading', id: 'h', text: 'Cappadoce', level: 1 },
+      { type: 'media', id: 'm' },
+    ];
+    const { container, rerender } = render(<SlideView slide={slide({ image, blocks })} />);
+    expect(container.querySelectorAll('img')).toHaveLength(1);
+    expect(screen.getByRole('img', { name: image.alt }).classList.contains('object-cover')).toBe(
+      true,
+    );
+    rerender(<SlideView slide={slide({ image, blocks, position: 'alone' })} />);
+    expect(container.querySelectorAll('img')).toHaveLength(1);
+  });
+
+  it('without its block, an older slide keeps its position', () => {
+    const { container } = render(<SlideView slide={slide({ image, position: 'top' })} />);
+    expect(order(container)).toEqual(['media', 'Cappadoce']);
+  });
+});

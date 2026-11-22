@@ -156,7 +156,8 @@
       "text": "Tekst",
       "image": "Obraz",
       "columns2": "2 kolumny",
-      "columns3": "3 kolumny"
+      "columns3": "3 kolumny",
+      "media": "Medium"
     },
     "dragBlock": "Przeciągnij, aby zmienić kolejność bloku",
     "removeBlock": "Usuń blok",
@@ -221,6 +222,19 @@
     "moveToDraft": {
       "title": "Zapisać ten pusty slajd?",
       "description": "Ten quiz jest opublikowany, więc można go zaprezentować w każdej chwili: slajd musi coś pokazywać. Przywróć quiz do szkicu, aby zapisać ten slajd w obecnej postaci, albo kontynuuj edycję."
+    },
+    "media": {
+      "onlyOne": "Jedno medium na slajd: jest już umieszczone.",
+      "state": {
+        "none": "Miejsce obrazu lub wideo slajdu: dodaj je na osi czasu poniżej.",
+        "image": "Obraz slajdu, wybrany na osi czasu poniżej, pojawia się tutaj.",
+        "video": "Wideo slajdu, wybrane na osi czasu poniżej, jest odtwarzane tutaj.",
+        "behind": "Medium slajdu jest za blokami: ten blok nie jest używany. Wybierz W treści w układzie osi czasu, aby umieścić je tutaj.",
+        "alone": "Medium slajdu jest wyświetlane samodzielnie: ten blok nie jest używany."
+      },
+      "imageBlock": "Dawny blok obrazu: obraz slajdu jest teraz jego medium, wybieranym na osi czasu i umieszczanym blokiem Medium.",
+      "adopt": "Ustaw jako medium slajdu",
+      "adoptRefused": "Slajd ma już obraz lub wideo."
     }
   },
   "formSaved": "Zapisano",
@@ -805,5 +819,60 @@
     "minute": "{{n}} min",
     "slideTip": "Slajd „{{name}}” · {{time}}",
     "questionTip": "P{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Układy",
+    "title": "Układy slajdu",
+    "groupEmpty": "Ułóż pusty slajd",
+    "groupMedia": "Umieść medium",
+    "emptyOnly": "dla pustego slajdu: ten ma już treść",
+    "welcomeTitle": "Witamy w {title}",
+    "welcomeText": "Dołącz na {join} z PIN-em **{pin}**",
+    "layout": {
+      "title": "Tytuł",
+      "titleSubtitle": "Tytuł i podtytuł",
+      "titleText": "Tytuł i tekst",
+      "titleTextMedia": "Tytuł, tekst, medium",
+      "mediaTitle": "Medium i tytuł",
+      "textMedia": "Tekst | medium",
+      "mediaText": "Medium | tekst",
+      "behindTitle": "Tytuł na medium",
+      "mediaAlone": "Tylko medium",
+      "twoColumns": "Dwie kolumny",
+      "titleTwoColumns": "Tytuł, dwie kolumny",
+      "threeColumns": "Trzy kolumny",
+      "section": "Sekcja",
+      "quote": "Cytat",
+      "welcome": "Powitanie",
+      "mediaAbove": "Medium na górze",
+      "mediaBelow": "Medium na dole",
+      "mediaLeft": "Medium po lewej",
+      "mediaRight": "Medium po prawej",
+      "mediaBehind": "Medium w tle",
+      "mediaOnly": "Medium samo"
+    },
+    "description": {
+      "title": "Nagłówek, wyśrodkowany.",
+      "titleSubtitle": "Nagłówek i mniejszy pod nim.",
+      "titleText": "Nagłówek nad tekstem.",
+      "titleTextMedia": "Nagłówek, tekst, a pod nimi obraz lub wideo slajdu.",
+      "mediaTitle": "Obraz lub wideo, pod nim nagłówek.",
+      "textMedia": "Nagłówek i tekst po lewej, obraz lub wideo po prawej.",
+      "mediaText": "Obraz lub wideo po lewej, nagłówek i tekst po prawej.",
+      "behindTitle": "Obraz lub wideo wypełnia slajd, nad nim nagłówek.",
+      "mediaAlone": "Sam obraz lub wideo, na cały slajd.",
+      "twoColumns": "Dwie kolumny, każda z nagłówkiem i tekstem.",
+      "titleTwoColumns": "Nagłówek nad dwiema kolumnami tekstu.",
+      "threeColumns": "Trzy kolumny, każda z nagłówkiem i tekstem.",
+      "section": "Mały nagłówek nad dużym: początek części.",
+      "quote": "Duży tekst, pod nim po prawej jego źródło.",
+      "welcome": "Tytuł quizu i sposób dołączenia, uzupełniane przez lobby.",
+      "mediaAbove": "Blok Medium przechodzi na górę; pozostałe bloki zostają bez zmian.",
+      "mediaBelow": "Blok Medium przechodzi na koniec; pozostałe bloki zostają bez zmian.",
+      "mediaLeft": "Obraz lub wideo po lewej, obok wszystkich bloków; bloki zostają bez zmian.",
+      "mediaRight": "Obraz lub wideo po prawej, obok wszystkich bloków; bloki zostają bez zmian.",
+      "mediaBehind": "Obraz lub wideo wypełnia slajd za blokami.",
+      "mediaOnly": "Obraz lub wideo zamiast bloków; bloki zostają zachowane na później."
+    }
   }
 }

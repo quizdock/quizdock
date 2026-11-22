@@ -496,7 +496,7 @@ describe('ControlPage (console hôte)', () => {
     renderApp('/session/482913/console');
     // In the lobby's second tab of settings.
     fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et audio' }));
-    fireEvent.change(await screen.findByLabelText('Langue des écrans'), {
+    fireEvent.change(await screen.findByLabelText('Langue de l’interface'), {
       target: { value: 'tr' },
     });
     expect(fakeSocket.emit).toHaveBeenCalledWith('host:options', {
