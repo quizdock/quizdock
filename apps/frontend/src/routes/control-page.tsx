@@ -427,7 +427,16 @@ function HostConsole({
         </Tooltip>
         <div className="flex flex-col gap-1">
           <span className="text-muted-foreground text-xs">{t('control.invite')}</span>
-          <span className="font-semibold">{joinHostLabel(view)}</span>
+          {/* The address, a link to the players' join page in a new tab. */}
+          <a
+            href={joinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 font-semibold hover:underline"
+          >
+            {joinHostLabel(view)}
+            <ExternalLink className="text-muted-foreground size-3.5" aria-hidden />
+          </a>
           <span
             className="font-mono text-3xl font-bold tracking-[0.2em]"
             aria-label={t('control.pinLabel')}
@@ -465,32 +474,26 @@ function HostConsole({
         view={view}
         onRename={inLobby ? (name) => socket?.emit('host:room-name', { pin, name }) : undefined}
       />
-      {/* In the lobby the invitation fills the centre: the PIN alone; later, it opens it. */}
-      {phase === 'lobby' ? (
-        <span className="bg-muted rounded-full px-2.5 py-1 font-mono text-sm font-semibold tracking-widest">
-          {pin}
-        </span>
-      ) : (
-        <Popover
-          trigger={({ toggle, open }) => (
-            <button
-              type="button"
-              onClick={toggle}
-              aria-expanded={open}
-              aria-label={t('control.invite')}
-              className="bg-muted hover:bg-accent flex items-center gap-2 rounded-full px-2.5 py-1 text-sm"
-            >
-              <span className="font-mono font-semibold tracking-widest">{pin}</span>
-              {/* The PIN read, then what the click does: two parts, a rule between them. */}
-              <span className="bg-muted-foreground/40 h-4 w-px" aria-hidden />
-              <Share2 className="size-3.5" />
-            </button>
-          )}
-          className="w-80"
-        >
-          {invite}
-        </Popover>
-      )}
+      {/* The invitation behind the PIN, in every phase: in the lobby it also fills the centre. */}
+      <Popover
+        trigger={({ toggle, open }) => (
+          <button
+            type="button"
+            onClick={toggle}
+            aria-expanded={open}
+            aria-label={t('control.invite')}
+            className="bg-muted hover:bg-accent flex items-center gap-2 rounded-full px-2.5 py-1 text-sm"
+          >
+            <span className="font-mono font-semibold tracking-widest">{pin}</span>
+            {/* The PIN read, then what the click does: two parts, a rule between them. */}
+            <span className="bg-muted-foreground/40 h-4 w-px" aria-hidden />
+            <Share2 className="size-3.5" />
+          </button>
+        )}
+        className="w-96"
+      >
+        {invite}
+      </Popover>
       <button
         type="button"
         onClick={() => setSide('players')}
