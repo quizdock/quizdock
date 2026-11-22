@@ -31,6 +31,7 @@ export interface LastSweep extends SweepResult {
  * name, deletes the media nothing uses any more, then the blobs no media holds
  * and the files on disk nothing points to. A save still releases the media it
  * replaced right away (`MediaService.releaseUnused`); this job catches the rest.
+ * It deletes nothing while the database holds a newer release's data (a rollback).
  */
 @Injectable()
 export class MediaJanitor implements OnModuleDestroy {
@@ -108,9 +109,17 @@ export class MediaJanitor implements OnModuleDestroy {
       await this.media
         .fillDimensions()
         .catch((err: Error) => this.log.warn(`Reading media sizes skipped: ${err.message}`));
-      const media = await this.media.sweepOrphans();
-      const blobs = await this.media.sweepUnusedBlobs();
-      const files = await this.media.purgeStrayFiles();
+      // After a rollback, a newer release's data may hold media this one sees as unused.
+      const newer = await this.media.newerData();
+      if (newer.length > 0) {
+        this.log.warn(
+          `Media sweep paused: the database holds a newer release's data (${newer.join(', ')})`,
+        );
+      }
+      const paused = newer.length > 0;
+      const media = paused ? 0 : await this.media.sweepOrphans();
+      const blobs = paused ? 0 : await this.media.sweepUnusedBlobs();
+      const files = paused ? 0 : await this.media.purgeStrayFiles();
       if (adopted > 0) this.log.log(`Media sweep: ${adopted} older files moved to shared storage`);
       if (media + blobs + files > 0) {
         this.log.log(

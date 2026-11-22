@@ -27,6 +27,7 @@ import type { MediaAsset, MediaKind, Prisma } from '@prisma/client';
 import { GameState, type MediaRejection, sniffMedia, SETTINGS } from '@quiz-dock/contracts';
 import { isDemoMode } from '../demo/demo.config';
 import { type GameId, ROOM_HASH_KEY, gameKeys } from '../game/game.keys';
+import { newerData } from '../prisma/newer-data';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { parseUploadMeta } from './dto/media-upload-meta';
@@ -136,6 +137,8 @@ const REJECTION_CODE: Record<MediaRejection, string> = {
 export class MediaService implements OnModuleInit {
   private readonly logger = new Logger(MediaService.name);
   private readonly dir = settings.path(SETTINGS.MEDIA_DIR);
+  /** Read once: a rollback, or an upgrade again, restarts the server. */
+  private newer: Promise<string[]> | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -517,7 +520,8 @@ export class MediaService implements OnModuleInit {
    * being played runs on a frozen snapshot that must keep its files. What is
    * kept is caught by the scheduled sweep (MediaJanitor) once nothing holds it
    * any more. Never fails the save that called it. `stillHeld`: what the saved
-   * element holds now, left alone without asking the database.
+   * element holds now, left alone without asking the database. Nothing is
+   * deleted while the database holds a newer release's data (`newerData`).
    */
   async releaseUnused(
     held: (string | null | undefined)[],
@@ -525,7 +529,7 @@ export class MediaService implements OnModuleInit {
   ): Promise<void> {
     const unique = [...new Set(held)].filter((id): id is string => !!id && !stillHeld.includes(id));
     try {
-      if (unique.length > 0) {
+      if (unique.length > 0 && (await this.newerData()).length === 0) {
         const live = await this.liveSnapshots();
         for (const id of unique) {
           if (live.some((snap) => snap.includes(id)) || (await this.isReferenced(id))) continue;
@@ -535,6 +539,19 @@ export class MediaService implements OnModuleInit {
     } catch (err) {
       this.logger.warn(`Media clean-up skipped: ${(err as Error).message}`);
     }
+  }
+
+  /**
+   * What a newer release left in the database after a rollback, unknown here: while
+   * there is any, this release cannot tell every media in use (a newer one may keep
+   * them in columns it does not read), so nothing is deleted.
+   */
+  newerData(): Promise<string[]> {
+    this.newer ??= newerData(this.prisma).catch((err: Error) => {
+      this.newer = null;
+      throw err;
+    });
+    return this.newer;
   }
 
   /**
