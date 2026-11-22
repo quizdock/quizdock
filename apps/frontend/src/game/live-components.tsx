@@ -11,8 +11,9 @@ import type {
   SlideTextAlign,
   SlideTextSize,
 } from '@quiz-dock/contracts';
-import { TILE_RATIO, fillSlideBlocks } from '@quiz-dock/contracts';
+import { TILE_RATIO, fillSlideBlocks, hasMediaBlock } from '@quiz-dock/contracts';
 import {
+  Fragment,
   type ReactNode,
   type RefObject,
   useContext,
@@ -824,6 +825,9 @@ export function SlideView({ slide }: { slide: SlideShowPayload }) {
   const image = video ? null : (slide.image ?? null);
   const position = (video || image) && slide.position ? slide.position : 'behind';
   const behind = position === 'behind';
+  // Placed in the content, it sits where its block is (SPECIFICATIONS-SLIDE-LAYOUTS);
+  // a slide without that block keeps its position against the blocks.
+  const inBlocks = !behind && position !== 'alone' && hasMediaBlock(blocks);
   const look = mediaFrame(slide.style, behind);
   const picture = image ? (
     <img
@@ -870,30 +874,43 @@ export function SlideView({ slide }: { slide: SlideShowPayload }) {
   // No background of its own: the quiz theme's (docs/themes.md), with its text tone.
   const theme = useLiveTheme();
   const themed = slide.background || behindLayer ? null : themeBackdrop(theme);
+  // Its media block: the placed media there, the first one alone (one per slide).
+  let mediaShown = false;
+  const leafView = (leaf: SlideLeafBlock) => {
+    if (leaf.type !== 'media') return <SlideBlockView key={leaf.id} block={leaf} />;
+    if (!inBlocks || mediaShown) return null;
+    mediaShown = true;
+    return <Fragment key={leaf.id}>{placed}</Fragment>;
+  };
   const content = (
     <>
-      {blocks.map((b) =>
-        b.type === 'columns' ? (
+      {blocks.map((b) => {
+        if (b.type !== 'columns') return leafView(b);
+        // Columns holding the media take the room left, so that it has a height.
+        const holdsMedia = inBlocks && b.columns.some((c) => c.some((l) => l.type === 'media'));
+        return (
           <div
             key={b.id}
-            className="grid items-start gap-[2em]"
+            className={cn('grid gap-[2em]', holdsMedia ? 'min-h-0 flex-1' : 'items-start')}
             style={{ gridTemplateColumns: columnsTemplate(b.columns.length, b.ratio) }}
           >
             {b.columns.map((col, i) => (
-              <div key={i} className="flex min-w-0 flex-col gap-[1em]">
-                {col.map((leaf) => (
-                  <SlideBlockView key={leaf.id} block={leaf} />
-                ))}
+              <div
+                key={i}
+                className={cn(
+                  'flex min-w-0 flex-col gap-[1em]',
+                  holdsMedia && 'min-h-0 justify-center',
+                )}
+              >
+                {col.map(leafView)}
               </div>
             ))}
           </div>
-        ) : (
-          <SlideBlockView key={b.id} block={b} />
-        ),
-      )}
+        );
+      })}
     </>
   );
-  const side = position === 'left' || position === 'right';
+  const side = !inBlocks && (position === 'left' || position === 'right');
   return (
     <Surface
       background={slide.background ?? themed?.background}
@@ -910,22 +927,24 @@ export function SlideView({ slide }: { slide: SlideShowPayload }) {
           side ? 'flex-row items-stretch' : 'flex-col justify-center',
         )}
       >
-        {placed && (position === 'top' || position === 'left') ? placed : null}
+        {placed && !inBlocks && (position === 'top' || position === 'left') ? placed : null}
         {position === 'alone' ? (
           // The visual in the blocks' place: they stay for a screen reader.
           <div className="sr-only">{content}</div>
         ) : (
           <div
             className={cn(
-              'flex min-w-0 flex-col justify-center gap-[1.5em]',
-              placed ? 'shrink-0' : 'flex-1',
+              'flex min-h-0 min-w-0 flex-col justify-center gap-[1.5em]',
+              placed && !inBlocks ? 'shrink-0' : 'flex-1',
               side && 'flex-1',
             )}
           >
             {content}
           </div>
         )}
-        {placed && (position === 'bottom' || position === 'right' || position === 'alone')
+        {placed &&
+        !inBlocks &&
+        (position === 'bottom' || position === 'right' || position === 'alone')
           ? placed
           : null}
         {/* Its sound (#125), under the content: drawn at its size, hidden by default. */}
@@ -1009,6 +1028,9 @@ function SlideBlockView({ block }: { block: SlideLeafBlock }) {
           )}
         />
       );
+    case 'media':
+      // Drawn by SlideView, where the slide's media is placed in its blocks.
+      return null;
   }
 }
 

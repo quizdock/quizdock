@@ -1,6 +1,5 @@
 import {
   type AudioTarget,
-  MEDIA_POSITIONS,
   type MediaPosition,
   type MediaStyle,
   type WaveformSize,
@@ -22,6 +21,9 @@ import {
 } from './step-timeline-editing';
 import { slideTimeline } from './step-timeline-model';
 import { useStepView } from './use-step-view';
+
+/** Where a slide's media goes: above or below its blocks, beside them, behind them, or alone. */
+const SLIDE_PLACEMENTS = ['top', 'bottom', 'left', 'right', 'behind', 'alone'] as const;
 
 export interface SlideMediaValue {
   /** Its picture, placed as a question's; never with a video (SPECIFICATIONS-STEP-EDITOR). */
@@ -52,6 +54,8 @@ export function SlideTimelineSection({
   onPeaks,
   defaultS,
   mediaTailS,
+  place,
+  onPlace,
 }: {
   value: SlideMediaValue;
   onChange: (patch: Partial<SlideMediaValue>) => void;
@@ -62,6 +66,10 @@ export function SlideTimelineSection({
   defaultS: number;
   /** The quiz's pause after a media. */
   mediaTailS: number;
+  /** Where the media sits now, its media block read (SPECIFICATIONS-SLIDE-LAYOUTS). */
+  place: (typeof SLIDE_PLACEMENTS)[number];
+  /** Another place picked: the form moves the media block or sets the position. */
+  onPlace: (place: (typeof SLIDE_PLACEMENTS)[number]) => void;
 }) {
   const { t } = useTranslation('editor');
   const [selected, setSelected] = useState<TimelineSelection | null>(null);
@@ -141,14 +149,15 @@ export function SlideTimelineSection({
       />
       <LayoutModal
         open={layingOut}
-        value={value.mediaPosition}
-        choices={MEDIA_POSITIONS.map((position) => ({
+        // The same places as the Layouts' (SPECIFICATIONS-SLIDE-LAYOUTS).
+        value={place}
+        choices={SLIDE_PLACEMENTS.map((position) => ({
           value: position,
           label: t(`questionForm.mediaPosition.${position}`),
           description: t(`timeline.slideLayoutDescription.${position}`),
         }))}
         onApply={(position) => {
-          onChange({ mediaPosition: position });
+          if (position !== place) onPlace(position);
           setLayingOut(false);
         }}
         onClose={() => setLayingOut(false)}

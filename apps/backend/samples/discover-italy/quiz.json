@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Italy.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 3,
+    "revision": 5,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Italy",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *il Bel Paese* — from the Alps to Sicily.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -219,11 +226,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "pizza-picture",
-          "media": "media/pizza.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "pizza-picture"
         },
         {
           "type": "text",
@@ -240,7 +244,9 @@
           "#166534",
           "#7f1d1d"
         ]
-      }
+      },
+      "image": "media/pizza.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

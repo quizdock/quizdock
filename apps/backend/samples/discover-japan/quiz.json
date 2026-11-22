@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Japan.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 3,
+    "revision": 5,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Japan",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *Nippon* — from Hokkaido’s snow to Okinawa’s beaches.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -223,11 +230,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "sakura-picture",
-          "media": "media/cherry-blossoms.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "sakura-picture"
         },
         {
           "type": "text",
@@ -244,7 +248,9 @@
           "#9d174d",
           "#3b0764"
         ]
-      }
+      },
+      "image": "media/cherry-blossoms.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

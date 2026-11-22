@@ -40,7 +40,7 @@ const base: SlideMediaValue = {
   displayDelayS: null,
 };
 
-const open = (value: SlideMediaValue, onChange = vi.fn()) => {
+const open = (value: SlideMediaValue, onChange = vi.fn(), onPlace = vi.fn()) => {
   render(
     <QueryClientProvider client={new QueryClient()}>
       <SlideTimelineSection
@@ -49,6 +49,8 @@ const open = (value: SlideMediaValue, onChange = vi.fn()) => {
         peaks={null}
         onPeaks={vi.fn()}
         defaultS={5}
+        place="behind"
+        onPlace={onPlace}
         mediaTailS={1}
       />
     </QueryClientProvider>,
@@ -109,7 +111,8 @@ describe('SlideTimelineSection (#125)', () => {
   });
 
   it('a picture or a video, not both; the layouts wait for one (SPECIFICATIONS-STEP-EDITOR)', () => {
-    const onChange = open({ ...base, imageMediaId: 'img' });
+    const onPlace = vi.fn();
+    const onChange = open({ ...base, imageMediaId: 'img' }, vi.fn(), onPlace);
     const modal = add();
     expect(modal.getByRole('button', { name: /^Vidéo/ })).toHaveTextContent(
       i18n.t('editor:timeline.refused.oneSlideVisual'),
@@ -118,14 +121,15 @@ describe('SlideTimelineSection (#125)', () => {
     fireEvent.keyDown(screen.getByRole('dialog', { name: i18n.t('editor:timeline.add') }), {
       key: 'Escape',
     });
-    // Behind the blocks by default; another layout applied from its modal.
+    // Behind the blocks by default; the Layouts' places (SPECIFICATIONS-SLIDE-LAYOUTS).
     fireEvent.click(screen.getByRole('button', { name: i18n.t('editor:timeline.layout') }));
     const layouts = within(screen.getByRole('dialog', { name: i18n.t('editor:timeline.layout') }));
     fireEvent.click(
       layouts.getByRole('button', { name: i18n.t('editor:questionForm.mediaPosition.left') }),
     );
     fireEvent.click(layouts.getByRole('button', { name: i18n.t('editor:timeline.layoutApply') }));
-    expect(onChange).toHaveBeenCalledWith({ mediaPosition: 'left' });
+    expect(onPlace).toHaveBeenCalledWith('left');
+    expect(onChange).not.toHaveBeenCalledWith({ mediaPosition: 'left' });
   });
 
   it('without a picture nor a video, the layouts say why they wait', () => {

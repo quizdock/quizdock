@@ -148,7 +148,8 @@
       "text": "文字",
       "image": "图片",
       "columns2": "两栏",
-      "columns3": "三栏"
+      "columns3": "三栏",
+      "media": "媒体"
     },
     "dragBlock": "拖动以排序区块",
     "removeBlock": "移除区块",
@@ -213,6 +214,19 @@
     "moveToDraft": {
       "title": "保存这张空白幻灯片？",
       "description": "此测验已发布，随时可以演示，幻灯片必须显示内容。改回草稿即可按原样保存，或继续编辑。"
+    },
+    "media": {
+      "onlyOne": "每张幻灯片只能有一个媒体：它已放置。",
+      "state": {
+        "none": "幻灯片图片或视频的位置：请在下方时间轴中添加。",
+        "image": "在下方时间轴中设置的幻灯片图片显示在这里。",
+        "video": "在下方时间轴中设置的幻灯片视频在这里播放。",
+        "behind": "幻灯片的媒体位于内容块后方：此块未被使用。在时间轴的布局中选择“在内容中”即可将其放在这里。",
+        "alone": "幻灯片的媒体单独显示：此块未被使用。"
+      },
+      "imageBlock": "旧的图片块：幻灯片的图片现在是它的媒体，在时间轴中设置，并由媒体块放置。",
+      "adopt": "设为幻灯片的媒体",
+      "adoptRefused": "该幻灯片已有图片或视频。"
     }
   },
   "formSaved": "已保存",
@@ -777,5 +791,60 @@
     "minute": "{{n}} 分钟",
     "slideTip": "幻灯片“{{name}}” · {{time}}",
     "questionTip": "第 {{n}} 题 · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "布局",
+    "title": "幻灯片布局",
+    "groupEmpty": "编排空白幻灯片",
+    "groupMedia": "放置媒体",
+    "emptyOnly": "适用于空白幻灯片：这张已有内容",
+    "welcomeTitle": "欢迎来到 {title}",
+    "welcomeText": "在 {join} 输入 PIN **{pin}** 加入",
+    "layout": {
+      "title": "标题",
+      "titleSubtitle": "标题和副标题",
+      "titleText": "标题和文字",
+      "titleTextMedia": "标题、文字、媒体",
+      "mediaTitle": "媒体和标题",
+      "textMedia": "文字 | 媒体",
+      "mediaText": "媒体 | 文字",
+      "behindTitle": "媒体上的标题",
+      "mediaAlone": "仅媒体",
+      "twoColumns": "两栏",
+      "titleTwoColumns": "标题、两栏",
+      "threeColumns": "三栏",
+      "section": "章节",
+      "quote": "引用",
+      "welcome": "欢迎",
+      "mediaAbove": "媒体在上",
+      "mediaBelow": "媒体在下",
+      "mediaLeft": "媒体在左",
+      "mediaRight": "媒体在右",
+      "mediaBehind": "媒体在后方",
+      "mediaOnly": "媒体单独"
+    },
+    "description": {
+      "title": "居中的标题。",
+      "titleSubtitle": "一个标题，下方一个较小的标题。",
+      "titleText": "文字上方一个标题。",
+      "titleTextMedia": "一个标题、一段文字，下方是幻灯片的图片或视频。",
+      "mediaTitle": "图片或视频，下方是标题。",
+      "textMedia": "左侧标题和文字，右侧图片或视频。",
+      "mediaText": "左侧图片或视频，右侧标题和文字。",
+      "behindTitle": "图片或视频铺满幻灯片，上面叠加标题。",
+      "mediaAlone": "仅图片或视频，铺满幻灯片。",
+      "twoColumns": "两栏，每栏一个标题和一段文字。",
+      "titleTwoColumns": "两栏文字上方一个标题。",
+      "threeColumns": "三栏，每栏一个标题和一段文字。",
+      "section": "大标题上方一个小标题：一个部分的开始。",
+      "quote": "一段大字，右下方是出处。",
+      "welcome": "测验标题和加入方式，由房间自动填入。",
+      "mediaAbove": "媒体块移到顶部；其他块保持不变。",
+      "mediaBelow": "媒体块移到末尾；其他块保持不变。",
+      "mediaLeft": "图片或视频位于所有内容块左侧；内容块保持不变。",
+      "mediaRight": "图片或视频位于所有内容块右侧；内容块保持不变。",
+      "mediaBehind": "图片或视频在内容块后方铺满幻灯片。",
+      "mediaOnly": "图片或视频取代内容块显示；内容块保留以备后用。"
+    }
   }
 }

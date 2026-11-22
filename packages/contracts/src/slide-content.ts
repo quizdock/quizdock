@@ -29,6 +29,8 @@ const leafBlockSchema = z.discriminatedUnion('type', [
     size: z.enum(['small', 'medium', 'large', 'full']).default('large'),
     align: z.enum(['left', 'center', 'right']).default('center'),
   }),
+  // Where the slide's picture or video (its timeline's) sits among the blocks.
+  z.object({ type: z.literal('media'), id: blockId }),
 ]);
 
 const columnsBlockSchema = z.object({
@@ -107,4 +109,15 @@ export function slideIssues(
   const shows =
     s.blocks.length > 0 || !!s.mediaId || !!s.gradient || !!s.imageMediaId || !!s.videoMediaId;
   return shows ? [] : [{ code: 'slide.empty', path: ['blocks'] }];
+}
+
+/** A slide's media block, top level or in a column (SPECIFICATIONS-SLIDE-LAYOUTS). */
+export function hasMediaBlock(blocks: readonly { type: string; columns?: unknown }[]): boolean {
+  return blocks.some(
+    (b) =>
+      b.type === 'media' ||
+      (b.type === 'columns' &&
+        Array.isArray(b.columns) &&
+        b.columns.some((c) => Array.isArray(c) && c.some((l) => l?.type === 'media'))),
+  );
 }

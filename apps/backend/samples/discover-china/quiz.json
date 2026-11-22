@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover China",
     "description": "Sample quiz — geography, history and culture of China.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 5,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover China",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *Zhōngguó* — from the Great Wall to the Yangtze.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -214,11 +221,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "palace-picture",
-          "media": "media/forbidden-city.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "palace-picture"
         },
         {
           "type": "text",
@@ -235,7 +239,9 @@
           "#991b1b",
           "#450a0a"
         ]
-      }
+      },
+      "image": "media/forbidden-city.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

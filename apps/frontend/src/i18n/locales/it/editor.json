@@ -152,7 +152,8 @@
       "text": "Testo",
       "image": "Immagine",
       "columns2": "2 colonne",
-      "columns3": "3 colonne"
+      "columns3": "3 colonne",
+      "media": "Media"
     },
     "dragBlock": "Trascina per riordinare il blocco",
     "removeBlock": "Rimuovi il blocco",
@@ -217,6 +218,19 @@
     "moveToDraft": {
       "title": "Salvare questa slide vuota?",
       "description": "Questo quiz è pubblicato, quindi può essere presentato in qualsiasi momento: una slide deve mostrare qualcosa. Riporta il quiz in bozza per salvarla così com’è, oppure continua a modificarla."
+    },
+    "media": {
+      "onlyOne": "Un media per slide: è già posizionato.",
+      "state": {
+        "none": "Dove va l’immagine o il video della slide: aggiungine uno nella timeline qui sotto.",
+        "image": "L’immagine della slide, scelta nella timeline qui sotto, appare qui.",
+        "video": "Il video della slide, scelto nella timeline qui sotto, viene riprodotto qui.",
+        "behind": "Il media della slide è dietro i blocchi: questo blocco non è usato. Scegli Nel contenuto nel layout della timeline per posizionarlo qui.",
+        "alone": "Il media della slide è mostrato da solo: questo blocco non è usato."
+      },
+      "imageBlock": "Un blocco immagine di prima: l’immagine di una slide ora è il suo media, scelto nella timeline e posizionato da un blocco Media.",
+      "adopt": "Rendilo il media della slide",
+      "adoptRefused": "La slide ha già un’immagine o un video."
     }
   },
   "formSaved": "Salvato",
@@ -792,5 +806,60 @@
     "minute": "{{n}} min",
     "slideTip": "Slide «{{name}}» · {{time}}",
     "questionTip": "D{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Layout",
+    "title": "Layout della slide",
+    "groupEmpty": "Comporre una slide vuota",
+    "groupMedia": "Posizionare il media",
+    "emptyOnly": "per una slide vuota: questa ha dei contenuti",
+    "welcomeTitle": "Benvenuti a {title}",
+    "welcomeText": "Partecipa su {join} con il PIN **{pin}**",
+    "layout": {
+      "title": "Titolo",
+      "titleSubtitle": "Titolo e sottotitolo",
+      "titleText": "Titolo e testo",
+      "titleTextMedia": "Titolo, testo, media",
+      "mediaTitle": "Media e titolo",
+      "textMedia": "Testo | media",
+      "mediaText": "Media | testo",
+      "behindTitle": "Titolo sul media",
+      "mediaAlone": "Solo media",
+      "twoColumns": "Due colonne",
+      "titleTwoColumns": "Titolo, due colonne",
+      "threeColumns": "Tre colonne",
+      "section": "Sezione",
+      "quote": "Citazione",
+      "welcome": "Benvenuto",
+      "mediaAbove": "Media in alto",
+      "mediaBelow": "Media in basso",
+      "mediaLeft": "Media a sinistra",
+      "mediaRight": "Media a destra",
+      "mediaBehind": "Media dietro",
+      "mediaOnly": "Media da solo"
+    },
+    "description": {
+      "title": "Un titolo, centrato.",
+      "titleSubtitle": "Un titolo e uno più piccolo sotto.",
+      "titleText": "Un titolo sopra un testo.",
+      "titleTextMedia": "Un titolo, un testo e poi, sotto, l’immagine o il video della slide.",
+      "mediaTitle": "L’immagine o il video, con il titolo sotto.",
+      "textMedia": "Un titolo e un testo a sinistra, l’immagine o il video a destra.",
+      "mediaText": "L’immagine o il video a sinistra, un titolo e un testo a destra.",
+      "behindTitle": "L’immagine o il video riempie la slide, con un titolo sopra.",
+      "mediaAlone": "L’immagine o il video da solo, a tutta slide.",
+      "twoColumns": "Due colonne, ognuna con un titolo e un testo.",
+      "titleTwoColumns": "Un titolo sopra due colonne di testo.",
+      "threeColumns": "Tre colonne, ognuna con un titolo e un testo.",
+      "section": "Un titolo piccolo sopra uno grande: l’inizio di una parte.",
+      "quote": "Un testo grande, con la fonte sotto a destra.",
+      "welcome": "Il titolo del quiz e come partecipare, completati dalla lobby.",
+      "mediaAbove": "Il blocco Media va in alto; gli altri blocchi restano come sono.",
+      "mediaBelow": "Il blocco Media va in fondo; gli altri blocchi restano come sono.",
+      "mediaLeft": "L’immagine o il video a sinistra, accanto a tutti i blocchi; restano come sono.",
+      "mediaRight": "L’immagine o il video a destra, accanto a tutti i blocchi; restano come sono.",
+      "mediaBehind": "L’immagine o il video riempie la slide, dietro i blocchi.",
+      "mediaOnly": "L’immagine o il video al posto dei blocchi; i blocchi sono conservati per dopo."
+    }
   }
 }

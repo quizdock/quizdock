@@ -152,7 +152,8 @@
       "text": "Texto",
       "image": "Imagen",
       "columns2": "2 columnas",
-      "columns3": "3 columnas"
+      "columns3": "3 columnas",
+      "media": "Medio"
     },
     "dragBlock": "Arrastrar para reordenar el bloque",
     "removeBlock": "Quitar el bloque",
@@ -217,6 +218,19 @@
     "moveToDraft": {
       "title": "¿Guardar esta diapositiva vacía?",
       "description": "Este quiz está publicado: puede presentarse en cualquier momento y una diapositiva debe mostrar algo. Vuelve a pasarlo a borrador para guardar esta tal cual, o sigue editándola."
+    },
+    "media": {
+      "onlyOne": "Un medio por diapositiva: ya está colocado.",
+      "state": {
+        "none": "Dónde va la imagen o el vídeo de la diapositiva: añade uno en la línea de tiempo de abajo.",
+        "image": "La imagen de la diapositiva, elegida en la línea de tiempo de abajo, aparece aquí.",
+        "video": "El vídeo de la diapositiva, elegido en la línea de tiempo de abajo, se reproduce aquí.",
+        "behind": "El medio de la diapositiva está detrás de los bloques: este bloque no se usa. Elige En el contenido en el diseño de la línea de tiempo para colocarlo aquí.",
+        "alone": "El medio de la diapositiva se muestra solo: este bloque no se usa."
+      },
+      "imageBlock": "Un bloque de imagen de antes: la imagen de una diapositiva es ahora su medio, elegido en la línea de tiempo y colocado por un bloque Medio.",
+      "adopt": "Convertirlo en el medio de la diapositiva",
+      "adoptRefused": "La diapositiva ya tiene una imagen o un vídeo."
     }
   },
   "formSaved": "Guardado",
@@ -791,5 +805,60 @@
     "minute": "{{n}} min",
     "slideTip": "Diapositiva «{{name}}» · {{time}}",
     "questionTip": "P{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Diseños",
+    "title": "Diseños de diapositiva",
+    "groupEmpty": "Componer una diapositiva vacía",
+    "groupMedia": "Colocar el medio",
+    "emptyOnly": "para una diapositiva vacía: esta tiene contenido",
+    "welcomeTitle": "Bienvenidos a {title}",
+    "welcomeText": "Únete en {join} con el PIN **{pin}**",
+    "layout": {
+      "title": "Título",
+      "titleSubtitle": "Título y subtítulo",
+      "titleText": "Título y texto",
+      "titleTextMedia": "Título, texto, medio",
+      "mediaTitle": "Medio y título",
+      "textMedia": "Texto | medio",
+      "mediaText": "Medio | texto",
+      "behindTitle": "Título sobre el medio",
+      "mediaAlone": "Solo el medio",
+      "twoColumns": "Dos columnas",
+      "titleTwoColumns": "Título, dos columnas",
+      "threeColumns": "Tres columnas",
+      "section": "Sección",
+      "quote": "Cita",
+      "welcome": "Bienvenida",
+      "mediaAbove": "Medio arriba",
+      "mediaBelow": "Medio abajo",
+      "mediaLeft": "Medio a la izquierda",
+      "mediaRight": "Medio a la derecha",
+      "mediaBehind": "Medio detrás",
+      "mediaOnly": "Medio solo"
+    },
+    "description": {
+      "title": "Un título, centrado.",
+      "titleSubtitle": "Un título y otro más pequeño debajo.",
+      "titleText": "Un título sobre un texto.",
+      "titleTextMedia": "Un título, un texto y, debajo, la imagen o el vídeo de la diapositiva.",
+      "mediaTitle": "La imagen o el vídeo, con su título debajo.",
+      "textMedia": "Un título y un texto a la izquierda, la imagen o el vídeo a la derecha.",
+      "mediaText": "La imagen o el vídeo a la izquierda, un título y un texto a la derecha.",
+      "behindTitle": "La imagen o el vídeo llena la diapositiva, con un título encima.",
+      "mediaAlone": "La imagen o el vídeo solo, llenando la diapositiva.",
+      "twoColumns": "Dos columnas, cada una con un título y un texto.",
+      "titleTwoColumns": "Un título sobre dos columnas de texto.",
+      "threeColumns": "Tres columnas, cada una con un título y un texto.",
+      "section": "Un título pequeño sobre uno grande: el inicio de una parte.",
+      "quote": "Un texto grande, con su fuente debajo a la derecha.",
+      "welcome": "El título del quiz y cómo unirse, completados por la sala.",
+      "mediaAbove": "El bloque Medio pasa arriba; los demás bloques quedan como están.",
+      "mediaBelow": "El bloque Medio pasa al final; los demás bloques quedan como están.",
+      "mediaLeft": "La imagen o el vídeo a la izquierda, junto a todos los bloques; quedan como están.",
+      "mediaRight": "La imagen o el vídeo a la derecha, junto a todos los bloques; quedan como están.",
+      "mediaBehind": "La imagen o el vídeo llena la diapositiva, detrás de los bloques.",
+      "mediaOnly": "La imagen o el vídeo en lugar de los bloques; los bloques se guardan para después."
+    }
   }
 }

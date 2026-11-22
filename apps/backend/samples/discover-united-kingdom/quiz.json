@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover the United Kingdom",
     "description": "Sample quiz — geography, history and culture of the United Kingdom.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 5,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover the United Kingdom",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *Britain* — from Big Ben to the Scottish Highlands.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -215,11 +222,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "tea-picture",
-          "media": "media/cream-tea.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "tea-picture"
         },
         {
           "type": "text",
@@ -236,7 +240,9 @@
           "#1e3a8a",
           "#172554"
         ]
-      }
+      },
+      "image": "media/cream-tea.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

@@ -237,7 +237,12 @@ export type SlideLeafBlock =
       url?: string;
       size: SlideImageSize;
       align: 'left' | 'center' | 'right';
-    };
+    }
+  /**
+   * Where the slide's picture or video, set on its timeline, sits among its blocks
+   * (SPECIFICATIONS-SLIDE-LAYOUTS): one per slide, a column included.
+   */
+  | { type: 'media'; id: string };
 export type SlideBlock =
   | SlideLeafBlock
   | {

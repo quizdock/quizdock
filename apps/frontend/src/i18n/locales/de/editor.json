@@ -148,7 +148,8 @@
       "text": "Text",
       "image": "Bild",
       "columns2": "2 Spalten",
-      "columns3": "3 Spalten"
+      "columns3": "3 Spalten",
+      "media": "Medium"
     },
     "dragBlock": "Ziehen, um den Block umzusortieren",
     "removeBlock": "Block entfernen",
@@ -213,6 +214,19 @@
     "moveToDraft": {
       "title": "Diese leere Folie speichern?",
       "description": "Dieses Quiz ist veröffentlicht und kann daher jederzeit präsentiert werden: Eine Folie muss etwas zeigen. Setzen Sie das Quiz auf Entwurf zurück, um diese so zu speichern, oder bearbeiten Sie weiter."
+    },
+    "media": {
+      "onlyOne": "Ein Medium pro Folie: Es ist bereits platziert.",
+      "state": {
+        "none": "Wo das Bild oder Video der Folie erscheint: Fügen Sie eines in der Zeitleiste unten hinzu.",
+        "image": "Das Bild der Folie, in der Zeitleiste unten gewählt, erscheint hier.",
+        "video": "Das Video der Folie, in der Zeitleiste unten gewählt, läuft hier.",
+        "behind": "Das Medium der Folie liegt hinter den Blöcken: Dieser Block wird nicht verwendet. Wählen Sie Im Inhalt im Layout der Zeitleiste, um es hier zu platzieren.",
+        "alone": "Das Medium der Folie wird allein gezeigt: Dieser Block wird nicht verwendet."
+      },
+      "imageBlock": "Ein Bildblock von früher: Das Bild einer Folie ist jetzt ihr Medium, in der Zeitleiste gewählt und durch einen Medium-Block platziert.",
+      "adopt": "Zum Medium der Folie machen",
+      "adoptRefused": "Die Folie hat bereits ein Bild oder ein Video."
     }
   },
   "formSaved": "Gespeichert",
@@ -777,5 +791,60 @@
     "minute": "{{n}} min",
     "slideTip": "Folie „{{name}}“ · {{time}}",
     "questionTip": "F{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Layouts",
+    "title": "Folien-Layouts",
+    "groupEmpty": "Eine leere Folie gestalten",
+    "groupMedia": "Das Medium platzieren",
+    "emptyOnly": "für eine leere Folie: Diese hat Inhalt",
+    "welcomeTitle": "Willkommen bei {title}",
+    "welcomeText": "Mitmachen unter {join} mit der PIN **{pin}**",
+    "layout": {
+      "title": "Titel",
+      "titleSubtitle": "Titel und Untertitel",
+      "titleText": "Titel und Text",
+      "titleTextMedia": "Titel, Text, Medium",
+      "mediaTitle": "Medium und Titel",
+      "textMedia": "Text | Medium",
+      "mediaText": "Medium | Text",
+      "behindTitle": "Titel über dem Medium",
+      "mediaAlone": "Nur Medium",
+      "twoColumns": "Zwei Spalten",
+      "titleTwoColumns": "Titel, zwei Spalten",
+      "threeColumns": "Drei Spalten",
+      "section": "Abschnitt",
+      "quote": "Zitat",
+      "welcome": "Begrüßung",
+      "mediaAbove": "Medium oben",
+      "mediaBelow": "Medium unten",
+      "mediaLeft": "Medium links",
+      "mediaRight": "Medium rechts",
+      "mediaBehind": "Medium dahinter",
+      "mediaOnly": "Medium allein"
+    },
+    "description": {
+      "title": "Eine Überschrift, zentriert.",
+      "titleSubtitle": "Eine Überschrift und eine kleinere darunter.",
+      "titleText": "Eine Überschrift über einem Text.",
+      "titleTextMedia": "Eine Überschrift, ein Text, darunter das Bild oder Video der Folie.",
+      "mediaTitle": "Das Bild oder Video, darunter seine Überschrift.",
+      "textMedia": "Links eine Überschrift und ein Text, rechts das Bild oder Video.",
+      "mediaText": "Links das Bild oder Video, rechts eine Überschrift und ein Text.",
+      "behindTitle": "Das Bild oder Video füllt die Folie, eine Überschrift darüber.",
+      "mediaAlone": "Das Bild oder Video allein, folienfüllend.",
+      "twoColumns": "Zwei Spalten, jede mit Überschrift und Text.",
+      "titleTwoColumns": "Eine Überschrift über zwei Textspalten.",
+      "threeColumns": "Drei Spalten, jede mit Überschrift und Text.",
+      "section": "Eine kleine Überschrift über einer großen: der Beginn eines Teils.",
+      "quote": "Ein großer Text, darunter rechts seine Quelle.",
+      "welcome": "Der Titel des Quiz und wie man beitritt, von der Lobby ausgefüllt.",
+      "mediaAbove": "Der Medium-Block rückt nach oben; die anderen Blöcke bleiben, wie sie sind.",
+      "mediaBelow": "Der Medium-Block rückt ans Ende; die anderen Blöcke bleiben, wie sie sind.",
+      "mediaLeft": "Das Bild oder Video links, neben allen Blöcken; sie bleiben, wie sie sind.",
+      "mediaRight": "Das Bild oder Video rechts, neben allen Blöcken; sie bleiben, wie sie sind.",
+      "mediaBehind": "Das Bild oder Video füllt die Folie, hinter den Blöcken.",
+      "mediaOnly": "Das Bild oder Video anstelle der Blöcke; die Blöcke bleiben für später erhalten."
+    }
   }
 }

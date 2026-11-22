@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Taiwan.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 4,
+    "revision": 7,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Taiwan",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -27,6 +27,13 @@
           "md": "Quick questions about *Formosa* — from Taipei 101 to Taroko Gorge.",
           "align": "center",
           "size": "large"
+        },
+        {
+          "type": "text",
+          "id": "intro-count",
+          "md": "{questions} questions",
+          "align": "center",
+          "size": "small"
         }
       ],
       "textTone": "light",
@@ -220,11 +227,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "tea-picture",
-          "media": "media/bubble-tea.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "tea-picture"
         },
         {
           "type": "text",
@@ -241,7 +245,9 @@
           "#065f46",
           "#022c22"
         ]
-      }
+      },
+      "image": "media/bubble-tea.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

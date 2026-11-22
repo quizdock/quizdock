@@ -19,6 +19,7 @@ import type {
   MediaStyle,
   WaveformSize,
   SlideBlock,
+  SlideLeafBlock,
   SlideGradient,
   SlideTextTone,
   BackgroundStyle,
@@ -56,11 +57,15 @@ import { slideShowOf } from './quiz-stage-preview';
 import {
   AddBlockBar,
   BlockEditor,
+  SlideMediaContext,
   SortableBlock,
   VariablesHelp,
   blockId,
   complete,
+  holdsMedia,
 } from './slide-blocks';
+import { type SlideLayoutId, applyLayout } from './slide-layouts';
+import { SlideLayoutsButton } from './slide-layouts-modal';
 import { appConfig } from '../config';
 
 /** The engine's display time of a slide in automatic mode, when the instance says none. */
@@ -104,7 +109,7 @@ const UNDO_MS = 10_000;
 const INCOMPLETE_IN_READY = 'slide.incomplete_in_ready_quiz';
 
 /**
- * Slide composer (#7): a stack of blocks (heading, text, image, columns) that is
+ * Slide composer (#7): a stack of blocks (heading, text, the media, columns) that is
  * reordered by drag and drop, over an optional full-cover background, with a
  * faithful 16:9 stage of the result.
  */
@@ -273,13 +278,50 @@ export function SlideForm({
   const issuesAt = (field: string) => issuesFor(issues, field);
 
   // ── blocks ──
-  const setBlock = (id: string, next: SlideBlock) =>
-    patch({ blocks: values.blocks.map((b) => (b.id === id ? next : b)) });
   const removeBlock = (id: string) => {
     setUndo(values.blocks);
     patch({ blocks: values.blocks.filter((b) => b.id !== id) });
   };
-  const addBlock = (b: SlideBlock) => patch({ blocks: [...values.blocks, b] });
+  // A media block placed while the media is behind or alone: it is wanted in the content.
+  const inContent = (p: MediaPosition): MediaPosition =>
+    p === 'behind' || p === 'alone' ? 'bottom' : p;
+  const addBlock = (b: SlideBlock) =>
+    patch({
+      blocks: [...values.blocks, b],
+      ...(holdsMedia(b) ? { mediaPosition: inContent(values.mediaPosition) } : {}),
+    });
+  // A block changed to hold the media (a column's): the same.
+  const setBlockPlacing = (id: string, next: SlideBlock) =>
+    patch({
+      blocks: values.blocks.map((b) => (b.id === id ? next : b)),
+      ...(holdsMedia(next) && !values.blocks.some(holdsMedia)
+        ? { mediaPosition: inContent(values.mediaPosition) }
+        : {}),
+    });
+  // An image block of before made the slide's media: its picture on the timeline, its
+  // place kept by the media block (SPECIFICATIONS-SLIDE-LAYOUTS).
+  const adopt = (id: string, mediaId: string) => {
+    const swap = (l: SlideLeafBlock): SlideLeafBlock =>
+      l.id === id ? { type: 'media', id: l.id } : l;
+    patch({
+      blocks: values.blocks.map((b) =>
+        b.type === 'columns' ? { ...b, columns: b.columns.map((c) => c.map(swap)) } : swap(b),
+      ),
+      imageMediaId: mediaId,
+      videoMediaId: null,
+      mediaPosition: 'bottom',
+    });
+  };
+  const visual = values.videoMediaId ? 'video' : values.imageMediaId ? 'image' : null;
+  const mediaInfo = {
+    visual: visual as 'image' | 'video' | null,
+    placement:
+      values.mediaPosition === 'behind' || values.mediaPosition === 'alone'
+        ? values.mediaPosition
+        : ('content' as const),
+    placed: values.blocks.some(holdsMedia),
+    adopt,
+  };
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -339,48 +381,51 @@ export function SlideForm({
         onConfirm: () => void moveToDraftAndSave(),
       }}
     >
-      <fieldset id="qf-blocks" className="flex flex-col gap-3">
-        <legend className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
-          {t('slideForm.blocksLegend')}
-        </legend>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext
-            items={values.blocks.map((b) => b.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {values.blocks.map((b) => (
-              <SortableBlock key={b.id} id={b.id} onRemove={() => removeBlock(b.id)}>
-                <BlockEditor
-                  block={b}
-                  onChange={(next) => setBlock(b.id, next)}
-                  onRemoving={() => setUndo(values.blocks)}
-                />
-              </SortableBlock>
-            ))}
-          </SortableContext>
-        </DndContext>
-        {undo ? (
-          <div
-            role="status"
-            className="bg-foreground text-background flex items-center gap-3 self-center rounded-md px-3 py-1.5 text-sm"
-          >
-            {t('slideForm.blockRemoved')}
-            <button
-              type="button"
-              className="font-semibold underline"
-              onClick={() => {
-                patch({ blocks: undo });
-                setUndo(null);
-              }}
+      <SlideMediaContext.Provider value={mediaInfo}>
+        <fieldset id="qf-blocks" className="flex flex-col gap-3">
+          <legend className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+            {t('slideForm.blocksLegend')}
+          </legend>
+          <SlideLayoutsButton blocks={values.blocks} onApply={(laid) => patch(laid)} />
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+            <SortableContext
+              items={values.blocks.map((b) => b.id)}
+              strategy={verticalListSortingStrategy}
             >
-              {t('slideForm.undo')}
-            </button>
-          </div>
-        ) : null}
-        <FieldMessage issues={issuesAt('blocks')} />
-        <AddBlockBar onAdd={addBlock} />
-        <VariablesHelp />
-      </fieldset>
+              {values.blocks.map((b) => (
+                <SortableBlock key={b.id} id={b.id} onRemove={() => removeBlock(b.id)}>
+                  <BlockEditor
+                    block={b}
+                    onChange={(next) => setBlockPlacing(b.id, next)}
+                    onRemoving={() => setUndo(values.blocks)}
+                  />
+                </SortableBlock>
+              ))}
+            </SortableContext>
+          </DndContext>
+          {undo ? (
+            <div
+              role="status"
+              className="bg-foreground text-background flex items-center gap-3 self-center rounded-md px-3 py-1.5 text-sm"
+            >
+              {t('slideForm.blockRemoved')}
+              <button
+                type="button"
+                className="font-semibold underline"
+                onClick={() => {
+                  patch({ blocks: undo });
+                  setUndo(null);
+                }}
+              >
+                {t('slideForm.undo')}
+              </button>
+            </div>
+          ) : null}
+          <FieldMessage issues={issuesAt('blocks')} />
+          <AddBlockBar onAdd={addBlock} />
+          <VariablesHelp />
+        </fieldset>
+      </SlideMediaContext.Provider>
       {/* Media refusals point at the video or the sound: both lead here. */}
       <div id="qf-videoMediaId">
         <div id="qf-audioMediaId" className="flex flex-col gap-1.5">
@@ -391,6 +436,9 @@ export function SlideForm({
             onPeaks={setAudioPeaks}
             defaultS={appConfig.autoAdvanceS ?? AUTO_ADVANCE_DEFAULT_S}
             mediaTailS={mediaTailS}
+            place={placeOf(values)}
+            // The Layouts' own: the media block moved, or the position set.
+            onPlace={(place) => patch(applyLayout(PLACE_LAYOUT[place], values.blocks, NO_TEXTS))}
           />
           <FieldMessage issues={[...issuesAt('audioMediaId'), ...issuesAt('videoMediaId')]} />
         </div>
@@ -411,6 +459,35 @@ export function SlideForm({
       </div>
     </StepFormFrame>
   );
+}
+
+/** The Layouts' media placements, by the place the timeline's layout shows. */
+const PLACE_LAYOUT: Record<
+  'top' | 'bottom' | 'left' | 'right' | 'behind' | 'alone',
+  SlideLayoutId
+> = {
+  top: 'mediaAbove',
+  bottom: 'mediaBelow',
+  left: 'mediaLeft',
+  right: 'mediaRight',
+  behind: 'mediaBehind',
+  alone: 'mediaOnly',
+};
+/** Placing the media writes no text. */
+const NO_TEXTS = { welcomeTitle: '', welcomeText: '' };
+
+/**
+ * Where the media sits now: its position, or in the content by its block — above when
+ * the block comes first, else below; a slide of before with neither, below.
+ */
+function placeOf(v: Pick<FormValues, 'blocks' | 'mediaPosition'>) {
+  const p = v.mediaPosition;
+  if (p === 'behind' || p === 'alone') return p;
+  if (v.blocks.some(holdsMedia))
+    return v.blocks[0] && holdsMedia(v.blocks[0]) && v.blocks[0].type === 'media'
+      ? 'top'
+      : 'bottom';
+  return p;
 }
 
 /** The style worth sending: none without a visual or when empty; never a reveal on a slide. */

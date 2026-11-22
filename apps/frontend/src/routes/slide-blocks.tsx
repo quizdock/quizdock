@@ -19,7 +19,7 @@ import {
   Text,
   X,
 } from 'lucide-react';
-import { type ReactNode } from 'react';
+import { createContext, type ReactNode, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Disclosure } from '@/components/ui/disclosure';
@@ -41,12 +41,46 @@ export function newLeaf(kind: LeafKind, level: 1 | 2 = 1): SlideLeafBlock {
   const id = blockId();
   if (kind === 'heading') return { type: 'heading', id, text: '', level };
   if (kind === 'text') return { type: 'text', id, md: '' };
+  if (kind === 'media') return { type: 'media', id };
   return { type: 'image', id, mediaId: '', size: 'large', align: 'center' };
 }
 
-/** A block with nothing in it yet: an empty heading or text, an image without its picture. */
+/**
+ * A block with nothing in it yet: an empty heading or text, an image without its picture.
+ * The media block never is: it says where the media goes, set or not yet.
+ */
 export const leafEmpty = (b: SlideLeafBlock) =>
-  b.type === 'heading' ? !b.text.trim() : b.type === 'text' ? !b.md.trim() : !b.mediaId;
+  b.type === 'heading'
+    ? !b.text.trim()
+    : b.type === 'text'
+      ? !b.md.trim()
+      : b.type === 'image'
+        ? !b.mediaId
+        : false;
+
+/** Whether a block is, or holds, the media block. */
+export const holdsMedia = (b: SlideBlock) =>
+  b.type === 'media' ||
+  (b.type === 'columns' && b.columns.some((c) => c.some((l) => l.type === 'media')));
+
+/**
+ * The slide's media as its blocks see it (SPECIFICATIONS-SLIDE-LAYOUTS): set on the
+ * timeline, placed by the media block, which there is one of at most. An image block
+ * of before becomes the slide's media on demand (`adopt`), when it has none.
+ */
+export interface SlideMediaInfo {
+  visual: 'image' | 'video' | null;
+  placement: 'content' | 'behind' | 'alone';
+  /** A media block is there already: no second one. */
+  placed: boolean;
+  adopt: (blockId: string, mediaId: string) => void;
+}
+export const SlideMediaContext = createContext<SlideMediaInfo>({
+  visual: null,
+  placement: 'behind',
+  placed: false,
+  adopt: () => undefined,
+});
 
 /** Empty blocks are left out on save (UI system §1.5, level 2), and flagged until then. */
 export function complete(blocks: SlideBlock[]): SlideBlock[] {
@@ -84,8 +118,16 @@ export function VariablesHelp() {
 /** Buttons to append a block of each kind. */
 export function AddBlockBar({ onAdd }: { onAdd: (b: SlideBlock) => void }) {
   const { t } = useTranslation('editor');
-  const btn = (label: string, icon: ReactNode, make: () => SlideBlock) => (
-    <Button type="button" variant="outline" size="sm" onClick={() => onAdd(make())}>
+  const { placed } = useContext(SlideMediaContext);
+  const btn = (label: string, icon: ReactNode, make: () => SlideBlock, refused?: string) => (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      disabled={!!refused}
+      title={refused}
+      onClick={() => onAdd(make())}
+    >
       {icon}
       {label}
     </Button>
@@ -98,11 +140,16 @@ export function AddBlockBar({ onAdd }: { onAdd: (b: SlideBlock) => void }) {
         newLeaf('heading', 2),
       )}
       {btn(t('slideForm.block.text'), <Text className="size-4" />, () => newLeaf('text'))}
-      {btn(t('slideForm.block.image'), <ImageIcon className="size-4" />, () => newLeaf('image'))}
+      {btn(
+        t('slideForm.block.media'),
+        <ImageIcon className="size-4" />,
+        () => newLeaf('media'),
+        placed ? t('slideForm.media.onlyOne') : undefined,
+      )}
       {btn(t('slideForm.block.columns2'), <Columns2 className="size-4" />, () => ({
         type: 'columns',
         id: blockId(),
-        columns: [[newLeaf('text')], [newLeaf('image')]],
+        columns: [[newLeaf('text')], [newLeaf(placed ? 'text' : 'media')]],
       }))}
       {btn(t('slideForm.block.columns3'), <Columns3 className="size-4" />, () => ({
         type: 'columns',
@@ -164,6 +211,7 @@ export function BlockEditor({
   onRemoving: () => void;
 }) {
   const { t } = useTranslation('editor');
+  const { placed } = useContext(SlideMediaContext);
   if (block.type !== 'columns') return <LeafEditor block={block} onChange={onChange} />;
   const setCol = (i: number, col: SlideLeafBlock[]) =>
     onChange({ ...block, columns: block.columns.map((c, idx) => (idx === i ? col : c)) });
@@ -220,13 +268,15 @@ export function BlockEditor({
               </div>
             ))}
             <div className="flex flex-wrap gap-1">
-              {(['heading', 'text', 'image'] as LeafKind[]).map((kind) => (
+              {(['heading', 'text', 'media'] as LeafKind[]).map((kind) => (
                 <Button
                   key={kind}
                   type="button"
                   variant="ghost"
                   size="sm"
                   className="h-7 px-2 text-xs"
+                  disabled={kind === 'media' && placed}
+                  title={kind === 'media' && placed ? t('slideForm.media.onlyOne') : undefined}
                   onClick={() => setCol(i, [...col, newLeaf(kind, kind === 'heading' ? 2 : 1)])}
                 >
                   <Plus className="size-3" />
@@ -315,34 +365,84 @@ function LeafFields({
           />
         </div>
       );
+    case 'media':
+      return <MediaBlockFields />;
     case 'image':
       return (
-        <div className="flex flex-wrap items-center gap-3">
-          <MediaUpload
-            value={block.mediaId || null}
-            onChange={(id) => onChange({ ...block, mediaId: id ?? '' })}
-          />
-          <Label className="flex-row items-center gap-2">
-            {t('slideForm.imageSize')}
-            <Select
-              className="w-32"
-              value={block.size}
-              onChange={(e) => onChange({ ...block, size: e.target.value as typeof block.size })}
-            >
-              <option value="small">{t('slideForm.size.small')}</option>
-              <option value="medium">{t('slideForm.size.medium')}</option>
-              <option value="large">{t('slideForm.size.large')}</option>
-              <option value="full">{t('slideForm.size.full')}</option>
-            </Select>
-          </Label>
-          <AlignPicker
-            label={t('slideForm.imageAlign')}
-            value={block.align}
-            onChange={(align) => onChange({ ...block, align })}
-          />
+        <div className="flex flex-col gap-2">
+          <ImageBlockNotice block={block} />
+          <div className="flex flex-wrap items-center gap-3">
+            <MediaUpload
+              value={block.mediaId || null}
+              onChange={(id) => onChange({ ...block, mediaId: id ?? '' })}
+            />
+            <Label className="flex-row items-center gap-2">
+              {t('slideForm.imageSize')}
+              <Select
+                className="w-32"
+                value={block.size}
+                onChange={(e) => onChange({ ...block, size: e.target.value as typeof block.size })}
+              >
+                <option value="small">{t('slideForm.size.small')}</option>
+                <option value="medium">{t('slideForm.size.medium')}</option>
+                <option value="large">{t('slideForm.size.large')}</option>
+                <option value="full">{t('slideForm.size.full')}</option>
+              </Select>
+            </Label>
+            <AlignPicker
+              label={t('slideForm.imageAlign')}
+              value={block.align}
+              onChange={(align) => onChange({ ...block, align })}
+            />
+          </div>
         </div>
       );
   }
+}
+
+/** The media block: where the slide's media sits; the media itself is the timeline's. */
+function MediaBlockFields() {
+  const { t } = useTranslation('editor');
+  const { visual, placement } = useContext(SlideMediaContext);
+  const state = placement !== 'content' ? placement : visual ? `${visual}` : 'none';
+  return (
+    <div className="flex items-start gap-2">
+      <ImageIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+      <div className="flex flex-col gap-0.5">
+        <span className="text-muted-foreground text-xs font-medium">
+          {t('slideForm.block.media')}
+        </span>
+        <p className="text-sm">{t(`slideForm.media.state.${state}`)}</p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * An image block of before: kept, shown and edited as it was. A slide's picture is now its
+ * media, set on its timeline: this one can become it, when the slide has none.
+ */
+function ImageBlockNotice({ block }: { block: Extract<SlideLeafBlock, { type: 'image' }> }) {
+  const { t } = useTranslation('editor');
+  const { visual, adopt } = useContext(SlideMediaContext);
+  return (
+    <div className="bg-muted/50 flex flex-wrap items-center gap-2 rounded-md px-2 py-1.5 text-xs">
+      <span className="text-muted-foreground min-w-0 flex-1">
+        {t('slideForm.media.imageBlock')}
+      </span>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="h-7 text-xs"
+        disabled={!block.mediaId || !!visual}
+        title={visual ? t('slideForm.media.adoptRefused') : undefined}
+        onClick={() => adopt(block.id, block.mediaId)}
+      >
+        {t('slideForm.media.adopt')}
+      </Button>
+    </div>
+  );
 }
 
 /** Left / centre / right for a text-like block; centre is the default. */
