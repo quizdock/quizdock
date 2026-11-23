@@ -321,9 +321,10 @@ describe('StoreService', () => {
     const seeded = await service.list();
     expect(seeded.length).toBeGreaterThan(0);
     expect(seeded.every((e) => e.author.name === 'fchaussin')).toBe(true);
-    // Their cards draw the intro slide itself: title, subtitle, its picture, outline.
+    // Their cards draw the intro slide itself: title, subtitle, question count, its
+    // picture, outline.
     for (const entry of seeded) {
-      expect(entry.first?.slide?.blocks).toHaveLength(2);
+      expect(entry.first?.slide?.blocks).toHaveLength(3);
       expect(entry.first?.slide).toMatchObject({
         background: { url: expect.stringMatching(new RegExp(`^/api/v1/store/${entry.id}/media/`)) },
         textTone: 'light',

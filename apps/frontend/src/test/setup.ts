@@ -57,3 +57,8 @@ window.matchMedia ??= (query: string) =>
 
 // The motion layer (UI system §1.8) jumps to its end states: tests read the screens, not their transitions.
 MotionGlobalConfig.skipAnimations = true;
+
+// jsdom lays nothing out: a Range has no rectangles. The rich text editor asks for them
+// to scroll its caret into view (after an insertion, a variable picked).
+Range.prototype.getClientRects ??= () => [] as unknown as DOMRectList;
+Range.prototype.getBoundingClientRect ??= () => new DOMRect();
