@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Türkiye.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 7,
+    "revision": 8,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -27,13 +27,6 @@
           "md": "From Istanbul to Cappadocia, a few questions about Türkiye.",
           "align": "center",
           "size": "large"
-        },
-        {
-          "type": "text",
-          "id": "intro-count",
-          "md": "{questions} questions",
-          "align": "center",
-          "size": "small"
         }
       ],
       "textTone": "light",

@@ -6,7 +6,7 @@
     "description": "Sample quiz — geography, history and culture of Russia.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 5,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -27,13 +27,6 @@
           "md": "Quick questions about the world’s largest country — from the Baltic to the Pacific.",
           "align": "center",
           "size": "large"
-        },
-        {
-          "type": "text",
-          "id": "intro-count",
-          "md": "{questions} questions",
-          "align": "center",
-          "size": "small"
         }
       ],
       "textTone": "light",
