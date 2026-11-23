@@ -203,9 +203,12 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: fchaussin/quizdock
+          # standalone-X.Y.Z by a prefix, not by the pattern: on a pre-release the action
+          # ignores the pattern and gives the bare version, which overwrote the app's own
+          # rc tag (v0.18.0-rc.1).
           tags: |
             type=raw,value=standalone,enable=${{ needs.gate.outputs.stable == 'true' }}
-            type=semver,pattern=standalone-{{version}}
+            type=semver,pattern={{version}},prefix=standalone-
           # metadata-action's default `latest=auto` appends `latest` whenever a
           # semver tag matches — that silently re-pointed :latest at THIS image
           # after every release. :latest belongs to the hardened image above.
