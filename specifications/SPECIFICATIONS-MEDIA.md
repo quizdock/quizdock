@@ -147,6 +147,10 @@ it has not loaded — the waiting part of the former phase 5, brought forward on
   it part-way through and plays from where it should be.
 - Detail per participant stays on the console; the projection only shows a count (200 names would be unreadable, and
   a name in large letters would single someone out).
+- The readiness goes out at most every 100 ms per room (`READINESS_EVERY_MS`), like the answer count: a device
+  arriving, leaving, pressing *Ready!* or finishing its loading in a quiet moment is sent at once, those within the
+  next 100 ms together at its end, the last one always. A step change sends it at once. A room filling at once
+  otherwise sent it to every device on every arrival; the last device ready ends a media wait up to 100 ms later.
 
 ### 5.5 Errors
 

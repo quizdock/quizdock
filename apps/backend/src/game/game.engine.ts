@@ -44,6 +44,7 @@ import {
   GAME_TTL_S,
   GRACE_MS,
   MEDIA_LEAD_MS,
+  READINESS_EVERY_MS,
   type GameId,
   ROOM_HASH_KEY,
   gameKeys,
@@ -199,6 +200,8 @@ export class GameEngine {
   private readonly clockCommands = new Map<string, Promise<unknown>>();
   /** Per room, when the answer count last went out, and whether one waits (`countAnswers`). */
   private readonly answerCounts = new Map<string, { at: number; waiting: boolean }>();
+  /** Per room, when the readiness last went out, and whether one waits (`broadcastReadiness`). */
+  private readonly readinessSent = new Map<string, { at: number; waiting: boolean }>();
 
   constructor(
     private readonly game: GameService,
@@ -451,7 +454,7 @@ export class GameEngine {
     this.server.to(pin).emit('game:media', await this.mediaPayload(pin, snapshot, target));
     // Who needs what may have changed (the phones in the room, for every device).
     await this.emitPreload(ref, snapshot, firstStepOf(snapshot, 0));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /**
@@ -605,8 +608,36 @@ export class GameEngine {
     };
   }
 
-  /** Sends the readiness of the upcoming question to the screens (never to participants). */
+  /**
+   * A device arrived, left, said it is ready or finished loading: the readiness to
+   * the room, at most once every `READINESS_EVERY_MS`. One in a quiet moment goes out
+   * at once, those that follow within the window together at its end, the last one
+   * always. A room filling at once sent it to every device on every arrival: O(N²)
+   * messages, and every player re-read each time.
+   */
   async broadcastReadiness(pin: string): Promise<void> {
+    const last = this.readinessSent.get(pin);
+    const sinceMs = Date.now() - (last?.at ?? 0);
+    if (last && (last.waiting || sinceMs < READINESS_EVERY_MS)) {
+      if (!last.waiting) {
+        last.waiting = true;
+        this.timers.arm('readiness', pin, READINESS_EVERY_MS - sinceMs, () =>
+          this.sendReadiness(pin),
+        );
+      }
+      return;
+    }
+    await this.sendReadiness(pin);
+  }
+
+  /**
+   * Sends the readiness of the upcoming question now: to the screens in full, to the
+   * participants the lobby's count only. The step changes call it directly, once per
+   * step; it replaces a readiness still waiting.
+   */
+  private async sendReadiness(pin: string): Promise<void> {
+    this.timers.cancel('readiness', pin);
+    this.readinessSent.set(pin, { at: Date.now(), waiting: false });
     const meta = await this.game.getMeta(pin);
     if (!meta || meta.state === GameState.Ended) return;
     const ref = refOf(pin, meta);
@@ -722,7 +753,7 @@ export class GameEngine {
     this.server.to(pin).emit('game:mode', await this.readMode(pin));
     // One step ahead: what comes after the slide loads while it shows.
     await this.emitPreload(ref, snapshot, stepAfterSlide(snapshot, slideIndex));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /** The `slide:show` of the slide on screen, as a screen (re)attaching gets it. */
@@ -794,7 +825,7 @@ export class GameEngine {
     this.armMediaWait(ref, step, until - Date.now());
     // Asked again: a phone whose own element was busy with the step before loads it now.
     await this.emitPreload(ref, snapshot, step);
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
     return true;
   }
 
@@ -973,7 +1004,7 @@ export class GameEngine {
     await this.emitHostScores(ref, sockets);
     // What comes next, fetched by every device while the leaderboard is up.
     await this.emitPreload(ref, snapshot, firstStepOf(snapshot, index + 1));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /** Common reveal + the proximity ranking of a numeric `closest` question (with nicknames). */
@@ -1717,6 +1748,7 @@ export class GameEngine {
     if (archive && meta.quizId) await this.archiveAsked(pin, meta);
     this.timers.cancelAll(pin);
     this.answerCounts.delete(pin);
+    this.readinessSent.delete(pin);
     await this.redis.hset(gameKeys.game(meta.id), gameHash({ state: GameState.Ended }));
     // After the state: an answer arriving meanwhile can no longer be scored and missed.
     await this.foldGame(refOf(pin, meta), meta);
@@ -1753,6 +1785,7 @@ export class GameEngine {
     try {
       this.timers.cancelAll(pin);
       this.answerCounts.delete(pin);
+      this.readinessSent.delete(pin);
       await this.game.openGameWith(pin, snapshot, line?.mode);
       await this.announceListing(pin);
       // A lobby with no quiz is one a quiz went back to; so is one already counting.
@@ -1792,11 +1825,13 @@ export class GameEngine {
         if (archive) await this.archiveAsked(pin, meta, true);
         this.timers.cancelAll(pin);
         this.answerCounts.delete(pin);
+        this.readinessSent.delete(pin);
         await this.redis.hset(gameKeys.game(meta.id), gameHash({ state: GameState.Ended }));
         if (archive) await this.foldGame(refOf(pin, meta), meta);
       }
       this.timers.cancelAll(pin);
       this.answerCounts.delete(pin);
+      this.readinessSent.delete(pin);
       await this.openNextOfSelection(pin);
     } catch (err) {
       await this.redis.del(lock);
@@ -1842,7 +1877,7 @@ export class GameEngine {
     for (const socket of await this.server.in(pin).fetchSockets()) {
       await this.sendStateTo(socket, pin);
     }
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /**
