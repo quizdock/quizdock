@@ -417,7 +417,8 @@
       "behind": "Za tekstem",
       "alone": "Samo medium"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)",
+    "timingSummary": "{{time}} s"
   },
   "timeline": {
     "legend": "Oś czasu",

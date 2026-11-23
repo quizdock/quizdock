@@ -410,7 +410,8 @@
       "behind": "टेक्स्ट के पीछे",
       "alone": "सिर्फ़ मीडिया"
     },
-    "revealDelayAutoValue": "ऑटो ({{seconds}} से.)"
+    "revealDelayAutoValue": "ऑटो ({{seconds}} से.)",
+    "timingSummary": "{{time}} से."
   },
   "timeline": {
     "legend": "टाइमलाइन",

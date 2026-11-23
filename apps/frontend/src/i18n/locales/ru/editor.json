@@ -417,7 +417,8 @@
       "behind": "За текстом",
       "alone": "Только медиа"
     },
-    "revealDelayAutoValue": "авто ({{seconds}} с)"
+    "revealDelayAutoValue": "авто ({{seconds}} с)",
+    "timingSummary": "{{time}} с"
   },
   "timeline": {
     "legend": "Шкала времени",

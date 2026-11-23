@@ -413,7 +413,8 @@
       "behind": "Derrière le texte",
       "alone": "Média seul"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)",
+    "timingSummary": "{{time}} s"
   },
   "timeline": {
     "legend": "Timeline",

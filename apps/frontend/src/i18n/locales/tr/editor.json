@@ -407,7 +407,8 @@
       "behind": "Metnin arkasında",
       "alone": "Yalnızca medya"
     },
-    "revealDelayAutoValue": "oto ({{seconds}} sn)"
+    "revealDelayAutoValue": "oto ({{seconds}} sn)",
+    "timingSummary": "{{time}} sn"
   },
   "timeline": {
     "legend": "Zaman çizelgesi",

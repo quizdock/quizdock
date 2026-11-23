@@ -409,7 +409,8 @@
       "behind": "Hinter dem Text",
       "alone": "Nur Medium"
     },
-    "revealDelayAutoValue": "auto ({{seconds}} s)"
+    "revealDelayAutoValue": "auto ({{seconds}} s)",
+    "timingSummary": "{{time}} s"
   },
   "timeline": {
     "legend": "Zeitleiste",

@@ -409,7 +409,8 @@
       "behind": "文字后方",
       "alone": "仅媒体"
     },
-    "revealDelayAutoValue": "自动（{{seconds}} 秒）"
+    "revealDelayAutoValue": "自动（{{seconds}} 秒）",
+    "timingSummary": "{{time}} 秒"
   },
   "timeline": {
     "legend": "时间轴",
