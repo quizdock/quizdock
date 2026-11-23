@@ -20,7 +20,8 @@ export const namespaces = [
   'admin',
 ] as const;
 
-export const supportedLngs = [
+/** The languages the interface is released in (`UI_LANGUAGES`, `APP_LANG`). */
+const RELEASED = [
   'en',
   'fr',
   'es',
@@ -34,7 +35,23 @@ export const supportedLngs = [
   'pl',
   'ru',
 ] as const;
-export type AppLang = (typeof supportedLngs)[number];
+export type AppLang = (typeof RELEASED)[number];
+
+/**
+ * A translation staging (built with `VITE_LOCALES_IN_PROGRESS=all`) offers too the
+ * locales still being translated — a folder under `locales/` not released yet — so
+ * that their translators see their work; their missing keys fall back on English.
+ * Any other build offers the released ones only.
+ */
+const IN_PROGRESS =
+  import.meta.env.VITE_LOCALES_IN_PROGRESS === 'all'
+    ? Object.keys(import.meta.glob('./locales/*/common.json'))
+        .map((path) => path.split('/')[2])
+        .filter((tag) => !(RELEASED as readonly string[]).includes(tag))
+    : [];
+
+/** The languages offered: the released ones, and on a staging those in progress. */
+export const supportedLngs = [...RELEASED, ...IN_PROGRESS] as readonly AppLang[];
 export type Namespace = (typeof namespaces)[number];
 
 /** A language's name in the interface's language (`fr` → "French" in English), for a menu. */
