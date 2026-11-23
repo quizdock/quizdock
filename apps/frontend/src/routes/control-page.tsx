@@ -500,10 +500,18 @@ function HostConsole({
         type="button"
         onClick={() => setSide('players')}
         className="bg-muted hover:bg-accent flex items-center gap-1.5 rounded-full px-2.5 py-1 text-sm"
-        aria-label={t('control.participantsTooltip')}
+        aria-label={`${t('control.participantsTooltip')} · ${
+          view.joinLocked ? t('control.locked') : t('control.lock')
+        }`}
       >
         <Users className="size-4" />
         <span data-testid="player-count">{view.players.length}</span>
+        {/* Whether newcomers still get in; the column it opens switches it. */}
+        {view.joinLocked ? (
+          <Lock className="text-muted-foreground size-3.5" />
+        ) : (
+          <LockOpen className="text-muted-foreground size-3.5" />
+        )}
       </button>
       {view.listed?.offered ? (
         <ListedButton

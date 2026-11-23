@@ -458,6 +458,10 @@ describe('ControlPage (console hôte)', () => {
     expect(await screen.findByLabelText('Code PIN')).toHaveTextContent('482913');
     expect(container.querySelector('svg[aria-label="QR code pour rejoindre"]')).toBeTruthy();
     expect(screen.getByTestId('player-count')).toHaveTextContent('1');
+    // The count says too whether newcomers get in.
+    expect(
+      screen.getByRole('button', { name: /^Participants .* · Ouverte aux nouveaux$/ }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Alice')).toBeInTheDocument();
 
     act(() => screen.getByRole('button', { name: /Démarrer/ }).click());
