@@ -4,6 +4,111 @@ All notable changes to QuizDock are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com); versions follow
 [Semantic Versioning](https://semver.org). Generated from conventional commits.
 
+## [0.18.0] - 2026-11-23
+
+### Bug Fixes
+
+- The locale check reads the released languages; a key kept for a translation in progress *(i18n)*
+- The intro slide without the question count; the catalogue test reads no sample content *(samples)*
+- The lobby listing switch is in the console's header *(admin)*
+- No media deleted while the database holds a newer release's data *(media)*
+- The lobby's language setting names the interface, the quiz keeps its own *(console)*
+- The media upload zone always shown, above the files' filters *(admin)*
+- The quiz's flow shows the media on top, the hint and explanation below *(editor)*
+- "Question" for the question's text, in English *(editor)*
+- The speech bubble for the explanation in a step's timeline too *(editor)*
+- A speech bubble for a question's explanation in the quiz's flow *(editor)*
+- No "ready" asked while the host has not picked the next quiz *(player)*
+- The console hears who is ready while no quiz is picked *(lobby)*
+- A rule between the PIN and its share icon *(console)*
+- Opening to newcomers as a padlock beside the tabs *(console)*
+- The centre never scrolls sideways *(console)*
+- Hints and reveals on the phones, time taken moves the clock on *(game)*
+- The answers' marks and colours follow the quiz's theme *(editor)*
+- One way to remove an element, and media kept in their place *(editor)*
+
+### Documentation
+
+- The readme's slides and rich text as they are; the media block points to the layouts
+- Slide layouts — the add bar reduced, one rich text field, variables in prompts *(specs)*
+- The rich text bar, the slide's add bar reduced *(screenshots)*
+- Slide layouts; the intro slide found by its {title} *(screenshots)*
+- New console and editor, timeline and hints; hints in five samples *(screenshots)*
+- Hints, the timeline, framed pictures and listed lobbies; release candidate tags
+- Statuses brought up to date *(specs)*
+- The rollback window counts minors, a patch adds no migration *(specs)*
+- Rollback tried on Prisma 7, lot 0 groundwork *(specs)*
+- Rollback weighed against Prisma's tooling, lot 4 after Prisma 8 *(specs)*
+- Rollback leaves ghosts, schema deprecation in the versioning policy *(specs)*
+- Rollback assessed in the admin, restore points kept by upgrade, lots *(specs)*
+- Version rollback brief *(specs)*
+- The translation staging, for translators to see their work *(readme)*
+- Remote participants no longer marked experimental
+- One editor for every step *(specs)*
+- Hints — penalty on the answers after the hint, no floor *(specs)*
+- How a question's picture is shown *(specs)*
+- List view and per-type default durations *(specs)*
+- Question timeline layout and editing decisions *(specs)*
+- Question timeline and hints briefs *(specs)*
+- Pdd-kit state on 2026-11-18 *(dev)*
+
+### Features
+
+- The players count says whether newcomers get in *(console)*
+- One rich text field, variables in questions too; archiving asks first *(editor)*
+- Variables picked from a heading's or a text's bar, the quiz's shown filled *(editor)*
+- A slide's media is its timeline's, placed by a media block; ready-made layouts *(editor)*
+- The migrations since the hints undo and run again, checked in the CI *(db)*
+- The app takes the screen's whole width, capped on UHD screens *(ui)*
+- The PIN opens the invitation in the lobby too, its address a link in a new tab *(console)*
+- "Fix a translation" leads to Weblate *(home)*
+- List the open lobbies on the home page *(live)*
+- The quiz's secondary settings on one line, each group in its modal *(editor)*
+- The slides of the quiz's flow show their media too *(editor)*
+- The quiz's flow reads each question's number, type and marks *(editor)*
+- A share icon on the PIN and beside the projection window *(console)*
+- Autoplay beside the primary action *(console)*
+- The lobby settings folded, each with its current setting *(console)*
+- A video or a sound in the hint *(hints)*
+- The bottom bar under the stage, the projection's buttons on the right *(console)*
+- The lobby's settings behind a gear, the phase in the status *(console)*
+- The outline beside the stage, the room's settings where they act *(console)*
+- The bottom bar under the stage on very wide screens *(console)*
+- The room's controls where they belong, wider screens *(console)*
+- A picture in the hint, with or without words *(hints)*
+- A slide's media placed and framed as a question's *(slides)*
+- The whole quiz on a timeline, its length estimated *(editor)*
+- A text hint on a question, revealed to the room for part of its points *(hints)*
+- The right answer and its explanation on the timeline *(editor)*
+- Each step type's default timing, and a way back to it *(editor)*
+- A list view of a step's timeline *(editor)*
+- Frame, crop and reveal a question's picture *(editor)*
+- Edit a step's media on its timeline, and lay out its picture *(editor)*
+- A read-only timeline of the question's and the slide's media *(editor)*
+
+### Performance
+
+- Coalesce the lobby readiness to one send per 100 ms per room *(game)*
+
+### Refactor
+
+- One sortable row for answers, pictures and slide blocks *(editor)*
+- One set of sound fields for every step *(editor)*
+- One frame and one preview for every step's form *(editor)*
+- Share how long a slide is held for its media *(contracts)*
+- Move the slide's block editor and display time out of its form *(editor)*
+- Move the answer sections and the preview out of the question form *(editor)*
+- Split the question form's model, media and timing *(editor)*
+
+### Security
+
+- Effect 3.22.5, past the ReDoS of its template literals *(security)*
+
+### Contributors
+
+- lutfullahkabalak
+- Francois Chaussin
+
 ## [0.17.2] - 2026-11-16
 
 ### Bug Fixes
