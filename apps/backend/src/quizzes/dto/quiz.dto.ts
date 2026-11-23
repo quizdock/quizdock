@@ -34,6 +34,8 @@ export const quizSchema = z.object({
   ownerName: z.string().optional(),
   /** Its sessions kept (their results): on the library's list only. */
   sessionCount: z.number().int().optional(),
+  /** Its length in auto mode, estimated (s): on the library's list only. */
+  durationS: z.number().int().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   archivedAt: z.string().nullable(),

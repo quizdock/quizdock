@@ -1,4 +1,6 @@
 import {
+  type MediaPosition,
+  type MediaStyle,
   type SlideBlock,
   type SlideShowPayload,
   type PublicOption,
@@ -6,6 +8,7 @@ import {
   quizVariables,
 } from '@quiz-dock/contracts';
 import { AudioLines } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Markdown } from '@/components/markdown';
 import { COLOR_BG, OPTION_BG_FALLBACK } from '@/lib/option-style';
@@ -24,6 +27,7 @@ import { stepBackground } from '@/lib/step-background';
 import { QuizThemeProvider, useQuizTheme, useQuizThemeValues } from '@/lib/quiz-theme';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { Surface } from '../game/surface';
+import { VariablesContext } from '@/lib/variables';
 
 /**
  * A quiz's steps as they will show, still: what the preview walks through and
@@ -48,6 +52,15 @@ export function slideQuizFieldsOf(quiz: StepQuiz) {
   };
 }
 
+/** Gives what's inside the quiz's variables (`{title}`…); the room's stay as written. */
+export function QuizVariables({ quiz, children }: { quiz: StepQuiz; children: ReactNode }) {
+  return (
+    <VariablesContext.Provider value={quizVariables(slideQuizFieldsOf(quiz))}>
+      {children}
+    </VariablesContext.Provider>
+  );
+}
+
 /** A slide, stored or being edited, as the screens would get it, the quiz's variables filled. */
 export function slideShowOf(
   slide: Pick<
@@ -56,7 +69,10 @@ export function slideShowOf(
     | 'mediaId'
     | 'gradient'
     | 'backgroundStyle'
+    | 'imageMediaId'
     | 'videoMediaId'
+    | 'mediaPosition'
+    | 'mediaStyle'
     | 'videoLoop'
     | 'videoSound'
     | 'textTone'
@@ -82,6 +98,16 @@ export function slideShowOf(
           gainDb: 0,
         }
       : null,
+    // Its picture, where it or the video sits, and how it is framed (SPECIFICATIONS-STEP-EDITOR).
+    ...(slide.imageMediaId && !slide.videoMediaId
+      ? { image: { url: url(slide.imageMediaId), alt: null } }
+      : {}),
+    ...((slide.imageMediaId || slide.videoMediaId) &&
+    slide.mediaPosition &&
+    slide.mediaPosition !== 'behind'
+      ? { position: slide.mediaPosition as MediaPosition }
+      : {}),
+    ...(slide.mediaStyle ? { style: slide.mediaStyle as MediaStyle } : {}),
     textTone: slide.textTone,
     textOutline: slide.textOutline,
     displayDelayS: slide.displayDelayS,

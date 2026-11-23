@@ -45,6 +45,10 @@
       "everyone": "すべての端末"
     },
     "sharingLegend": "言語と共有",
+    "feedbackDescription": "参加者がクイズをどう思ったか。ゲームの最後に5段階で評価し、コメントを残せます。",
+    "themeDescription": "待合室から表彰台まで、プロジェクションとプレイヤーのスマートフォンでのクイズの見た目です。",
+    "soundDescription": "クイズの音声と動画の再生方法：問題ごとに同じ音量で、選んだ端末で、次へ進む前に間を置いて再生します。",
+    "sharingDescription": "クイズの言語と、誰が見られるか。ライセンスとタグを付けると、テンプレートとして提供できます。",
     "sharingSummary_one": "{{license}}・タグ {{count}}件",
     "sharingSummary_other": "{{license}}・タグ {{count}}件",
     "noLicense": "ライセンスなし",
@@ -83,6 +87,7 @@
     "enableLabel": "参加者のレビューを許可",
     "enableHelp": "クイズを実施するたびに、終了時に評価パネルが表示されます。",
     "title": "参加者のレビュー",
+    "off": "オフ",
     "empty": "レビューはまだありません。",
     "anonymous": "匿名",
     "starsAriaLabel": "5点中{{value}}点",
@@ -143,7 +148,8 @@
       "text": "テキスト",
       "image": "画像",
       "columns2": "2列",
-      "columns3": "3列"
+      "columns3": "3列",
+      "media": "メディア"
     },
     "dragBlock": "ドラッグしてブロックを並べ替え",
     "removeBlock": "ブロックを削除",
@@ -182,9 +188,13 @@
     "videoSound": "音声",
     "videoSoundHint": "動画自体の音声を再生します。オフ：ミュートになり、スライドに別の音声を設定できます。",
     "audioExcludesVideoSound": "スライドにはすでに音声があります。音声は一度に1つです。動画の音声をオンにするには、その音声を削除してください。",
-    "videoSoundExcludesAudio": "動画が自身の音声を再生するため、追加の音声は設定できません。追加するには動画をミュートしてください。",
     "variablesLegend": "変数",
     "variablesHint": "見出しやテキストに書くと、スライドが表示されるたびに置き換えられます。クイズの変数はプレビューで値が入り、ルームの変数はクイズの実施時に値が入ります。",
+    "variablesInsert": "変数を挿入",
+    "variablesGroup": {
+      "quiz": "クイズ",
+      "room": "ルーム"
+    },
     "variables": {
       "title": "クイズのタイトル",
       "description": "クイズの説明",
@@ -209,6 +219,19 @@
     "moveToDraft": {
       "title": "この空のスライドを保存しますか？",
       "description": "このクイズは公開済みで、いつでも出題できるため、スライドには何かを表示する必要があります。このまま保存するにはクイズを下書きに戻すか、編集を続けてください。"
+    },
+    "media": {
+      "onlyOne": "メディアはスライドに1つだけです。すでに配置されています。",
+      "state": {
+        "none": "スライドの画像または動画の位置です。下のタイムラインで追加してください。",
+        "image": "下のタイムラインで設定したスライドの画像がここに表示されます。",
+        "video": "下のタイムラインで設定したスライドの動画がここで再生されます。",
+        "behind": "スライドのメディアはブロックの背後にあるため、このブロックは使われません。ここに配置するには、「レイアウト」で「メディアを上に」または「メディアを下に」を選んでください。",
+        "alone": "スライドのメディアは単独で表示されるため、このブロックは使われません。"
+      },
+      "imageBlock": "以前の画像ブロックです。スライドの画像は現在、タイムラインで設定し、メディアブロックで配置するメディアになりました。",
+      "adopt": "スライドのメディアにする",
+      "adoptRefused": "このスライドにはすでに画像または動画があります。"
     }
   },
   "formSaved": "保存しました",
@@ -231,16 +254,19 @@
     "description": "「{{title}}」とその問題は完全に削除されます。この操作は元に戻せません。",
     "confirmLabel": "削除"
   },
+  "archiveConfirm": {
+    "title": "このクイズをアーカイブしますか？",
+    "description": "「{{title}}」は出題できなくなり、一覧から外れます（フィルターで再表示できます）。復元すると下書きに戻り、再度公開が必要です。",
+    "confirmLabel": "アーカイブ"
+  },
   "questionForm": {
     "typeLabel": "形式",
     "promptLabel": "問題文",
     "promptPlaceholder": "問題文を入力…",
-    "playbackLegend": "再生",
     "timingLegend": "時間",
     "pointsLegend": "得点",
     "answerExplanationLabel": "解説（正解と一緒に表示）",
     "answerExplanationPlaceholder": "これが正解である理由…（任意）",
-    "timeLimitLabel": "制限時間（秒）",
     "revealDelayLabel": "正解の表示時間（秒）",
     "revealDelayPlaceholder": "自動",
     "revealDelayHint": "自動進行モードで、次に進む前に正解を画面に表示しておく時間です。空欄の場合はインスタンスの設定に従います。",
@@ -369,28 +395,197 @@
     "optionActions": "選択肢 {{index}} の操作",
     "removeOptionShort": "削除",
     "ticksCleared": "形式が変わったため、正解の設定がクリアされました。新しいルールで改めてチェックを入れてください。",
-    "explanationWritten": "記入済み",
-    "explanationEmpty": "未記入",
     "numericLegend": "答え",
     "decimalsAllowed": "小数も使えます：3.14、0.5…",
-    "timingSummary": "{{time}}秒",
-    "timingSummaryStretched": "{{time}}秒（メディア込みで{{total}}秒）",
-    "revealDelayAuto": "正解の表示：自動",
-    "revealDelaySummary": "正解の表示：{{seconds}}秒",
     "place_ordinal_one": "{{count}}番目",
     "place_ordinal_two": "{{count}}番目",
     "place_ordinal_few": "{{count}}番目",
     "place_ordinal_other": "{{count}}番目",
-    "mediaPositionLabel": "大画面での画像の位置",
-    "mediaPositionHint": "テキストに対する画像の位置です。選択肢は常に下に表示されます。",
     "mediaPosition": {
       "bottom": "テキストの下",
       "top": "テキストの上",
       "left": "テキストの左",
-      "right": "テキストの右"
+      "right": "テキストの右",
+      "behind": "テキストの背後",
+      "alone": "メディアのみ"
     },
     "revealDelayAutoValue": "自動（{{seconds}}秒）",
-    "revealDelaySummaryAuto": "正解の表示：{{seconds}}秒（自動）"
+    "timingSummary": "{{time}}秒"
+  },
+  "timeline": {
+    "legend": "タイムライン",
+    "timeRow": "流れ：読む時間、回答、延長",
+    "visualRow": "映像チャンネル",
+    "audioRow": "音声チャンネル",
+    "minimum": "最短時間 {{seconds}} 秒",
+    "stretched": "最短時間 {{minimum}} 秒、メディアにより {{actual}} 秒に延長",
+    "total": "合計 {{seconds}} 秒",
+    "manualShort": "手動",
+    "phase": {
+      "reading": "読む時間：{{seconds}} 秒（全体設定）",
+      "listen": "メディア再生中、まだ回答できません：{{seconds}} 秒",
+      "answers": "回答：最短時間 {{seconds}} 秒",
+      "display": "表示：{{seconds}} 秒",
+      "manual": "手動：司会者が次へ進めます",
+      "stretch": "メディアによる延長：+{{seconds}} 秒",
+      "tail": "メディア後の間：{{seconds}} 秒（クイズの設定）",
+      "answer": "正解を表示：{{seconds}} 秒（自動モード）",
+      "answerManual": "正解を表示：司会者が次へ進めます"
+    },
+    "element": {
+      "image": "画像、全体を通して",
+      "video": "動画、{{seconds}} 秒、音声あり",
+      "videoMuted": "動画、{{seconds}} 秒、音声なし",
+      "videoLoop": "ループ動画、スライド全体",
+      "audio": "音声、{{seconds}} 秒",
+      "unknown": "長さはまだ不明です",
+      "reveal": "段階的に表示：{{seconds}}秒",
+      "explanation": "解説（正解と一緒に表示）",
+      "hint": "ヒント（{{seconds}} 秒から）"
+    },
+    "label": {
+      "image": "画像",
+      "video": "動画",
+      "reveal": "表示",
+      "explanation": "解説",
+      "hint": "ヒント"
+    },
+    "add": "要素を追加",
+    "clear": "すべてのメディアを削除",
+    "questionSettings": "問題の流れ",
+    "slideSettings": "スライドの流れ",
+    "minimumLabel": "最短時間（秒）",
+    "minimumHint": "最短の時間です。長いメディアがあると問題が延びます。",
+    "choice": {
+      "image": "画像",
+      "imageHint": "映像チャンネル、全時間",
+      "video": "動画",
+      "videoHint": "映像と音声、両方のチャンネル",
+      "audio": "音声",
+      "audioHint": "音声チャンネル",
+      "reveal": "段階的に表示",
+      "revealHint": "会場が回答する間に画像が鮮明になります",
+      "explanation": "解説",
+      "explanationHint": "正解と一緒に表示",
+      "hint": "ヒント",
+      "hintHint": "問題の途中で出す手がかり（得点の一部と引き換え）"
+    },
+    "refused": {
+      "imageChoice": "画像選択問題には独自の画像や動画を付けられません。",
+      "oneVisual": "問題に付けられるのは画像か動画のどちらかです。",
+      "videoHasSound": "動画と音声は同時に使えません。動画には独自の音声があります。",
+      "oneAudio": "音声は問題ごとに1つです。",
+      "oneVideo": "動画はスライドごとに1つです。",
+      "oneSlideAudio": "音声はスライドごとに1つです。",
+      "slideVideoSound": "動画が独自の音声を再生します。音声を追加するには動画をミュートしてください。",
+      "revealNeedsImage": "段階的に表示：先に画像を追加してください。",
+      "oneReveal": "段階的表示は画像ごとに1つです。",
+      "pollExplanation": "アンケートには説明すべき正解がありません。",
+      "oneExplanation": "解説は問題ごとに1つです。",
+      "oneHint": "ヒントは問題ごとに1つです。",
+      "oneSlideVisual": "スライドに表示できるのは画像か動画のどちらかです。"
+    },
+    "clearConfirm": {
+      "title": "すべてのメディアを削除しますか？",
+      "description": "タイムラインが空になり、このステップの画像・動画・音声が外されます。保存するまでは何も失われません。",
+      "confirm": "削除"
+    },
+    "layout": "レイアウト",
+    "layoutNeedsVisual": "レイアウト：先に画像か動画を追加してください。",
+    "layoutApply": "適用",
+    "layoutDescription": {
+      "bottom": "画像や動画をテキストの下に、回答はその下に表示します。",
+      "top": "画像や動画をテキストの上に、回答はその下に表示します。",
+      "left": "画像や動画を左に、テキストをその横に、回答は下に表示します。",
+      "right": "テキストを左に、画像や動画をその横に、回答は下に表示します。",
+      "behind": "テキストを画像や動画の上に重ね、「背景」ブロックの色と縁取りで読みやすくします。回答はメディアの外、下に表示します。",
+      "alone": "テキストの代わりに画像や動画を表示し、司会者が問題を読み上げます。スマートフォンには問題が表示され、回答は下に残ります。"
+    },
+    "picture": {
+      "behindNote": "テキストの背後では、メディアが領域を埋めます。トリミング位置のみ適用されます。",
+      "fit": "表示方法",
+      "fitValue": {
+        "contain": "全体",
+        "cover": "枠を埋める"
+      },
+      "focus": "トリミング位置",
+      "focusValue": {
+        "center": "中央",
+        "top": "上",
+        "bottom": "下",
+        "left": "左",
+        "right": "右"
+      },
+      "reveal": "段階的に表示",
+      "revealHint": "問題を読む間はぼやけ、回答開始から画像が鮮明になります（スマートフォンでも）。",
+      "revealSeconds": "鮮明になるまで（秒）",
+      "ratio": "縦横比",
+      "ratioFile": "ファイルどおり",
+      "ratioFree": "自由",
+      "ratioFreeLabel": "縦横比（幅:高さ）",
+      "ratioInvalid": "縦横比は「幅:高さ」の整数で、1:4〜4:1の範囲で入力してください。"
+    },
+    "view": {
+      "label": "表示",
+      "timeline": "タイムライン",
+      "list": "リスト"
+    },
+    "list": {
+      "caption": "要素：{{n}}・合計 {{total}} 秒",
+      "element": "要素",
+      "channels": "チャンネル",
+      "start": "開始",
+      "length": "長さ",
+      "note": "役割",
+      "open": "開く",
+      "settings": "設定",
+      "openNamed": "開く：{{name}}",
+      "settingsNamed": "設定：{{name}}",
+      "flow": "流れ",
+      "untilEnd": "最後まで（{{seconds}} 秒）",
+      "stretches": "問題を {{seconds}} 秒延ばします",
+      "channel": {
+        "time": "時間",
+        "visual": "映像",
+        "audio": "音声"
+      }
+    },
+    "reset": "既定値に戻す：{{type}}",
+    "resetConfirm": {
+      "title": "「{{type}}」の既定値に戻しますか？",
+      "description": "メディアが外され、長さは {{seconds}} 秒に、流れは既定の設定に戻ります。保存するまでは何も失われません。",
+      "confirm": "元に戻す"
+    },
+    "slideKind": "スライド",
+    "totalOpen": "{{seconds}} 秒、その後は司会者が進めます",
+    "explanationHint": "正解が表示されている間、画面に正解と一緒に表示されます。",
+    "hint": {
+      "text": "ヒントの文",
+      "textPlaceholder": "1923年に選ばれました",
+      "textHint": "{{n}} / {{max}} 文字",
+      "afterS": "回答開始から（秒）",
+      "penalty": "減点（%）",
+      "rule": "ヒントの後の回答は、この問題の得点が {{penalty}} % 減ります。連続正解ボーナスには影響しません。司会者はヒントをオフにできます。",
+      "image": "画像（文がある場合は任意）",
+      "video": "動画",
+      "audio": "音声",
+      "videoExcludesImage": "動画は画像の代わりになります。",
+      "videoExcluded": "すでに画像か音声があります。動画は両方を兼ねます。",
+      "videoHasSound": "動画には独自の音声があります。",
+      "soundRule": "音声は表示時に一度だけ再生され、問題の音声より優先されます。回答時間より長いと問題が延びます。"
+    },
+    "removeElement": "この要素を削除",
+    "embeddedVideo": "埋め込み動画です。削除のみできます。",
+    "slideLayoutDescription": {
+      "bottom": "画像や動画をブロックの下に。",
+      "top": "画像や動画をブロックの上に。",
+      "left": "画像や動画を左に、ブロックをその横に。",
+      "right": "ブロックを左に、画像や動画をその横に。",
+      "behind": "画像や動画がスライド全体を埋め、ブロックはその上に（これまでのスライドの動画）。",
+      "alone": "ブロックの代わりに画像や動画のみ。"
+    },
+    "conflicts": "競合：{{n}}",
+    "conflictTip": "ヒントの音声が問題の音声と重なっています。ゲームではヒントが優先されます。"
   },
   "preview": {
     "view": "プレビュー（参加者の表示）",
@@ -429,7 +624,6 @@
     "altPlaceholder": "例：フランス代表のユニフォームを着たキリアン・エムバペ",
     "altHelp": "スクリーンリーダーで読み上げられます。画像が問題の一部を担う場合は写っている内容を説明し、装飾の場合は空欄にしてください。",
     "slotsLegend": "問題のメディア",
-    "visualLabel": "ビジュアル",
     "audioLabel": "音声",
     "kindImage": "画像",
     "kindVideo": "動画",
@@ -437,8 +631,6 @@
     "addImage": "画像を追加",
     "addVideo": "動画を追加",
     "addAudio": "音声を追加",
-    "videoExcludesAudio": "動画にはすでに音声が含まれているため、追加の音声トラックは設定できません。音声を追加するには動画を削除してください。",
-    "audioExcludesVideo": "動画にはそれ自体の音声が含まれます。動画を選ぶには、音声を削除してください。",
     "converting": "変換中…",
     "convertingPercent": "変換中… {{percent}}%",
     "cancelConversion": "キャンセル",
@@ -596,6 +788,74 @@
       "invalid_time": "制限時間が{{min}}〜{{max}}秒の範囲外です",
       "formula": "数式は読み込まれません",
       "invalid_content": "QuizDock には長すぎるテキストです"
+    }
+  },
+  "quizTimeline": {
+    "legend": "クイズの流れ",
+    "total": "自動モードで約 {{time}}",
+    "count": "問題 {{questions}} · スライド {{slides}}",
+    "scale": "縮尺",
+    "scaleValue": {
+      "time": "時間に比例",
+      "equal": "1ステップ1マス"
+    },
+    "minute": "{{n}} 分",
+    "slideTip": "スライド「{{name}}」· {{time}}",
+    "questionTip": "Q{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "レイアウト",
+    "title": "スライドのレイアウト",
+    "groupEmpty": "空のスライドを構成",
+    "groupMedia": "メディアを配置",
+    "emptyOnly": "空のスライド用です。このスライドには内容があります",
+    "welcomeTitle": "{title}へようこそ",
+    "welcomeText": "{join} で PIN **{pin}** を入力して参加",
+    "layout": {
+      "title": "タイトル",
+      "titleSubtitle": "タイトルとサブタイトル",
+      "titleText": "タイトルとテキスト",
+      "titleTextMedia": "タイトル・テキスト・メディア",
+      "mediaTitle": "メディアとタイトル",
+      "textMedia": "テキスト | メディア",
+      "mediaText": "メディア | テキスト",
+      "behindTitle": "メディアの上にタイトル",
+      "mediaAlone": "メディアのみ",
+      "twoColumns": "2列",
+      "titleTwoColumns": "タイトルと2列",
+      "threeColumns": "3列",
+      "section": "セクション",
+      "quote": "引用",
+      "welcome": "ようこそ",
+      "mediaAbove": "メディアを上に",
+      "mediaBelow": "メディアを下に",
+      "mediaLeft": "メディアを左に",
+      "mediaRight": "メディアを右に",
+      "mediaBehind": "メディアを背後に",
+      "mediaOnly": "メディアを単独で"
+    },
+    "description": {
+      "title": "中央揃えの見出し。",
+      "titleSubtitle": "見出しと、その下に小さい見出し。",
+      "titleText": "テキストの上に見出し。",
+      "titleTextMedia": "見出し、テキスト、その下にスライドの画像または動画。",
+      "mediaTitle": "画像または動画、その下に見出し。",
+      "textMedia": "左に見出しとテキスト、右に画像または動画。",
+      "mediaText": "左に画像または動画、右に見出しとテキスト。",
+      "behindTitle": "画像または動画がスライド全体を覆い、その上に見出し。",
+      "mediaAlone": "画像または動画だけでスライド全体を覆います。",
+      "twoColumns": "見出しとテキストを持つ2つの列。",
+      "titleTwoColumns": "2列のテキストの上に見出し。",
+      "threeColumns": "見出しとテキストを持つ3つの列。",
+      "section": "大きな見出しの上に小さな見出し。パートの始まりに。",
+      "quote": "大きなテキストと、右下にその出典。",
+      "welcome": "クイズのタイトルと参加方法。ロビーが自動で入力します。",
+      "mediaAbove": "メディアブロックを先頭に移動します。ほかのブロックはそのままです。",
+      "mediaBelow": "メディアブロックを末尾に移動します。ほかのブロックはそのままです。",
+      "mediaLeft": "画像または動画をすべてのブロックの左に置きます。ブロックはそのままです。",
+      "mediaRight": "画像または動画をすべてのブロックの右に置きます。ブロックはそのままです。",
+      "mediaBehind": "画像または動画がブロックの背後でスライド全体を覆います。",
+      "mediaOnly": "画像または動画をブロックの代わりに表示します。ブロックは後のために残ります。"
     }
   }
 }

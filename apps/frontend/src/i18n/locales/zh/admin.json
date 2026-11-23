@@ -165,6 +165,7 @@
     "AUTH_MODE": "认证模式",
     "DEMO_MODE": "公开演示",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "无账号的参与者",
+    "LOBBY_LISTING": "在首页列出开放的房间",
     "OIDC_ISSUER": "身份提供方（颁发者）",
     "OIDC_CLIENT_ID": "客户端标识",
     "OIDC_CLIENT_SECRET": "客户端密钥",

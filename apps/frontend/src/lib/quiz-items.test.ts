@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { QuizDetailDtoQuestionsItem, QuizDetailDtoSlidesItem } from '../api/generated/model';
-import { moveItem, quizItems } from './quiz-items';
+import { moveItem, quizItems, slideLabel } from './quiz-items';
 
 const q = (id: string, orderIndex: number) =>
   ({ id, orderIndex }) as unknown as QuizDetailDtoQuestionsItem;
@@ -38,5 +38,19 @@ describe('moveItem', () => {
   it('is a no-op at the edges', () => {
     expect(moveItem(items, 0, -1)).toBe(items);
     expect(moveItem(items, 2, 1)).toBe(items);
+  });
+});
+
+describe('slideLabel', () => {
+  const quiz = { title: 'Discover France', questionCount: 12 };
+  const slide = (blocks: unknown[]) => ({ blocks }) as unknown as QuizDetailDtoSlidesItem;
+
+  it("reads the quiz's variables, leaving the room's as written", () => {
+    expect(slideLabel(slide([{ type: 'heading', id: 'a', text: '{title}' }]), quiz)).toBe(
+      'Discover France',
+    );
+    expect(slideLabel(slide([{ type: 'text', id: 'a', md: '{questions} at {pin}' }]), quiz)).toBe(
+      '12 at {pin}',
+    );
   });
 });

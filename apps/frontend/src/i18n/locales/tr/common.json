@@ -16,7 +16,8 @@
     "code": "Kod",
     "codeBlock": "Kod bloğu",
     "bulletList": "Madde işaretli liste",
-    "orderedList": "Numaralı liste"
+    "orderedList": "Numaralı liste",
+    "clear": "Biçimlendirmeyi temizle"
   },
   "captureConfirm": {
     "title": "Tam yanıt yakalama açılsın mı?",

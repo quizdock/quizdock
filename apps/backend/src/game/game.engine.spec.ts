@@ -343,6 +343,41 @@ describe('GameEngine (characterization)', () => {
       await expect(engine.setMotion(pin, 'someone-else', true)).rejects.toThrow();
     });
 
+    it('host:listed takes the room off the home page, or back, at any time (LOBBY_LISTING)', async () => {
+      await seed(snapshotOf([question()]));
+      await engine.start(pin, HOST);
+      await engine.setListed(pin, HOST, true);
+      expect((await game.getRoom(pin))?.listed).toBe(true);
+      expect(roomOf('room:listed').at(-1)).toEqual({ on: true, offered: false });
+      await engine.setListed(pin, HOST, false);
+      expect((await game.getRoom(pin))?.listed).toBe(false);
+      await expect(engine.setListed(pin, 'someone-else', true)).rejects.toThrow();
+      // An instance that lists no lobby tells no home page.
+      expect(roomOf('lobbies:changed')).toHaveLength(0);
+      await redis.del(gameKeys.listedRooms());
+    });
+
+    it('tells the home pages when a listed lobby changes, at once (LOBBY_LISTING=listed)', async () => {
+      const env = process.env;
+      process.env = { ...env, LOBBY_LISTING: 'listed' };
+      try {
+        await seed(snapshotOf([question()]));
+        // Not listed: closing it to newcomers changes no list.
+        await engine.setJoinLocked(pin, HOST, true);
+        expect(roomOf('lobbies:changed')).toHaveLength(0);
+        await engine.setListed(pin, HOST, true);
+        expect(roomOf('room:listed').at(-1)).toEqual({ on: true, offered: true });
+        await engine.setJoinLocked(pin, HOST, false);
+        await engine.start(pin, HOST);
+        // Taken off: the pages hear it too, as they must drop it.
+        await engine.setListed(pin, HOST, false);
+        expect(roomOf('lobbies:changed')).toHaveLength(4);
+      } finally {
+        process.env = env;
+        await redis.del(gameKeys.listedRooms());
+      }
+    });
+
     it('host:room-name trims the name in the lobby, and is refused once started', async () => {
       await seed(snapshotOf([question()]));
       await engine.setRoomName(pin, HOST, '  Friday   night ');
@@ -381,6 +416,8 @@ describe('GameEngine (characterization)', () => {
         players: expect.arrayContaining([{ playerId: 'p1', ready: true, pressed: true }]),
       });
       expect(await engine.setReady(pin, 'p1', false)).toBe(true);
+      // Within the readiness window (performance roadmap 3.3): at its end.
+      await eventually(async () => ann.of<{ ready: number }>('lobby:count').at(-1)?.ready === 0);
       expect(ann.of('lobby:count').at(-1)).toEqual({ ready: 0, total: 2 });
       await engine.start(pin, HOST);
       expect(await engine.setReady(pin, 'p1', true)).toBe(false);
@@ -708,6 +745,162 @@ describe('GameEngine (characterization)', () => {
         ['Cid', 3],
       ]);
       expect(reveal.yourResult).toMatchObject({ correct: true, points: 1000, closestRank: 1 });
+    });
+  });
+
+  describe('hints (SPECIFICATIONS-HINTS)', () => {
+    const hinted = (afterS: number) =>
+      snapshotOf([question({ hint: { text: 'Choisie en 1923', afterS, penaltyPct: 25 } })]);
+
+    it('comes at its time; the answers after it lose its share, not those before', async () => {
+      const t0 = await startedAt(hinted(0), {
+        p1: player('Ann'),
+        p2: player('Bob'),
+        p3: player('Cy'),
+      });
+      // Its text only goes out with it: the question carries when, not what.
+      expect(roomOf<{ hint?: unknown }>('question:start')[0].hint).toEqual({
+        afterS: 0,
+        penaltyPct: 25,
+      });
+      const right = await rightOption();
+      expect((await engine.submit(pin, 'p1', 0, right, t0)).accepted).toBe(true);
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ text: string; revealedAt: number; shown: boolean }>('question:hint')[0];
+      expect(hint).toMatchObject({ text: 'Choisie en 1923', shown: true });
+      await engine.submit(pin, 'p2', 0, right, hint.revealedAt + 1);
+      const answers = await game.answers(gameId, 0);
+      // Same speed for both (instant): the one after the hint gets 75 %.
+      expect(answers.get('p1')!.hinted).toBeUndefined();
+      expect(answers.get('p2')).toMatchObject({ hinted: true });
+      expect(answers.get('p2')!.pointsAwarded).toBe(
+        Math.round(answers.get('p1')!.pointsAwarded * 0.75),
+      );
+      expect(answers.get('p2')!.hintLost).toBe(
+        answers.get('p1')!.pointsAwarded - answers.get('p2')!.pointsAwarded,
+      );
+    });
+
+    it('time taken by the host moves the clock on: a hint now due comes at once', async () => {
+      const t0 = await startedAt(hinted(15), { p1: player('Ann') });
+      expect(roomOf('question:hint')).toHaveLength(0);
+      await engine.adjustTime(pin, HOST, -10);
+      const m = await meta();
+      // The whole stays 20 s: the opening went back with the end.
+      expect(m.questionEndsAt - m.questionStartedAt).toBe(20_000);
+      expect(m.questionStartedAt).toBe(t0 - 10_000);
+      await engine.adjustTime(pin, HOST, -6);
+      await eventually(async () => roomOf('question:hint').length > 0);
+    });
+
+    it('a hint’s sound starts on one instant, takes the time it needs, and moves with a pause', async () => {
+      const sounding = snapshotOf([
+        question({
+          hint: {
+            text: '',
+            audioMediaId: 'a'.repeat(26),
+            audio: { url: '/m/hint.m4a', durationMs: 30_000, peaks: [], gainDb: 0 },
+            holdMs: 31_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(sounding, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ revealedAt: number; mediaStartAt: number; audio?: unknown }>(
+        'question:hint',
+      )[0];
+      expect(hint.audio).toBeTruthy();
+      expect(hint.mediaStartAt).toBeGreaterThanOrEqual(hint.revealedAt);
+      // 30 s of sound and the quiz's pause, from its start: past the 20 s, the question waits.
+      const m = await meta();
+      expect(m.questionEndsAt).toBe(hint.mediaStartAt + 31_000);
+      expect(roomOf<{ endsAt: number }>('question:time').at(-1)?.endsAt).toBe(m.questionEndsAt);
+      // Paused, then resumed: its start moves with the clock.
+      await engine.setPaused(pin, HOST, true);
+      await new Promise((r) => setTimeout(r, 30));
+      await engine.setPaused(pin, HOST, false);
+      const moved = roomOf<{ mediaStartAt: number }>('question:hint').at(-1)!;
+      expect(moved.mediaStartAt).toBeGreaterThan(hint.mediaStartAt);
+    });
+
+    it('a hint’s video plays as its sound would: one start, the question held its length', async () => {
+      const watching = snapshotOf([
+        question({
+          hint: {
+            text: 'Regardez',
+            videoMediaId: 'v'.repeat(26),
+            video: { url: '/m/hint.mp4', gainDb: -6, durationMs: 30_000 },
+            holdMs: 31_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(watching, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      const hint = roomOf<{ revealedAt: number; mediaStartAt: number; video?: unknown }>(
+        'question:hint',
+      )[0];
+      expect(hint.video).toEqual({ url: '/m/hint.mp4', gainDb: -6, durationMs: 30_000 });
+      expect(hint.mediaStartAt).toBeGreaterThanOrEqual(hint.revealedAt);
+      const m = await meta();
+      expect(m.questionEndsAt).toBe(hint.mediaStartAt + 31_000);
+      const before = Date.now();
+      await engine.replayHint(pin, HOST);
+      expect(
+        roomOf<{ mediaStartAt: number }>('question:hint').at(-1)!.mediaStartAt,
+      ).toBeGreaterThanOrEqual(before);
+    });
+
+    it('hidden, a hint’s sound waits; shown, it goes on; replayed, it starts again', async () => {
+      const sounding = snapshotOf([
+        question({
+          hint: {
+            text: '',
+            audioMediaId: 'a'.repeat(26),
+            audio: { url: '/m/hint.m4a', durationMs: 5_000, peaks: [], gainDb: 0 },
+            holdMs: 6_000,
+            afterS: 0,
+            penaltyPct: 25,
+          },
+        }),
+      ]);
+      await startedAt(sounding, { p1: player('Ann') });
+      await eventually(async () => roomOf('question:hint').length > 0);
+      type Hint = { revealedAt: number; mediaStartAt: number; shown: boolean };
+      const first = roomOf<Hint>('question:hint')[0];
+      await engine.setHintShown(pin, HOST, false);
+      await new Promise((r) => setTimeout(r, 40));
+      await engine.setHintShown(pin, HOST, true);
+      const resumed = roomOf<Hint>('question:hint').at(-1)!;
+      // Its start moved by the time it was hidden; its reveal, the points' reference, did not.
+      expect(resumed.shown).toBe(true);
+      expect(resumed.mediaStartAt - first.mediaStartAt).toBeGreaterThanOrEqual(40);
+      expect(resumed.revealedAt).toBe(first.revealedAt);
+      const before = Date.now();
+      await engine.replayHint(pin, HOST);
+      const replayed = roomOf<Hint>('question:hint').at(-1)!;
+      expect(replayed.mediaStartAt).toBeGreaterThanOrEqual(before);
+      expect(replayed.revealedAt).toBe(first.revealedAt);
+    });
+
+    it('off, it waits; on late, it comes at once', async () => {
+      const host = join();
+      await seed(hinted(0), {}, { p1: player('Ann') });
+      await engine.setHints(pin, HOST, false);
+      await engine.start(pin, HOST);
+      await new Promise((r) => setTimeout(r, 50));
+      expect(roomOf('question:hint')).toHaveLength(0);
+      expect(roomOf('game:hints')).toEqual([{ enabled: false }]);
+      await engine.setHints(pin, HOST, true);
+      await eventually(async () => roomOf('question:hint').length > 0);
+      // A screen (re)attaching sees it, as the host left it on the projection.
+      await engine.setHintShown(pin, HOST, false);
+      await engine.sendStateTo(host as never, pin);
+      expect(host.of<{ shown: boolean }>('question:hint').at(-1)).toMatchObject({ shown: false });
+      expect(host.of('game:hints').at(-1)).toEqual({ enabled: true });
     });
   });
 
@@ -1386,6 +1579,55 @@ describe('GameEngine (characterization)', () => {
   });
 
   /** Bugs found by the audit (docs/dev/audit-2026-09.md), each reproduced before its fix. */
+  describe('the readiness (performance roadmap 3.3)', () => {
+    it('a lobby getting ready at once gets one count per window, the last one always', async () => {
+      const ann = join('p1');
+      const console = join();
+      const players = Object.fromEntries(
+        ['p1', 'p2', 'p3', 'p4'].map((id, i) => [id, player(`P${i}`)]),
+      );
+      await seed(snapshotOf([question()]), {}, players);
+      const counts = () => ann.of<{ ready: number; total: number }>('lobby:count');
+      const before = counts().length;
+      // All four within one window whatever the machine's speed: the clock held still.
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now);
+      try {
+        for (const id of ['p1', 'p2', 'p3', 'p4']) await engine.setReady(pin, id, true);
+      } finally {
+        clock.mockRestore();
+      }
+      // One at most at once (the first, in a quiet moment), then the rest together.
+      expect(counts().length - before).toBeLessThanOrEqual(1);
+      await eventually(async () => counts().at(-1)?.ready === 4);
+      expect(counts().length - before).toBeLessThanOrEqual(2);
+      expect(counts().at(-1)).toEqual({ ready: 4, total: 4 });
+      expect(console.of('media:readiness').at(-1)).toMatchObject({ ready: 4, total: 4 });
+    });
+
+    it('a lobby count still waiting when the game starts never goes out after it', async () => {
+      const console = join();
+      await seed(snapshotOf([question(), question()]), {}, { p1: player('Ann') });
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now);
+      try {
+        await engine.setReady(pin, 'p1', true);
+        await engine.setReady(pin, 'p1', false); // waits for the end of the window
+        await engine.start(pin, HOST);
+      } finally {
+        clock.mockRestore();
+      }
+      const lobby = console
+        .of<{ lobby?: boolean; ready: number }>('media:readiness')
+        .filter((p) => p.lobby);
+      // The waiting lobby count never goes out after the start.
+      await new Promise((r) => setTimeout(r, 150));
+      expect(
+        console.of<{ lobby?: boolean }>('media:readiness').filter((p) => p.lobby),
+      ).toHaveLength(lobby.length);
+    });
+  });
+
   describe('the answer count (performance roadmap 3.0)', () => {
     it('answers pouring in go out as one count, the last one always, before the reveal', async () => {
       const players = Object.fromEntries(

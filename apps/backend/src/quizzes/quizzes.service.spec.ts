@@ -108,13 +108,22 @@ describe('QuizzesService', () => {
 
     it("a quiz another host shares: listed read-only, with its owner, copied to make it one's own", async () => {
       prisma.quiz.findMany.mockResolvedValue([
-        { id: 'mine', ownerId: OWNER, owner: { displayName: 'Me' }, _count: { sessionLogs: 0 } },
+        {
+          id: 'mine',
+          ownerId: OWNER,
+          owner: { displayName: 'Me' },
+          _count: { sessionLogs: 0 },
+          questions: [],
+          slides: [],
+        },
         {
           id: 'theirs',
           ownerId: 'other',
           shared: true,
           owner: { displayName: 'Alice' },
           _count: { sessionLogs: 0 },
+          questions: [],
+          slides: [],
         },
       ]);
       const rows = await service.list(HOST);
@@ -147,8 +156,22 @@ describe('QuizzesService', () => {
 
     it('un gestionnaire voit toute l’instance, avec le propriétaire de chaque quiz', async () => {
       prisma.quiz.findMany.mockResolvedValue([
-        { id: 'q1', title: 'A', owner: { displayName: 'Alice' }, _count: { sessionLogs: 0 } },
-        { id: 'q2', title: 'B', owner: { displayName: 'Bob' }, _count: { sessionLogs: 0 } },
+        {
+          id: 'q1',
+          title: 'A',
+          owner: { displayName: 'Alice' },
+          _count: { sessionLogs: 0 },
+          questions: [],
+          slides: [],
+        },
+        {
+          id: 'q2',
+          title: 'B',
+          owner: { displayName: 'Bob' },
+          _count: { sessionLogs: 0 },
+          questions: [],
+          slides: [],
+        },
       ]);
       const rows = await service.list({ id: 'admin-1', roles: [UserRole.admin] });
       // Aucun filtre de propriétaire : c'est la vue d'ensemble (RG-14).
@@ -158,7 +181,14 @@ describe('QuizzesService', () => {
 
     it('un hôte ne se voit pas rappeler que ses quiz sont à lui', async () => {
       prisma.quiz.findMany.mockResolvedValue([
-        { id: 'q1', ownerId: HOST.id, owner: { displayName: 'Alice' }, _count: { sessionLogs: 0 } },
+        {
+          id: 'q1',
+          ownerId: HOST.id,
+          owner: { displayName: 'Alice' },
+          _count: { sessionLogs: 0 },
+          questions: [],
+          slides: [],
+        },
       ]);
       const rows = await service.list(HOST);
       expect(rows[0]).not.toHaveProperty('ownerName');

@@ -29,6 +29,7 @@ import type {
   MediaPreloadPayload,
   MediaReadinessPayload,
   PlayerPresence,
+  QuestionHintPayload,
   QuestionRevealPayload,
   RoomSelectionPayload,
   RoomSoundsPayload,
@@ -43,11 +44,13 @@ import {
   GAME_TTL_S,
   GRACE_MS,
   MEDIA_LEAD_MS,
+  READINESS_EVERY_MS,
   type GameId,
   ROOM_HASH_KEY,
   gameKeys,
 } from './game.keys';
 import { gameHash, roomHash } from './game-hash';
+import { LISTING_WATCHERS, listsLobbies } from './lobby-listing';
 import type {
   AnswerRecord,
   GameMeta,
@@ -60,7 +63,7 @@ import { noticeOf } from './game.types';
 import { isForeignKeyViolation } from './prisma-errors';
 import { RedisService } from '../redis/redis.service';
 import { buildRevealCommon } from './reveal';
-import { isDeferred, rankClosest, scoreAnswer } from './scoring';
+import { isDeferred, rankClosest, scoreAnswer, withHint } from './scoring';
 import { SessionArchiveService } from './session-archive.service';
 import { resumeQuestionWindow } from './chrono';
 import {
@@ -197,6 +200,8 @@ export class GameEngine {
   private readonly clockCommands = new Map<string, Promise<unknown>>();
   /** Per room, when the answer count last went out, and whether one waits (`countAnswers`). */
   private readonly answerCounts = new Map<string, { at: number; waiting: boolean }>();
+  /** Per room, when the readiness last went out, and whether one waits (`broadcastReadiness`). */
+  private readonly readinessSent = new Map<string, { at: number; waiting: boolean }>();
 
   constructor(
     private readonly game: GameService,
@@ -226,6 +231,7 @@ export class GameEngine {
       const ref = refOf(pin, meta);
       if (meta.state === GameState.Answering && !meta.clockFrozen) {
         this.scheduleReveal(ref, meta.currentIndex, meta.questionEndsAt + GRACE_MS - Date.now());
+        await this.armHint(ref, meta);
         armed++;
       } else if (meta.state === GameState.MediaLoading) {
         this.armMediaWait(ref, waitedStep(meta), (meta.mediaWaitUntil ?? 0) - Date.now());
@@ -286,6 +292,7 @@ export class GameEngine {
       if (counting) await this.clearLobbyCountdown(ref);
       const snapshot = await this.requireSnapshot(ref.id, true);
       await this.enterStep(ref, snapshot, 0);
+      await this.announceListing(ref.pin);
     } catch (err) {
       await this.redis.del(lock); // nothing started: Start can be tried again
       throw err;
@@ -391,6 +398,7 @@ export class GameEngine {
     }
     await this.redis.hset(gameKeys.room(pin), roomHash({ joinLocked: locked }));
     this.server.to(pin).emit('notice', noticeOf({ ...meta, joinLocked: locked }));
+    await this.announceListing(pin);
   }
 
   /**
@@ -446,7 +454,7 @@ export class GameEngine {
     this.server.to(pin).emit('game:media', await this.mediaPayload(pin, snapshot, target));
     // Who needs what may have changed (the phones in the room, for every device).
     await this.emitPreload(ref, snapshot, firstStepOf(snapshot, 0));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /**
@@ -600,8 +608,36 @@ export class GameEngine {
     };
   }
 
-  /** Sends the readiness of the upcoming question to the screens (never to participants). */
+  /**
+   * A device arrived, left, said it is ready or finished loading: the readiness to
+   * the room, at most once every `READINESS_EVERY_MS`. One in a quiet moment goes out
+   * at once, those that follow within the window together at its end, the last one
+   * always. A room filling at once sent it to every device on every arrival: O(N²)
+   * messages, and every player re-read each time.
+   */
   async broadcastReadiness(pin: string): Promise<void> {
+    const last = this.readinessSent.get(pin);
+    const sinceMs = Date.now() - (last?.at ?? 0);
+    if (last && (last.waiting || sinceMs < READINESS_EVERY_MS)) {
+      if (!last.waiting) {
+        last.waiting = true;
+        this.timers.arm('readiness', pin, READINESS_EVERY_MS - sinceMs, () =>
+          this.sendReadiness(pin),
+        );
+      }
+      return;
+    }
+    await this.sendReadiness(pin);
+  }
+
+  /**
+   * Sends the readiness of the upcoming question now: to the screens in full, to the
+   * participants the lobby's count only. The step changes call it directly, once per
+   * step; it replaces a readiness still waiting.
+   */
+  private async sendReadiness(pin: string): Promise<void> {
+    this.timers.cancel('readiness', pin);
+    this.readinessSent.set(pin, { at: Date.now(), waiting: false });
     const meta = await this.game.getMeta(pin);
     if (!meta || meta.state === GameState.Ended) return;
     const ref = refOf(pin, meta);
@@ -717,7 +753,7 @@ export class GameEngine {
     this.server.to(pin).emit('game:mode', await this.readMode(pin));
     // One step ahead: what comes after the slide loads while it shows.
     await this.emitPreload(ref, snapshot, stepAfterSlide(snapshot, slideIndex));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /** The `slide:show` of the slide on screen, as a screen (re)attaching gets it. */
@@ -789,7 +825,7 @@ export class GameEngine {
     this.armMediaWait(ref, step, until - Date.now());
     // Asked again: a phone whose own element was busy with the step before loads it now.
     await this.emitPreload(ref, snapshot, step);
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
     return true;
   }
 
@@ -847,6 +883,10 @@ export class GameEngine {
         clockFrozen: false,
         paused: false,
         pausedRemainingMs: null,
+        hintRevealedAt: 0,
+        hintHidden: false,
+        hintHiddenAt: 0,
+        hintMediaShiftMs: 0,
       }),
     );
 
@@ -874,6 +914,7 @@ export class GameEngine {
     this.server.to(pin).emit('game:mode', await this.readMode(pin));
 
     this.scheduleReveal(ref, index, endsAt + GRACE_MS - now);
+    if (live) await this.armHint(ref, live, question);
     // An evening of quizzes outlives one TTL: each question keeps the room alive.
     await this.game.touchRoom(pin);
   }
@@ -910,6 +951,7 @@ export class GameEngine {
       return; // un autre chemin a déjà révélé cette question
     }
     this.timers.cancel('reveal', pin);
+    this.timers.cancel('hint', pin);
     // A count waiting for its window goes out before the reveal: the screens then show
     // every answer the reveal counts (the lock taken above closes the answers).
     if (this.answerCounts.get(pin)?.waiting) await this.sendAnswerCount(ref, index, false);
@@ -953,13 +995,16 @@ export class GameEngine {
     const sockets = await this.server.in(pin).fetchSockets();
     for (const socket of sockets) {
       const playerId = (socket.data as { playerId?: string }).playerId;
-      socket.emit('question:reveal', personalReveal(common, records, ranking, playerId));
+      socket.emit(
+        'question:reveal',
+        personalReveal(common, records, ranking, playerId, question.hint?.penaltyPct),
+      );
       socket.emit('leaderboard', personalLeaderboard(ranking, playerId));
     }
     await this.emitHostScores(ref, sockets);
     // What comes next, fetched by every device while the leaderboard is up.
     await this.emitPreload(ref, snapshot, firstStepOf(snapshot, index + 1));
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /** Common reveal + the proximity ranking of a numeric `closest` question (with nicknames). */
@@ -977,13 +1022,14 @@ export class GameEngine {
     );
     common.closest = rows.slice(0, 10).map((row) => {
       const p = players.get(row.key);
+      const hinted = records.get(row.key)?.hinted;
       return {
         nickname: p?.nickname ?? '?',
         avatar: p?.avatar,
         value: row.value,
         distance: row.distance,
         rank: row.rank,
-        points: row.points,
+        points: hinted ? withHint(row.points, question.hint?.penaltyPct ?? 0) : row.points,
       };
     });
     return common;
@@ -1009,13 +1055,16 @@ export class GameEngine {
       const rec = records.get(row.key);
       const player = await this.game.getScore(ref.id, row.key);
       if (!rec || !player) continue;
-      rec.pointsAwarded = row.points;
+      // Given after the hint: its share goes, as for any question.
+      const points = rec.hinted ? withHint(row.points, question.hint?.penaltyPct ?? 0) : row.points;
+      rec.pointsAwarded = points;
+      if (rec.hinted) rec.hintLost = row.points - points;
       rec.isCorrect = row.exact;
       rec.credit = row.points / (question.basePoints || 1);
       rec.closestRank = row.rank;
       rec.distance = row.distance;
       await this.redis.hset(gameKeys.answers(ref.id, index), row.key, JSON.stringify(rec));
-      player.score += row.points;
+      player.score += points;
       // Exact = a right answer for the streak; a near miss neither grows nor breaks it.
       if (row.exact) player.streak += 1;
       await this.redis.hset(gameKeys.scores(ref.id), row.key, JSON.stringify(player));
@@ -1209,10 +1258,14 @@ export class GameEngine {
     index: number,
   ): Promise<void> {
     const records = await this.game.answers(ref.id, index);
-    const common = await this.revealCommon(ref.pin, snapshot.questions[index], records);
+    const question = snapshot.questions[index];
+    const common = await this.revealCommon(ref.pin, question, records);
     const ranking = await this.ranking(ref);
     const playerId = socket.data.playerId;
-    socket.emit('question:reveal', personalReveal(common, records, ranking, playerId));
+    socket.emit(
+      'question:reveal',
+      personalReveal(common, records, ranking, playerId, question.hint?.penaltyPct),
+    );
     socket.emit('leaderboard', personalLeaderboard(ranking, playerId));
   }
 
@@ -1323,6 +1376,11 @@ export class GameEngine {
     const room = await this.game.getRoom(pin);
     if (room) socket.emit('room:sounds', soundsPayload(room.sounds));
     if (room) socket.emit('room:motion', { on: room.motion });
+    // Only the console switches it; the instance may list no lobby at all.
+    if (room && socket.data.isHostControl) {
+      socket.emit('room:listed', { on: room.listed, offered: listsLobbies() });
+    }
+    socket.emit('game:hints', { enabled: !meta.hintsOff });
     const snapshot = await this.game.getSnapshot(meta.id);
     // Every device asks for sound at once when the quiz will need it (a phone too: the
     // next quiz of a room may play sound where the first did not). Sent with no quiz
@@ -1400,6 +1458,9 @@ export class GameEngine {
         'question:start',
         questionStartOf(meta, snapshot, meta.currentIndex, startedAt, endsAt),
       );
+      // A hint already out, as it stands on the projection.
+      const hint = snapshot ? this.hintPayload(meta, snapshot) : null;
+      if (hint) socket.emit('question:hint', hint);
       // Compteur courant : sinon un (re)attache mid-question afficherait « 0/N ».
       const { answered, total } = await this.connectedProgress(ref, meta.currentIndex);
       socket.emit('answer:count', { answered, total });
@@ -1607,6 +1668,7 @@ export class GameEngine {
       .to(pin)
       .emit('game:state', { state: GameState.Ended, questionIndex: -1, totalQuestions: 0 });
     this.server.to(pin).emit('game:ended', await this.endedPayload(ref.id));
+    await this.announceListing(pin);
   }
 
   /**
@@ -1686,6 +1748,7 @@ export class GameEngine {
     if (archive && meta.quizId) await this.archiveAsked(pin, meta);
     this.timers.cancelAll(pin);
     this.answerCounts.delete(pin);
+    this.readinessSent.delete(pin);
     await this.redis.hset(gameKeys.game(meta.id), gameHash({ state: GameState.Ended }));
     // After the state: an answer arriving meanwhile can no longer be scored and missed.
     await this.foldGame(refOf(pin, meta), meta);
@@ -1696,6 +1759,7 @@ export class GameEngine {
       .to(pin)
       .emit('game:state', { state: GameState.Ended, questionIndex: -1, totalQuestions: 0 });
     this.server.to(pin).emit('game:ended', await this.endedPayload(meta.id));
+    await this.announceListing(pin);
   }
 
   /**
@@ -1721,7 +1785,9 @@ export class GameEngine {
     try {
       this.timers.cancelAll(pin);
       this.answerCounts.delete(pin);
+      this.readinessSent.delete(pin);
       await this.game.openGameWith(pin, snapshot, line?.mode);
+      await this.announceListing(pin);
       // A lobby with no quiz is one a quiz went back to; so is one already counting.
       const follows = !meta.quizId || Boolean(meta.lobbyStartAt);
       const opened = await this.game.getMeta(pin);
@@ -1759,17 +1825,20 @@ export class GameEngine {
         if (archive) await this.archiveAsked(pin, meta, true);
         this.timers.cancelAll(pin);
         this.answerCounts.delete(pin);
+        this.readinessSent.delete(pin);
         await this.redis.hset(gameKeys.game(meta.id), gameHash({ state: GameState.Ended }));
         if (archive) await this.foldGame(refOf(pin, meta), meta);
       }
       this.timers.cancelAll(pin);
       this.answerCounts.delete(pin);
+      this.readinessSent.delete(pin);
       await this.openNextOfSelection(pin);
     } catch (err) {
       await this.redis.del(lock);
       throw err;
     }
     await this.sendLobby(pin);
+    await this.announceListing(pin);
   }
 
   /**
@@ -1808,7 +1877,7 @@ export class GameEngine {
     for (const socket of await this.server.in(pin).fetchSockets()) {
       await this.sendStateTo(socket, pin);
     }
-    await this.broadcastReadiness(pin);
+    await this.sendReadiness(pin);
   }
 
   /**
@@ -1837,6 +1906,7 @@ export class GameEngine {
     const name = oneLine(raw).slice(0, ROOM_NAME_MAX);
     await this.redis.hset(gameKeys.room(pin), roomHash({ name }));
     this.server.to(pin).emit('room:info', { name: name || null, hostName: meta.hostName });
+    await this.announceListing(pin);
   }
 
   /**
@@ -1868,10 +1938,171 @@ export class GameEngine {
    * `host:motion`: whether the room's screens move between steps (UI system §1.8),
    * at any time — the host sees what the projector copes with. Every device follows.
    */
+  /**
+   * Arms the current question's hint at its time (SPECIFICATIONS-HINTS): `afterS` after
+   * the answers open, which a pause moves with them. Nothing while the game's hints are
+   * off, the clock is frozen, or it is out already; past its time, it comes at once.
+   */
+  private async armHint(ref: GameRef, meta: GameMeta, question?: SnapshotQuestion): Promise<void> {
+    this.timers.cancel('hint', ref.pin);
+    if (meta.state !== GameState.Answering || meta.clockFrozen) return;
+    if (meta.hintsOff || meta.hintRevealedAt) return;
+    const hint = (question ?? (await this.game.getSnapshot(meta.id))?.questions[meta.currentIndex])
+      ?.hint;
+    if (!hint) return;
+    const at = meta.questionStartedAt + hint.afterS * 1000;
+    const index = meta.currentIndex;
+    this.timers.arm('hint', ref.pin, Math.max(0, at - Date.now()), () =>
+      this.revealHint(ref, index),
+    );
+  }
+
+  /** The hint to the whole room, once: from then on, the answers lose its share. */
+  private async revealHint(ref: GameRef, index: number): Promise<void> {
+    const meta = await this.currentMeta(ref);
+    if (!meta || meta.state !== GameState.Answering || meta.currentIndex !== index) return;
+    if (meta.hintsOff || meta.hintRevealedAt) return;
+    const hint = (await this.game.getSnapshot(meta.id))?.questions[index]?.hint;
+    if (!hint) return;
+    const revealedAt = Date.now();
+    await this.redis.hset(gameKeys.game(meta.id), gameHash({ hintRevealedAt: revealedAt }));
+    meta.hintRevealedAt = revealedAt;
+    meta.hintHidden = false;
+    meta.hintMediaShiftMs = 0;
+    await this.stretchForHint(ref, meta, hint);
+    const snapshot = await this.game.getSnapshot(meta.id);
+    const payload = snapshot ? this.hintPayload(meta, snapshot) : null;
+    if (payload) this.server.to(ref.pin).emit('question:hint', payload);
+  }
+
+  /** When the hint's sound starts (server ms epoch): a moment after its reveal, moved by hiding or a replay. */
+  private hintMediaStart(meta: GameMeta): number {
+    return meta.hintRevealedAt! + MEDIA_LEAD_MS + (meta.hintMediaShiftMs ?? 0);
+  }
+
+  /** A hint's sound outlasting the answers stretches the question, as a question's media does. */
+  private async stretchForHint(
+    ref: GameRef,
+    meta: GameMeta,
+    hint: { holdMs?: number },
+  ): Promise<void> {
+    if (!hint.holdMs || !meta.hintRevealedAt) return;
+    const soundEnd = this.hintMediaStart(meta) + hint.holdMs;
+    if (soundEnd <= meta.questionEndsAt) return;
+    await this.redis.hset(gameKeys.game(meta.id), gameHash({ questionEndsAt: soundEnd }));
+    meta.questionEndsAt = soundEnd;
+    this.scheduleReveal(ref, meta.currentIndex, soundEnd + GRACE_MS - Date.now());
+    this.server.to(ref.pin).emit('question:time', {
+      questionIndex: meta.currentIndex,
+      startedAt: meta.questionStartedAt,
+      endsAt: soundEnd,
+      ...mediaStartOf(meta.mediaLeadMs, meta.questionStartedAt),
+    });
+  }
+
+  /** The current question's hint as `question:hint` says it, once revealed. */
+  private hintPayload(meta: GameMeta, snapshot: QuizSnapshot): QuestionHintPayload | null {
+    const hint = snapshot.questions[meta.currentIndex]?.hint;
+    if (!hint || !meta.hintRevealedAt || meta.state !== GameState.Answering) return null;
+    return {
+      questionIndex: meta.currentIndex,
+      text: hint.text,
+      ...(hint.imageUrl ? { image: { url: hint.imageUrl } } : {}),
+      ...(hint.video ? { video: hint.video } : {}),
+      ...(hint.audio ? { audio: hint.audio } : {}),
+      // Every device starts its sound on one instant, a moment after it is out.
+      ...(hint.video || hint.audio ? { mediaStartAt: this.hintMediaStart(meta) } : {}),
+      penaltyPct: hint.penaltyPct,
+      revealedAt: meta.hintRevealedAt,
+      shown: !meta.hintHidden,
+    };
+  }
+
+  /** `host:hints`: the game's hints on or off; on late, the current one comes at once. */
+  async setHints(pin: string, hostUserId: string, enabled: boolean): Promise<void> {
+    const meta = await this.requireHost(pin, hostUserId);
+    await this.redis.hset(gameKeys.game(meta.id), gameHash({ hintsOff: !enabled }));
+    meta.hintsOff = !enabled;
+    this.server.to(pin).emit('game:hints', { enabled });
+    if (enabled) await this.armHint(refOf(pin, meta), meta);
+    else this.timers.cancel('hint', pin);
+  }
+
+  /**
+   * `host:hint-shown`: the revealed hint shown or hidden; its penalty stays. Hidden, its
+   * sound is paused; shown again, it goes on where it stopped — its start moved by the
+   * time it was hidden, the question stretched if it now outlasts the answers.
+   */
+  async setHintShown(pin: string, hostUserId: string, shown: boolean): Promise<void> {
+    const meta = await this.requireHost(pin, hostUserId);
+    const snapshot = await this.game.getSnapshot(meta.id);
+    if (!snapshot || !meta.hintRevealedAt || meta.hintHidden === !shown) return;
+    const now = Date.now();
+    if (shown) {
+      meta.hintMediaShiftMs =
+        (meta.hintMediaShiftMs ?? 0) + (meta.hintHiddenAt ? now - meta.hintHiddenAt : 0);
+      meta.hintHiddenAt = 0;
+    } else {
+      meta.hintHiddenAt = now;
+    }
+    meta.hintHidden = !shown;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({
+        hintHidden: meta.hintHidden,
+        hintHiddenAt: meta.hintHiddenAt,
+        hintMediaShiftMs: meta.hintMediaShiftMs,
+      }),
+    );
+    const hint = snapshot.questions[meta.currentIndex]?.hint;
+    if (shown && hint) await this.stretchForHint(refOf(pin, meta), meta, hint);
+    const payload = this.hintPayload(meta, snapshot);
+    if (payload) this.server.to(pin).emit('question:hint', payload);
+  }
+
+  /** `host:hint-replay`: the revealed hint's video or sound again from its beginning, shown. */
+  async replayHint(pin: string, hostUserId: string): Promise<void> {
+    const meta = await this.requireHost(pin, hostUserId);
+    const snapshot = await this.game.getSnapshot(meta.id);
+    const hint = snapshot?.questions[meta.currentIndex]?.hint;
+    if (!snapshot || !hint || !meta.hintRevealedAt || meta.state !== GameState.Answering) return;
+    if (!hint.video && !hint.audio) return;
+    // Its start, now: a moment ahead, as at its reveal.
+    meta.hintMediaShiftMs = Date.now() - meta.hintRevealedAt;
+    meta.hintHidden = false;
+    meta.hintHiddenAt = 0;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({ hintHidden: false, hintHiddenAt: 0, hintMediaShiftMs: meta.hintMediaShiftMs }),
+    );
+    await this.stretchForHint(refOf(pin, meta), meta, hint);
+    const payload = this.hintPayload(meta, snapshot);
+    if (payload) this.server.to(pin).emit('question:hint', payload);
+  }
+
   async setMotion(pin: string, hostUserId: string, on: boolean): Promise<void> {
     await this.requireHost(pin, hostUserId);
     await this.redis.hset(gameKeys.room(pin), roomHash({ motion: on === true }));
     this.server.to(pin).emit('room:motion', { on: on === true });
+  }
+
+  /** `host:listed`: the room on the home page's list, or off it (`LOBBY_LISTING`), at any time. */
+  async setListed(pin: string, hostUserId: string, on: boolean): Promise<void> {
+    await this.requireHost(pin, hostUserId);
+    await this.game.setListed(pin, on === true);
+    this.server.to(pin).emit('room:listed', { on: on === true, offered: listsLobbies() });
+    await this.announceListing(pin, true);
+  }
+
+  /**
+   * Tells the home pages watching the list (`LOBBY_LISTING`) that it changed, so they
+   * read it again at once: a listed room that opened, started, closed to newcomers,
+   * was renamed or ended — or any room the host just put on the list or took off.
+   */
+  async announceListing(pin: string, always = false): Promise<void> {
+    if (!listsLobbies()) return;
+    if (!always && (await this.redis.hget(gameKeys.room(pin), 'listed')) !== '1') return;
+    this.server.to(LISTING_WATCHERS).emit('lobbies:changed');
   }
 
   async setSounds(pin: string, hostUserId: string, patch: RoomSoundsSettings): Promise<void> {
@@ -2160,14 +2391,22 @@ export class GameEngine {
       await this.advanceToReveal(pin, meta.currentIndex, 'host', meta.id); // restant épuisé → reveal
       return;
     }
-    await this.redis.hset(gameKeys.game(meta.id), gameHash({ questionEndsAt: newEndsAt }));
+    // Time added lengthens the question; time taken moves the clock on: the opening goes
+    // back with the end, the whole stays, and what comes at its time (the hint) comes sooner.
+    const newStartedAt = deltaMs < 0 ? meta.questionStartedAt + deltaMs : meta.questionStartedAt;
+    await this.redis.hset(
+      gameKeys.game(meta.id),
+      gameHash({ questionStartedAt: newStartedAt, questionEndsAt: newEndsAt }),
+    );
+    meta.questionStartedAt = newStartedAt;
     meta.questionEndsAt = newEndsAt;
     this.scheduleReveal(refOf(pin, meta), meta.currentIndex, newEndsAt + GRACE_MS - now);
+    await this.armHint(refOf(pin, meta), meta);
     this.server.to(pin).emit('question:time', {
       questionIndex: meta.currentIndex,
-      startedAt: meta.questionStartedAt,
+      startedAt: newStartedAt,
       endsAt: newEndsAt,
-      ...mediaStartOf(meta.mediaLeadMs, meta.questionStartedAt),
+      ...mediaStartOf(meta.mediaLeadMs, newStartedAt),
     });
   }
 
@@ -2206,6 +2445,8 @@ export class GameEngine {
     if (meta.clockFrozen || meta.state !== GameState.Answering) return;
     const remaining = Math.max(0, meta.questionEndsAt - Date.now());
     this.timers.cancel('reveal', pin);
+    // The hint waits with the clock.
+    this.timers.cancel('hint', pin);
     await this.redis.hset(
       gameKeys.game(meta.id),
       gameHash({ clockFrozen: true, pausedRemainingMs: remaining }),
@@ -2226,6 +2467,11 @@ export class GameEngine {
     if (!meta.clockFrozen) return null;
     const now = Date.now();
     const { startedAt, endsAt } = resumeQuestionWindow(meta, now);
+    // A hint out already moves with the clock: its sound resumes where it was paused.
+    const moved = startedAt - meta.questionStartedAt;
+    const hintRevealedAt = meta.hintRevealedAt ? meta.hintRevealedAt + moved : 0;
+    // Hidden through the pause: the time hidden counts from where the clock stands.
+    const hintHiddenAt = meta.hintHiddenAt ? meta.hintHiddenAt + moved : 0;
     await this.redis.hset(
       gameKeys.game(meta.id),
       gameHash({
@@ -2233,13 +2479,24 @@ export class GameEngine {
         pausedRemainingMs: null,
         questionStartedAt: startedAt,
         questionEndsAt: endsAt,
+        hintRevealedAt,
+        hintHiddenAt,
       }),
     );
+    meta.hintRevealedAt = hintRevealedAt;
+    meta.hintHiddenAt = hintHiddenAt;
     meta.clockFrozen = false;
     meta.pausedRemainingMs = undefined;
     meta.questionStartedAt = startedAt;
     meta.questionEndsAt = endsAt;
     this.scheduleReveal(refOf(pin, meta), meta.currentIndex, endsAt + GRACE_MS - now);
+    await this.armHint(refOf(pin, meta), meta);
+    if (meta.hintRevealedAt) {
+      // A hint out: its sound's start moved with the clock, the screens follow it.
+      const snapshot = await this.game.getSnapshot(meta.id);
+      const hint = snapshot ? this.hintPayload(meta, snapshot) : null;
+      if (hint?.mediaStartAt) this.server.to(pin).emit('question:hint', hint);
+    }
     await this.reanchor(pin, meta, 'thaw');
     return { startedAt, endsAt };
   }
@@ -2376,7 +2633,15 @@ export class GameEngine {
 
     // Temps serveur compensé de la latence (§6) ; latencyMs = RTT/2 (0 tant que non câblé).
     const tMs = Math.max(0, receivedAt - meta.questionStartedAt - player.latencyMs);
-    const score = scoreAnswer({ question, answer, tMs, prevStreak: scored.streak });
+    // After the hint, its share of the question's points goes (SPECIFICATIONS-HINTS).
+    const hinted = !!question.hint && !!meta.hintRevealedAt && receivedAt >= meta.hintRevealedAt;
+    const score = scoreAnswer({
+      question,
+      answer,
+      tMs,
+      prevStreak: scored.streak,
+      hintPenaltyPct: hinted ? (question.hint?.penaltyPct ?? 0) : 0,
+    });
     const record: AnswerRecord = {
       answer,
       isCorrect: score.correct,
@@ -2384,6 +2649,7 @@ export class GameEngine {
       credit: score.credit,
       tMs,
       receivedAt,
+      ...(hinted ? { hinted: true, hintLost: score.hintLost ?? 0 } : {}),
     };
 
     // Unicité : 1re réponse gagne (RG-06), tant que le reveal n'a pas commencé : il

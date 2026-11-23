@@ -71,6 +71,9 @@ const view = (partial: Partial<GameView>): GameView => ({
   youReady: false,
   sounds: null,
   motion: null,
+  listed: null,
+  hint: null,
+  hintsEnabled: true,
   roomName: null,
   hostName: null,
   standings: null,
@@ -455,6 +458,10 @@ describe('ControlPage (console hôte)', () => {
     expect(await screen.findByLabelText('Code PIN')).toHaveTextContent('482913');
     expect(container.querySelector('svg[aria-label="QR code pour rejoindre"]')).toBeTruthy();
     expect(screen.getByTestId('player-count')).toHaveTextContent('1');
+    // The count says too whether newcomers get in.
+    expect(
+      screen.getByRole('button', { name: /^Participants .* · Ouverte aux nouveaux$/ }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Alice')).toBeInTheDocument();
 
     act(() => screen.getByRole('button', { name: /Démarrer/ }).click());
@@ -493,7 +500,7 @@ describe('ControlPage (console hôte)', () => {
     renderApp('/session/482913/console');
     // In the lobby's second tab of settings.
     fireEvent.click(await screen.findByRole('tab', { name: 'Écrans et audio' }));
-    fireEvent.change(await screen.findByLabelText('Langue des écrans'), {
+    fireEvent.change(await screen.findByLabelText('Langue de l’interface'), {
       target: { value: 'tr' },
     });
     expect(fakeSocket.emit).toHaveBeenCalledWith('host:options', {
@@ -789,10 +796,39 @@ describe('ControlPage (console hôte)', () => {
     });
     renderApp('/session/482913/console');
 
-    const motion = await screen.findByRole('switch', { name: 'Animations' });
+    // Set once a session: behind the gear, beside the projection's window.
+    const gear = await screen.findByRole('button', { name: 'Réglages du salon' });
+    act(() => gear.click());
+    const motion = await screen.findByRole('switch', { name: 'Transitions animées' });
     expect(motion).toHaveAttribute('aria-checked', 'true');
     act(() => motion.click());
     expect(fakeSocket.emit).toHaveBeenCalledWith('host:motion', { pin: '482913', on: false });
+  });
+
+  it('ANSWERING: beside the PIN, the host takes the lobby off the home page, or back (LOBBY_LISTING)', async () => {
+    localStorage.setItem('live.localUser', 'Animateur');
+    hookState.value = view({
+      state: GameState.Answering,
+      questionIndex: 0,
+      totalQuestions: 3,
+      question: { prompt: 'Capitale ?' } as never,
+      answerCount: { answered: 0, total: 1 },
+      listed: { on: true, offered: true },
+    });
+    renderApp('/session/482913/console');
+    const listed = await screen.findByRole('button', { name: "Page d'accueil" });
+    expect(listed).toHaveAttribute('aria-pressed', 'true');
+    expect(listed).toHaveTextContent('Affiché');
+    act(() => listed.click());
+    expect(fakeSocket.emit).toHaveBeenCalledWith('host:listed', { pin: '482913', on: false });
+  });
+
+  it('LOBBY: nothing about the home page when the instance lists no lobby', async () => {
+    localStorage.setItem('live.localUser', 'Animateur');
+    hookState.value = view({ listed: { on: false, offered: false } });
+    renderApp('/session/482913/console');
+    await screen.findByTestId('player-count');
+    expect(screen.queryByRole('button', { name: "Page d'accueil" })).toBeNull();
   });
 
   it('LOBBY: open access greys personal tracking out, and says why (#57)', async () => {

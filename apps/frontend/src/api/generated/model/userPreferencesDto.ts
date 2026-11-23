@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UserPreferencesDtoParticipantAccess } from './userPreferencesDtoParticipantAccess';
+import type { UserPreferencesDtoStepView } from './userPreferencesDtoStepView';
 
 export interface UserPreferencesDto {
   participantAccess?: UserPreferencesDtoParticipantAccess;
@@ -14,4 +15,5 @@ export interface UserPreferencesDto {
      * @pattern ^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$
      */
   language?: string;
+  stepView?: UserPreferencesDtoStepView;
 }

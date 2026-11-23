@@ -215,5 +215,7 @@
   "results": "結果",
   "newQuizBlank": "空白測驗",
   "newQuizFromTemplate": "從範本建立…",
-  "newQuizImport": "匯入檔案…"
+  "newQuizImport": "匯入檔案…",
+  "duration": "約 {{n}} 分鐘",
+  "durationHint": "自動模式下的預估時長"
 }

@@ -14,6 +14,14 @@ export const GAME_TTL_S = 4 * 60 * 60;
 export const ANSWER_COUNT_EVERY_MS = 100;
 
 /**
+ * How often, at most, a room's readiness goes out while devices arrive, leave, say
+ * they are ready or finish loading: the screens' "ready" count and the lobby's count
+ * on the phones (#104). A room filling at once otherwise sent it to every device on
+ * every arrival.
+ */
+export const READINESS_EVERY_MS = 100;
+
+/**
  * How far ahead the server sets the common start of a question's media (ms):
  * a second for the room to see the question before its sound or video starts,
  * and enough for the question to reach every device, which then starts on the
@@ -72,6 +80,8 @@ export const gameKeys = {
   tokens: (pin: string) => `room:${pin}:tokens`,
   /** Set of a host's open rooms, by PIN (resumed from the dashboard §6.2). */
   hostGames: (userId: string) => `host:${userId}:games`,
+  /** Set of the rooms listed on the home page, by PIN (`LOBBY_LISTING`), cleaned as it is read. */
+  listedRooms: () => 'rooms:listed',
 
   // ── Game (game id) ──
   /** The game hash: state machine, current step, timings, pace. */

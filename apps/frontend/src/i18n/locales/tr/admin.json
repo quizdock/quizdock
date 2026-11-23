@@ -165,6 +165,7 @@
     "AUTH_MODE": "Kimlik doğrulama modu",
     "DEMO_MODE": "Herkese açık demo",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "Hesabı olmayan katılımcılar",
+    "LOBBY_LISTING": "Ana sayfada açık odalar",
     "OIDC_ISSUER": "Kimlik sağlayıcısı (yayıncı)",
     "OIDC_CLIENT_ID": "İstemci kimliği",
     "OIDC_CLIENT_SECRET": "İstemci gizli anahtarı",

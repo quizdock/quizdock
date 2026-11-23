@@ -11,6 +11,9 @@ import type { LiveAudio, LiveQuestionMedia } from './question-media';
 /** Error code of a slide with a video playing its sound next to a sound. */
 export const SLIDE_TWO_SOUNDS = 'slide.two_sounds';
 
+/** Error code of a slide given a picture and a video: one visual, as a question's. */
+export const SLIDE_TWO_VISUALS = 'slide.two_visuals';
+
 /** What a slide plays, as the live payload carries it. */
 interface LiveSlideMedia {
   video?: SlideVideo | null;
@@ -60,6 +63,16 @@ export function slideTimedMs(slide: LiveSlideMedia): number | null {
     lengths.push(slide.video.durationMs);
   }
   return lengths.length ? Math.max(...lengths) : null;
+}
+
+/**
+ * How long the slide is held for its timed media, in ms: their length plus the
+ * quiz's pause after them (`mediaTailS`). Null when nothing holds it. The room counts
+ * it from the media's common start; the editor's timeline from the slide's display.
+ */
+export function slideMediaHoldMs(slide: LiveSlideMedia, tailS: number): number | null {
+  const timed = slideTimedMs(slide);
+  return timed === null ? null : timed + tailS * 1000;
 }
 
 /** A media step: a question, or the slide `slideIndex` shown before question `questionIndex`. */

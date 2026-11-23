@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Taiwan",
     "description": "Sample quiz — geography, history and culture of Taiwan.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 3,
+    "revision": 8,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Taiwan",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -109,7 +109,12 @@
       "numericTolerance": 0,
       "options": [],
       "acceptedAnswers": [],
-      "media": "media/taipei-101.webp"
+      "media": "media/taipei-101.webp",
+      "hint": {
+        "text": "The answer is in its name.",
+        "afterS": 7,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",
@@ -215,11 +220,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "tea-picture",
-          "media": "media/bubble-tea.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "tea-picture"
         },
         {
           "type": "text",
@@ -236,7 +238,9 @@
           "#065f46",
           "#022c22"
         ]
-      }
+      },
+      "image": "media/bubble-tea.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",
@@ -273,7 +277,12 @@
           "isCorrect": false
         }
       ],
-      "acceptedAnswers": []
+      "acceptedAnswers": [],
+      "hint": {
+        "text": "It stands just under 4,000 m.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",

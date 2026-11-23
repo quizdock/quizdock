@@ -47,10 +47,11 @@ function blockImages(block: SlideBlock): string[] {
   return block.type === 'image' && block.url ? [block.url] : [];
 }
 
-/** The images a slide shows: its background and its image blocks. */
+/** The images a slide shows: its background, its own picture and its image blocks. */
 function slideImages(slide: SnapshotSlide): string[] {
   const background = slide.background && 'url' in slide.background ? [slide.background.url] : [];
-  return [...background, ...slide.blocks.flatMap(blockImages)];
+  const image = slide.image ? [slide.image.url] : [];
+  return [...background, ...image, ...slide.blocks.flatMap(blockImages)];
 }
 
 /**

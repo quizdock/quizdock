@@ -9,8 +9,10 @@ import type { UpdateQuestionDtoAcceptedAnswersItem } from './updateQuestionDtoAc
 import type { UpdateQuestionDtoAudioTarget } from './updateQuestionDtoAudioTarget';
 import type { UpdateQuestionDtoBackgroundGradient } from './updateQuestionDtoBackgroundGradient';
 import type { UpdateQuestionDtoBackgroundStyle } from './updateQuestionDtoBackgroundStyle';
+import type { UpdateQuestionDtoHint } from './updateQuestionDtoHint';
 import type { UpdateQuestionDtoMedia } from './updateQuestionDtoMedia';
 import type { UpdateQuestionDtoMediaPosition } from './updateQuestionDtoMediaPosition';
+import type { UpdateQuestionDtoMediaStyle } from './updateQuestionDtoMediaStyle';
 import type { UpdateQuestionDtoOptionsItem } from './updateQuestionDtoOptionsItem';
 import type { UpdateQuestionDtoPointsMode } from './updateQuestionDtoPointsMode';
 import type { UpdateQuestionDtoScoring } from './updateQuestionDtoScoring';
@@ -41,6 +43,10 @@ export interface UpdateQuestionDto {
   backgroundStyle?: UpdateQuestionDtoBackgroundStyle;
   media?: UpdateQuestionDtoMedia;
   mediaPosition?: UpdateQuestionDtoMediaPosition;
+  /** @nullable */
+  mediaStyle?: UpdateQuestionDtoMediaStyle;
+  /** @nullable */
+  hint?: UpdateQuestionDtoHint;
   /**
      * @minimum 5
      * @maximum 240

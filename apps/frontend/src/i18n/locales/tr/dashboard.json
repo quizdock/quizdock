@@ -215,5 +215,7 @@
   "results": "Sonuçlar",
   "newQuizBlank": "Boş quiz",
   "newQuizFromTemplate": "Bir şablondan…",
-  "newQuizImport": "Dosya içe aktar…"
+  "newQuizImport": "Dosya içe aktar…",
+  "duration": "≈ {{n}} dk",
+  "durationHint": "Otomatik modda tahmini süre"
 }

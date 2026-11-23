@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UpdatePreferencesDtoParticipantAccess } from './updatePreferencesDtoParticipantAccess';
+import type { UpdatePreferencesDtoStepView } from './updatePreferencesDtoStepView';
 
 export interface UpdatePreferencesDto {
   /** @nullable */
@@ -16,4 +17,6 @@ export interface UpdatePreferencesDto {
      * @pattern ^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$
      */
   language?: string | null;
+  /** @nullable */
+  stepView?: UpdatePreferencesDtoStepView;
 }

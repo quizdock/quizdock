@@ -7,6 +7,9 @@ import { isManager } from '../auth/roles';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { ActiveGameDto, activeGameSchema } from './dto/active-game.dto';
 import { JoinAddressesDto } from './dto/join-addresses.dto';
+import { LobbyListingDto, lobbyListingSchema } from './dto/listed-lobby.dto';
+import { listsLobbies } from './lobby-listing';
+import { Public } from '../auth/public.decorator';
 import { GameEngine } from './game.engine';
 import { GameService } from './game.service';
 import { SETTINGS } from '@quiz-dock/contracts';
@@ -48,6 +51,21 @@ export class GameController {
       : await this.games.listActiveHostGames(user.id);
     // What the API declares, nothing more (the listing carries internals for the statistics).
     return activeGameSchema.array().parse(games);
+  }
+
+  /**
+   * The open lobbies the home page lists (`LOBBY_LISTING`), for anyone: the PIN
+   * they show is the one a participant would type. None while the instance lists
+   * none, and `listing: false` so the page does not follow the list.
+   */
+  @Get('listed')
+  @Public()
+  @ApiOkResponse({ type: LobbyListingDto })
+  async listed(): Promise<LobbyListingDto> {
+    return lobbyListingSchema.parse({
+      listing: listsLobbies(),
+      lobbies: await this.games.listedLobbies(),
+    });
   }
 
   /**

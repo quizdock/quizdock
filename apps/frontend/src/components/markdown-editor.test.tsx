@@ -53,6 +53,21 @@ describe('MarkdownEditor', () => {
     );
   });
 
+  it('clears all the formatting of the selection, marks and list', () => {
+    render(<Harness initial={'- **Hello**'} />);
+    const editor = screen.getByLabelText('Body');
+    // Everything selected, as Ctrl+A does (the editor's own command, not the DOM's).
+    fireEvent.keyDown(editor, { key: 'a', ctrlKey: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Effacer la mise en forme' }));
+    expect(screen.getByTestId('value').textContent).toBe('Hello');
+  });
+
+  it('keeps code out of the bar: it is typed in the source', () => {
+    render(<Harness initial="Hello" />);
+    expect(screen.queryByRole('button', { name: 'Code' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Bloc de code' })).toBeNull();
+  });
+
   it('inline profile offers no list/code-block tools', () => {
     render(<Harness profile="inline" initial="one" />);
     expect(screen.getByRole('button', { name: 'Gras' })).toBeInTheDocument();

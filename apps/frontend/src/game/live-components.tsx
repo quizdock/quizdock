@@ -11,8 +11,9 @@ import type {
   SlideTextAlign,
   SlideTextSize,
 } from '@quiz-dock/contracts';
-import { TILE_RATIO, fillSlideBlocks } from '@quiz-dock/contracts';
+import { TILE_RATIO, fillSlideBlocks, hasMediaBlock } from '@quiz-dock/contracts';
 import {
+  Fragment,
   type ReactNode,
   type RefObject,
   useContext,
@@ -24,6 +25,7 @@ import {
 import { usePodiumMotion, useRevealMotion, useStandingsMotion } from './motion/primitives';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { mediaFrame, type Reveal, useRevealStyle } from './media/media-frame';
 import { Markdown } from '@/components/markdown';
 import {
   COLOR_BG,
@@ -36,7 +38,7 @@ import { cn } from '@/lib/utils';
 import { Avatar } from './avatar';
 import { BACKDROP_EDGE, BACKDROP_PANEL, PICKED_RING, Surface } from './surface';
 import { themeBackdrop, useLiveTheme } from './theme';
-import { SlideVariablesContext } from './slide-variables';
+import { VariablesContext } from '@/lib/variables';
 import { SlidePlaybackContext, SlideSound, SlideVideoLayer, showsVideo } from './media/slide-media';
 import { ShapeIcon } from '@/components/shape-icon';
 import { optionLabel } from './image-choice';
@@ -538,15 +540,21 @@ export function QuestionMedia({
   media,
   className,
   zoomable = false,
+  reveal = null,
 }: {
   media: QuestionStartPayload['media'] | undefined;
   className?: string;
   /** A phone's picture: a tap opens it over the whole screen, another closes it. */
   zoomable?: boolean;
+  /** Its progressive reveal: blurred as on the projection, never opened sharp meanwhile. */
+  reveal?: Reveal | null;
 }) {
   const { t } = useTranslation('live');
   const visual = media?.visual;
+  const revealed = useRevealStyle(visual?.kind === 'image' ? reveal : null, false);
   if (visual?.kind !== 'image') return null;
+  // Framed, filled and cropped as the author set it (SPECIFICATIONS-QUESTION-PICTURE).
+  const look = mediaFrame(media?.style, false);
   // What the author wrote (#43), or a generic label saying an image is there —
   // never an empty alt, which would hide the image from a screen reader entirely
   // while it carries the question for everyone else.
@@ -555,9 +563,18 @@ export function QuestionMedia({
     <img
       src={visual.url}
       alt={alt}
-      className={cn('mx-auto rounded-lg object-contain', className)}
+      className={cn(
+        'mx-auto rounded-lg',
+        look.fill === 'cover' ? 'object-cover' : 'object-contain',
+        className,
+      )}
+      style={{ aspectRatio: look.ratio ?? undefined, objectPosition: look.focus, ...revealed }}
     />
   );
+  // Revealing: clipped, its blur kept in its place, and not opened over the screen.
+  if (revealed) {
+    return <div className="mx-auto w-fit max-w-full overflow-hidden rounded-lg">{img}</div>;
+  }
   return zoomable ? (
     <ZoomableImage src={visual.url} alt={alt}>
       {img}
@@ -798,43 +815,138 @@ export function AnswerExplanation({
 export function SlideView({ slide }: { slide: SlideShowPayload }) {
   const playback = useContext(SlidePlaybackContext);
   // The room's variables, filled here (the quiz's came filled from the server).
-  const variables = useContext(SlideVariablesContext);
+  const variables = useContext(VariablesContext);
   const blocks = fillSlideBlocks(slide.blocks, variables);
   // A phone in the room shows the slide's background, not its video (the big screen does).
   const video = slide.video && showsVideo(slide.video, playback) ? slide.video : null;
+  // Its visual — its video, else its picture — and where it sits against the blocks
+  // (SPECIFICATIONS-STEP-EDITOR): behind them, as a slide's video always was, or placed as
+  // a question's against its text.
+  const image = video ? null : (slide.image ?? null);
+  const position = (video || image) && slide.position ? slide.position : 'behind';
+  const behind = position === 'behind';
+  // Placed in the content, it sits where its block is (SPECIFICATIONS-SLIDE-LAYOUTS);
+  // a slide without that block keeps its position against the blocks.
+  const inBlocks = !behind && position !== 'alone' && hasMediaBlock(blocks);
+  const look = mediaFrame(slide.style, behind);
+  const picture = image ? (
+    <img
+      src={image.url}
+      alt={image.alt?.trim() ?? ''}
+      className={cn(
+        'absolute inset-0 h-full w-full',
+        look.fill === 'cover' ? 'object-cover' : 'object-contain',
+      )}
+      style={{ objectPosition: look.focus }}
+    />
+  ) : null;
+  const behindLayer = !behind ? null : video ? (
+    <SlideVideoLayer video={video} />
+  ) : picture ? (
+    <div className="absolute inset-0">{picture}</div>
+  ) : null;
+  const placed =
+    behind || (!video && !image) ? null : (
+      // Placed against the blocks: as large as its room allows, in its own frame.
+      <div
+        className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-[0.5em]"
+        style={look.box}
+      >
+        {video ? (
+          <SlideVideoLayer
+            video={video}
+            placed={{
+              boxClassName: 'absolute inset-0 h-full w-full max-w-none aspect-auto',
+              frame: look.frame,
+              focus: look.focus,
+              cover: look.fill === 'cover',
+            }}
+          />
+        ) : look.frame ? (
+          <div className="overflow-hidden" style={look.frame}>
+            {picture}
+          </div>
+        ) : (
+          picture
+        )}
+      </div>
+    );
   // No background of its own: the quiz theme's (docs/themes.md), with its text tone.
   const theme = useLiveTheme();
-  const themed = slide.background || video ? null : themeBackdrop(theme);
+  const themed = slide.background || behindLayer ? null : themeBackdrop(theme);
+  // Its media block: the placed media there, the first one alone (one per slide).
+  let mediaShown = false;
+  const leafView = (leaf: SlideLeafBlock) => {
+    if (leaf.type !== 'media') return <SlideBlockView key={leaf.id} block={leaf} />;
+    if (!inBlocks || mediaShown) return null;
+    mediaShown = true;
+    return <Fragment key={leaf.id}>{placed}</Fragment>;
+  };
+  const content = (
+    <>
+      {blocks.map((b) => {
+        if (b.type !== 'columns') return leafView(b);
+        // Columns holding the media take the room left, so that it has a height.
+        const holdsMedia = inBlocks && b.columns.some((c) => c.some((l) => l.type === 'media'));
+        return (
+          <div
+            key={b.id}
+            className={cn('grid gap-[2em]', holdsMedia ? 'min-h-0 flex-1' : 'items-start')}
+            style={{ gridTemplateColumns: columnsTemplate(b.columns.length, b.ratio) }}
+          >
+            {b.columns.map((col, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'flex min-w-0 flex-col gap-[1em]',
+                  holdsMedia && 'min-h-0 justify-center',
+                )}
+              >
+                {col.map(leafView)}
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </>
+  );
+  const side = !inBlocks && (position === 'left' || position === 'right');
   return (
     <Surface
       background={slide.background ?? themed?.background}
-      // A video behind the content (#125), played as the screen's playback says.
-      backdrop={video ? <SlideVideoLayer video={video} /> : null}
+      // Its visual behind the content (#125), played as the screen's playback says.
+      backdrop={behindLayer}
       textTone={themed?.textTone ?? slide.textTone}
       textOutline={slide.textOutline}
       // No explicit height: a flex parent stretches it (`h-full` would opt out of stretching).
       className="qd-slide w-full flex-1"
     >
-      <article className="flex w-full flex-1 flex-col justify-center gap-[1.5em] p-[2em]">
-        {blocks.map((b) =>
-          b.type === 'columns' ? (
-            <div
-              key={b.id}
-              className="grid items-start gap-[2em]"
-              style={{ gridTemplateColumns: columnsTemplate(b.columns.length, b.ratio) }}
-            >
-              {b.columns.map((col, i) => (
-                <div key={i} className="flex min-w-0 flex-col gap-[1em]">
-                  {col.map((leaf) => (
-                    <SlideBlockView key={leaf.id} block={leaf} />
-                  ))}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <SlideBlockView key={b.id} block={b} />
-          ),
+      <article
+        className={cn(
+          'flex min-h-0 w-full flex-1 gap-[1.5em] p-[2em]',
+          side ? 'flex-row items-stretch' : 'flex-col justify-center',
         )}
+      >
+        {placed && !inBlocks && (position === 'top' || position === 'left') ? placed : null}
+        {position === 'alone' ? (
+          // The visual in the blocks' place: they stay for a screen reader.
+          <div className="sr-only">{content}</div>
+        ) : (
+          <div
+            className={cn(
+              'flex min-h-0 min-w-0 flex-col justify-center gap-[1.5em]',
+              placed && !inBlocks ? 'shrink-0' : 'flex-1',
+              side && 'flex-1',
+            )}
+          >
+            {content}
+          </div>
+        )}
+        {placed &&
+        !inBlocks &&
+        (position === 'bottom' || position === 'right' || position === 'alone')
+          ? placed
+          : null}
         {/* Its sound (#125), under the content: drawn at its size, hidden by default. */}
         {slide.audio ? <SlideSound audio={slide.audio} /> : null}
       </article>
@@ -916,6 +1028,9 @@ function SlideBlockView({ block }: { block: SlideLeafBlock }) {
           )}
         />
       );
+    case 'media':
+      // Drawn by SlideView, where the slide's media is placed in its blocks.
+      return null;
   }
 }
 

@@ -16,6 +16,7 @@ export * from './preferences';
 export * from './question-media';
 export * from './question-content';
 export * from './quiz-terms';
+export * from './quiz-duration';
 export * from './slide-content';
 export * from './slide-media';
 export * from './admin/settings';
@@ -24,7 +25,13 @@ export * from './admin/results';
 import type { ParticipantAccess } from './preferences';
 import type { ThemeValues } from './theme';
 import type { BackgroundStyle } from './background';
-import type { AudioTarget, LiveAudio, LiveQuestionMedia } from './question-media';
+import type {
+  AudioTarget,
+  LiveAudio,
+  LiveQuestionMedia,
+  MediaPosition,
+  MediaStyle,
+} from './question-media';
 
 export const CONTRACTS_VERSION = '0.3.0' as const;
 
@@ -147,6 +154,26 @@ export interface PlayerPeek {
   joinLocked: boolean;
 }
 
+/** A revealed hint (`question:hint`). */
+export interface QuestionHintPayload {
+  questionIndex: number;
+  /** Its words; empty when the hint is a picture alone. */
+  text: string;
+  /** Its picture, when it has one. */
+  image?: { url: string };
+  /** Its video, in the picture's place, with its own sound. */
+  video?: { url: string; gainDb: number; durationMs?: number };
+  /** Its sound, alone or with its words or picture. */
+  audio?: LiveAudio;
+  /** When every device starts its video or sound (server ms epoch): it takes over the question's. */
+  mediaStartAt?: number;
+  penaltyPct: number;
+  /** When it was revealed (server ms epoch): the answers after it lose `penaltyPct` %. */
+  revealedAt: number;
+  /** Shown on the projection (the host's choice); a phone folds it on its own. */
+  shown: boolean;
+}
+
 export interface QuestionStartPayload {
   questionIndex: number;
   type: QuestionType;
@@ -171,6 +198,12 @@ export interface QuestionStartPayload {
   mediaStartAt?: number;
   /** Listen first: the answers open when the media ends (`startedAt`), not before. */
   listenFirst?: boolean;
+  /**
+   * The question carries a hint (SPECIFICATIONS-HINTS): when it comes, `afterS` seconds
+   * after `startedAt` if the host's hints are on, and what it costs. Never its text,
+   * which goes out with `question:hint` when revealed.
+   */
+  hint?: { afterS: number; penaltyPct: number };
   /** Optional full-cover background (image or gradient), like a slide's. */
   background?: SlideBackground | null;
   textTone?: SlideTextTone;
@@ -204,7 +237,12 @@ export type SlideLeafBlock =
       url?: string;
       size: SlideImageSize;
       align: 'left' | 'center' | 'right';
-    };
+    }
+  /**
+   * Where the slide's picture or video, set on its timeline, sits among its blocks
+   * (SPECIFICATIONS-SLIDE-LAYOUTS): one per slide, a column included.
+   */
+  | { type: 'media'; id: string };
 export type SlideBlock =
   | SlideLeafBlock
   | {
@@ -263,8 +301,14 @@ export interface SlideShowPayload {
   textOutline: boolean;
   /** Auto-mode display time: null = engine default, 0 = the host clicks, else seconds. */
   displayDelayS: number | null;
-  /** A video filling the slide behind its content (#125), over its background. */
+  /** A video (#125), behind its content unless `position` says otherwise. */
   video?: SlideVideo | null;
+  /** Its picture (SPECIFICATIONS-STEP-EDITOR), placed by `position`; never with a video. */
+  image?: { url: string; alt: string | null } | null;
+  /** Where its picture or video sits against its blocks; absent = behind them. */
+  position?: MediaPosition;
+  /** How its picture or video is framed (no reveal on a slide). */
+  style?: MediaStyle;
   /** The slide's sound (#125); never with a video that plays its own. */
   audio?: LiveAudio | null;
   /** Which devices play the slide's sound, resolved for this game (present when it has one). */
@@ -415,6 +459,8 @@ export interface PersonalResult {
   /** Numeric `closest`: own proximity rank and distance to the target. */
   closestRank?: number;
   distance?: number;
+  /** Answered after the hint: its share (%) and the points it took (SPECIFICATIONS-HINTS). */
+  hint?: { penaltyPct: number; lost: number };
 }
 
 /** One row of the proximity ranking of a `closest` numeric question. */
@@ -630,6 +676,11 @@ export interface ClientToServerEvents {
   'host:sounds': (p: { pin: string } & RoomSoundsSettings) => void;
   /** Whether the room's screens move between steps (UI system §1.8), at any time. */
   'host:motion': (p: { pin: string; on: boolean }) => void;
+  /** The room on the home page's list, or off it (`LOBBY_LISTING`), at any time. */
+  'host:listed': (p: { pin: string; on: boolean }) => void;
+  /** A home page follows the list of lobbies (`LOBBY_LISTING`), or stops. */
+  'listing:watch': () => void;
+  'listing:unwatch': () => void;
   /** The participant is ready (or not yet) in the lobby (#104); never blocks the start. */
   'player:ready': (p: { pin: string; ready: boolean }, ack: (res: { ok: boolean }) => void) => void;
   /** The room's own name (≤ 60 characters), from its lobby; blank = the default. */
@@ -676,6 +727,12 @@ export interface ClientToServerEvents {
   'host:mode': (p: { pin: string; mode: GameMode }) => void;
   /** Suspend (`paused:true`) ou reprend (`paused:false`) l'auto-progression. */
   'host:pause': (p: { pin: string; paused: boolean }) => void;
+  /** Turns the game's hints on or off; on late, the current question's hint comes at once. */
+  'host:hints': (p: { pin: string; enabled: boolean }) => void;
+  /** Shows or hides the revealed hint: hidden, its sound is paused; its penalty stays. */
+  'host:hint-shown': (p: { pin: string; shown: boolean }) => void;
+  /** Plays the revealed hint's video or sound again from its beginning, shown. */
+  'host:hint-replay': (p: { pin: string }) => void;
   /** Steer the current step's sound or video (a question's, a slide's) on every device that plays it: restart, play, pause, seek. */
   'host:media': (p: HostMediaCommand) => void;
   /** Ajoute/retire `deltaS` secondes au chrono de la question courante. */
@@ -823,6 +880,14 @@ export interface ServerToClientEvents {
   }) => void;
   'game:state': (p: GameStatePayload) => void;
   'question:start': (p: QuestionStartPayload) => void;
+  /**
+   * The current question's hint, revealed to the whole room (SPECIFICATIONS-HINTS): at
+   * its time, when the host turns hints on late, again when the host shows or hides it
+   * on the projection (`shown`), and on (re)attach.
+   */
+  'question:hint': (p: QuestionHintPayload) => void;
+  /** Whether the game's hints are on (the host's switch): on attach and when switched. */
+  'game:hints': (p: { enabled: boolean }) => void;
   /** A content slide is shown (state `SLIDE_SHOW`, #7); re-sent on (re)attach. */
   'slide:show': (p: SlideShowPayload) => void;
   'answer:ack': (p: AnswerAck) => void;
@@ -842,6 +907,13 @@ export interface ServerToClientEvents {
    * when the host switches it. A new room starts from the instance's `LIVE_MOTION`.
    */
   'room:motion': (p: { on: boolean }) => void;
+  /**
+   * Whether the home page lists the room (`LOBBY_LISTING`), to the console: on attach,
+   * and when the host switches it. `offered`: the instance lists lobbies at all.
+   */
+  'room:listed': (p: { on: boolean; offered: boolean }) => void;
+  /** To the home pages watching it: the list of lobbies changed, read it again. */
+  'lobbies:changed': () => void;
   /**
    * To a projection window the host just paired: it is the room's projection now;
    * `token` keeps it so when it reconnects (`spectator:join.screen`).

@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Italy",
     "description": "Sample quiz — geography, history and culture of Italy.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Italy",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -109,7 +109,12 @@
       "numericTolerance": 0,
       "options": [],
       "acceptedAnswers": [],
-      "media": "media/vesuvius.webp"
+      "media": "media/vesuvius.webp",
+      "hint": {
+        "text": "It was in the first century, under Emperor Titus.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",
@@ -214,11 +219,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "pizza-picture",
-          "media": "media/pizza.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "pizza-picture"
         },
         {
           "type": "text",
@@ -235,7 +237,9 @@
           "#166534",
           "#7f1d1d"
         ]
-      }
+      },
+      "image": "media/pizza.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",
@@ -273,7 +277,12 @@
         }
       ],
       "acceptedAnswers": [],
-      "media": "media/sistine-ceiling.webp"
+      "media": "media/sistine-ceiling.webp",
+      "hint": {
+        "text": "He also sculpted the David in Florence.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",

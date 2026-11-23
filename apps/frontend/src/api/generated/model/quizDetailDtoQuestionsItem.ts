@@ -9,8 +9,10 @@ import type { QuizDetailDtoQuestionsItemAcceptedAnswersItem } from './quizDetail
 import type { QuizDetailDtoQuestionsItemAudioTarget } from './quizDetailDtoQuestionsItemAudioTarget';
 import type { QuizDetailDtoQuestionsItemBackgroundGradient } from './quizDetailDtoQuestionsItemBackgroundGradient';
 import type { QuizDetailDtoQuestionsItemBackgroundStyle } from './quizDetailDtoQuestionsItemBackgroundStyle';
+import type { QuizDetailDtoQuestionsItemHint } from './quizDetailDtoQuestionsItemHint';
 import type { QuizDetailDtoQuestionsItemMedia } from './quizDetailDtoQuestionsItemMedia';
 import type { QuizDetailDtoQuestionsItemMediaPosition } from './quizDetailDtoQuestionsItemMediaPosition';
+import type { QuizDetailDtoQuestionsItemMediaStyle } from './quizDetailDtoQuestionsItemMediaStyle';
 import type { QuizDetailDtoQuestionsItemOptionsItem } from './quizDetailDtoQuestionsItemOptionsItem';
 import type { QuizDetailDtoQuestionsItemPointsMode } from './quizDetailDtoQuestionsItemPointsMode';
 import type { QuizDetailDtoQuestionsItemScoring } from './quizDetailDtoQuestionsItemScoring';
@@ -54,6 +56,10 @@ export type QuizDetailDtoQuestionsItem = {
   audioTarget: QuizDetailDtoQuestionsItemAudioTarget;
   waveformSize: QuizDetailDtoQuestionsItemWaveformSize;
   mediaPosition: QuizDetailDtoQuestionsItemMediaPosition;
+  /** @nullable */
+  mediaStyle: QuizDetailDtoQuestionsItemMediaStyle;
+  /** @nullable */
+  hint: QuizDetailDtoQuestionsItemHint;
   timerAfterMedia: boolean;
   pointsMode: QuizDetailDtoQuestionsItemPointsMode;
   scoring: QuizDetailDtoQuestionsItemScoring;

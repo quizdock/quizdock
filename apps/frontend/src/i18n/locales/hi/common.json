@@ -16,7 +16,8 @@
     "code": "कोड",
     "codeBlock": "कोड ब्लॉक",
     "bulletList": "बुलेट सूची",
-    "orderedList": "क्रमांकित सूची"
+    "orderedList": "क्रमांकित सूची",
+    "clear": "फ़ॉर्मैटिंग हटाएँ"
   },
   "captureConfirm": {
     "title": "सभी उत्तरों का पूरा रिकॉर्ड चालू करें?",

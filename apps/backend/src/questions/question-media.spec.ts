@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service';
-import { resolveQuestionMedia } from './question-media';
+import { liveMediaOf, resolveQuestionMedia } from './question-media';
 
 const id = (c: string) => c.repeat(26);
 const audio = { assetId: id('A'), origin: 'upload' as const, durationMs: 1, peaks: [] };
@@ -78,5 +78,28 @@ describe('resolveQuestionMedia', () => {
       audioMediaId: null,
     });
     expect(findMany).not.toHaveBeenCalled();
+  });
+});
+
+describe('liveMediaOf — the visual’s style', () => {
+  const asset = (kind: 'image' | 'video') =>
+    ({ id: id('I'), kind, url: '/m/x', alt: null, durationMs: 1000 }) as never;
+  const style = { ratio: '4:3', fit: 'cover', focus: 'top', revealS: 8 };
+
+  it('goes to the screens with a picture, reveal included', () => {
+    const live = liveMediaOf({ visualMedia: asset('image'), audioMedia: null, mediaStyle: style });
+    expect(live.style).toEqual(style);
+  });
+
+  it('never reveals a video, and says nothing when empty or unreadable', () => {
+    expect(
+      liveMediaOf({ visualMedia: asset('video'), audioMedia: null, mediaStyle: style }).style,
+    ).toEqual({ ratio: '4:3', fit: 'cover', focus: 'top' });
+    expect(
+      liveMediaOf({ visualMedia: asset('image'), audioMedia: null, mediaStyle: {} }),
+    ).not.toHaveProperty('style');
+    expect(
+      liveMediaOf({ visualMedia: asset('image'), audioMedia: null, mediaStyle: { ratio: 'x' } }),
+    ).not.toHaveProperty('style');
   });
 });

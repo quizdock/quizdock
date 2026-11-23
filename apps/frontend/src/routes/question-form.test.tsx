@@ -21,6 +21,16 @@ function renderForm(onClose = vi.fn(), quizLanguage?: string) {
   };
 }
 
+/** The question's own settings: the drawer of its timeline's time row. */
+const openTimeSettings = () =>
+  fireEvent.click(screen.getByRole('button', { name: /^Durée minimale/ }));
+
+/** The + of the timeline: its modal, to query within. */
+const openAdd = () => {
+  fireEvent.click(screen.getByRole('button', { name: 'Ajouter un élément' }));
+  return within(screen.getByRole('dialog', { name: 'Ajouter un élément' }));
+};
+
 const lastPost = (fetchMock: ReturnType<typeof mockApi>) => {
   const call = fetchMock.mock.calls.find(
     ([url, opts]) => String(url).includes('/quizzes/q1/questions') && opts?.method === 'POST',
@@ -59,6 +69,18 @@ describe('QuestionForm', () => {
     expect(payload.revealDelayS).toBeNull();
   });
 
+  it('the prompt offers the variables from its bar, saved as written', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Insérer une variable' }));
+    fireEvent.click(screen.getByRole('button', { name: /\{title\}/ }));
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).prompt).toBe('{title}');
+  });
+
   it('a draft saves unfinished (no right answer), then says what is left to finish', async () => {
     const fetchMock = mockApi([
       { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
@@ -75,9 +97,13 @@ describe('QuestionForm', () => {
   it('true or false starts with True ticked; another type clears the ticks', () => {
     mockApi([]);
     renderForm();
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'true_false' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'true_false' },
+    });
     expect(screen.getAllByRole('radio')[0]).toBeChecked();
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'multiple_choice' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'multiple_choice' },
+    });
     for (const box of screen.getAllByRole('checkbox', { name: 'Correcte' })) {
       expect(box).not.toBeChecked();
     }
@@ -90,14 +116,21 @@ describe('QuestionForm', () => {
     "true or false is written in the quiz's language (%s), not the instance's (#197)",
     async (language, yes, no) => {
       const fetchMock = mockApi([
-        { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+        {
+          method: 'POST',
+          path: '/quizzes/q1/questions',
+          status: 201,
+          body: {},
+        },
       ]);
       const { onClose } = renderForm(vi.fn(), language);
       await waitFor(() =>
         expect(i18next.hasResourceBundle(contentLang(language)!, 'editor')).toBe(true),
       );
       setMarkdownField('Énoncé', 'La Terre est ronde ?');
-      fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'true_false' } });
+      fireEvent.change(screen.getByLabelText('Type'), {
+        target: { value: 'true_false' },
+      });
       fireEvent.click(screen.getByText('Ajouter'));
       await waitFor(() => expect(onClose).toHaveBeenCalled());
       expect(lastPost(fetchMock).options.map((o: { text: string }) => o.text)).toEqual([yes, no]);
@@ -107,7 +140,8 @@ describe('QuestionForm', () => {
   it('a time out of bounds becomes the nearest bound, with a note', () => {
     mockApi([]);
     renderForm();
-    const time = screen.getByLabelText('Temps (s)');
+    openTimeSettings();
+    const time = screen.getByLabelText('Durée minimale (s)');
     fireEvent.change(time, { target: { value: '500' } });
     fireEvent.blur(time);
     expect(time).toHaveValue(240);
@@ -120,7 +154,9 @@ describe('QuestionForm', () => {
     ]);
     const { onClose } = renderForm();
     setMarkdownField('Énoncé', 'Du plus petit au plus grand');
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'ordering' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'ordering' },
+    });
     const place = (i: number) =>
       screen.getByLabelText(`Place de la réponse ${i} dans le bon ordre`);
     expect(place(1)).toHaveValue('0');
@@ -139,7 +175,9 @@ describe('QuestionForm', () => {
     ]);
     const { onClose } = renderForm();
     setMarkdownField('Énoncé', 'Pi ?');
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'numeric' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'numeric' },
+    });
     expect(screen.getByLabelText('Valeur cible')).toHaveAttribute('step', 'any');
     fireEvent.click(screen.getByText('Ajouter'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -148,6 +186,8 @@ describe('QuestionForm', () => {
 
   it("no text field offers an image to add: a question's picture goes in its Media section", () => {
     renderForm();
+    // The explanation is edited in its panel, from the timeline's +.
+    fireEvent.click(openAdd().getByRole('button', { name: /^Explication/ }));
     for (const label of ['Énoncé', 'Explication (montrée avec la bonne réponse)']) {
       const editor = screen.getByLabelText(label).closest('[data-markdown-editor]') as HTMLElement;
       expect(within(editor).queryByRole('button', { name: /image/i })).toBeNull();
@@ -163,7 +203,11 @@ describe('QuestionForm', () => {
         path: `/media/${ID}/meta`,
         body: { id: ID, alt: null, credit: null, durationMs: null },
       },
-      { method: 'PUT', path: `/media/${ID}/alt`, body: { id: ID, alt: 'La tour Eiffel' } },
+      {
+        method: 'PUT',
+        path: `/media/${ID}/alt`,
+        body: { id: ID, alt: 'La tour Eiffel' },
+      },
       { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
     ]);
     const { onClose } = renderForm();
@@ -181,7 +225,12 @@ describe('QuestionForm', () => {
       ).toBe(true),
     );
     // With a picture, where it sits on the big screen: below the text unless placed elsewhere.
-    fireEvent.click(await screen.findByRole('button', { name: 'À gauche du texte' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Mise en page' }));
+    const layouts = within(screen.getByRole('dialog', { name: 'Mise en page' }));
+    fireEvent.click(layouts.getByRole('button', { name: 'À gauche du texte' }));
+    // Picked, it says what it gives; applied, it is the question's.
+    expect(layouts.getByText(/L’image ou la vidéo à gauche, le texte à côté/)).toBeInTheDocument();
+    fireEvent.click(layouts.getByRole('button', { name: 'Appliquer' }));
     fireEvent.click(screen.getAllByRole('radio')[0]);
     fireEvent.click(screen.getByText('Ajouter'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -198,6 +247,7 @@ describe('QuestionForm', () => {
     const { onClose } = renderForm();
 
     setMarkdownField('Énoncé', 'Q ?');
+    openTimeSettings();
     fireEvent.change(screen.getByLabelText('Affichage de la réponse (s)'), {
       target: { value: '12' },
     });
@@ -235,7 +285,9 @@ describe('QuestionForm', () => {
     const { onClose } = renderForm();
     // No variant for a single choice: the select is not there.
     expect(screen.queryByLabelText('Barème')).toBeNull();
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'numeric' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'numeric' },
+    });
     const scoring = screen.getByLabelText('Barème') as HTMLSelectElement;
     expect([...scoring.options].map((o) => o.textContent)).toEqual([
       'Dans la tolérance',
@@ -243,10 +295,15 @@ describe('QuestionForm', () => {
     ]);
     fireEvent.change(scoring, { target: { value: 'closest' } });
     setMarkdownField('Énoncé', 'Hauteur ?');
-    fireEvent.change(screen.getByLabelText('Valeur cible'), { target: { value: '330' } });
+    fireEvent.change(screen.getByLabelText('Valeur cible'), {
+      target: { value: '330' },
+    });
     fireEvent.click(screen.getByText('Ajouter'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
-    expect(lastPost(fetchMock)).toMatchObject({ type: 'numeric', scoring: 'closest' });
+    expect(lastPost(fetchMock)).toMatchObject({
+      type: 'numeric',
+      scoring: 'closest',
+    });
   });
 
   it('résout le code d’erreur tokenisé renvoyé par l’API (400) en texte i18n', async () => {
@@ -306,7 +363,12 @@ describe('QuestionForm — media slots', () => {
           },
         },
         answerExplanation: '',
-        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        background: {
+          mediaId: null,
+          gradient: null,
+          textTone: 'light',
+          textOutline: true,
+        },
         timeLimitS: 20,
         revealDelayS: null,
         pointsMode: 'none',
@@ -365,7 +427,12 @@ describe('QuestionForm — media timing', () => {
           },
         },
         answerExplanation: '',
-        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        background: {
+          mediaId: null,
+          gradient: null,
+          textTone: 'light',
+          textOutline: true,
+        },
         timeLimitS: 20,
         revealDelayS: null,
         pointsMode: 'none',
@@ -378,6 +445,7 @@ describe('QuestionForm — media timing', () => {
     );
     mockApi([]);
     renderForm();
+    openTimeSettings();
     // 42 s of sound starting 3 s before the answers, + the default 1 s pause → 40 s.
     expect(await screen.findByRole('note', { name: '' })).toHaveTextContent(
       'Le média dure 42 s : la question durera 40 s',
@@ -385,6 +453,58 @@ describe('QuestionForm — media timing', () => {
   });
 
   it('listen first: the timer starts after the sound, and the hint says so', async () => {
+    localStorage.setItem(
+      'draft:quiz:q1:question:new',
+      JSON.stringify({
+        type: 'poll',
+        prompt: 'Q ?',
+        media: {
+          visual: null,
+          audio: {
+            assetId: 'A'.repeat(26),
+            origin: 'upload',
+            durationMs: 42_000,
+            peaks: new Array(200).fill(0.5),
+          },
+        },
+        answerExplanation: '',
+        background: {
+          mediaId: null,
+          gradient: null,
+          textTone: 'light',
+          textOutline: true,
+        },
+        timeLimitS: 20,
+        revealDelayS: null,
+        pointsMode: 'none',
+        scoring: 'standard',
+        numericValue: 0,
+        numericTolerance: 0,
+        options: [],
+        acceptedAnswers: [],
+      }),
+    );
+    mockApi([]);
+    renderForm();
+    openTimeSettings();
+    fireEvent.click(
+      await screen.findByRole('checkbox', {
+        name: /Lancer le chrono à la fin du média/,
+      }),
+    );
+    expect(screen.getByRole('note', { name: '' })).toHaveTextContent(
+      'Le média joue 42 s, puis les 20 s de réponse commencent.',
+    );
+  });
+});
+
+describe('QuestionForm — the timeline', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  const withSound = () =>
     localStorage.setItem(
       'draft:quiz:q1:question:new',
       JSON.stringify({
@@ -411,14 +531,237 @@ describe('QuestionForm — media timing', () => {
         acceptedAnswers: [],
       }),
     );
+
+  it('the + refuses a second sound and a video, and says why; a picture is fine', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    const modal = openAdd();
+    expect(modal.getByRole('button', { name: /^Audio/ })).toHaveTextContent(
+      'Un seul audio par question.',
+    );
+    expect(modal.getByRole('button', { name: /^Vidéo/ })).toHaveTextContent(
+      'Jamais une vidéo et un audio : la vidéo porte le sien.',
+    );
+    expect(modal.getByRole('button', { name: /^Image/ })).toBeEnabled();
+  });
+
+  it('the list view: the flow and each element in words, the same panel, the choice kept', async () => {
+    withSound();
+    const fetchMock = mockApi([
+      { method: 'GET', path: '/me/preferences', body: {} },
+      { method: 'PATCH', path: '/me/preferences', body: { stepView: 'list' } },
+    ]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Liste' }));
+    const table = within(screen.getByRole('table'));
+    expect(table.getByText('Éléments : 1 · total 43 s')).toBeInTheDocument();
+    expect(table.getByText(/Son, 42 s · allonge la question de 19 s/)).toBeInTheDocument();
+    fireEvent.click(table.getByRole('button', { name: 'Ouvrir : Audio' }));
+    expect(screen.getByRole('region', { name: 'Audio' })).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        fetchMock.mock.calls.some(
+          ([url, o]) => String(url).includes('/me/preferences') && o?.method === 'PATCH',
+        ),
+      ).toBe(true),
+    );
+  });
+
+  it('back to the type’s defaults, once confirmed: no media, its time', () => {
+    withSound();
     mockApi([]);
     renderForm();
     fireEvent.click(
-      await screen.findByRole('checkbox', { name: /Lancer le chrono à la fin du média/ }),
+      screen.getByRole('button', { name: 'Revenir aux valeurs par défaut : Sondage' }),
     );
-    expect(screen.getByRole('note', { name: '' })).toHaveTextContent(
-      'Le média joue 42 s, puis les 20 s de réponse commencent.',
+    expect(screen.getByRole('button', { name: 'Son, 42 s' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Rétablir' }));
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    // At its defaults, nothing to bring back.
+    expect(screen.queryByRole('button', { name: /^Revenir aux valeurs par défaut/ })).toBeNull();
+  });
+
+  it('a time left at its type’s default follows the type; one set by hand stays', () => {
+    mockApi([]);
+    renderForm();
+    openTimeSettings();
+    const time = () => screen.getByLabelText('Durée minimale (s)');
+    expect(time()).toHaveValue(20);
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'true_false' } });
+    expect(time()).toHaveValue(10);
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'text_input' } });
+    expect(time()).toHaveValue(30);
+    fireEvent.change(time(), { target: { value: '25' } });
+    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'single_choice' } });
+    expect(time()).toHaveValue(25);
+  });
+
+  it('the explanation is added from the +, written in its panel, and drawn after the answers', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    setMarkdownField('Énoncé', 'Q ?');
+    fireEvent.click(openAdd().getByRole('button', { name: /^Explication/ }));
+    setMarkdownField('Explication (montrée avec la bonne réponse)', 'Parce que.');
+    expect(
+      screen.getByRole('button', { name: 'Explication, affichée avec la bonne réponse' }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('radio')[0]);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).answerExplanation).toBe('Parce que.');
+  });
+
+  it('a hint from the +: its text, its time, its penalty; drawn from its time', async () => {
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    setMarkdownField('Énoncé', 'Q ?');
+    fireEvent.click(openAdd().getByRole('button', { name: /^Indice/ }));
+    const panel = within(screen.getByRole('region', { name: 'Indice' }));
+    fireEvent.change(panel.getByLabelText('Texte de l’indice'), {
+      target: { value: 'Elle a été choisie en 1923' },
+    });
+    fireEvent.change(panel.getByLabelText('Après l’ouverture (s)'), { target: { value: '12' } });
+    fireEvent.change(panel.getByLabelText('Pénalité (%)'), { target: { value: '40' } });
+    // 3 s of reading, then 12 s.
+    expect(screen.getByRole('button', { name: 'Indice, à partir de 15 s' })).toBeInTheDocument();
+    // One per question.
+    expect(openAdd().getByRole('button', { name: /^Indice/ })).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('dialog', { name: 'Ajouter un élément' }), {
+      key: 'Escape',
+    });
+    fireEvent.click(screen.getAllByRole('radio')[0]);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).hint).toEqual({
+      text: 'Elle a été choisie en 1923',
+      imageMediaId: null,
+      videoMediaId: null,
+      audioMediaId: null,
+      afterS: 12,
+      penaltyPct: 40,
+    });
+  });
+
+  it('every element is taken away by the same button at the foot of its panel', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Son, 42 s' }));
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Audio' })).getByRole('button', {
+        name: 'Retirer cet élément',
+      }),
     );
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Audio' })).toBeNull();
+  });
+
+  it('the layouts wait for a picture or a video, and say so', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    const layout = screen.getByRole('button', {
+      name: 'Mise en page : ajoutez d’abord une image ou une vidéo.',
+    });
+    expect(layout).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(layout);
+    expect(screen.queryByRole('dialog', { name: 'Mise en page' })).toBeNull();
+  });
+
+  it('a sound opens its panel, with its waveform; clearing takes every media away', () => {
+    withSound();
+    mockApi([]);
+    renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Son, 42 s' }));
+    expect(screen.getByRole('region', { name: 'Audio' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Taille de la forme d’onde')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retirer tous les médias' }));
+    // Asked first: nothing goes yet.
+    expect(screen.getByRole('button', { name: 'Son, 42 s' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retirer' }));
+    expect(screen.queryByRole('button', { name: 'Son, 42 s' })).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Audio' })).toBeNull();
+  });
+});
+
+describe('QuestionForm — the picture’s options', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+  const PIC = '01M3GM8JMFRA3DJ04SWWDWPPC9';
+
+  it('frames, crops and reveals the picture, and the timeline shows the reveal', async () => {
+    const fetchMock = mockApi([
+      { method: 'GET', path: `/media/${PIC}/meta`, body: { id: PIC, alt: null, credit: null } },
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    localStorage.setItem(
+      'draft:quiz:q1:question:new',
+      JSON.stringify({
+        type: 'poll',
+        prompt: 'Où est-ce ?',
+        media: { visual: { kind: 'image', assetId: PIC }, audio: null },
+        answerExplanation: '',
+        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        timeLimitS: 20,
+        revealDelayS: null,
+        pointsMode: 'none',
+        scoring: 'standard',
+        numericValue: 0,
+        numericTolerance: 0,
+        options: [
+          {
+            key: 'a',
+            text: 'Ici',
+            color: 'green',
+            shape: 'square',
+            isCorrect: false,
+            correctOrderIndex: 0,
+          },
+          {
+            key: 'b',
+            text: 'Là',
+            color: 'red',
+            shape: 'triangle',
+            isCorrect: false,
+            correctOrderIndex: 1,
+          },
+        ],
+        acceptedAnswers: [],
+      }),
+    );
+    const { onClose } = renderForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Image, toute la durée' }));
+    const panel = within(screen.getByRole('region', { name: 'Image' }));
+    fireEvent.click(panel.getByRole('button', { name: '1:1' }));
+    fireEvent.click(panel.getByRole('button', { name: 'Remplir le cadre' }));
+    fireEvent.click(panel.getByRole('button', { name: 'Haut' }));
+    fireEvent.click(panel.getByRole('checkbox', { name: /^Révélation progressive/ }));
+    expect(
+      screen.getByRole('button', { name: 'Révélation progressive : 10 s' }),
+    ).toBeInTheDocument();
+    // A ratio typed freely is kept once it reads as one.
+    fireEvent.click(panel.getByRole('button', { name: 'Libre' }));
+    const free = panel.getByLabelText('Ratio (L:H)');
+    fireEvent.change(free, { target: { value: '9:0' } });
+    fireEvent.blur(free);
+    expect(panel.getByRole('alert')).toHaveTextContent('Un ratio s’écrit L:H');
+    fireEvent.change(free, { target: { value: '21:9' } });
+    fireEvent.blur(free);
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock).mediaStyle).toEqual({
+      ratio: '21:9',
+      fit: 'cover',
+      focus: 'top',
+      revealS: 10,
+    });
   });
 });
 
@@ -487,7 +830,10 @@ describe('QuestionForm — image choice', () => {
     quizStatus: 'draft' | 'ready' = 'draft',
   ) {
     const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
     });
     render(
       <QueryClientProvider client={queryClient}>
@@ -506,11 +852,17 @@ describe('QuestionForm — image choice', () => {
   it('switching to it gives 2 empty pictures, no visual slot, and 4 on request', () => {
     mockApi([]);
     renderForm();
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'image_choice' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'image_choice' },
+    });
     expect(screen.getAllByLabelText(/Texte alternatif de l’image/)).toHaveLength(2);
     expect(screen.queryByLabelText('choix 1')).toBeNull();
-    // The media section keeps the sound only.
-    expect(screen.queryByText('Ajouter une vidéo')).toBeNull();
+    // The timeline offers the sound only, and says why.
+    const modal = openAdd();
+    const refused = modal.getByRole('button', { name: /^Vidéo/ });
+    expect(refused).toBeDisabled();
+    expect(refused).toHaveTextContent('Un choix d’images n’a pas d’image ni de vidéo propre.');
+    expect(modal.getByRole('button', { name: /^Audio/ })).toBeEnabled();
     fireEvent.click(screen.getByRole('button', { name: '4' }));
     expect(screen.getAllByLabelText(/Texte alternatif de l’image/)).toHaveLength(4);
     expect(screen.queryByRole('button', { name: '3' })).toBeNull();
@@ -518,8 +870,16 @@ describe('QuestionForm — image choice', () => {
 
   it('a media credit typed in the form is saved with it, not before', async () => {
     const fetchMock = mockApi([
-      { method: 'GET', path: `/media/${CAT}/meta`, body: { id: CAT, alt: null, credit: null } },
-      { method: 'PUT', path: `/media/${CAT}/credit`, body: { id: CAT, credit: 'Photo : Ana' } },
+      {
+        method: 'GET',
+        path: `/media/${CAT}/meta`,
+        body: { id: CAT, alt: null, credit: null },
+      },
+      {
+        method: 'PUT',
+        path: `/media/${CAT}/credit`,
+        body: { id: CAT, credit: 'Photo : Ana' },
+      },
       { method: 'PUT', path: '/questions/qi', body: {} },
     ]);
     const onClose = renderEdit(
@@ -556,6 +916,7 @@ describe('QuestionForm — image choice', () => {
       fetchMock.mock.calls.filter(
         ([url, opts]) => String(url).includes(path) && (opts as RequestInit)?.method === method,
       );
+    fireEvent.click(await screen.findByRole('button', { name: 'Image, toute la durée' }));
     const credit = await screen.findByLabelText(/^Crédit/);
     fireEvent.change(credit, { target: { value: 'Photo : Ana' } });
     fireEvent.blur(credit);
@@ -601,13 +962,18 @@ describe('QuestionForm — image choice', () => {
         ],
       } as never),
     );
-    fireEvent.change(screen.getByLabelText('Type'), { target: { value: 'single_choice' } });
+    fireEvent.change(screen.getByLabelText('Type'), {
+      target: { value: 'single_choice' },
+    });
     fireEvent.click(screen.getAllByRole('radio')[0]);
     fireEvent.click(screen.getByText('Enregistrer'));
     // Saved, the editor stays open (#195).
     expect(await screen.findByText('Enregistré')).toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();
-    expect(lastPut(fetchMock)).toMatchObject({ type: 'single_choice', pointsMode: 'standard' });
+    expect(lastPut(fetchMock)).toMatchObject({
+      type: 'single_choice',
+      pointsMode: 'standard',
+    });
   });
 
   it('Cmd/Ctrl+S saves from a field; the saved values become the clean baseline (#195)', async () => {
@@ -653,7 +1019,9 @@ describe('QuestionForm — image choice', () => {
     // Saved, the editor stays open (#195).
     expect(await screen.findByText('Enregistré')).toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();
-    expect(lastPut(fetchMock)).toMatchObject({ options: [{ alt: 'A black cat' }, { alt: '' }] });
+    expect(lastPut(fetchMock)).toMatchObject({
+      options: [{ alt: 'A black cat' }, { alt: '' }],
+    });
   });
 
   it('in a published quiz, an unfinished question offers to go back to draft', async () => {
@@ -678,7 +1046,9 @@ describe('QuestionForm — image choice', () => {
     fireEvent.click(screen.getByLabelText('Plusieurs bonnes réponses'));
     // Now checkboxes: tick the second picture too.
     fireEvent.click(screen.getAllByRole('checkbox', { name: 'Correcte' })[1]);
-    fireEvent.change(screen.getByLabelText('Barème'), { target: { value: 'partial' } });
+    fireEvent.change(screen.getByLabelText('Barème'), {
+      target: { value: 'partial' },
+    });
     fireEvent.click(screen.getByText('Enregistrer'));
     // Saved, the editor stays open (#195).
     expect(await screen.findByText('Enregistré')).toBeInTheDocument();
@@ -690,8 +1060,20 @@ describe('QuestionForm — image choice', () => {
       scoring: 'partial',
       media: { visual: null, audio: null },
       options: [
-        { mediaId: CAT, alt: 'A cat', isCorrect: true, color: 'green', shape: 'square' },
-        { mediaId: DOG, alt: 'A dog', isCorrect: true, color: 'red', shape: 'triangle' },
+        {
+          mediaId: CAT,
+          alt: 'A cat',
+          isCorrect: true,
+          color: 'green',
+          shape: 'square',
+        },
+        {
+          mediaId: DOG,
+          alt: 'A dog',
+          isCorrect: true,
+          color: 'red',
+          shape: 'triangle',
+        },
       ],
     });
     expect(payload.options[0].text).toBeUndefined();
@@ -699,7 +1081,10 @@ describe('QuestionForm — image choice', () => {
 
   it('back to one right picture keeps the first one ticked', async () => {
     const fetchMock = mockApi([{ method: 'PUT', path: '/questions/qi', body: {} }]);
-    const q = pictureQuestion({ multiSelect: true, scoring: 'partial' } as never);
+    const q = pictureQuestion({
+      multiSelect: true,
+      scoring: 'partial',
+    } as never);
     (q.options as unknown as { isCorrect: boolean; alt: string }[]).forEach((o) => {
       o.isCorrect = true;
       o.alt = o.alt || 'A dog';
@@ -722,7 +1107,10 @@ describe('QuestionForm — image choice', () => {
     const q = pictureQuestion({ type: 'single_choice' } as never);
     (q.options as unknown as { text: string | null }[]).forEach((o, i) => (o.text = `T${i}`));
     const onClose = renderEdit(q);
-    fireEvent.change(screen.getByLabelText('Temps (s)'), { target: { value: '30' } });
+    openTimeSettings();
+    fireEvent.change(screen.getByLabelText('Durée minimale (s)'), {
+      target: { value: '30' },
+    });
     fireEvent.click(screen.getByText('Enregistrer'));
     // Saved, the editor stays open (#195).
     expect(await screen.findByText('Enregistré')).toBeInTheDocument();
@@ -751,7 +1139,12 @@ describe('QuestionForm — image choice', () => {
         prompt: 'Q ?',
         media: { visual: null, audio: null },
         answerExplanation: '',
-        background: { mediaId: null, gradient: null, textTone: 'light', textOutline: true },
+        background: {
+          mediaId: null,
+          gradient: null,
+          textTone: 'light',
+          textOutline: true,
+        },
         timeLimitS: 20,
         revealDelayS: null,
         pointsMode: 'standard',
@@ -776,5 +1169,398 @@ describe('QuestionForm — image choice', () => {
     const duplicate = errors.mock.calls.some((c) => String(c[0]).includes('same key'));
     errors.mockRestore();
     expect(duplicate).toBe(false);
+  });
+});
+
+// Non-regression before the editor refactor: a loaded question goes back as it came,
+// but for the one change made, whatever its type and its media settings.
+describe('QuestionForm — a loaded question saves as it was', () => {
+  const ID = (c: string) => `01M3GM8JMFRA3DJ04SWWDWPP${c}`;
+  const SOUND = {
+    assetId: ID('S1'),
+    origin: 'upload',
+    durationMs: 5000,
+    peaks: new Array(200).fill(0.5),
+  };
+  const opt = (id: string, text: string, color: string, shape: string, isCorrect = false) => ({
+    id,
+    text,
+    color,
+    shape,
+    isCorrect,
+    correctOrderIndex: null,
+    mediaId: null,
+    alt: null,
+  });
+  const base = {
+    id: 'qx',
+    quizId: 'q1',
+    orderIndex: 0,
+    prompt: 'Q ?',
+    media: { visual: null, audio: null },
+    answerExplanation: null,
+    backgroundMediaId: null,
+    backgroundGradient: null,
+    textTone: 'light',
+    textOutline: true,
+    backgroundStyle: null,
+    timeLimitS: 20,
+    revealDelayS: null,
+    audioTarget: null,
+    waveformSize: 'M',
+    mediaPosition: 'bottom',
+    mediaStyle: null,
+    hint: null,
+    timerAfterMedia: false,
+    pointsMode: 'standard',
+    scoring: 'standard',
+    numericValue: null,
+    numericTolerance: null,
+    multiSelect: false,
+    options: [] as unknown[],
+    acceptedAnswers: [] as { text: string }[],
+  };
+  const common = {
+    prompt: 'Q ?',
+    timeLimitS: 21,
+    backgroundMediaId: null,
+    backgroundGradient: null,
+    backgroundStyle: null,
+    mediaStyle: null,
+    hint: null,
+  };
+
+  const cases: [string, Record<string, unknown>, Record<string, unknown>][] = [
+    [
+      'single choice with a sound and every media setting',
+      {
+        type: 'single_choice',
+        media: { visual: null, audio: SOUND },
+        audioTarget: 'everyone',
+        waveformSize: 'L',
+        mediaPosition: 'left',
+        hint: { text: 'Un hymne de 1921', afterS: 8, penaltyPct: 30 },
+        timerAfterMedia: true,
+        revealDelayS: 7,
+        pointsMode: 'double',
+        answerExplanation: 'Parce que',
+        textTone: 'dark',
+        textOutline: false,
+        options: [opt('o1', 'A', 'red', 'triangle', true), opt('o2', 'B', 'blue', 'diamond')],
+      },
+      {
+        ...common,
+        type: 'single_choice',
+        revealDelayS: 7,
+        audioTarget: 'everyone',
+        waveformSize: 'L',
+        mediaPosition: 'left',
+        hint: {
+          text: 'Un hymne de 1921',
+          imageMediaId: null,
+          videoMediaId: null,
+          audioMediaId: null,
+          afterS: 8,
+          penaltyPct: 30,
+        },
+        timerAfterMedia: true,
+        pointsMode: 'double',
+        scoring: 'standard',
+        media: { visual: null, audio: SOUND },
+        answerExplanation: 'Parce que',
+        textTone: 'dark',
+        textOutline: false,
+        options: [
+          { text: 'A', color: 'red', shape: 'triangle', isCorrect: true },
+          { text: 'B', color: 'blue', shape: 'diamond', isCorrect: false },
+        ],
+      },
+    ],
+    [
+      'a video placed on the right',
+      {
+        type: 'multiple_choice',
+        media: {
+          visual: { kind: 'video', source: 'upload', assetId: ID('V1') },
+          audio: null,
+        },
+        mediaPosition: 'right',
+        // A video is framed, never revealed.
+        mediaStyle: { ratio: '4:3', fit: 'cover', revealS: 5 },
+        audioTarget: 'projection',
+        scoring: 'partial',
+        options: [opt('o1', 'A', 'red', 'triangle', true), opt('o2', 'B', 'blue', 'diamond', true)],
+      },
+      {
+        ...common,
+        type: 'multiple_choice',
+        revealDelayS: null,
+        audioTarget: 'projection',
+        waveformSize: 'M',
+        mediaPosition: 'right',
+        mediaStyle: { ratio: '4:3', fit: 'cover' },
+        timerAfterMedia: false,
+        pointsMode: 'standard',
+        scoring: 'partial',
+        media: {
+          visual: { kind: 'video', source: 'upload', assetId: ID('V1') },
+          audio: null,
+        },
+        answerExplanation: null,
+        textTone: 'light',
+        textOutline: true,
+        options: [
+          { text: 'A', color: 'red', shape: 'triangle', isCorrect: true },
+          { text: 'B', color: 'blue', shape: 'diamond', isCorrect: true },
+        ],
+      },
+    ],
+    [
+      'numeric, closest wins',
+      {
+        type: 'numeric',
+        numericValue: '42.5',
+        numericTolerance: '0.5',
+        scoring: 'closest',
+      },
+      {
+        ...common,
+        type: 'numeric',
+        revealDelayS: null,
+        audioTarget: null,
+        waveformSize: 'M',
+        mediaPosition: 'bottom',
+        timerAfterMedia: false,
+        pointsMode: 'standard',
+        scoring: 'closest',
+        media: { visual: null, audio: null },
+        answerExplanation: null,
+        textTone: 'light',
+        textOutline: true,
+        numericValue: 42.5,
+        numericTolerance: 0.5,
+      },
+    ],
+    [
+      'text input, lenient',
+      {
+        type: 'text_input',
+        scoring: 'lenient',
+        acceptedAnswers: [{ text: 'Paris' }, { text: 'paris' }],
+      },
+      {
+        ...common,
+        type: 'text_input',
+        revealDelayS: null,
+        audioTarget: null,
+        waveformSize: 'M',
+        mediaPosition: 'bottom',
+        timerAfterMedia: false,
+        pointsMode: 'standard',
+        scoring: 'lenient',
+        media: { visual: null, audio: null },
+        answerExplanation: null,
+        textTone: 'light',
+        textOutline: true,
+        acceptedAnswers: [{ text: 'Paris' }, { text: 'paris' }],
+      },
+    ],
+    [
+      'ordering keeps each place',
+      {
+        type: 'ordering',
+        options: [
+          { ...opt('o1', 'Un', 'red', 'triangle'), correctOrderIndex: 1 },
+          { ...opt('o2', 'Deux', 'blue', 'diamond'), correctOrderIndex: 0 },
+        ],
+      },
+      {
+        ...common,
+        type: 'ordering',
+        revealDelayS: null,
+        audioTarget: null,
+        waveformSize: 'M',
+        mediaPosition: 'bottom',
+        timerAfterMedia: false,
+        pointsMode: 'standard',
+        scoring: 'standard',
+        media: { visual: null, audio: null },
+        answerExplanation: null,
+        textTone: 'light',
+        textOutline: true,
+        options: [
+          {
+            text: 'Un',
+            color: 'red',
+            shape: 'triangle',
+            isCorrect: false,
+            correctOrderIndex: 1,
+          },
+          {
+            text: 'Deux',
+            color: 'blue',
+            shape: 'diamond',
+            isCorrect: false,
+            correctOrderIndex: 0,
+          },
+        ],
+      },
+    ],
+    [
+      'image choice with a sound, several right pictures',
+      {
+        type: 'image_choice',
+        multiSelect: true,
+        scoring: 'partial',
+        media: { visual: null, audio: SOUND },
+        options: [
+          {
+            ...opt('o1', '', 'red', 'triangle', true),
+            text: null,
+            mediaId: ID('C1'),
+            alt: 'Chat',
+          },
+          {
+            ...opt('o2', '', 'blue', 'diamond', true),
+            text: null,
+            mediaId: ID('C2'),
+            alt: 'Chien',
+          },
+        ],
+      },
+      {
+        ...common,
+        type: 'image_choice',
+        revealDelayS: null,
+        audioTarget: null,
+        waveformSize: 'M',
+        mediaPosition: 'bottom',
+        timerAfterMedia: false,
+        pointsMode: 'standard',
+        scoring: 'partial',
+        media: { visual: null, audio: SOUND },
+        answerExplanation: null,
+        textTone: 'light',
+        textOutline: true,
+        multiSelect: true,
+        options: [
+          {
+            mediaId: ID('C1'),
+            alt: 'Chat',
+            color: 'red',
+            shape: 'triangle',
+            isCorrect: true,
+          },
+          {
+            mediaId: ID('C2'),
+            alt: 'Chien',
+            color: 'blue',
+            shape: 'diamond',
+            isCorrect: true,
+          },
+        ],
+      },
+    ],
+  ];
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  it.each(cases)('%s', async (_, over, expected) => {
+    const fetchMock = mockApi([{ method: 'PUT', path: '/questions/qx', status: 200, body: {} }]);
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <QuestionForm
+          quizId="q1"
+          question={{ ...base, ...over } as unknown as QuizDetailDtoQuestionsItem}
+          onClose={vi.fn()}
+        />
+      </QueryClientProvider>,
+    );
+    openTimeSettings();
+    const time = screen.getByLabelText('Durée minimale (s)');
+    fireEvent.change(time, { target: { value: '21' } });
+    fireEvent.blur(time);
+    fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }));
+    const sent = () =>
+      fetchMock.mock.calls
+        .filter(([url, o]) => String(url).includes('/questions/qx') && o?.method === 'PUT')
+        .map(([, o]) => JSON.parse(String((o as RequestInit).body)));
+    await waitFor(() => expect(sent()).toHaveLength(1));
+    expect(sent()[0]).toEqual(expected);
+  });
+});
+
+describe('QuestionForm — settings that need a sound', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  it('without a sound, neither listen-first nor the audio target is sent', async () => {
+    localStorage.setItem(
+      'draft:quiz:q1:question:new',
+      JSON.stringify({
+        type: 'poll',
+        prompt: 'Q ?',
+        media: { visual: null, audio: null },
+        answerExplanation: '',
+        background: {
+          mediaId: null,
+          gradient: null,
+          textTone: 'light',
+          textOutline: true,
+        },
+        timeLimitS: 20,
+        revealDelayS: null,
+        audioTarget: 'everyone',
+        waveformSize: 'M',
+        mediaPosition: 'bottom',
+        timerAfterMedia: true,
+        pointsMode: 'standard',
+        scoring: 'standard',
+        numericValue: null,
+        numericTolerance: 0,
+        multiSelect: false,
+        options: [
+          {
+            key: 'a',
+            text: 'A',
+            color: 'red',
+            shape: 'triangle',
+            isCorrect: false,
+            correctOrderIndex: 0,
+          },
+          {
+            key: 'b',
+            text: 'B',
+            color: 'blue',
+            shape: 'diamond',
+            isCorrect: false,
+            correctOrderIndex: 1,
+          },
+        ],
+        acceptedAnswers: [],
+      }),
+    );
+    const fetchMock = mockApi([
+      { method: 'POST', path: '/quizzes/q1/questions', status: 201, body: {} },
+    ]);
+    const { onClose } = renderForm();
+    fireEvent.click(screen.getByText('Ajouter'));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(lastPost(fetchMock)).toMatchObject({
+      pointsMode: 'none',
+      audioTarget: null,
+      timerAfterMedia: false,
+    });
   });
 });

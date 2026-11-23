@@ -140,7 +140,10 @@
     },
     "true_false": {
       "two_options": "判断题需要恰好 2 个答案。"
-    }
+    },
+    "hint_empty": "提示需要文字或图片。",
+    "hint_two_visuals": "提示只能显示图片或视频，不能两者都有。",
+    "hint_two_sounds": "提示的视频自带声音：不能再加其他音频。"
   },
   "validation": "部分字段无效。",
   "internal": "内部错误。",
@@ -173,7 +176,8 @@
     "background_conflict": "背景只能是图片或渐变，不能同时使用。",
     "empty": "幻灯片没有任何内容：请添加标题、文字、图片、背景或视频。",
     "not_found": "此幻灯片已不存在：它已被删除。",
-    "incomplete_in_ready_quiz": "此测验已发布：请先改回草稿，才能保存不显示任何内容的幻灯片。"
+    "incomplete_in_ready_quiz": "此测验已发布：请先改回草稿，才能保存不显示任何内容的幻灯片。",
+    "two_visuals": "幻灯片只能显示图片或视频，不能两者都有。"
   },
   "record": {
     "not_found": "该项目已不存在：在此期间已被删除。",

@@ -1,5 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
-import { AUDIO_TARGETS, WAVEFORM_SIZES, backgroundStyleSchema } from '@quiz-dock/contracts';
+import {
+  AUDIO_TARGETS,
+  MEDIA_POSITIONS,
+  WAVEFORM_SIZES,
+  backgroundStyleSchema,
+  mediaStyleSchema,
+} from '@quiz-dock/contracts';
 import { z } from 'zod';
 import { gradientSchema, slideBlockSchema } from './slide-content.schema';
 
@@ -15,7 +21,13 @@ export const slideSchema = z.object({
   gradient: gradientSchema.nullable(),
   /** How the background is laid (docs/themes.md); null: today's cover. */
   backgroundStyle: backgroundStyleSchema.nullable(),
+  /** Its picture, placed by `mediaPosition` (never with a video). */
+  imageMediaId: z.string().nullable(),
   videoMediaId: z.string().nullable(),
+  /** Where its picture or video sits against its blocks; behind them by default. */
+  mediaPosition: z.enum(MEDIA_POSITIONS),
+  /** How its picture or video is framed; null = as its file is. */
+  mediaStyle: mediaStyleSchema.nullable(),
   videoLoop: z.boolean(),
   videoSound: z.boolean(),
   audioMediaId: z.string().nullable(),

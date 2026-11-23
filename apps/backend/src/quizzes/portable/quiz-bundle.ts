@@ -1,5 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import {
+  mediaStyleSchema,
+  questionHintSchema,
   AUDIO_TARGET_DEFAULT,
   type AudioTarget,
   LOUDNESS_TARGET_LUFS,
@@ -124,6 +126,14 @@ export function collectMediaIds(quiz: ExportableQuiz): Set<string> {
     add(q.visualMediaId);
     add(q.audioMediaId);
     add(q.backgroundMediaId);
+    const hint = q.hint as {
+      imageMediaId?: string;
+      videoMediaId?: string;
+      audioMediaId?: string;
+    } | null;
+    add(hint?.imageMediaId);
+    add(hint?.videoMediaId);
+    add(hint?.audioMediaId);
     scan(q.prompt);
     scan(q.answerExplanation);
     for (const o of q.options) {
@@ -133,6 +143,7 @@ export function collectMediaIds(quiz: ExportableQuiz): Set<string> {
   }
   for (const s of quiz.slides) {
     add(s.mediaId);
+    add(s.imageMediaId);
     add(s.videoMediaId);
     add(s.audioMediaId);
     walkBlocks(s.blocks, (b) => {
@@ -226,6 +237,19 @@ function questionOut(
   if (q.audioTarget) item.audioTarget = q.audioTarget;
   if (q.waveformSize && q.waveformSize !== 'M') item.waveformSize = q.waveformSize;
   if (q.mediaPosition && q.mediaPosition !== 'bottom') item.mediaPosition = q.mediaPosition;
+  const style = mediaStyleSchema.safeParse(q.mediaStyle ?? {});
+  if (style.success && Object.keys(style.data).length > 0) item.mediaStyle = style.data;
+  const hint = questionHintSchema.safeParse(q.hint);
+  if (hint.success) {
+    // Its picture as a file of the bundle, as every other media.
+    const { imageMediaId, videoMediaId, audioMediaId, ...rest } = hint.data;
+    item.hint = {
+      ...rest,
+      ...(imageMediaId ? { image: pathFor(imageMediaId) } : {}),
+      ...(videoMediaId ? { video: pathFor(videoMediaId) } : {}),
+      ...(audioMediaId ? { audio: pathFor(audioMediaId) } : {}),
+    };
+  }
   if (q.timerAfterMedia) item.timerAfterMedia = true;
   if (q.numericValue !== null) item.numericValue = Number(q.numericValue);
   if (q.numericTolerance !== null) item.numericTolerance = Number(q.numericTolerance);
@@ -268,6 +292,15 @@ function slideOut(
   } else {
     if (s.mediaId) item.backgroundImage = pathFor(s.mediaId);
     if (s.gradient) item.backgroundGradient = s.gradient as SlideBundleItem['backgroundGradient'];
+  }
+  // Its picture, and where it or its video sits (version 9): behind the blocks unless said.
+  if (s.imageMediaId) item.image = pathFor(s.imageMediaId);
+  if ((s.imageMediaId || s.videoMediaId) && s.mediaPosition !== 'behind') {
+    item.mediaPosition = s.mediaPosition;
+  }
+  const slideStyle = mediaStyleSchema.safeParse(s.mediaStyle ?? {});
+  if (slideStyle.success && Object.keys(slideStyle.data).length > 0) {
+    item.mediaStyle = slideStyle.data;
   }
   // Media (#125): looped with its sound, a waveform hidden, unless said otherwise.
   if (s.videoMediaId) {
@@ -417,9 +450,13 @@ export function collectMediaPaths(bundle: QuizBundle): Set<string> {
       add(it.video);
       add(it.audio);
     }
+    if (it.kind === 'slide') add(it.image);
     if (it.kind === 'question') {
       add(it.media);
       add(it.audio);
+      add(it.hint?.image);
+      add(it.hint?.video);
+      add(it.hint?.audio);
       scan(it.prompt);
       scan(it.answerExplanation);
       for (const o of it.options ?? []) {
@@ -505,7 +542,10 @@ export function fromBundle(
             mediaId: bg.image ? idFor(bg.image) : null,
             gradient: bg.gradient ?? null,
             backgroundStyle: bg.style,
+            imageMediaId: it.image ? idFor(it.image) : null,
             videoMediaId: it.video ? idFor(it.video) : null,
+            mediaPosition: it.mediaPosition,
+            mediaStyle: it.mediaStyle ?? null,
             videoLoop: it.videoLoop,
             videoSound: it.videoSound,
             audioMediaId: it.audio ? idFor(it.audio) : null,
@@ -542,6 +582,17 @@ export function fromBundle(
           audioTarget: it.audioTarget ?? null,
           waveformSize: it.waveformSize,
           mediaPosition: it.mediaPosition,
+          mediaStyle: it.mediaStyle ?? null,
+          hint: it.hint
+            ? {
+                text: it.hint.text,
+                afterS: it.hint.afterS,
+                penaltyPct: it.hint.penaltyPct,
+                imageMediaId: it.hint.image ? idFor(it.hint.image) : null,
+                videoMediaId: it.hint.video ? idFor(it.hint.video) : null,
+                audioMediaId: it.hint.audio ? idFor(it.hint.audio) : null,
+              }
+            : null,
           timerAfterMedia: it.timerAfterMedia,
           pointsMode: it.pointsMode,
           scoring: it.scoring,

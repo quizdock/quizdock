@@ -9,6 +9,8 @@ import type { UpdateSlideDtoAudioTarget } from './updateSlideDtoAudioTarget';
 import type { UpdateSlideDtoBackgroundStyle } from './updateSlideDtoBackgroundStyle';
 import type { UpdateSlideDtoBlocksItem } from './updateSlideDtoBlocksItem';
 import type { UpdateSlideDtoGradient } from './updateSlideDtoGradient';
+import type { UpdateSlideDtoMediaPosition } from './updateSlideDtoMediaPosition';
+import type { UpdateSlideDtoMediaStyle } from './updateSlideDtoMediaStyle';
 import type { UpdateSlideDtoTextTone } from './updateSlideDtoTextTone';
 import type { UpdateSlideDtoWaveformSize } from './updateSlideDtoWaveformSize';
 
@@ -30,7 +32,16 @@ export interface UpdateSlideDto {
      * @maxLength 26
      * @nullable
      */
+  imageMediaId?: string | null;
+  /**
+     * @minLength 26
+     * @maxLength 26
+     * @nullable
+     */
   videoMediaId?: string | null;
+  mediaPosition?: UpdateSlideDtoMediaPosition;
+  /** @nullable */
+  mediaStyle?: UpdateSlideDtoMediaStyle;
   videoLoop?: boolean;
   videoSound?: boolean;
   /**

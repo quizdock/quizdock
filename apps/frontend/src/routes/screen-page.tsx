@@ -39,13 +39,16 @@ import { ReadinessMeter } from '../game/media/readiness-meter';
 import { anchorOf, followed } from '../game/media/followed';
 import { SoundUnlockOverlay } from '../game/media/sound-unlock-overlay';
 import { BACKDROP_EDGE, Surface } from '../game/surface';
+import { revealOf } from '../game/media/media-frame';
+import { HintOverlay } from '../game/hint-overlay';
+import { HintMedia, useHintSounding } from '../game/hint-media';
 import { LiveTheme, themeBackdrop } from '../game/theme';
 import { ImageChoiceGrid } from '../game/image-choice';
 import { useQuestionClock } from '../game/use-countdown';
 import { joinHostLabel, joinUrlFor } from '../game/join-url';
 import { type GameView, useGameSession } from '../game/use-game-session';
 import type { GameSocket } from '../game/game-client';
-import { playsSound } from '@quiz-dock/contracts';
+import { type LiveQuestionMedia, playsSound } from '@quiz-dock/contracts';
 
 /**
  * The states where the question is on screen, drawn on its background. Not the wait
@@ -190,6 +193,13 @@ export function ScreenSurface({
   );
   const soundUnlocked = useAudioUnlocked();
   const deviceSound = useDeviceSound();
+  // The current question's hint sound playing: its own steps aside (SPECIFICATIONS-HINTS).
+  const hintSounding = useHintSounding(
+    view.hint && view.question && view.hint.questionIndex === view.question.questionIndex
+      ? view.hint
+      : null,
+    !!view.paused,
+  );
   // The game's sounds (#93): the projection, and a copy that plays the sound for a
   // remote participant when the room's sound reaches remote devices.
   const soundsOn = hasGameSounds(view.sounds);
@@ -417,9 +427,7 @@ export function ScreenSurface({
             onPosition: playMedia ? sayPosition : undefined,
           }}
         >
-          <RoomVariables view={view} pin={pin}>
-            <SlideView key={slide.slideIndex} slide={slide} />
-          </RoomVariables>
+          <SlideView key={slide.slideIndex} slide={slide} />
         </SlidePlaybackContext.Provider>
         {/* The one element of the frame a slide keeps: how to join (UI system §2.2). */}
         {view.joinLocked ? null : (
@@ -560,6 +568,9 @@ export function ScreenSurface({
     compact = visual;
     const position = (visual && view.question.media?.position) || 'bottom';
     const side = position === 'left' || position === 'right';
+    // Behind the text, or alone in its place: the media takes the text's whole area.
+    const behind = position === 'behind';
+    const alone = position === 'alone';
     // With a picture, the count joins the clock in the top band: the bottom one's room is the picture's.
     const count =
       visual && view.answerCount && view.state === 'ANSWERING' && !view.paused ? (
@@ -585,34 +596,47 @@ export function ScreenSurface({
       undefined,
       !!clock,
     );
-    const media = (
+    const { questionIndex, mediaStartAt } = view.question;
+    // A picture revealed progressively: blurred, it sharpens from the answers' opening.
+    const revealing = revealOf(view.question, !!view.paused);
+    // The hint out, shown or hidden by the host: its sound, if any, takes over the question's.
+    const hintOut = view.hint?.questionIndex === questionIndex ? view.hint : null;
+    const stageOf = (
+      media: LiveQuestionMedia | null | undefined,
+      className: string,
+      boxClassName: string | undefined,
+      cover = false,
+    ) => (
       <QuestionMediaStage
-        key={view.question.questionIndex}
-        media={view.question.media}
+        key={questionIndex}
+        media={media}
+        cover={cover}
+        // The hint's sound plays: the question's steps aside meanwhile.
+        muted={hintSounding}
+        reveal={revealing}
         mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
         // A copy plays the sound only when asked (a remote participant), and only
         // when the question's sound is for remote devices.
         audible={role !== 'follow' || copyHears}
-        className={!visual ? 'shrink-0' : side ? 'h-full min-h-0' : 'min-h-[6em] flex-1'}
-        boxClassName={visual ? 'aspect-auto h-full min-h-0 w-full flex-1' : undefined}
-        resumeKey={playMedia ? `${pin}:${view.question.questionIndex}` : null}
+        className={className}
+        boxClassName={boxClassName}
+        resumeKey={playMedia ? `${pin}:${questionIndex}` : null}
         // The projection plays on its own; the console's tab draws its position; a copy
         // that plays the sound starts on the common instant and catches up with it,
         // as a remote participant's phone does.
         follow={
-          playMedia || copyHears
-            ? undefined
-            : followed(view, { questionIndex: view.question.questionIndex })
+          playMedia || copyHears ? undefined : followed(view, { questionIndex: questionIndex })
         }
-        catchUp={
-          role === 'follow'
-            ? followed(view, { questionIndex: view.question.questionIndex })
-            : undefined
-        }
+        catchUp={role === 'follow' ? followed(view, { questionIndex: questionIndex }) : undefined}
         onPosition={playMedia ? sayPosition : undefined}
-        startAt={view.question.mediaStartAt ?? null}
-        anchor={anchorOf(view, { questionIndex: view.question.questionIndex })}
+        startAt={mediaStartAt ?? null}
+        anchor={anchorOf(view, { questionIndex: questionIndex })}
       />
+    );
+    const media = stageOf(
+      view.question.media,
+      !visual ? 'shrink-0' : side ? 'h-full min-h-0' : 'min-h-[6em] flex-1',
+      visual ? 'aspect-auto h-full min-h-0 w-full flex-1' : undefined,
     );
     // The text: the prompt, then how to answer. Beside a picture it reads from the left.
     const words = (
@@ -623,6 +647,8 @@ export function ScreenSurface({
           className={cn(
             'qd-prompt w-full leading-tight font-semibold',
             side ? 'text-[2.1em]' : 'text-[2em]',
+            // Alone, the media says it: the host reads the question out, a screen reader still finds it.
+            alone && 'sr-only',
           )}
         >
           {view.question.prompt}
@@ -633,8 +659,25 @@ export function ScreenSurface({
     // Nobody scrolls a projector: the stage is the screen's height, the answers keep
     // their room and the picture takes what is left (#92) — below the text, above it,
     // or beside it, as the author placed it; the answers stay at the bottom.
+    // The hint, once out and as the host left it: over the stage, under the text.
     stage = (
-      <div className="flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
+      <div className="relative flex min-h-0 w-full max-w-[64em] flex-1 flex-col items-center justify-center gap-[1em]">
+        {hintOut ? (
+          <HintOverlay
+            text={hintOut.text}
+            image={hintOut.image}
+            hidden={!hintOut.shown}
+            penaltyPct={hintOut.penaltyPct}
+            media={
+              <HintMedia
+                hint={hintOut}
+                mode={role === 'preview' || reviewing ? 'still' : view.paused ? 'pause' : 'play'}
+                audible={role !== 'follow' || copyHears}
+                boxClassName="max-h-[10em] aspect-video"
+              />
+            }
+          />
+        ) : null}
         {side ? (
           <div
             className={cn(
@@ -654,7 +697,33 @@ export function ScreenSurface({
               </>
             )}
           </div>
-        ) : position === 'top' ? (
+        ) : behind && view.question.media ? (
+          <>
+            {/* The text over the media, made legible as on a background; its sound, if any, below. */}
+            <Surface
+              background={null}
+              backdrop={
+                <div className="absolute inset-0">
+                  {stageOf(
+                    { ...view.question.media, audio: null },
+                    'h-full',
+                    'aspect-auto h-full w-full',
+                    true,
+                  )}
+                </div>
+              }
+              textTone={view.question.textTone}
+              textOutline={view.question.textOutline}
+              className="min-h-[6em] w-full flex-1 rounded-[0.75em]"
+              contentClassName="items-center justify-center p-[1.5em]"
+            >
+              {words}
+            </Surface>
+            {view.question.media.audio
+              ? stageOf({ ...view.question.media, visual: null }, 'shrink-0', undefined)
+              : null}
+          </>
+        ) : position === 'top' || alone ? (
           <>
             {media}
             {words}
@@ -702,10 +771,11 @@ export function ScreenSurface({
     // LOBBY (et état initial) : invitation à rejoindre + liste des joueurs (§4.1).
     // The room's next quiz (#89): what comes, and where the room stands.
     const nextInRoom = view.standings ? view.standings : null;
-    // Who said they are ready and has loaded what they play (the lobby's count, #104).
+    // Who said they are ready (#104), ringed green as on the console: their media loading
+    // is the console's to watch, not a reason to leave them unmarked.
     const readyIds = new Set(
       view.readiness?.lobby
-        ? view.readiness.players.filter((p) => p.ready).map((p) => p.playerId)
+        ? view.readiness.players.filter((p) => p.pressed).map((p) => p.playerId)
         : [],
     );
     top = band(
@@ -879,61 +949,63 @@ export function ScreenSurface({
         : null;
 
   return (
-    <LiveTheme theme={view.theme}>
-      <LiveMotion on={view.motion}>
-        <div
-          ref={ref}
-          data-state={view.state ?? 'none'}
-          className={cn(
-            'qd-screen bg-background relative flex flex-col',
-            boxed ? 'h-full w-full overflow-hidden' : 'min-h-dvh',
-            // A question fits the screen exactly; the rest may grow.
-            !boxed &&
-              (view.state === 'ANSWERING' ||
-                view.state === 'QUESTION_SHOW' ||
-                view.state === 'REVEAL' ||
-                view.state === 'LEADERBOARD') &&
-              'h-dvh',
-            // One typographic base for the whole projected page; everything inside is in em.
-            boxed ? TYPE_BASE.stage : TYPE_BASE.screen,
-          )}
-        >
-          {fullscreenBtn}
-          {soundButton ? (
-            <SoundButton
-              size="lg"
-              align="start"
-              className={cn('absolute top-4 left-4 z-40', BACKDROP_EDGE)}
-              onUnmute={() => void unlockAudio()}
-            />
-          ) : null}
-          {/* A quiz with sound asks for the unlocking click as soon as this window opens,
+    <RoomVariables view={view} pin={pin}>
+      <LiveTheme theme={view.theme}>
+        <LiveMotion on={view.motion}>
+          <div
+            ref={ref}
+            data-state={view.state ?? 'none'}
+            className={cn(
+              'qd-screen bg-background relative flex flex-col',
+              boxed ? 'h-full w-full overflow-hidden' : 'min-h-dvh',
+              // A question fits the screen exactly; the rest may grow.
+              !boxed &&
+                (view.state === 'ANSWERING' ||
+                  view.state === 'QUESTION_SHOW' ||
+                  view.state === 'REVEAL' ||
+                  view.state === 'LEADERBOARD') &&
+                'h-dvh',
+              // One typographic base for the whole projected page; everything inside is in em.
+              boxed ? TYPE_BASE.stage : TYPE_BASE.screen,
+            )}
+          >
+            {fullscreenBtn}
+            {soundButton ? (
+              <SoundButton
+                size="lg"
+                align="start"
+                className={cn('absolute top-4 left-4 z-40', BACKDROP_EDGE)}
+                onUnmute={() => void unlockAudio()}
+              />
+            ) : null}
+            {/* A quiz with sound asks for the unlocking click as soon as this window opens,
           whatever the moment of the session; a silent quiz never asks. */}
-          {(playMedia || (role === 'follow' && sound)) &&
-          !soundUnlocked &&
-          !deviceSound.muted &&
-          (view.quizHasSound || soundsOn) &&
-          view.state !== 'ENDED' ? (
-            // The projection cannot be muted from here: the console does it.
-            <SoundUnlockOverlay allowSilent={role === 'follow'} />
-          ) : null}
-          {backdrop ? (
-            // The step's background owns the surface, bands included: a question's own, else
-            // the quiz theme's (docs/themes.md).
-            <Surface
-              background={backdrop.background}
-              textTone={backdrop.textTone}
-              textOutline={backdrop.textOutline}
-              className={ownBackground ? 'absolute inset-0' : 'flex-1'}
-            >
-              {frame}
-            </Surface>
-          ) : (
-            frame
-          )}
-          <BackdropFade stepKey={stepKey} backdrop={backdropOf(view, onBackground, view.theme)} />
-        </div>
-      </LiveMotion>
-    </LiveTheme>
+            {(playMedia || (role === 'follow' && sound)) &&
+            !soundUnlocked &&
+            !deviceSound.muted &&
+            (view.quizHasSound || soundsOn) &&
+            view.state !== 'ENDED' ? (
+              // The projection cannot be muted from here: the console does it.
+              <SoundUnlockOverlay allowSilent={role === 'follow'} />
+            ) : null}
+            {backdrop ? (
+              // The step's background owns the surface, bands included: a question's own, else
+              // the quiz theme's (docs/themes.md).
+              <Surface
+                background={backdrop.background}
+                textTone={backdrop.textTone}
+                textOutline={backdrop.textOutline}
+                className={ownBackground ? 'absolute inset-0' : 'flex-1'}
+              >
+                {frame}
+              </Surface>
+            ) : (
+              frame
+            )}
+            <BackdropFade stepKey={stepKey} backdrop={backdropOf(view, onBackground, view.theme)} />
+          </div>
+        </LiveMotion>
+      </LiveTheme>
+    </RoomVariables>
   );
 }

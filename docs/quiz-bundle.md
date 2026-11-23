@@ -6,7 +6,7 @@ is what a Quiz Store repository holds.
 
 **JSON Schema.** The manifest is published as a JSON Schema (draft 2020-12),
 one file per manifest version, in [`schema/`](../schema/) — currently
-[`quiz-bundle.v8.json`](../schema/quiz-bundle.v8.json). It is generated from the
+[`quiz-bundle.v9.json`](../schema/quiz-bundle.v9.json). It is generated from the
 importer's own schema and a test keeps the two in step, so a tool outside
 QuizDock (a community store, a CI check) validates exactly what an import
 accepts. A published version is never rewritten: a change to the format comes
@@ -157,7 +157,24 @@ Contributors changing the bundle schema or a content schema run
   of its own (an `audio` is fine).
 - `mediaPosition` (version 7): where a question's picture or video sits against
   its text on the projection — `bottom` (default, under the text), `top`,
-  `left` or `right`. The answers stay below; the phones are unchanged.
+  `left` or `right`; since version 9, `behind` (the text laid over the media, the
+  answers outside it) or `alone` (the media in the text's place, the host reads the
+  question out). The answers stay below; the phones are unchanged.
+- `mediaStyle` (version 9): how a question's picture or video is shown — `ratio`
+  of its frame as `W:H` (whole numbers, 1:4 to 4:1; the file's own when absent),
+  `fit` (`contain`, the default, or `cover`), `focus` where a `cover` is cropped
+  (`center`, `top`, `bottom`, `left`, `right`), and for a picture `revealS`: blurred
+  until the answers open, it sharpens over that many seconds. Absent, the media
+  shows as its file is.
+- A slide's `image`, `mediaPosition` and `mediaStyle` (version 9): its own picture
+  (never with a `video`), where its picture or video sits against its blocks —
+  the same places as a question's, `behind` when absent, as a slide's video
+  always was — and how it is framed (no `revealS` on a slide).
+- `hint` (version 9): a question's hint — `text` (140 characters at most),
+  `image` or `video` and `audio` (media paths; a video brings its own sound, so
+  never with an `audio`), one of them at least, `afterS` (seconds after the
+  answers open) and `penaltyPct` (the share of the question's points an answer
+  given after it loses, 0 to 100).
 - A step's `background` (version 8): its background as one object — `image` (a
   media path) or `gradient`, `textTone`, and how it is laid: `mode` (`watermark`
   centred, `cover` filling the screen, `contain` whole on its `color`, `pattern`
@@ -216,7 +233,7 @@ at `null`. An imported bundle keeps whatever it carried, except its identity
 
 | Field | Type | Meaning |
 |---|---|---|
-| `version` (top level) | integer | Manifest schema version, up to `7`. An export stamps the **lowest version it needs** — `3`, `4` once a waveform is `hidden`, `5` once a slide carries a video or an audio, `6` once a question is an image choice, `7` once a question's picture or video sits above or beside its text (`mediaPosition`) — so an instance whose importer stops at an older version still takes a quiz that uses nothing newer. Absent in the earliest bundles: read as `0`, same layout. A bundle from a newer schema is refused. |
+| `version` (top level) | integer | Manifest schema version, up to `9`. An export stamps the **lowest version it needs** — `3`, `4` once a waveform is `hidden`, `5` once a slide carries a video or an audio, `6` once a question is an image choice, `7` once a question's picture or video sits above or beside its text (`mediaPosition`), `8` once the quiz carries a theme or a step a laid-out `background`, `9` once a question's picture or video sits behind its text or alone (`mediaPosition` `behind`, `alone`) or is framed (`mediaStyle`), a question has a `hint`, or a slide has its own `image`, `mediaPosition` or `mediaStyle` — so an instance whose importer stops at an older version still takes a quiz that uses nothing newer. Absent in the earliest bundles: read as `0`, same layout. A bundle from a newer schema is refused. |
 | `media` (top level) | object | What each media file carries beyond its bytes, keyed by the same path the items reference: an `alt`, the description read aloud by screen readers (version 2); for an audio or a video, what the editor measured (version 3) — `durationMs`, `peaks` (200 values in 0–1, the waveform the screens draw), `origin` (`upload` or `recording`), `loudnessLufs` and `peakDbfs` (the playback gain). An audio needs `durationMs` and `peaks`. Absent in a version 1 bundle, and an image with no alternative text simply has no entry. |
 | `slug` | `^[a-z0-9]+(-[a-z0-9]+)*$`, ≤ 60 | The identity that travels — never an internal id. Fixed by the owner's first export (derived from the title); the zip is named after it. Ignored on import: a copy carries nothing of its origin and gets its own slug at its first export. |
 | `namespace` | string or `null` | Reserved for a Store submission (`<username>/<slug>`); `null` on a local export. Ignored on import. |

@@ -140,7 +140,10 @@
     },
     "true_false": {
       "two_options": "是非題需要恰好 2 個答案。"
-    }
+    },
+    "hint_empty": "提示需要文字或圖片。",
+    "hint_two_visuals": "提示只能顯示圖片或影片，不能兩者都有。",
+    "hint_two_sounds": "提示的影片自帶聲音：不能再加其他音訊。"
   },
   "validation": "部分欄位無效。",
   "internal": "內部錯誤。",
@@ -173,7 +176,8 @@
     "background_conflict": "背景只能是圖片或漸層，不能同時使用。",
     "empty": "投影片沒有任何內容：請加入標題、文字、圖片、背景或影片。",
     "not_found": "此投影片已不存在：它已被刪除。",
-    "incomplete_in_ready_quiz": "此測驗已發布：請先改回草稿，才能儲存不顯示任何內容的投影片。"
+    "incomplete_in_ready_quiz": "此測驗已發布：請先改回草稿，才能儲存不顯示任何內容的投影片。",
+    "two_visuals": "簡報只能顯示圖片或影片，不能兩者都有。"
   },
   "record": {
     "not_found": "此項目已不存在：在此期間已被刪除。",

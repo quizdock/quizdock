@@ -14,6 +14,7 @@ describe('MediaJanitor', () => {
     sweepOrphans: jest.fn(async () => 2),
     sweepUnusedBlobs: jest.fn(async () => 4),
     purgeStrayFiles: jest.fn(async () => 3),
+    newerData: jest.fn(async () => [] as string[]),
   };
   const redis = {
     set: jest.fn(async () => 'OK' as string | null),
@@ -33,6 +34,14 @@ describe('MediaJanitor', () => {
     expect(media.sweepOrphans).toHaveBeenCalled();
     expect(media.sweepUnusedBlobs).toHaveBeenCalled();
     expect(media.purgeStrayFiles).toHaveBeenCalled();
+  });
+
+  it('deletes nothing while the database holds a newer release’s data (a rollback)', async () => {
+    media.newerData.mockResolvedValueOnce(['question.hint']);
+    await expect(janitor.run(true)).resolves.toEqual({ adopted: 1, media: 0, blobs: 0, files: 0 });
+    expect(media.sweepOrphans).not.toHaveBeenCalled();
+    expect(media.sweepUnusedBlobs).not.toHaveBeenCalled();
+    expect(media.purgeStrayFiles).not.toHaveBeenCalled();
   });
 
   it('still sweeps when older files cannot be moved', async () => {

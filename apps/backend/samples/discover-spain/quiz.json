@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Spain",
     "description": "Sample quiz — geography, history and culture of Spain.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Spain",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -214,11 +214,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "flamenco-picture",
-          "media": "media/flamenco.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "flamenco-picture"
         },
         {
           "type": "text",
@@ -235,7 +232,9 @@
           "#9a3412",
           "#431407"
         ]
-      }
+      },
+      "image": "media/flamenco.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

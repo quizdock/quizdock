@@ -62,6 +62,8 @@ export function deserializeRoom(raw: Record<string, string>): RoomMeta {
     motion: raw.motion === undefined ? liveMotionDefault() : raw.motion === '1',
     audienceLanguage: raw.audienceLanguage ?? '',
     selectionId: raw.selectionId ?? '',
+    // A room opened before the instance listed lobbies stays off the list.
+    listed: raw.listed === '1',
   };
 }
 
@@ -88,6 +90,11 @@ export function deserializeGame(raw: Record<string, string>): GameFields {
     clockFrozen: raw.clockFrozen === '1',
     autoNextAt: raw.autoNextAt ? Number(raw.autoNextAt) : 0,
     autoNextMs: raw.autoNextMs ? Number(raw.autoNextMs) : 0,
+    hintsOff: raw.hintsOff === '1',
+    hintRevealedAt: raw.hintRevealedAt ? Number(raw.hintRevealedAt) : 0,
+    hintHidden: raw.hintHidden === '1',
+    hintHiddenAt: raw.hintHiddenAt ? Number(raw.hintHiddenAt) : 0,
+    hintMediaShiftMs: raw.hintMediaShiftMs ? Number(raw.hintMediaShiftMs) : 0,
     slideIndex: raw.slideIndex ? Number(raw.slideIndex) : -1,
     slideMediaStartAt: raw.slideMediaStartAt ? Number(raw.slideMediaStartAt) : 0,
     slidePausedAt: raw.slidePausedAt ? Number(raw.slidePausedAt) : 0,

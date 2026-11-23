@@ -31,6 +31,7 @@ import { isHost } from '../auth/roles';
 import { UsersService } from '../users/users.service';
 import { GameEngine } from './game.engine';
 import { GameService } from './game.service';
+import { LISTING_WATCHERS } from './lobby-listing';
 import { noticeOf } from './game.types';
 import { isCrossOrigin, readOurCookie, SESSION_COOKIE } from '../auth/oidc/session-cookie';
 import { clientIp } from '../common/trust-proxy';
@@ -137,6 +138,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     await socket.join(pin);
     const meta = await this.game.getMeta(pin);
     if (meta) socket.emit('notice', noticeOf(meta));
+    await this.engine.announceListing(pin);
     return { pin };
   }
 
@@ -488,6 +490,29 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     await this.engine.setMotion(payload.pin, this.requireHostId(socket), payload.on);
   }
 
+  /** `host:listed`: the room on the home page's list, or off it (`LOBBY_LISTING`). */
+  @SubscribeMessage('host:listed')
+  async hostListed(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; on: boolean },
+  ): Promise<void> {
+    await this.engine.setListed(payload.pin, this.requireHostId(socket), payload.on);
+  }
+
+  /**
+   * `listing:watch`: a home page follows the list of lobbies (`LOBBY_LISTING`), told
+   * by `lobbies:changed` when to read it again; `listing:unwatch` when it leaves.
+   */
+  @SubscribeMessage('listing:watch')
+  async listingWatch(@ConnectedSocket() socket: GameSocket): Promise<void> {
+    await socket.join(LISTING_WATCHERS);
+  }
+
+  @SubscribeMessage('listing:unwatch')
+  async listingUnwatch(@ConnectedSocket() socket: GameSocket): Promise<void> {
+    await socket.leave(LISTING_WATCHERS);
+  }
+
   /** `player:ready` (#104): the participant is ready, or not yet, in the lobby. */
   @SubscribeMessage('player:ready')
   async playerReady(
@@ -619,6 +644,33 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() payload: { pin: string; paused: boolean },
   ): Promise<void> {
     await this.engine.setPaused(payload.pin, this.requireHostId(socket), payload.paused);
+  }
+
+  /** `host:hints`: the game's hints on or off (SPECIFICATIONS-HINTS). */
+  @SubscribeMessage('host:hints')
+  async hostHints(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; enabled: boolean },
+  ): Promise<void> {
+    await this.engine.setHints(payload.pin, this.requireHostId(socket), payload.enabled === true);
+  }
+
+  /** `host:hint-shown`: the revealed hint shown or hidden on the projection. */
+  @SubscribeMessage('host:hint-shown')
+  async hostHintShown(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; shown: boolean },
+  ): Promise<void> {
+    await this.engine.setHintShown(payload.pin, this.requireHostId(socket), payload.shown === true);
+  }
+
+  /** `host:hint-replay`: the revealed hint's video or sound again from its beginning. */
+  @SubscribeMessage('host:hint-replay')
+  async hostHintReplay(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string },
+  ): Promise<void> {
+    await this.engine.replayHint(payload.pin, this.requireHostId(socket));
   }
 
   /** `host:adjust-time` : ajoute/retire du temps au chrono de la question courante. */

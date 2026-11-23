@@ -215,5 +215,7 @@
   "results": "结果",
   "newQuizBlank": "空白测验",
   "newQuizFromTemplate": "从模板创建…",
-  "newQuizImport": "导入文件…"
+  "newQuizImport": "导入文件…",
+  "duration": "约 {{n}} 分钟",
+  "durationHint": "自动模式下的预计时长"
 }

@@ -2,6 +2,7 @@ import {
   buildQuestionStart,
   buildSnapshot,
   gameAudioTarget,
+  hintMediaIds,
   refreshSnapshotForm,
   slideTitle,
   type QuizWithContent,
@@ -468,6 +469,17 @@ describe('buildSnapshot', () => {
     });
     expect(cols.columns[1][0]).toMatchObject({ md: 'PIN {pin}, {unknown}' });
   });
+
+  it('prompts: the quiz’s variables are filled, the room’s left to the screens', () => {
+    const snap = buildSnapshot(
+      quiz({
+        title: 'Capitales',
+        questions: [{ ...baseQuestion, prompt: '{title}, question {question} of {questions}' }],
+        slides: [],
+      } as never),
+    );
+    expect(snap.questions[0].prompt).toBe('Capitales, question {question} of 1');
+  });
 });
 
 describe('slideTitle', () => {
@@ -497,5 +509,119 @@ describe('slideTitle', () => {
       ]),
     ).toBe('In columns');
     expect(slideTitle([{ type: 'image', id: 'i', mediaId: 'm', size: 'large' }] as never)).toBe('');
+  });
+});
+
+describe('hints in the snapshot (SPECIFICATIONS-HINTS)', () => {
+  const IMG = 'I'.repeat(26);
+  const VID = 'V'.repeat(26);
+  const AUD = 'A'.repeat(26);
+  const peaks = new Array(200).fill(0.4);
+  const library = new Map(
+    Object.entries({
+      [IMG]: { id: IMG, url: '/media/i', kind: 'image' },
+      [VID]: {
+        id: VID,
+        url: '/media/v',
+        kind: 'video',
+        durationMs: 12_000,
+        loudnessLufs: -10,
+        peakDbfs: -1,
+      },
+      [AUD]: {
+        id: AUD,
+        url: '/media/a',
+        kind: 'audio',
+        durationMs: 8000,
+        peaks,
+        loudnessLufs: -23,
+        peakDbfs: -12,
+      },
+    }),
+  ) as never;
+  const hinted = (hint: unknown, media = library) =>
+    buildSnapshot(
+      quiz({
+        mediaTailS: 2,
+        questions: [
+          { ...baseQuestion, type: 'single_choice', pointsMode: 'standard', hint },
+        ] as never,
+      }),
+      media,
+    ).questions[0].hint;
+
+  it('names the media a hint holds, none when it is unreadable', () => {
+    expect(
+      hintMediaIds({ text: '', imageMediaId: IMG, audioMediaId: AUD, afterS: 5, penaltyPct: 25 }),
+    ).toEqual([IMG, AUD]);
+    expect(hintMediaIds({ text: 'x', videoMediaId: VID, afterS: 5, penaltyPct: 25 })).toEqual([
+      VID,
+    ]);
+    expect(hintMediaIds(null)).toEqual([]);
+    expect(hintMediaIds({ text: '' })).toEqual([]);
+  });
+
+  it('a text alone: no media, nothing holds the question', () => {
+    const hint = hinted({ text: 'Choisie en 1923', afterS: 5, penaltyPct: 25 });
+    expect(hint).toMatchObject({ text: 'Choisie en 1923', afterS: 5, penaltyPct: 25 });
+    expect(hint).not.toHaveProperty('imageUrl');
+    expect(hint).not.toHaveProperty('video');
+    expect(hint).not.toHaveProperty('audio');
+    expect(hint).not.toHaveProperty('holdMs');
+  });
+
+  it('a picture: its served address, nothing holds the question', () => {
+    const hint = hinted({ text: '', imageMediaId: IMG, afterS: 5, penaltyPct: 25 });
+    expect(hint?.imageUrl).toBe(`/api/v1/media/${IMG}`);
+    expect(hint).not.toHaveProperty('holdMs');
+  });
+
+  it('a video: played at its own gain, holding the question its length and the quiz’s pause', () => {
+    const hint = hinted({ text: 'Regardez', videoMediaId: VID, afterS: 5, penaltyPct: 25 });
+    expect(hint?.video).toEqual({ url: '/media/v', gainDb: -6, durationMs: 12_000 });
+    expect(hint).not.toHaveProperty('audio');
+    expect(hint?.holdMs).toBe(14_000);
+  });
+
+  it('a sound with a picture: its waveform hidden, holding the question its length and the pause', () => {
+    const hint = hinted({
+      text: '',
+      imageMediaId: IMG,
+      audioMediaId: AUD,
+      afterS: 0,
+      penaltyPct: 50,
+    });
+    expect(hint?.imageUrl).toBe(`/api/v1/media/${IMG}`);
+    expect(hint?.audio).toEqual({
+      url: '/media/a',
+      durationMs: 8000,
+      peaks,
+      gainDb: 7,
+      size: 'hidden',
+    });
+    expect(hint?.holdMs).toBe(10_000);
+  });
+
+  it('a media of the wrong kind, or gone from the library, is not played', () => {
+    // The ids swapped: a sound where the video goes, a video where the sound goes.
+    expect(hinted({ text: 'x', videoMediaId: AUD, afterS: 5, penaltyPct: 25 })).not.toHaveProperty(
+      'video',
+    );
+    expect(hinted({ text: 'x', audioMediaId: VID, afterS: 5, penaltyPct: 25 })).not.toHaveProperty(
+      'audio',
+    );
+    const gone = hinted(
+      { text: 'x', videoMediaId: VID, afterS: 5, penaltyPct: 25 },
+      new Map() as never,
+    );
+    expect(gone).not.toHaveProperty('video');
+    expect(gone).not.toHaveProperty('holdMs');
+  });
+
+  it('an unreadable hint leaves none', () => {
+    expect(hinted({ text: '', afterS: 5, penaltyPct: 25 })).toBeUndefined();
+    expect(
+      hinted({ text: 'x', imageMediaId: IMG, videoMediaId: VID, afterS: 5, penaltyPct: 25 }),
+    ).toBeUndefined();
   });
 });

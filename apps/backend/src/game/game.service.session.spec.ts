@@ -92,6 +92,7 @@ describe('GameService: the hashes of a new session (integration)', () => {
       hostName: 'Ada',
       sounds: expect.stringMatching(/^\{.*\}$/),
       selectionId: '', // opened from a single quiz
+      listed: '0', // the instance lists no lobby (LOBBY_LISTING)
     });
     expect(await redis.hgetall(gameKeys.game(room.gameId as never))).toEqual({
       quizId,
@@ -167,6 +168,60 @@ describe('GameService: the hashes of a new session (integration)', () => {
     // Another GameService (a restart) reads the same from Redis.
     const restarted = new GameService(prisma, redis);
     expect((await restarted.getSnapshot(gameId))?.questions[0].answerExplanation).toBe('Because.');
+  });
+
+  describe('the lobbies the home page lists (LOBBY_LISTING)', () => {
+    const env = process.env;
+    afterEach(async () => {
+      process.env = env;
+      await redis.del(gameKeys.listedRooms());
+    });
+
+    it('lists every lobby opened while it is on, until the host takes it off', async () => {
+      const before = await game.createSession(ownerId, { quizId });
+      pins.push(before.pin);
+      process.env = { ...env, LOBBY_LISTING: 'listed' };
+      const { pin } = await game.createSession(ownerId, { quizId });
+      pins.push(pin);
+      // The lobby opened before the instance listed them stays off the list.
+      expect(await game.listedLobbies()).toEqual([
+        {
+          pin,
+          roomName: null,
+          hostName: 'Ada',
+          quizTitle: 'Harbours',
+          playing: false,
+          playerCount: 0,
+          participantAccess: 'account',
+        },
+      ]);
+      await game.setListed(pin, false);
+      expect(await game.listedLobbies()).toEqual([]);
+      await game.setListed(pin, true);
+      expect(await game.listedLobbies()).toHaveLength(1);
+    });
+
+    it('leaves out a lobby closed to newcomers, and drops one over', async () => {
+      process.env = { ...env, LOBBY_LISTING: 'listed' };
+      const { pin } = await game.createSession(ownerId, { quizId });
+      pins.push(pin);
+      await redis.hset(gameKeys.room(pin), { joinLocked: '1' });
+      expect(await game.listedLobbies()).toEqual([]);
+      expect(await redis.sismember(gameKeys.listedRooms(), pin)).toBe(1);
+      await redis.hset(gameKeys.room(pin), { joinLocked: '0' });
+      const gameId = (await redis.hget(gameKeys.room(pin), 'gameId')) as never;
+      await redis.hset(gameKeys.game(gameId), { state: 'ENDED' });
+      expect(await game.listedLobbies()).toEqual([]);
+      expect(await redis.sismember(gameKeys.listedRooms(), pin)).toBe(0);
+    });
+
+    it('lists nothing once the instance turns it off', async () => {
+      process.env = { ...env, LOBBY_LISTING: 'listed' };
+      const { pin } = await game.createSession(ownerId, { quizId });
+      pins.push(pin);
+      process.env = { ...env, LOBBY_LISTING: 'unlisted' };
+      expect(await game.listedLobbies()).toEqual([]);
+    });
   });
 
   it("opens the next game with the room's pace and audio target", async () => {

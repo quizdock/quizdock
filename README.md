@@ -48,7 +48,7 @@ database. The product, its uses and its documentation are on
   provider with the same image: roles, a web administration, lockable settings, an audit
   trail. [More](https://quizdock.github.io/enterprise/)
 - **Video and audio.** Media in questions and slides, converted in the browser, started on
-  the server's clock; remote participants get them on their own device (experimental).
+  the server's clock; remote participants get them on their own device.
   [More](https://quizdock.github.io/media/)
 - **Open source, MIT.** Docker images for amd64 and arm64, twelve interface languages.
 
@@ -133,7 +133,10 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
 - **A real quiz builder** — eight question types (single/multi choice, true-false,
   text, numeric, reorder, poll, and image choice — pictures as the answers), images with
   alternative text, Markdown everywhere, content
-  slides between questions, backgrounds, answer explanations at the reveal. A new quiz
+  slides between questions, backgrounds, answer explanations at the reveal. Each step's
+  media are laid out on a timeline drawn to scale (or as a list), and the whole quiz's on
+  another, its length estimated; a picture is framed, cropped, and can sharpen progressively
+  as the answers open; a slide places its own picture as a question does. A new quiz
   starts from a draft: an intro slide and a first question to complete. Twelve sample
   quizzes wait in the templates, one per country, every question
   type in them, with pictures and audio from Wikimedia Commons.
@@ -150,6 +153,10 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   uploaded; **global media** are what the instance provides to every host; each media
   carries its **credit** (author, licence, source), shown with the quiz and under the
   podium. Links to free libraries (Openverse, Wikimedia Commons, Freesound…).
+- **Hints** — a question can carry a hint, a text, a picture, a sound or a video, revealed
+  to the whole room at its place on the timeline; the answers given after it lose a share
+  of the question's points, set per question, never the streak bonus. The host switches
+  hints off or on during the game and hides or replays them on the projection.
 - **Scoring that rewards speed** — time-weighted points, streak bonuses, the standings
   after each question, final podium; per-question rules (*closest answer wins*, partial
   credit, typo-tolerant text, double or fixed points).
@@ -158,8 +165,8 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   own after 30 s or once everyone is ready, and the lobby keeps its own standings across the
   quizzes, shown live and kept in *History* with the results.
 - **Self-hosted and private** — one Docker image (`amd64` / `arm64`), no SaaS, no
-  telemetry, no ads; interface in English, French, Spanish, Simplified and Traditional
-  Chinese, and Turkish — each host picks theirs, the big screen and the phones speak the
+  telemetry, no ads; interface in twelve languages (see [Translations](#translations)) —
+  each host picks theirs, the big screen and the phones speak the
   quiz's language or the lobby's; rebrand name, logo and CSS without a rebuild.
 - **An administration in the browser** — what is played right now and the last twelve
   months of use; every setting with its value, where it comes from and its help, changed
@@ -167,8 +174,8 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
   quiz of the instance (hand one over, export, archive), the media, and an audit of every
   action. A fresh instance opens on a setup wizard. Each operation is a `qd` command too:
   [administration](https://quizdock.github.io/docs/admin/overview/).
-- **Rich text** — prompts, options and descriptions in Markdown with a visual editor (bold, lists, code).
-- **Content slides** — headings, text, images, 2–3 columns between questions; image or gradient backgrounds for slides and questions, with a faithful 16:9 preview. A slide can play a video behind its content (looped or once, with its audio or muted) and an audio, set like a question's; in automatic mode it waits for them to play. Its text can name the quiz and the lobby — `{title}`, `{pin}`, `{players}`, `{question}` and more, filled wherever the slide shows.
+- **Rich text** — prompts, options and descriptions in Markdown with a visual editor (bold, italic, lists), the Markdown source a click away.
+- **Content slides** — ready-made layouts of headings, text and columns between questions, the slide's picture or video placed among them, beside them or behind them; image or gradient backgrounds for slides and questions, with a faithful 16:9 preview. A slide can play a video behind its content (looped or once, with its audio or muted) and an audio, set like a question's; in automatic mode it waits for them to play. Its text, like a question's, can name the quiz and the lobby — `{title}`, `{pin}`, `{players}`, `{question}` and more, picked from the field's bar and filled wherever it shows.
 - **Answer explanations** — shown at the reveal, with a per-question reveal delay in automatic mode.
 - **Preview** — rehearse your quiz exactly as it will look on the big screen, answers shown.
 - **Selections** — line quizzes up in a named, saved list and launch them into a lobby in one go: after each quiz, the lobby picks the next one not played yet, each with its pace, and you can still change it on the spot. Save a lobby you improvised as a selection, from its console or from the history; compare a selection's launches; share it with the other hosts, who present it or create their own from it.
@@ -180,11 +187,12 @@ administration. [Administration](https://quizdock.github.io/docs/admin/overview/
 - **Host in control** — Console / Projection / Participant views, the space bar pauses and resumes the game, look back over played questions without replaying anything, layout edits reach a running session at its next step.
 - **The audio in the host's hands** — from the console, play / pause the question's audio or video on every device at once, click or drag its waveform to a point, or take it back to the top; a waveform can be hidden from the screens and still show on the console; every start and stop fades, no clicks. The background track never plays over a question's own audio: it steps out and comes back; every mixer has a mute per channel. The game's own effects, synthesised in the browser: a ding as a question appears, a tick per answer, a tick-tock on the last five seconds and a gong on zero — each can be switched off, previewed on the console, or replaced by an audio of the library.
 - **Your bank at a glance** — My quizzes and the templates as a list or a grid (each quiz showing its first slide), filtered by status, owner, language and tags, each quiz with its size, language, date, licence and tags; archived quizzes kept out of the way.
-- **Remote participants** _(experimental)_ — a participant following from home says so when joining and gets the whole question on their device, audio and video included; the console shows who is remote and whose media are loaded.
+- **Remote participants** — a participant following from home says so when joining and gets the whole question on their device, audio and video included; the console shows who is remote and whose media are loaded.
 - **The projection on your own device** — a participant shares the big screen to a tablet or a computer (a link or a QR code, never their seat): it follows the projection, muted on site, with audio for someone following from home. On the same phone, one tap switches between the answers and the big screen.
 - **Ready!** — participants say they are ready in the lobby; the host sees one count, including whose media are still loading, and still starts when they choose. The lobby's next quiz starts on its own once everyone is ready, or after 30 s unless the host stops the countdown.
 - **Game effects** — a tick at each answer, a gong at the reveal, a background track from your library while players answer (never over a question's own audio); set for the lobby, kept from one quiz to the next. An audio button on every screen that plays something, a mixer for the lobby on the console, and one per device; *Without audio* for whoever prefers silence.
 - **Players without an account** — where everyone signs in, a host can still open a game to the PIN and a nickname alone, for visitors or trainees who have no account; chosen at each launch, or once and for all in *My account*.
+- **Open lobbies on the home page** — on a private instance (`LOBBY_LISTING=listed`), the lobbies open to newcomers are listed under the PIN field, joined in one click; a host takes theirs off the list at any time.
 - **Keep the lobby to itself** — close the game to newcomers once everyone is in (or during play), remove a player, and guessing PINs is slowed down.
 - **Invitation address** — the QR code and join link point where participants can actually reach the instance (public URL, LAN IP, or any address), chosen from the console.
 - **Player feedback** — players rate the quiz (stars + optional comment) at the end; hosts see the distribution and browse the reviews. Can be switched off per quiz.
@@ -222,7 +230,10 @@ German, Hindi, Italian, Japanese, Polish and Russian; the last six are machine-a
 wait for a native reviewer.
 Missing your language, or spotted an awkward word? Translate it on
 [Weblate](https://hosted.weblate.org/engage/quizdock/), right in the browser, no setup needed;
-new languages are welcome. Changes come back as pull requests to `dev`. Questions about a
+new languages are welcome. Changes come back as pull requests to `dev`. To see your work in
+the app, the [translation staging](https://quizdock-l10n-standalone.onrender.com) runs `dev`
+with the translations not merged yet, at most an hour after they were typed; asleep when
+unused, it takes about a minute to wake up. Questions about a
 term? Ask in the [translation discussion](https://github.com/orgs/quizdock/discussions/243).
 
 <a href="https://hosted.weblate.org/engage/quizdock/"><img alt="Translation status" src="https://hosted.weblate.org/widget/quizdock/horizontal-auto.svg" /></a>

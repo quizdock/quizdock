@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { assertAssets, expectImage } from '../media/assert-assets';
-import { Prisma, QuizStatus } from '@prisma/client';
+import { type MediaKind, Prisma, QuizStatus } from '@prisma/client';
 import { MediaService } from '../media/media.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
@@ -70,6 +70,8 @@ export class QuestionsService {
       dto.options.map((o) => o.mediaId),
     );
     await assertAssets(this.prisma, ownerId, expectImage(dto.backgroundMediaId));
+    // Its hint's media, the author's and of their kind (SPECIFICATIONS-HINTS).
+    await assertAssets(this.prisma, ownerId, hintAssets(dto.hint));
     const [{ id }] = await this.prisma.$transaction([
       this.prisma.question.create({
         data: { quizId, ...questionCreateData(dto, orderIndex, media) },
@@ -106,6 +108,9 @@ export class QuestionsService {
     );
     await assertAssets(this.prisma, ownerId, expectImage(dto.backgroundMediaId), [
       current.backgroundMediaId,
+    ]);
+    await assertAssets(this.prisma, ownerId, hintAssets(dto.hint), [
+      ...hintAssets(current.hint as QuestionContent['hint']).keys(),
     ]);
     const data = questionData(dto);
     const options = optionsData(dto);
@@ -210,6 +215,7 @@ export class QuestionsService {
         visualMediaId: true,
         audioMediaId: true,
         backgroundMediaId: true,
+        hint: true,
         options: { select: { mediaId: true } },
       },
     });
@@ -218,4 +224,13 @@ export class QuestionsService {
     }
     return question;
   }
+}
+
+/** The media a hint holds, each with the kind its place takes. */
+function hintAssets(hint: QuestionContent['hint'] | null | undefined): Map<string, MediaKind> {
+  const assets = new Map<string, MediaKind>();
+  if (hint?.imageMediaId) assets.set(hint.imageMediaId, 'image');
+  if (hint?.videoMediaId) assets.set(hint.videoMediaId, 'video');
+  if (hint?.audioMediaId) assets.set(hint.audioMediaId, 'audio');
+  return assets;
 }

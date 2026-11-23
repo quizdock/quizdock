@@ -1,4 +1,7 @@
 import type {
+  MediaPosition,
+  MediaStyle,
+  QuestionHint,
   AnswerValue,
   AudioTarget,
   PlayerPresence,
@@ -50,6 +53,8 @@ export interface SnapshotQuestion {
   /** Auto-mode delay on this REVEAL in seconds (#6); null = engine default. */
   revealDelayS: number | null;
   /** Listen first: the answers open when the media ends (frozen with the substance). */
+  /** Its hint (SPECIFICATIONS-HINTS); absent = none. Its text never leaves before it is revealed. */
+  hint?: SnapshotHint;
   timerAfterMedia?: boolean;
   /** Which devices play its sound; null (or absent, older snapshots) = the game's default. */
   audioTarget?: AudioTarget | null;
@@ -87,6 +92,10 @@ export interface SnapshotSlide {
   background: SlideBackground | null;
   /** A video filling the slide behind its content (#125), over its background. */
   video?: SlideVideo | null;
+  /** Its picture, and where it or the video sits (SPECIFICATIONS-STEP-EDITOR). */
+  image?: { url: string; alt: string | null } | null;
+  position?: MediaPosition;
+  style?: MediaStyle;
   /** The slide's sound (#125); never with a video that plays its own. */
   audio?: LiveAudio | null;
   /** Who hears the slide's sound: its own target, null = the game's (#125). */
@@ -180,6 +189,8 @@ export interface RoomMeta {
   audienceLanguage: string;
   /** The selection the room was opened from (SPECIFICATIONS-SELECTION); absent or '' = none. */
   selectionId?: string;
+  /** Listed on the home page (`LOBBY_LISTING`); the host takes it off, or back, at any time. */
+  listed: boolean;
 }
 
 /** The room's game sounds as kept: the host's choices (media ids) and their URLs. */
@@ -236,6 +247,20 @@ export const DEFAULT_ROOM_SOUNDS: RoomSounds = {
   muted: false,
 };
 
+/** A lobby as the home page lists it (`LOBBY_LISTING`): what a passer-by needs to pick it. */
+export interface ListedLobby {
+  pin: string;
+  /** The room's own name, null for the default ("<host>'s lobby", said by the page). */
+  roomName: string | null;
+  hostName: string;
+  /** The quiz it plays, or played last. */
+  quizTitle: string;
+  /** A quiz under way; false while the lobby waits. */
+  playing: boolean;
+  playerCount: number;
+  participantAccess: ParticipantAccess;
+}
+
 /** The room fields, as the game view (`GameMeta`) carries them. */
 export const ROOM_FIELDS = [
   'roomId',
@@ -255,6 +280,7 @@ export const ROOM_FIELDS = [
   'motion',
   'audienceLanguage',
   'selectionId',
+  'listed',
 ] as const;
 
 /**
@@ -327,6 +353,19 @@ export interface GameMeta {
   slidePausedAt?: number;
   /** Duration (ms) of the auto-next countdown armed at `autoNextAt` (#6). */
   autoNextMs?: number;
+  /** The host turned the game's hints off (SPECIFICATIONS-HINTS); on by default. */
+  hintsOff?: boolean;
+  /** When the current question's hint was revealed (ms epoch), 0 while it is not. */
+  hintRevealedAt?: number;
+  /** The revealed hint is hidden by the host: its sound paused meanwhile. */
+  hintHidden?: boolean;
+  /** When the host hid it (ms epoch), 0 while shown: its sound waits from then. */
+  hintHiddenAt?: number;
+  /**
+   * How much later than its reveal its sound starts (ms): the time it was hidden, or a
+   * replay. Apart from `hintRevealedAt`, which the points are reckoned from.
+   */
+  hintMediaShiftMs?: number;
   /** État figé avant `HOST_DISCONNECTED` (pour la reprise §7.3). */
   prevState?: string;
   /** ms de question restantes, figées quand `clockFrozen` (pause ou §7.1). */
@@ -348,6 +387,15 @@ export interface GameMeta {
 /** The fields of the game hash (`game:{id}`): everything in `GameMeta` the room does not hold. */
 export type GameFields = Omit<GameMeta, 'id' | 'roomName' | (typeof ROOM_FIELDS)[number]>;
 
+/** A hint as the game plays it: its media resolved, and how long its sound holds the question. */
+export type SnapshotHint = QuestionHint & {
+  imageUrl?: string;
+  video?: { url: string; gainDb: number; durationMs?: number };
+  audio?: LiveAudio;
+  /** Its sound's length, then the quiz's pause (ms): the question lasts at least that from it. */
+  holdMs?: number;
+};
+
 /** Réponse gradée stockée au submit (Redis hash `:answers:{idx}`) — REVEAL la relit. */
 export interface AnswerRecord {
   answer: AnswerValue;
@@ -361,12 +409,18 @@ export interface AnswerRecord {
   /** Temps de réponse serveur compensé, en ms (§6). */
   tMs: number;
   receivedAt: number;
+  /** Given after the question's hint was revealed: its points lost the hint's share. */
+  hinted?: boolean;
+  /** The points the hint took from it (0 when it earned none). */
+  hintLost?: number;
 }
 
 /** Résultat de notation d'une soumission (sortie de la fonction pure §5). */
 export interface ScoreResult {
   correct: boolean;
   points: number;
+  /** The points the hint took (SPECIFICATIONS-HINTS); absent without one. */
+  hintLost?: number;
   newStreak: number;
   /** Share of the credit earned, 0..1. */
   credit: number;

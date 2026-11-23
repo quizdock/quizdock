@@ -215,5 +215,7 @@
   "results": "結果",
   "newQuizBlank": "空のクイズ",
   "newQuizFromTemplate": "テンプレートから…",
-  "newQuizImport": "ファイルをインポート…"
+  "newQuizImport": "ファイルをインポート…",
+  "duration": "約 {{n}} 分",
+  "durationHint": "自動モードでの推定時間"
 }

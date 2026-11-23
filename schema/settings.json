@@ -35,7 +35,7 @@
           "key": "APP_FEEDBACK_URL",
           "default": "—",
           "level": "C4",
-          "description": "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language, and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
+          "description": "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language (translations fixed on Weblate), and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
           "accepts": "an `http(s)://` URL, or `none`",
           "applies": "live",
           "administration": true
@@ -91,6 +91,15 @@
           "applies": "live",
           "administration": true,
           "preset": "audience"
+        },
+        {
+          "key": "LOBBY_LISTING",
+          "default": "`unlisted`",
+          "level": "C3",
+          "description": "Whether the home page lists the open lobbies under the PIN field, joined in one click: `listed`, handy on a private instance. Each lobby opened from then on is listed; its host takes it off the list, or puts it back, at any time, from the console’s header. A lobby closed to newcomers is not listed. `unlisted`: a lobby is reached by its PIN, link or QR code only. `listed` in the `:standalone` image.",
+          "accepts": "`unlisted` · `listed`",
+          "applies": "next-room",
+          "administration": true
         },
         {
           "key": "OIDC_ISSUER",

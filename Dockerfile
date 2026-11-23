@@ -34,6 +34,8 @@ COPY apps/backend apps/backend
 COPY apps/frontend apps/frontend
 ARG APP_VERSION=dev
 ENV APP_VERSION=$APP_VERSION
+# `all` on the translation staging only (l10n-staging.yml): the locales in progress too.
+ARG VITE_LOCALES_IN_PROGRESS=
 RUN export PRISMA_CLI_BINARY_TARGETS=$(cat /prisma-target) \
  && pnpm --filter @quiz-dock/contracts build \
  && pnpm --filter @quiz-dock/frontend build \

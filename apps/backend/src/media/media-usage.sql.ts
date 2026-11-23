@@ -20,6 +20,7 @@ export const MEDIA_SLOTS = [
   'questionAudios',
   'questionBackgrounds',
   'slides',
+  'slideImages',
   'slideVideos',
   'slideAudios',
   'options',
@@ -40,11 +41,16 @@ export const QUIZ_MEDIA_REFS = Prisma.sql`
     CROSS JOIN LATERAL (VALUES (x.visual_media_id), (x.audio_media_id), (x.background_media_id)) v (media_id)
     WHERE v.media_id IS NOT NULL
   UNION ALL
+  -- A hint's media (SPECIFICATIONS-HINTS), kept in the question's hint.
+  SELECT x.quiz_id, v.media_id FROM question x
+    CROSS JOIN LATERAL (VALUES (x.hint->>'imageMediaId'), (x.hint->>'videoMediaId'), (x.hint->>'audioMediaId')) v (media_id)
+    WHERE v.media_id IS NOT NULL
+  UNION ALL
   SELECT x.quiz_id, o.media_id FROM answer_option o JOIN question x ON x.id = o.question_id
     WHERE o.media_id IS NOT NULL
   UNION ALL
   SELECT s.quiz_id, v.media_id FROM slide s
-    CROSS JOIN LATERAL (VALUES (s.media_id), (s.video_media_id), (s.audio_media_id)) v (media_id)
+    CROSS JOIN LATERAL (VALUES (s.media_id), (s.image_media_id), (s.video_media_id), (s.audio_media_id)) v (media_id)
     WHERE v.media_id IS NOT NULL
   UNION ALL
   SELECT q.id, r[1] FROM quiz q, regexp_matches(COALESCE(q.description, ''), ${MEDIA_ID}, 'g') r
@@ -71,7 +77,7 @@ export function shownInText(id: string): Prisma.Sql {
   const pattern = `%${id}%`;
   return Prisma.sql`(
     EXISTS (SELECT 1 FROM quiz WHERE description LIKE ${pattern})
-    OR EXISTS (SELECT 1 FROM question WHERE prompt LIKE ${pattern} OR answer_explanation LIKE ${pattern})
+    OR EXISTS (SELECT 1 FROM question WHERE prompt LIKE ${pattern} OR answer_explanation LIKE ${pattern} OR hint::text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM answer_option WHERE text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM slide WHERE blocks::text LIKE ${pattern})
     OR EXISTS (SELECT 1 FROM game_session_log WHERE quiz_snapshot::text LIKE ${pattern})

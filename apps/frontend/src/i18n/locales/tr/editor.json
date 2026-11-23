@@ -45,6 +45,10 @@
       "everyone": "Her cihaz"
     },
     "sharingLegend": "Dil ve paylaşım",
+    "feedbackDescription": "Katılımcıların quiz hakkındaki düşünceleri: bir oyunun sonunda 5 üzerinden puan verip yorum bırakabilirler.",
+    "themeDescription": "Quizin yansıtma ekranında ve oyuncuların telefonlarında görünümü, bekleme salonundan podyuma kadar.",
+    "soundDescription": "Quizin ses ve videolarının nasıl oynatıldığı: bir sorudan diğerine aynı seviyede, seçilen cihazlarda, devam etmeden önce bir duraklamayla.",
+    "sharingDescription": "Quizin yazıldığı dil ve onu kimlerin görebileceği. Lisans ve etiketler, onu şablon olarak sunmanızı sağlar.",
     "sharingSummary_one": "{{license}} · {{count}} etiket",
     "sharingSummary_other": "{{license}} · {{count}} etiket",
     "noLicense": "Lisans yok",
@@ -83,6 +87,7 @@
     "enableLabel": "Katılımcı geri bildirimine izin ver",
     "enableHelp": "Quiz tamamlandığında katılımcılara değerlendirme formu gösterilir.",
     "title": "Katılımcı değerlendirmeleri",
+    "off": "Kapalı",
     "empty": "Henüz geri bildirim yok.",
     "anonymous": "Anonim",
     "starsAriaLabel": "5 üzerinden {{value}}",
@@ -143,7 +148,8 @@
       "text": "Metin",
       "image": "Resim",
       "columns2": "2 sütun",
-      "columns3": "3 sütun"
+      "columns3": "3 sütun",
+      "media": "Medya"
     },
     "dragBlock": "Bloğu yeniden sıralamak için sürükleyin",
     "removeBlock": "Bloğu kaldır",
@@ -182,9 +188,13 @@
     "videoSound": "Ses",
     "videoSoundHint": "Videonun kendi sesini çalar. Kapalı: sessizdir ve slaytın kendine ait bir sesi olabilir.",
     "audioExcludesVideoSound": "Slaytta zaten bir ses var: aynı anda yalnızca biri çalabilir. Videonun sesini açmak için onu kaldırın.",
-    "videoSoundExcludesAudio": "Video kendi sesini çalar: ekstra ses yoktur. Eklemek için videoyu sessize alın.",
     "variablesLegend": "Değişkenler",
     "variablesHint": "Başlığa veya metne bir değişken yazın: slaytın gösterildiği her yerde değeriyle değiştirilir. Quizinkiler önizlemede, odanınkiler quiz oynatıldığında dolu görünür.",
+    "variablesInsert": "Değişken ekle",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Oda"
+    },
     "variables": {
       "title": "Quizin başlığı",
       "description": "Quizin açıklaması",
@@ -209,6 +219,19 @@
     "moveToDraft": {
       "title": "Bu boş slayt kaydedilsin mi?",
       "description": "Bu quiz yayımlandığı için her an sunulabilir: slaytta bir içerik olmalıdır. Bu slaytı olduğu gibi kaydetmek için quizi taslağa döndürün veya düzenlemeye devam edin."
+    },
+    "media": {
+      "onlyOne": "Slayt başına bir medya: zaten yerleştirildi.",
+      "state": {
+        "none": "Slaydın görselinin veya videosunun yeri: aşağıdaki zaman çizelgesinden bir tane ekleyin.",
+        "image": "Aşağıdaki zaman çizelgesinde seçilen slayt görseli burada görünür.",
+        "video": "Aşağıdaki zaman çizelgesinde seçilen slayt videosu burada oynar.",
+        "behind": "Slaydın medyası blokların arkasında: bu blok kullanılmıyor. Buraya yerleştirmek için Yerleşimler’de Medya üstte veya Medya altta seçeneğini seçin.",
+        "alone": "Slaydın medyası tek başına gösteriliyor: bu blok kullanılmıyor."
+      },
+      "imageBlock": "Eski bir görsel bloğu: slaydın görseli artık zaman çizelgesinde seçilen ve bir Medya bloğuyla yerleştirilen medyasıdır.",
+      "adopt": "Slaydın medyası yap",
+      "adoptRefused": "Slaydın zaten bir görseli veya videosu var."
     }
   },
   "formSaved": "Kaydedildi",
@@ -231,16 +254,19 @@
     "description": "“{{title}}” ve soruları kalıcı olarak silinecek. Bu eylem geri alınamaz.",
     "confirmLabel": "Sil"
   },
+  "archiveConfirm": {
+    "title": "Bu quiz arşivlensin mi?",
+    "description": "“{{title}}” artık sunulamaz ve listeden çıkar (filtresi onu yeniden gösterir). Geri yüklendiğinde taslak olarak döner, yeniden yayımlanması gerekir.",
+    "confirmLabel": "Arşiv"
+  },
   "questionForm": {
     "typeLabel": "Tür",
     "promptLabel": "Soru metni",
     "promptPlaceholder": "Sorunuz…",
-    "playbackLegend": "Oynatma",
     "timingLegend": "Zamanlama",
     "pointsLegend": "Puanlar",
     "answerExplanationLabel": "Yanıt açıklaması (doğru yanıtla birlikte görünür)",
     "answerExplanationPlaceholder": "Bu yanıt neden doğru? (isteğe bağlı)",
-    "timeLimitLabel": "Süre (sn)",
     "revealDelayLabel": "Yanıtın gösterim süresi (sn)",
     "revealDelayPlaceholder": "oto",
     "revealDelayHint": "Otomatik modda: doğru yanıtın sonraki adıma geçmeden önce ekranda kalma süresi. Boş = sunucunun ayarı.",
@@ -369,26 +395,195 @@
     "optionActions": "{{index}}. seçenek için işlemler",
     "removeOptionShort": "Kaldır",
     "ticksCleared": "Soru türü değişti: doğru yanıt işaretleri temizlendi. Yeni kurallara göre yeniden işaretleyin.",
-    "explanationWritten": "Yazıldı",
-    "explanationEmpty": "Boş",
     "numericLegend": "Yanıt",
     "decimalsAllowed": "Ondalık sayılar kullanılabilir: 3.14, 0.5…",
-    "timingSummary": "{{time}} sn",
-    "timingSummaryStretched": "{{time}} sn (medyayla birlikte {{total}} sn)",
-    "revealDelayAuto": "yanıt gösterimi otomatik",
-    "revealDelaySummary": "yanıt {{seconds}} sn gösterilir",
     "place_ordinal_one": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Yansıtma ekranında görsel",
-    "mediaPositionHint": "Görselin metne göre konumu; cevaplar altta kalır.",
     "mediaPosition": {
       "bottom": "Metnin altında",
       "top": "Metnin üstünde",
       "left": "Metnin solunda",
-      "right": "Metnin sağında"
+      "right": "Metnin sağında",
+      "behind": "Metnin arkasında",
+      "alone": "Yalnızca medya"
     },
     "revealDelayAutoValue": "oto ({{seconds}} sn)",
-    "revealDelaySummaryAuto": "yanıt {{seconds}} sn gösterilir (otomatik)"
+    "timingSummary": "{{time}} sn"
+  },
+  "timeline": {
+    "legend": "Zaman çizelgesi",
+    "timeRow": "Akış: okuma, cevaplar, uzatma",
+    "visualRow": "Görsel kanal",
+    "audioRow": "Ses kanalı",
+    "minimum": "En kısa süre {{seconds}} sn",
+    "stretched": "En kısa süre {{minimum}} sn, medya tarafından {{actual}} sn'ye uzatıldı",
+    "total": "Toplam {{seconds}} sn",
+    "manualShort": "Elle",
+    "phase": {
+      "reading": "Okuma: {{seconds}} sn (genel ayar)",
+      "listen": "Medya oynuyor, henüz cevap yok: {{seconds}} sn",
+      "answers": "Cevaplar: en kısa süre {{seconds}} sn",
+      "display": "Gösterim: {{seconds}} sn",
+      "manual": "Elle: sunucu devam eder",
+      "stretch": "Medya ile uzatıldı: +{{seconds}} sn",
+      "tail": "Medyadan sonra ara: {{seconds}} sn (quiz ayarı)",
+      "answer": "Doğru cevap gösterilir: {{seconds}} sn (otomatik mod)",
+      "answerManual": "Doğru cevap gösterilir: sunucu devam eder"
+    },
+    "element": {
+      "image": "Görsel, tüm süre boyunca",
+      "video": "Video, {{seconds}} sn, sesli",
+      "videoMuted": "Video, {{seconds}} sn, sessiz",
+      "videoLoop": "Döngüdeki video, tüm slayt boyunca",
+      "audio": "Ses, {{seconds}} sn",
+      "unknown": "Süre henüz bilinmiyor",
+      "reveal": "Kademeli gösterim: {{seconds}} sn",
+      "explanation": "Açıklama, doğru cevapla gösterilir",
+      "hint": "İpucu, {{seconds}} sn’den itibaren"
+    },
+    "label": {
+      "image": "Görsel",
+      "video": "Video",
+      "reveal": "Gösterim",
+      "explanation": "Açıklama",
+      "hint": "İpucu"
+    },
+    "add": "Öğe ekle",
+    "clear": "Tüm medyaları kaldır",
+    "questionSettings": "Sorunun akışı",
+    "slideSettings": "Slaytın akışı",
+    "minimumLabel": "En kısa süre (sn)",
+    "minimumHint": "Bir alt sınır: daha uzun bir medya soruyu uzatır.",
+    "choice": {
+      "image": "Resim",
+      "imageHint": "Görsel kanal, tüm süre boyunca",
+      "video": "Video",
+      "videoHint": "Görüntü ve ses, iki kanalda",
+      "audio": "Ses",
+      "audioHint": "Ses kanalı",
+      "reveal": "Kademeli gösterim",
+      "revealHint": "Salon cevaplarken resim netleşir",
+      "explanation": "Açıklama",
+      "explanationHint": "Doğru cevapla gösterilir",
+      "hint": "İpucu",
+      "hintHint": "Soru sırasında, puanının bir kısmı karşılığında bir yardım"
+    },
+    "refused": {
+      "imageChoice": "Görsel seçimli bir sorunun kendi resmi veya videosu olmaz.",
+      "oneVisual": "Bir soruda resim ya da video olur, ikisi birden olmaz.",
+      "videoHasSound": "Video ile ses asla birlikte olmaz: videonun kendi sesi var.",
+      "oneAudio": "Soru başına bir ses.",
+      "oneVideo": "Slayt başına bir video.",
+      "oneSlideAudio": "Slayt başına bir ses.",
+      "slideVideoSound": "Video kendi sesini çalıyor: ses eklemek için videonun sesini kapatın.",
+      "revealNeedsImage": "Kademeli gösterim: önce bir resim ekleyin.",
+      "oneReveal": "Resim başına bir gösterim.",
+      "pollExplanation": "Bir ankette açıklanacak doğru cevap yoktur.",
+      "oneExplanation": "Soru başına bir açıklama.",
+      "oneHint": "Soru başına bir ipucu.",
+      "oneSlideVisual": "Bir slayt resim ya da video gösterir, ikisini birden değil."
+    },
+    "clearConfirm": {
+      "title": "Tüm medyalar kaldırılsın mı?",
+      "description": "Zaman çizelgesi boşaltılır: resimler, videolar ve sesler bu adımdan kaldırılır. Kaydetmediğiniz sürece hiçbir şey kaybolmaz.",
+      "confirm": "Kaldır"
+    },
+    "layout": "Yerleşim",
+    "layoutNeedsVisual": "Yerleşim: önce bir resim ya da video ekleyin.",
+    "layoutApply": "Uygula",
+    "layoutDescription": {
+      "bottom": "Resim ya da video metnin altında, cevaplar aşağıda.",
+      "top": "Resim ya da video metnin üstünde, cevaplar aşağıda.",
+      "left": "Resim ya da video solda, metin yanında, cevaplar aşağıda.",
+      "right": "Metin solda, resim ya da video yanında, cevaplar aşağıda.",
+      "behind": "Metin resmin ya da videonun üzerinde, Arka plan bloğunun rengi ve kenarlığıyla okunur; cevaplar aşağıda, medyanın dışında.",
+      "alone": "Metnin yerinde resim ya da video: soruyu sunucu okur. Telefonlar soruyu yine gösterir; cevaplar aşağıda kalır."
+    },
+    "picture": {
+      "behindNote": "Metnin arkasında medya alanı doldurur: yalnızca kırpma noktası geçerlidir.",
+      "fit": "Doldurma",
+      "fitValue": {
+        "contain": "Tamamı",
+        "cover": "Çerçeveyi doldur"
+      },
+      "focus": "Kırpma noktası",
+      "focusValue": {
+        "center": "Orta",
+        "top": "Üst",
+        "bottom": "Alt",
+        "left": "Sol",
+        "right": "Sağ"
+      },
+      "reveal": "Kademeli gösterim",
+      "revealHint": "Soru okunurken bulanık olan resim, cevaplar açıldıkça netleşir; telefonlarda da.",
+      "revealSeconds": "Net olduğu an (sn)",
+      "ratio": "Oran",
+      "ratioFile": "Dosyanınki",
+      "ratioFree": "Serbest",
+      "ratioFreeLabel": "Oran (G:Y)",
+      "ratioInvalid": "Oran G:Y biçiminde, tam sayılarla, 1:4 ile 4:1 arasında yazılır."
+    },
+    "view": {
+      "label": "Görünüm",
+      "timeline": "Zaman çizelgesi",
+      "list": "Liste"
+    },
+    "list": {
+      "caption": "Öğe: {{n}} · toplam {{total}} sn",
+      "element": "Öğe",
+      "channels": "Kanallar",
+      "start": "Başlangıç",
+      "length": "Süre",
+      "note": "Ne yapar",
+      "open": "Aç",
+      "settings": "Ayarla",
+      "openNamed": "Aç: {{name}}",
+      "settingsNamed": "Ayarla: {{name}}",
+      "flow": "Akış",
+      "untilEnd": "sona kadar ({{seconds}} sn)",
+      "stretches": "soruyu {{seconds}} sn uzatır",
+      "channel": {
+        "time": "Zaman",
+        "visual": "Görsel",
+        "audio": "Ses"
+      }
+    },
+    "reset": "Varsayılan değerlere dön: {{type}}",
+    "resetConfirm": {
+      "title": "“{{type}}” için varsayılan değerlere dönülsün mü?",
+      "description": "Medyalar kaldırılır, süre {{seconds}} sn’ye ve akış varsayılan ayarlarına döner. Kaydetmediğiniz sürece hiçbir şey kaybolmaz.",
+      "confirm": "Sıfırla"
+    },
+    "slideKind": "Slayt",
+    "totalOpen": "{{seconds}} sn, sonra sunucu devam eder",
+    "explanationHint": "Doğru cevap ekranda kaldıkça, onunla birlikte gösterilir.",
+    "hint": {
+      "text": "İpucu metni",
+      "textPlaceholder": "1923’te seçildi",
+      "textHint": "{{n}} / {{max}} karakter",
+      "afterS": "Açılıştan sonra (sn)",
+      "penalty": "Ceza (%)",
+      "rule": "İpucundan sonra verilen cevaplar sorunun puanının %{{penalty}}’ini kaybeder; seri etkilenmez. Sunucu ipuçlarını kapatabilir.",
+      "image": "Resim (metin varsa isteğe bağlı)",
+      "video": "Video",
+      "audio": "Ses",
+      "videoExcludesImage": "Video resmin yerini alır.",
+      "videoExcluded": "Zaten bir resim ya da ses var: video ikisini birden getirir.",
+      "videoHasSound": "Videonun kendi sesi var.",
+      "soundRule": "Sesi gösterildiğinde bir kez çalar ve sorunun sesinin önüne geçer; cevap süresinden uzunsa soruyu uzatır."
+    },
+    "removeElement": "Bu öğeyi kaldır",
+    "embeddedVideo": "Gömülü bir video: yalnızca kaldırılabilir.",
+    "slideLayoutDescription": {
+      "bottom": "Resim ya da video blokların altında.",
+      "top": "Resim ya da video blokların üstünde.",
+      "left": "Resim ya da video solda, bloklar yanında.",
+      "right": "Bloklar solda, resim ya da video yanında.",
+      "behind": "Resim ya da video slaytı doldurur, bloklar üstünde (şimdiye kadarki slayt videosu).",
+      "alone": "Blokların yerine yalnızca resim ya da video."
+    },
+    "conflicts": "Çakışma: {{n}}",
+    "conflictTip": "İpucunun sesi sorunun sesini örtüyor: oyunda ipucunun sesi öne geçer."
   },
   "preview": {
     "view": "Önizleme (katılımcı görünümü)",
@@ -427,7 +622,6 @@
     "altPlaceholder": "örneğin Kylian Mbappé Fransa formasıyla",
     "altHelp": "Görselin ne gösterdiğini açıklayın; ekran okuyucu bunu seslendirir. Görsel yalnızca dekor amaçlıysa boş bırakın.",
     "slotsLegend": "Soru medyası",
-    "visualLabel": "Görsel",
     "audioLabel": "Ses",
     "kindImage": "Resim",
     "kindVideo": "video",
@@ -435,8 +629,6 @@
     "addImage": "Resim ekle",
     "addVideo": "Video ekle",
     "addAudio": "Ses ekle",
-    "videoExcludesAudio": "Videonun zaten kendi sesi var: ekstra ses parçası yok. Ses eklemek için videoyu kaldırın.",
-    "audioExcludesVideo": "Bir videonun zaten kendi sesi vardır: Bir video seçmek için sesi kaldırın.",
     "converting": "Dönüştürülüyor…",
     "convertingPercent": "Dönüştürülüyor… %{{percent}}",
     "cancelConversion": "İptal",
@@ -594,6 +786,74 @@
       "invalid_time": "{{min}}–{{max}} saniye aralığı dışında bir süre sınırı",
       "formula": "formüller okunmaz",
       "invalid_content": "QuizDock için fazla uzun bir metin"
+    }
+  },
+  "quizTimeline": {
+    "legend": "Yarışmanın akışı",
+    "total": "Otomatik modda ≈ {{time}}",
+    "count": "{{questions}} soru · {{slides}} slayt",
+    "scale": "Ölçek",
+    "scaleValue": {
+      "time": "Ölçekli",
+      "equal": "Adım başına bir kutu"
+    },
+    "minute": "{{n}} dk",
+    "slideTip": "Slayt “{{name}}” · {{time}}",
+    "questionTip": "S{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Yerleşimler",
+    "title": "Slayt yerleşimleri",
+    "groupEmpty": "Boş bir slayt düzenle",
+    "groupMedia": "Medyayı yerleştir",
+    "emptyOnly": "boş bir slayt için: bu slaytta içerik var",
+    "welcomeTitle": "{title} etkinliğine hoş geldiniz",
+    "welcomeText": "{join} adresinden **{pin}** PIN’iyle katılın",
+    "layout": {
+      "title": "Başlık",
+      "titleSubtitle": "Başlık ve alt başlık",
+      "titleText": "Başlık ve metin",
+      "titleTextMedia": "Başlık, metin, medya",
+      "mediaTitle": "Medya ve başlık",
+      "textMedia": "Metin | medya",
+      "mediaText": "Medya | metin",
+      "behindTitle": "Medya üzerinde başlık",
+      "mediaAlone": "Yalnızca medya",
+      "twoColumns": "İki sütun",
+      "titleTwoColumns": "Başlık, iki sütun",
+      "threeColumns": "Üç sütun",
+      "section": "Bölüm",
+      "quote": "Alıntı",
+      "welcome": "Karşılama",
+      "mediaAbove": "Medya üstte",
+      "mediaBelow": "Medya altta",
+      "mediaLeft": "Medya solda",
+      "mediaRight": "Medya sağda",
+      "mediaBehind": "Medya arkada",
+      "mediaOnly": "Medya tek başına"
+    },
+    "description": {
+      "title": "Ortalanmış bir başlık.",
+      "titleSubtitle": "Bir başlık ve altında daha küçüğü.",
+      "titleText": "Bir metnin üzerinde bir başlık.",
+      "titleTextMedia": "Bir başlık, bir metin, altında slaydın görseli veya videosu.",
+      "mediaTitle": "Görsel veya video, altında başlığı.",
+      "textMedia": "Solda bir başlık ve metin, sağda görsel veya video.",
+      "mediaText": "Solda görsel veya video, sağda bir başlık ve metin.",
+      "behindTitle": "Görsel veya video slaydı doldurur, üzerinde bir başlık.",
+      "mediaAlone": "Yalnızca görsel veya video, slaydı doldurur.",
+      "twoColumns": "Her biri başlık ve metin içeren iki sütun.",
+      "titleTwoColumns": "İki metin sütununun üzerinde bir başlık.",
+      "threeColumns": "Her biri başlık ve metin içeren üç sütun.",
+      "section": "Büyük bir başlığın üzerinde küçük bir başlık: bir bölümün başlangıcı.",
+      "quote": "Büyük bir metin, altında sağda kaynağı.",
+      "welcome": "Quizin adı ve nasıl katılınacağı, lobi tarafından doldurulur.",
+      "mediaAbove": "Medya bloğu en üste gider; diğer bloklar olduğu gibi kalır.",
+      "mediaBelow": "Medya bloğu sona gider; diğer bloklar olduğu gibi kalır.",
+      "mediaLeft": "Görsel veya video solda, tüm blokların yanında; bloklar olduğu gibi kalır.",
+      "mediaRight": "Görsel veya video sağda, tüm blokların yanında; bloklar olduğu gibi kalır.",
+      "mediaBehind": "Görsel veya video, blokların arkasında slaydı doldurur.",
+      "mediaOnly": "Görsel veya video blokların yerinde; bloklar sonrası için saklanır."
     }
   }
 }

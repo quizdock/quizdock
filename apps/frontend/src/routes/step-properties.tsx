@@ -61,7 +61,7 @@ export function QuestionProperties({ question: q }: { question: QuizDetailDtoQue
                     )}
                     aria-hidden
                   >
-                    <ShapeIcon shape={o.shape} />
+                    <ShapeIcon shape={o.shape} slot={o.color} />
                   </span>
                   {o.mediaId ? (
                     <img

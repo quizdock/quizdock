@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Japan",
     "description": "Sample quiz — geography, history and culture of Japan.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Japan",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -108,7 +108,12 @@
       "numericValue": 3776,
       "numericTolerance": 50,
       "options": [],
-      "acceptedAnswers": []
+      "acceptedAnswers": [],
+      "hint": {
+        "text": "It is a little under 3,800 m high.",
+        "afterS": 15,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "question",
@@ -200,7 +205,12 @@
       "acceptedAnswers": [
         "Shinkansen"
       ],
-      "media": "media/shinkansen.webp"
+      "media": "media/shinkansen.webp",
+      "hint": {
+        "text": "The name means “new trunk line”.",
+        "afterS": 10,
+        "penaltyPct": 25
+      }
     },
     {
       "kind": "slide",
@@ -213,11 +223,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "sakura-picture",
-          "media": "media/cherry-blossoms.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "sakura-picture"
         },
         {
           "type": "text",
@@ -234,7 +241,9 @@
           "#9d174d",
           "#3b0764"
         ]
-      }
+      },
+      "image": "media/cherry-blossoms.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

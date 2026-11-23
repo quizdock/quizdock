@@ -142,7 +142,10 @@
     },
     "true_false": {
       "two_options": "Verdadero o falso lleva exactamente 2 respuestas."
-    }
+    },
+    "hint_empty": "Una pista necesita un texto o una imagen.",
+    "hint_two_visuals": "Una pista muestra una imagen o un vídeo, no ambos.",
+    "hint_two_sounds": "El vídeo de una pista trae su propio sonido: ningún otro audio con él."
   },
   "validation": "Algunos campos no son válidos.",
   "internal": "Error interno.",
@@ -175,7 +178,8 @@
     "background_conflict": "Un fondo es una imagen o un degradado, no ambos.",
     "empty": "La diapositiva no muestra nada: añade un título, un texto, una imagen, un fondo o un vídeo.",
     "not_found": "Esta diapositiva ya no existe: se eliminó mientras tanto.",
-    "incomplete_in_ready_quiz": "Este quiz está publicado: vuelve a pasarlo a borrador para guardar una diapositiva que no muestra nada."
+    "incomplete_in_ready_quiz": "Este quiz está publicado: vuelve a pasarlo a borrador para guardar una diapositiva que no muestra nada.",
+    "two_visuals": "Una diapositiva muestra una imagen o un vídeo, no ambos."
   },
   "record": {
     "not_found": "Este elemento ya no existe: se eliminó mientras tanto.",

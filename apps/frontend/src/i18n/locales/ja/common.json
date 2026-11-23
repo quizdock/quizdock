@@ -16,7 +16,8 @@
     "code": "コード",
     "codeBlock": "コードブロック",
     "bulletList": "箇条書き",
-    "orderedList": "番号付きリスト"
+    "orderedList": "番号付きリスト",
+    "clear": "書式をクリア"
   },
   "captureConfirm": {
     "title": "全回答の記録を有効にしますか？",

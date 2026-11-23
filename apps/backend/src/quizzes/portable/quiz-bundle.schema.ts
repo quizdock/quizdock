@@ -2,6 +2,8 @@ import {
   AUDIO_TARGETS,
   OPTION_ALT_MAX,
   MEDIA_POSITIONS,
+  mediaStyleSchema,
+  HINT_TEXT_MAX,
   WAVEFORM_SIZES,
   audioPeaksSchema,
   loudnessSchema,
@@ -39,8 +41,11 @@ export const BUNDLE_FORMAT = 'quizdock/quiz';
  * Version 6: image choice — answers that are pictures, each with its `alt`.
  * Version 7: a question's picture or video may sit above or beside its text (`mediaPosition`).
  * Version 8: the quiz's theme (`theme`), and a step's background laid by its style (`background`).
+ * Version 9: a question's picture or video may sit behind its text, or alone in its place
+ * (`mediaPosition` `behind`, `alone`), and be framed and revealed (`mediaStyle`); a question's
+ * hint (`hint`).
  */
-export const BUNDLE_VERSION = 8;
+export const BUNDLE_VERSION = 9;
 
 /** Whether a slide item uses what version 5 brought: a video, a sound (#125). */
 function slideUsesMedia(it: SlideBundleItem): boolean {
@@ -53,6 +58,18 @@ function slideUsesMedia(it: SlideBundleItem): boolean {
  * that uses nothing newer.
  */
 export function bundleVersionOf(items: QuizBundle['items'], theme?: QuizBundle['theme']): number {
+  if (
+    items.some(
+      (it) =>
+        it.kind === 'question' &&
+        (it.mediaPosition === 'behind' ||
+          it.mediaPosition === 'alone' ||
+          !!it.mediaStyle ||
+          !!it.hint),
+    ) ||
+    items.some((it) => it.kind === 'slide' && (!!it.image || !!it.mediaPosition || !!it.mediaStyle))
+  )
+    return 9;
   if (theme || items.some((it) => it.background)) return 8;
   if (
     items.some((it) => it.kind === 'question' && it.mediaPosition && it.mediaPosition !== 'bottom')
@@ -199,6 +216,21 @@ export const questionBundleSchema = z.object({
   waveformSize: z.enum(WAVEFORM_SIZES).optional(),
   /** Where its picture or video sits against its text (version 7); absent = below it. */
   mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
+  /** How its picture or video is framed and revealed (version 9); absent = as its file is. */
+  mediaStyle: mediaStyleSchema.optional(),
+  /** Its hint (version 9): a text, a picture or a video, a sound; its start after the answers open, its penalty. */
+  hint: z
+    .object({
+      text: z.string().max(HINT_TEXT_MAX).default(''),
+      image: mediaPathSchema.optional(),
+      /** A video in the picture's place, with its own sound. */
+      video: mediaPathSchema.optional(),
+      /** A sound, alone or with a text or a picture. */
+      audio: mediaPathSchema.optional(),
+      afterS: z.number().int().min(0).max(240),
+      penaltyPct: z.number().int().min(0).max(100),
+    })
+    .optional(),
   /** The timer starts when the media ends (version 3); absent = with the question. */
   timerAfterMedia: z.boolean().optional(),
   pointsMode: z.enum(['standard', 'double', 'none', 'fixed']).optional(),
@@ -216,8 +248,14 @@ export const slideBundleSchema = z.object({
   kind: z.literal('slide'),
   blocks: z.array(z.unknown()).optional(),
   ...backgroundBundleFields,
-  /** An MP4 filling the slide behind its content (version 5). */
+  /** Its picture (version 9), placed by `mediaPosition`; never with a `video`. */
+  image: mediaPathSchema.optional(),
+  /** An MP4 (version 5), behind its content unless `mediaPosition` says otherwise. */
   video: mediaPathSchema.optional(),
+  /** Where its picture or video sits against its blocks (version 9); absent = behind. */
+  mediaPosition: z.enum(MEDIA_POSITIONS).optional(),
+  /** How its picture or video is framed (version 9). */
+  mediaStyle: mediaStyleSchema.optional(),
   /** The video loops (version 5); absent = yes. */
   videoLoop: z.boolean().optional(),
   /** The video plays its own sound (version 5); absent = yes. Then no `audio`. */

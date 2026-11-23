@@ -143,7 +143,10 @@
     },
     "true_false": {
       "two_options": "Prawda/fałsz przyjmuje dokładnie 2 odpowiedzi."
-    }
+    },
+    "hint_empty": "Podpowiedź potrzebuje tekstu lub obrazu.",
+    "hint_two_visuals": "Podpowiedź pokazuje obraz albo wideo, nie oba naraz.",
+    "hint_two_sounds": "Wideo podpowiedzi ma własny dźwięk: bez innego nagrania."
   },
   "validation": "Niektóre pola są nieprawidłowe.",
   "internal": "Błąd wewnętrzny.",
@@ -176,7 +179,8 @@
     "background_conflict": "Tło to obraz albo gradient, nie oba naraz.",
     "empty": "Slajd nic nie pokazuje: dodaj nagłówek, tekst, obraz, tło lub film.",
     "not_found": "Ten slajd już nie istnieje: w międzyczasie został usunięty.",
-    "incomplete_in_ready_quiz": "Ten quiz jest opublikowany: przywróć go do szkicu, aby zapisać slajd, który nic nie pokazuje."
+    "incomplete_in_ready_quiz": "Ten quiz jest opublikowany: przywróć go do szkicu, aby zapisać slajd, który nic nie pokazuje.",
+    "two_visuals": "Slajd pokazuje obraz albo wideo, nie oba naraz."
   },
   "record": {
     "not_found": "Ten element już nie istnieje: w międzyczasie został usunięty.",

@@ -45,6 +45,10 @@
       "everyone": "Alle Geräte"
     },
     "sharingLegend": "Sprache & Teilen",
+    "feedbackDescription": "Was die Teilnehmenden vom Quiz halten: Am Ende einer Partie können sie es mit bis zu 5 Sternen bewerten und einen Kommentar hinterlassen.",
+    "themeDescription": "Das Aussehen des Quiz auf der Projektion und den Handys der Spieler, vom Raum bis zum Podium.",
+    "soundDescription": "Wie Audio und Videos des Quiz abgespielt werden: in gleicher Lautstärke von Frage zu Frage, auf den gewählten Geräten, mit einer Pause vor dem Weitergehen.",
+    "sharingDescription": "Die Sprache, in der das Quiz geschrieben ist, und wer es sehen kann. Mit Lizenz und Tags können Sie es als Vorlage anbieten.",
     "sharingSummary_one": "{{license}} · {{count}} Schlagwort",
     "sharingSummary_other": "{{license}} · {{count}} Schlagwörter",
     "noLicense": "Keine Lizenz",
@@ -83,6 +87,7 @@
     "enableLabel": "Bewertungen der Teilnehmenden erlauben",
     "enableHelp": "Am Ende des Quiz wird bei jedem Spielen ein Bewertungsfeld angeboten.",
     "title": "Bewertungen der Teilnehmenden",
+    "off": "Aus",
     "empty": "Noch keine Bewertungen.",
     "anonymous": "Anonym",
     "starsAriaLabel": "{{value}} von 5",
@@ -143,7 +148,8 @@
       "text": "Text",
       "image": "Bild",
       "columns2": "2 Spalten",
-      "columns3": "3 Spalten"
+      "columns3": "3 Spalten",
+      "media": "Medium"
     },
     "dragBlock": "Ziehen, um den Block umzusortieren",
     "removeBlock": "Block entfernen",
@@ -182,9 +188,13 @@
     "videoSound": "Audio",
     "videoSoundHint": "Spielt das eigene Audio des Videos. Aus: stumm, und die Folie kann ein eigenes Audio haben.",
     "audioExcludesVideoSound": "Die Folie hat bereits ein Audio: jeweils nur eines. Entfernen Sie es, um das des Videos einzuschalten.",
-    "videoSoundExcludesAudio": "Das Video spielt sein eigenes Audio: kein zusätzliches Audio. Schalten Sie das Video stumm, um eines hinzuzufügen.",
     "variablesLegend": "Variablen",
     "variablesHint": "In eine Überschrift oder einen Text schreiben: Sie wird überall ersetzt, wo die Folie erscheint. Die des Quiz erscheinen in der Vorschau ausgefüllt, die des Raums, sobald das Quiz gespielt wird.",
+    "variablesInsert": "Variable einfügen",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Raum"
+    },
     "variables": {
       "title": "Der Titel des Quiz",
       "description": "Die Beschreibung des Quiz",
@@ -209,6 +219,19 @@
     "moveToDraft": {
       "title": "Diese leere Folie speichern?",
       "description": "Dieses Quiz ist veröffentlicht und kann daher jederzeit präsentiert werden: Eine Folie muss etwas zeigen. Setzen Sie das Quiz auf Entwurf zurück, um diese so zu speichern, oder bearbeiten Sie weiter."
+    },
+    "media": {
+      "onlyOne": "Ein Medium pro Folie: Es ist bereits platziert.",
+      "state": {
+        "none": "Wo das Bild oder Video der Folie erscheint: Fügen Sie eines in der Zeitleiste unten hinzu.",
+        "image": "Das Bild der Folie, in der Zeitleiste unten gewählt, erscheint hier.",
+        "video": "Das Video der Folie, in der Zeitleiste unten gewählt, läuft hier.",
+        "behind": "Das Medium der Folie liegt hinter den Blöcken: Dieser Block wird nicht verwendet. Wählen Sie in Layouts Medium oben oder Medium unten, um es hier zu platzieren.",
+        "alone": "Das Medium der Folie wird allein gezeigt: Dieser Block wird nicht verwendet."
+      },
+      "imageBlock": "Ein Bildblock von früher: Das Bild einer Folie ist jetzt ihr Medium, in der Zeitleiste gewählt und durch einen Medium-Block platziert.",
+      "adopt": "Zum Medium der Folie machen",
+      "adoptRefused": "Die Folie hat bereits ein Bild oder ein Video."
     }
   },
   "formSaved": "Gespeichert",
@@ -231,16 +254,19 @@
     "description": "„{{title}}“ und seine Fragen werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
     "confirmLabel": "Löschen"
   },
+  "archiveConfirm": {
+    "title": "Dieses Quiz archivieren?",
+    "description": "„{{title}}“ kann nicht mehr präsentiert werden und verschwindet aus der Liste (ihr Filter zeigt es wieder). Wiederhergestellt kommt es als Entwurf zurück und muss erneut veröffentlicht werden.",
+    "confirmLabel": "Archivieren"
+  },
   "questionForm": {
     "typeLabel": "Typ",
     "promptLabel": "Fragetext",
     "promptPlaceholder": "Ihre Frage…",
-    "playbackLegend": "Wiedergabe",
     "timingLegend": "Zeit",
     "pointsLegend": "Punkte",
     "answerExplanationLabel": "Erklärung zur Antwort (mit der richtigen Antwort angezeigt)",
     "answerExplanationPlaceholder": "Warum das die richtige Antwort ist… (optional)",
-    "timeLimitLabel": "Zeit (s)",
     "revealDelayLabel": "Antwort angezeigt für (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "Im automatischen Modus: wie lange die richtige Antwort auf dem Bildschirm bleibt, bevor es weitergeht. Leer = Einstellung der Instanz.",
@@ -369,28 +395,197 @@
     "optionActions": "Aktionen für Antwortmöglichkeit {{index}}",
     "removeOptionShort": "Entfernen",
     "ticksCleared": "Der Typ hat sich geändert: Die richtigen Antworten wurden zurückgesetzt. Kreuzen Sie sie nach den neuen Regeln erneut an.",
-    "explanationWritten": "Geschrieben",
-    "explanationEmpty": "Leer",
     "numericLegend": "Antwort",
     "decimalsAllowed": "Dezimalzahlen sind möglich: 3.14, 0.5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s mit dem Medium)",
-    "revealDelayAuto": "Antwort angezeigt: auto",
-    "revealDelaySummary": "Antwort angezeigt: {{seconds}} s",
     "place_ordinal_one": "{{count}}.",
     "place_ordinal_two": "{{count}}.",
     "place_ordinal_few": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Bild auf der großen Leinwand",
-    "mediaPositionHint": "Wo das Bild im Verhältnis zum Text steht; die Antworten bleiben darunter.",
     "mediaPosition": {
       "bottom": "Unter dem Text",
       "top": "Über dem Text",
       "left": "Links vom Text",
-      "right": "Rechts vom Text"
+      "right": "Rechts vom Text",
+      "behind": "Hinter dem Text",
+      "alone": "Nur Medium"
     },
     "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "Antwort angezeigt: {{seconds}} s (auto)"
+    "timingSummary": "{{time}} s"
+  },
+  "timeline": {
+    "legend": "Zeitleiste",
+    "timeRow": "Ablauf: Lesen, Antworten, Verlängerung",
+    "visualRow": "Bildkanal",
+    "audioRow": "Tonkanal",
+    "minimum": "Mindestdauer {{seconds}} s",
+    "stretched": "Mindestdauer {{minimum}} s, durch die Medien auf {{actual}} s verlängert",
+    "total": "Gesamt {{seconds}} s",
+    "manualShort": "Manuell",
+    "phase": {
+      "reading": "Lesen: {{seconds}} s (globale Einstellung)",
+      "listen": "Das Medium läuft, noch keine Antworten: {{seconds}} s",
+      "answers": "Antworten: Mindestdauer {{seconds}} s",
+      "display": "Anzeige: {{seconds}} s",
+      "manual": "Manuell: die Moderation geht weiter",
+      "stretch": "Durch das Medium verlängert: +{{seconds}} s",
+      "tail": "Pause nach dem Medium: {{seconds}} s (Quiz-Einstellung)",
+      "answer": "Richtige Antwort angezeigt: {{seconds}} s (Automodus)",
+      "answerManual": "Richtige Antwort angezeigt: Die Moderation macht weiter"
+    },
+    "element": {
+      "image": "Bild, die ganze Zeit",
+      "video": "Video, {{seconds}} s, mit Ton",
+      "videoMuted": "Video, {{seconds}} s, ohne Ton",
+      "videoLoop": "Video in Schleife, die ganze Folie",
+      "audio": "Ton, {{seconds}} s",
+      "unknown": "Länge noch unbekannt",
+      "reveal": "Schrittweise Enthüllung: {{seconds}} s",
+      "explanation": "Erklärung, mit der richtigen Antwort angezeigt",
+      "hint": "Hinweis, ab {{seconds}} s"
+    },
+    "label": {
+      "image": "Bild",
+      "video": "Video",
+      "reveal": "Enthüllung",
+      "explanation": "Erklärung",
+      "hint": "Hinweis"
+    },
+    "add": "Element hinzufügen",
+    "clear": "Alle Medien entfernen",
+    "questionSettings": "Ablauf der Frage",
+    "slideSettings": "Ablauf der Folie",
+    "minimumLabel": "Mindestdauer (s)",
+    "minimumHint": "Ein Minimum: Ein längeres Medium verlängert die Frage.",
+    "choice": {
+      "image": "Bild",
+      "imageHint": "Bildkanal, die ganze Zeit",
+      "video": "Video",
+      "videoHint": "Bild und Ton, auf beiden Kanälen",
+      "audio": "Audio",
+      "audioHint": "Tonkanal",
+      "reveal": "Schrittweise Enthüllung",
+      "revealHint": "Das Bild wird scharf, während der Raum antwortet",
+      "explanation": "Erklärung",
+      "explanationHint": "Mit der richtigen Antwort angezeigt",
+      "hint": "Hinweis",
+      "hintHint": "Eine Hilfe während der Frage, gegen einen Teil ihrer Punkte"
+    },
+    "refused": {
+      "imageChoice": "Eine Bildauswahl hat kein eigenes Bild und kein eigenes Video.",
+      "oneVisual": "Eine Frage hat ein Bild oder ein Video, nicht beides.",
+      "videoHasSound": "Nie ein Video und ein Audio: Das Video bringt seinen eigenen Ton mit.",
+      "oneAudio": "Ein Audio pro Frage.",
+      "oneVideo": "Ein Video pro Folie.",
+      "oneSlideAudio": "Ein Audio pro Folie.",
+      "slideVideoSound": "Das Video spielt seinen eigenen Ton: Schalte ihn stumm, um ein Audio hinzuzufügen.",
+      "revealNeedsImage": "Schrittweise Enthüllung: Füge zuerst ein Bild hinzu.",
+      "oneReveal": "Eine Enthüllung pro Bild.",
+      "pollExplanation": "Eine Umfrage hat keine richtige Antwort zu erklären.",
+      "oneExplanation": "Eine Erklärung pro Frage.",
+      "oneHint": "Ein Hinweis pro Frage.",
+      "oneSlideVisual": "Eine Folie zeigt ein Bild oder ein Video, nicht beides."
+    },
+    "clearConfirm": {
+      "title": "Alle Medien entfernen?",
+      "description": "Die Zeitleiste wird geleert: Bilder, Videos und Audios werden aus diesem Schritt entfernt. Nichts geht verloren, solange du nicht speicherst.",
+      "confirm": "Entfernen"
+    },
+    "layout": "Layout",
+    "layoutNeedsVisual": "Layout: Füge zuerst ein Bild oder ein Video hinzu.",
+    "layoutApply": "Anwenden",
+    "layoutDescription": {
+      "bottom": "Das Bild oder Video unter dem Text, die Antworten darunter.",
+      "top": "Das Bild oder Video über dem Text, die Antworten darunter.",
+      "left": "Das Bild oder Video links, der Text daneben, die Antworten darunter.",
+      "right": "Der Text links, das Bild oder Video daneben, die Antworten darunter.",
+      "behind": "Der Text liegt über dem Bild oder Video, lesbar durch Farbe und Kontur aus dem Block Hintergrund; die Antworten darunter, außerhalb.",
+      "alone": "Das Bild oder Video anstelle des Textes: Die Moderation liest die Frage vor. Die Handys zeigen sie weiterhin; die Antworten bleiben darunter."
+    },
+    "picture": {
+      "behindNote": "Hinter dem Text füllt das Medium die Fläche: Nur der Bildausschnitt gilt.",
+      "fit": "Füllung",
+      "fitValue": {
+        "contain": "Ganz",
+        "cover": "Rahmen füllen"
+      },
+      "focus": "Bildausschnitt",
+      "focusValue": {
+        "center": "Mitte",
+        "top": "Oben",
+        "bottom": "Unten",
+        "left": "Links",
+        "right": "Rechts"
+      },
+      "reveal": "Schrittweise Enthüllung",
+      "revealHint": "Unscharf, während die Frage gelesen wird, wird das Bild ab dem Öffnen der Antworten scharf – auch auf den Handys.",
+      "revealSeconds": "Scharf nach (s)",
+      "ratio": "Seitenverhältnis",
+      "ratioFile": "Der Datei",
+      "ratioFree": "Frei",
+      "ratioFreeLabel": "Seitenverhältnis (B:H)",
+      "ratioInvalid": "Ein Seitenverhältnis lautet B:H, ganze Zahlen, zwischen 1:4 und 4:1."
+    },
+    "view": {
+      "label": "Ansicht",
+      "timeline": "Zeitleiste",
+      "list": "Liste"
+    },
+    "list": {
+      "caption": "Elemente: {{n}} · insgesamt {{total}} s",
+      "element": "Element",
+      "channels": "Kanäle",
+      "start": "Beginn",
+      "length": "Dauer",
+      "note": "Was es tut",
+      "open": "Öffnen",
+      "settings": "Einstellen",
+      "openNamed": "Öffnen: {{name}}",
+      "settingsNamed": "Einstellen: {{name}}",
+      "flow": "Ablauf",
+      "untilEnd": "bis zum Ende ({{seconds}} s)",
+      "stretches": "verlängert die Frage um {{seconds}} s",
+      "channel": {
+        "time": "Zeit",
+        "visual": "Bild",
+        "audio": "Ton"
+      }
+    },
+    "reset": "Zurück zu den Standardwerten: {{type}}",
+    "resetConfirm": {
+      "title": "Zurück zu den Standardwerten von „{{type}}“?",
+      "description": "Die Medien werden entfernt, die Dauer kehrt zu {{seconds}} s zurück und der Ablauf zu seinen Standardeinstellungen. Nichts geht verloren, solange du nicht speicherst.",
+      "confirm": "Zurücksetzen"
+    },
+    "slideKind": "Folie",
+    "totalOpen": "{{seconds}} s, dann macht die Moderation weiter",
+    "explanationHint": "Auf den Bildschirmen mit der richtigen Antwort angezeigt, solange sie bleibt.",
+    "hint": {
+      "text": "Text des Hinweises",
+      "textPlaceholder": "Sie wurde 1923 gewählt",
+      "textHint": "{{n}} / {{max}} Zeichen",
+      "afterS": "Nach dem Öffnen (s)",
+      "penalty": "Abzug (%)",
+      "rule": "Antworten nach dem Hinweis verlieren {{penalty}} % der Punkte der Frage; die Serie bleibt unberührt. Die Moderation kann Hinweise ausschalten.",
+      "image": "Bild (optional, wenn es einen Text gibt)",
+      "video": "Video",
+      "audio": "Ton",
+      "videoExcludesImage": "Ein Video nimmt den Platz des Bildes ein.",
+      "videoExcluded": "Schon ein Bild oder ein Ton: Ein Video bringt beides.",
+      "videoHasSound": "Das Video bringt seinen eigenen Ton.",
+      "soundRule": "Sein Ton spielt einmal beim Aufdecken und hat Vorrang vor dem der Frage; länger als die Antwortzeit, verlängert er die Frage."
+    },
+    "removeElement": "Dieses Element entfernen",
+    "embeddedVideo": "Ein eingebettetes Video: Es kann nur entfernt werden.",
+    "slideLayoutDescription": {
+      "bottom": "Das Bild oder Video unter den Blöcken.",
+      "top": "Das Bild oder Video über den Blöcken.",
+      "left": "Das Bild oder Video links, die Blöcke daneben.",
+      "right": "Die Blöcke links, das Bild oder Video daneben.",
+      "behind": "Das Bild oder Video füllt die Folie, die Blöcke liegen darüber (bisher das Video einer Folie).",
+      "alone": "Das Bild oder Video allein, anstelle der Blöcke."
+    },
+    "conflicts": "Konflikte: {{n}}",
+    "conflictTip": "Der Ton des Hinweises überdeckt den der Frage: Im Spiel hat der Hinweis Vorrang."
   },
   "preview": {
     "view": "Vorschau (Ansicht der Teilnehmenden)",
@@ -429,7 +624,6 @@
     "altPlaceholder": "z. B. Kylian Mbappé im Trikot der französischen Nationalmannschaft",
     "altHelp": "Wird von Screenreadern vorgelesen. Beschreiben Sie, was das Bild zeigt, wenn es einen Teil der Frage trägt; lassen Sie es leer, wenn das Bild nur Dekoration ist.",
     "slotsLegend": "Medien der Frage",
-    "visualLabel": "Bild/Video",
     "audioLabel": "Audio",
     "kindImage": "Bild",
     "kindVideo": "Video",
@@ -437,8 +631,6 @@
     "addImage": "Bild hinzufügen",
     "addVideo": "Video hinzufügen",
     "addAudio": "Audio hinzufügen",
-    "videoExcludesAudio": "Das Video hat bereits sein eigenes Audio: keine zusätzliche Audiospur. Entfernen Sie das Video, um ein Audio hinzuzufügen.",
-    "audioExcludesVideo": "Ein Video hat bereits sein eigenes Audio: Entfernen Sie das Audio, um ein Video zu wählen.",
     "converting": "Wird konvertiert…",
     "convertingPercent": "Wird konvertiert… {{percent}} %",
     "cancelConversion": "Abbrechen",
@@ -596,6 +788,74 @@
       "invalid_time": "ein Zeitlimit außerhalb von {{min}}–{{max}} Sekunden",
       "formula": "Formeln werden nicht gelesen",
       "invalid_content": "ein Text, der für QuizDock zu lang ist"
+    }
+  },
+  "quizTimeline": {
+    "legend": "Ablauf des Quiz",
+    "total": "≈ {{time}} im Automodus",
+    "count": "{{questions}} Fragen · {{slides}} Folien",
+    "scale": "Maßstab",
+    "scaleValue": {
+      "time": "Maßstabsgetreu",
+      "equal": "Ein Feld pro Schritt"
+    },
+    "minute": "{{n}} min",
+    "slideTip": "Folie „{{name}}“ · {{time}}",
+    "questionTip": "F{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Layouts",
+    "title": "Folien-Layouts",
+    "groupEmpty": "Eine leere Folie gestalten",
+    "groupMedia": "Das Medium platzieren",
+    "emptyOnly": "für eine leere Folie: Diese hat Inhalt",
+    "welcomeTitle": "Willkommen bei {title}",
+    "welcomeText": "Mitmachen unter {join} mit der PIN **{pin}**",
+    "layout": {
+      "title": "Titel",
+      "titleSubtitle": "Titel und Untertitel",
+      "titleText": "Titel und Text",
+      "titleTextMedia": "Titel, Text, Medium",
+      "mediaTitle": "Medium und Titel",
+      "textMedia": "Text | Medium",
+      "mediaText": "Medium | Text",
+      "behindTitle": "Titel über dem Medium",
+      "mediaAlone": "Nur Medium",
+      "twoColumns": "Zwei Spalten",
+      "titleTwoColumns": "Titel, zwei Spalten",
+      "threeColumns": "Drei Spalten",
+      "section": "Abschnitt",
+      "quote": "Zitat",
+      "welcome": "Begrüßung",
+      "mediaAbove": "Medium oben",
+      "mediaBelow": "Medium unten",
+      "mediaLeft": "Medium links",
+      "mediaRight": "Medium rechts",
+      "mediaBehind": "Medium dahinter",
+      "mediaOnly": "Medium allein"
+    },
+    "description": {
+      "title": "Eine Überschrift, zentriert.",
+      "titleSubtitle": "Eine Überschrift und eine kleinere darunter.",
+      "titleText": "Eine Überschrift über einem Text.",
+      "titleTextMedia": "Eine Überschrift, ein Text, darunter das Bild oder Video der Folie.",
+      "mediaTitle": "Das Bild oder Video, darunter seine Überschrift.",
+      "textMedia": "Links eine Überschrift und ein Text, rechts das Bild oder Video.",
+      "mediaText": "Links das Bild oder Video, rechts eine Überschrift und ein Text.",
+      "behindTitle": "Das Bild oder Video füllt die Folie, eine Überschrift darüber.",
+      "mediaAlone": "Das Bild oder Video allein, folienfüllend.",
+      "twoColumns": "Zwei Spalten, jede mit Überschrift und Text.",
+      "titleTwoColumns": "Eine Überschrift über zwei Textspalten.",
+      "threeColumns": "Drei Spalten, jede mit Überschrift und Text.",
+      "section": "Eine kleine Überschrift über einer großen: der Beginn eines Teils.",
+      "quote": "Ein großer Text, darunter rechts seine Quelle.",
+      "welcome": "Der Titel des Quiz und wie man beitritt, von der Lobby ausgefüllt.",
+      "mediaAbove": "Der Medium-Block rückt nach oben; die anderen Blöcke bleiben, wie sie sind.",
+      "mediaBelow": "Der Medium-Block rückt ans Ende; die anderen Blöcke bleiben, wie sie sind.",
+      "mediaLeft": "Das Bild oder Video links, neben allen Blöcken; sie bleiben, wie sie sind.",
+      "mediaRight": "Das Bild oder Video rechts, neben allen Blöcken; sie bleiben, wie sie sind.",
+      "mediaBehind": "Das Bild oder Video füllt die Folie, hinter den Blöcken.",
+      "mediaOnly": "Das Bild oder Video anstelle der Blöcke; die Blöcke bleiben für später erhalten."
     }
   }
 }

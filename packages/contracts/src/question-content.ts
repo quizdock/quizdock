@@ -4,6 +4,7 @@ import { IMAGE_CHOICE_OPTION_COUNTS, OPTION_ALT_MAX } from './image-choice';
 import {
   AUDIO_TARGETS,
   MEDIA_POSITIONS,
+  mediaStyleSchema,
   WAVEFORM_SIZES,
   questionMediaSchema,
 } from './question-media';
@@ -83,7 +84,69 @@ export const ACCEPTED_ANSWER_MAX = 200;
 export const EXPLANATION_MAX = 2000;
 /** A question's answering time, and the auto mode's pause on its answer (SQL CHECKs). */
 export const TIME_LIMIT_S = { min: 5, max: 240, default: 20 } as const;
+
+/**
+ * The question types' reference (SPECIFICATIONS-QUESTION-TIMELINE §4): for each, the answer
+ * time a new question starts from — a true or false reads at a glance, a typed answer
+ * takes longer — and its icon, a Lucide name the screens draw. The builder's starting
+ * point only; a question stored without a time keeps {@link TIME_LIMIT_S.default}.
+ */
+export const QUESTION_TYPE_INFO: Record<QuestionTypeName, { timeLimitS: number; icon: string }> = {
+  single_choice: { timeLimitS: 20, icon: 'circle-dot' },
+  multiple_choice: { timeLimitS: 20, icon: 'square-check' },
+  true_false: { timeLimitS: 10, icon: 'check-check' },
+  text_input: { timeLimitS: 30, icon: 'text-cursor-input' },
+  numeric: { timeLimitS: 20, icon: 'hash' },
+  ordering: { timeLimitS: 20, icon: 'arrow-down-wide-narrow' },
+  poll: { timeLimitS: 20, icon: 'bar-chart-3' },
+  image_choice: { timeLimitS: 20, icon: 'layout-grid' },
+};
+
+/** The answer time a new question of each type starts from (see {@link QUESTION_TYPE_INFO}). */
+export const TIME_LIMIT_BY_TYPE = Object.fromEntries(
+  Object.entries(QUESTION_TYPE_INFO).map(([type, info]) => [type, info.timeLimitS]),
+) as Record<QuestionTypeName, number>;
 export const REVEAL_DELAY_S = { min: 1, max: 300 } as const;
+
+/** A hint's text: readable before the time runs out (SPECIFICATIONS-HINTS §2). */
+export const HINT_TEXT_MAX = 140;
+/** The share of the question's points an answer given after the hint loses, by default (%). */
+export const HINT_PENALTY_DEFAULT = 25;
+
+/**
+ * A question's hint (SPECIFICATIONS-HINTS): a text, a picture or a video, a sound, revealed
+ * to the whole room `afterS` seconds after the answers open, when the host's hints are on.
+ * Its sound — its own, or its video's — plays once at its reveal and takes over the
+ * question's; longer than the answer time, it stretches the question. The answers given
+ * after it lose `penaltyPct` % of the points they earn on the question; the streak bonus is
+ * never touched.
+ */
+export const questionHintSchema = z
+  .object({
+    text: z.string().trim().max(HINT_TEXT_MAX).default(''),
+    /** A picture of the library, shown with or without a text. */
+    imageMediaId: z.string().length(26).nullable().optional(),
+    /** A video in the picture's place, with its own sound. */
+    videoMediaId: z.string().length(26).nullable().optional(),
+    /** A sound, alone or with a text or a picture. */
+    audioMediaId: z.string().length(26).nullable().optional(),
+    afterS: z.number().int().min(0).max(240),
+    penaltyPct: z.number().int().min(0).max(100),
+  })
+  .refine((h) => h.text.length > 0 || !!h.imageMediaId || !!h.videoMediaId || !!h.audioMediaId, {
+    message: 'question.hint_empty',
+    path: ['text'],
+  })
+  // One visual, one sound: as a question's media.
+  .refine((h) => !(h.imageMediaId && h.videoMediaId), {
+    message: 'question.hint_two_visuals',
+    path: ['videoMediaId'],
+  })
+  .refine((h) => !(h.videoMediaId && h.audioMediaId), {
+    message: 'question.hint_two_sounds',
+    path: ['audioMediaId'],
+  });
+export type QuestionHint = z.infer<typeof questionHintSchema>;
 
 export const POINTS_MODES = ['standard', 'double', 'none', 'fixed'] as const;
 export type PointsModeName = (typeof POINTS_MODES)[number];
@@ -163,6 +226,10 @@ export const questionContentSchema = z
     media: questionMediaSchema.optional(),
     // Where the visual sits against the text on the projection.
     mediaPosition: z.enum(MEDIA_POSITIONS).default('bottom'),
+    // How the visual is framed and revealed; null or absent = as its file is.
+    mediaStyle: mediaStyleSchema.nullable().optional(),
+    // A clue revealed during the question, for part of its points; null = none.
+    hint: questionHintSchema.nullable().optional(),
     timeLimitS: z
       .number()
       .int()

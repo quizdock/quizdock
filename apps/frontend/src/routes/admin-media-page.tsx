@@ -400,6 +400,11 @@ function Files() {
 
   return (
     <section className="flex flex-col gap-3">
+      {/* Uploads always go to the global media, whatever the files shown. */}
+      <p className="text-muted-foreground text-sm">{t('mediaAdmin.instance.help')}</p>
+      {readOnly ? null : (
+        <DropZone disabled={busy} progress={progress} onFiles={(f) => void uploadAll(f)} />
+      )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold">{t('mediaAdmin.files.title')}</h2>
@@ -425,14 +430,6 @@ function Files() {
           />
         </div>
       </div>
-      {scope === 'global' ? (
-        <>
-          <p className="text-muted-foreground text-sm">{t('mediaAdmin.instance.help')}</p>
-          {readOnly ? null : (
-            <DropZone disabled={busy} progress={progress} onFiles={(f) => void uploadAll(f)} />
-          )}
-        </>
-      ) : null}
 
       {/* The filters and the actions stay in reach while the files scroll. */}
       <div className="bg-background sticky top-0 z-20 flex flex-col gap-2 border-b py-2">

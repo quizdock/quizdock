@@ -141,7 +141,10 @@
     },
     "true_false": {
       "two_options": "Wahr oder falsch hat genau 2 Antworten."
-    }
+    },
+    "hint_empty": "Ein Hinweis braucht einen Text oder ein Bild.",
+    "hint_two_visuals": "Ein Hinweis zeigt ein Bild oder ein Video, nicht beides.",
+    "hint_two_sounds": "Das Video eines Hinweises hat eigenen Ton: kein anderes Audio dazu."
   },
   "validation": "Einige Felder sind ungültig.",
   "internal": "Interner Fehler.",
@@ -174,7 +177,8 @@
     "background_conflict": "Ein Hintergrund ist ein Bild oder ein Verlauf, nicht beides.",
     "empty": "Die Folie zeigt nichts: Fügen Sie eine Überschrift, einen Text, ein Bild, einen Hintergrund oder ein Video hinzu.",
     "not_found": "Diese Folie existiert nicht mehr: Sie wurde inzwischen gelöscht.",
-    "incomplete_in_ready_quiz": "Dieses Quiz ist veröffentlicht: Setzen Sie es auf Entwurf zurück, um eine Folie zu speichern, die nichts zeigt."
+    "incomplete_in_ready_quiz": "Dieses Quiz ist veröffentlicht: Setzen Sie es auf Entwurf zurück, um eine Folie zu speichern, die nichts zeigt.",
+    "two_visuals": "Eine Folie zeigt ein Bild oder ein Video, nicht beides."
   },
   "record": {
     "not_found": "Dieses Element existiert nicht mehr: Es wurde inzwischen gelöscht.",

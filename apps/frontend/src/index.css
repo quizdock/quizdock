@@ -46,6 +46,21 @@
      stars; `--warning-text` for words in it on a light ground. */
   --warning: oklch(76.9% 0.188 70.08);
   --warning-text: oklch(53% 0.163 48.998);
+  /* The editor's timeline: one colour per channel (time, picture, sound), on its row,
+     its icon and its elements. */
+  --timeline-time: oklch(0.55 0.16 300);
+  --timeline-visual: oklch(0.55 0.2 255);
+  --timeline-audio: oklch(0.55 0.14 155);
+  --timeline-slide: oklch(0.62 0.12 185);
+  /* A question's type, by its colour: its icon, and its block in the quiz's timeline. */
+  --question-single-choice: oklch(0.55 0.17 262);
+  --question-multiple-choice: oklch(0.55 0.17 300);
+  --question-true-false: oklch(0.55 0.17 145);
+  --question-text-input: oklch(0.55 0.17 50);
+  --question-numeric: oklch(0.55 0.17 95);
+  --question-ordering: oklch(0.55 0.17 345);
+  --question-poll: oklch(0.55 0.17 220);
+  --question-image-choice: oklch(0.55 0.17 20);
   /* An answer's colour, as its author picked it: its identity on every screen. */
   --answer-red: oklch(57.7% 0.245 27.325);
   --answer-blue: oklch(54.6% 0.245 262.881);
@@ -104,6 +119,18 @@
   --success-text: oklch(0.75 0.15 150);
   /* Amber words on a dark ground: the light one would sink into it. */
   --warning-text: oklch(0.82 0.15 75);
+  --timeline-time: oklch(0.72 0.14 300);
+  --timeline-visual: oklch(0.72 0.15 255);
+  --timeline-audio: oklch(0.75 0.14 155);
+  --timeline-slide: oklch(0.7 0.11 185);
+  --question-single-choice: oklch(0.72 0.14 262);
+  --question-multiple-choice: oklch(0.72 0.14 300);
+  --question-true-false: oklch(0.72 0.14 145);
+  --question-text-input: oklch(0.72 0.14 50);
+  --question-numeric: oklch(0.72 0.14 95);
+  --question-ordering: oklch(0.72 0.14 345);
+  --question-poll: oklch(0.72 0.14 220);
+  --question-image-choice: oklch(0.72 0.14 20);
 }
 
 /*
@@ -181,6 +208,10 @@
   --color-link: var(--link);
   --color-warning: var(--warning);
   --color-warning-text: var(--warning-text);
+  --color-timeline-time: var(--timeline-time);
+  --color-timeline-visual: var(--timeline-visual);
+  --color-timeline-audio: var(--timeline-audio);
+  --color-timeline-slide: var(--timeline-slide);
   --color-answer-red: var(--answer-red);
   --color-answer-blue: var(--answer-blue);
   --color-answer-yellow: var(--answer-yellow);
@@ -242,11 +273,15 @@
 @theme {
   /* The app's typeface: a font of the brand's goes here (override.css). */
   --font-sans: var(--look-font, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif);
-  --container-shell: 90rem;
+  /* The app takes the width it is given, up to UHD screens where lines would run too long. */
+  --container-shell: 150rem;
   --container-content-lg: 72rem;
   --container-content-md: 48rem;
   --container-content-sm: 28rem;
   --container-phone: 32rem;
+  /* Past Tailwind's 2xl: the large and UHD screens (often scaled 150 to 200 %). */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
 }
 @utility content-shell {
   width: 100%;
@@ -333,6 +368,22 @@
 }
 .qd-mark {
   animation: qd-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+/* A question's picture revealed progressively: blurred, then sharp (SPECIFICATIONS-QUESTION-PICTURE).
+   A game mechanic, kept under reduced motion: it changes what can be seen, not where. */
+:root {
+  --qd-reveal-blur: 28px;
+}
+/* Slightly larger while blurred: its edges fade inside its clipped place, not into it. */
+@keyframes qd-reveal {
+  from {
+    filter: blur(var(--qd-reveal-blur));
+    transform: scale(1.08);
+  }
+  to {
+    filter: blur(0);
+    transform: scale(1);
+  }
 }
 @keyframes qd-draw {
   to {

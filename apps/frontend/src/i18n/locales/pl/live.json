@@ -256,9 +256,16 @@
     "spaceKey": "Spacja",
     "slideAuto": "{{seconds}} s",
     "slideManual": "ręcznie",
-    "motion": "Animacje",
+    "motion": "Animowane przejścia",
+    "motionOn": "Wł.",
+    "motionOff": "Wył.",
     "motionOnTooltip": "Ekrany są animowane między krokami. Kliknij, aby je unieruchomić, dla wolnego projektora.",
     "motionOffTooltip": "Ekrany zmieniają się bez przejść. Kliknij, aby przywrócić przejścia.",
+    "listed": "Strona główna",
+    "listedOn": "Widoczny",
+    "listedOff": "Ukryty",
+    "listedOnTooltip": "Każdy, kto otworzy stronę główną, widzi ten pokój i dołącza jednym kliknięciem.",
+    "listedOffTooltip": "Prowadzą tu tylko PIN, link lub kod QR.",
     "pickerPlayed": "Rozegrane w tym pokoju",
     "pickerPlayedAll": "Wszystkie quizy",
     "pickerPlayedFresh": "Jeszcze nierozegrane",
@@ -270,9 +277,9 @@
     "columnQuiz": "Quiz",
     "columnTotal": "Razem",
     "columnActions": "Działania",
-    "audienceLanguageLabel": "Język ekranów",
+    "audienceLanguageLabel": "Język interfejsu",
     "audienceLanguageQuiz": "Język każdego quizu",
-    "audienceLanguageHint": "Projekcja i ekrany uczestników, dla całego pokoju: klasa językowa rozgrywa quiz po angielsku z interfejsem we własnym języku.",
+    "audienceLanguageHint": "Projekcji i telefonów uczestników, dla całego lobby (kto wybrał własny, zachowuje go). Quiz zostaje w swoim języku: lekcja języka gra w quiz po angielsku z interfejsem w swoim.",
     "chooseQuiz": "Wybierz quiz",
     "chooseQuizTooltip": "Wybierz quiz, który pokój rozegra jako następny: uczestnicy zostają",
     "chooseQuizDescription": "Uczestnicy zostają w pokoju; quiz zaczyna się sam, gdy wszyscy są gotowi, albo po 30 s.",
@@ -281,7 +288,9 @@
     "backToLobbyDescription": "Uczestnicy zostają w pokoju, gdzie wybierasz następny quiz; nikt nie wpisuje ponownie PIN-u.",
     "noQuizYetHint": "Pokój czeka: wybierz quiz, który rozegra jako następny.",
     "columnRank": "Miejsce",
-    "seeResults": "Zobacz wyniki"
+    "seeResults": "Zobacz wyniki",
+    "stopMenu": "Inne sposoby zatrzymania",
+    "roomSettings": "Ustawienia poczekalni"
   },
   "screen": {
     "sessionUnavailable": "Pokój niedostępny.",
@@ -550,5 +559,21 @@
     "played": "rozegrany",
     "save": "Zapisz jako zestaw",
     "saved": "Zapisano jako zestaw: otwórz"
+  },
+  "hint": {
+    "consoleLabel": "Podpowiedź",
+    "switch": "Podpowiedzi",
+    "planned": "Podpowiedź po {{seconds}} s · −{{penalty}} %",
+    "revealed": "Podpowiedź pokazana · −{{penalty}} %",
+    "reminder": "To pytanie ma podpowiedź, a podpowiedzi są wyłączone.",
+    "enable": "Włącz",
+    "onProjection": "Na projekcji",
+    "costs": "Podpowiedź – odpowiedzi od teraz tracą {{penalty}} % punktów za pytanie",
+    "show": "Pokaż",
+    "fold": "Zwiń",
+    "label": "Podpowiedź",
+    "penaltyApplied": "Podpowiedź: −{{penalty}} % ({{lost}} pkt mniej)",
+    "imageAlt": "Obraz podpowiedzi",
+    "replay": "Odtwórz ponownie"
   }
 }

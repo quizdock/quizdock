@@ -165,6 +165,7 @@
     "AUTH_MODE": "Tryb uwierzytelniania",
     "DEMO_MODE": "Publiczne demo",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "Uczestnicy bez konta",
+    "LOBBY_LISTING": "Otwarte pokoje na stronie głównej",
     "OIDC_ISSUER": "Dostawca tożsamości (issuer)",
     "OIDC_CLIENT_ID": "Identyfikator klienta",
     "OIDC_CLIENT_SECRET": "Sekret klienta",

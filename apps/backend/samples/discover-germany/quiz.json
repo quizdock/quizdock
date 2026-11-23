@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Germany",
     "description": "Sample quiz — geography, history and culture of Germany.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Germany",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -214,11 +214,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "market-picture",
-          "media": "media/christmas-market.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "market-picture"
         },
         {
           "type": "text",
@@ -235,7 +232,9 @@
           "#7f1d1d",
           "#450a0a"
         ]
-      }
+      },
+      "image": "media/christmas-market.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

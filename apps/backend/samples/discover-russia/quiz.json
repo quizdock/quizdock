@@ -1,12 +1,12 @@
 {
   "format": "quizdock/quiz",
-  "version": 6,
+  "version": 9,
   "quiz": {
     "title": "Discover Russia",
     "description": "Sample quiz — geography, history and culture of Russia.",
     "language": "en",
     "license": "CC-BY-4.0",
-    "revision": 2,
+    "revision": 6,
     "feedbackEnabled": true,
     "cover": null
   },
@@ -17,7 +17,7 @@
         {
           "type": "heading",
           "id": "intro-title",
-          "text": "Discover Russia",
+          "text": "{title}",
           "level": 1,
           "align": "center"
         },
@@ -213,11 +213,8 @@
           "align": "center"
         },
         {
-          "type": "image",
-          "id": "matryoshka-picture",
-          "media": "media/matryoshka.webp",
-          "size": "medium",
-          "align": "center"
+          "type": "media",
+          "id": "matryoshka-picture"
         },
         {
           "type": "text",
@@ -234,7 +231,9 @@
           "#b91c1c",
           "#422006"
         ]
-      }
+      },
+      "image": "media/matryoshka.webp",
+      "mediaPosition": "bottom"
     },
     {
       "kind": "question",

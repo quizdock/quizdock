@@ -61,6 +61,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ArchiveQuizDialog } from '@/components/archive-quiz-dialog';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { QuizStatusBadge } from '@/components/quiz-status-badge';
 import { MenuItem, MenuSeparator } from '@/components/ui/menu-item';
@@ -76,15 +77,20 @@ import { useLaunchSession } from '../game/use-launch-session';
 import { downloadFile } from '../api/download';
 import { apiErrorText } from '../api/http';
 import type { QuizDetailDto, UpdateQuizDto } from '../api/generated/model';
-import { QuizThemeField } from './quiz-theme-field';
+import { QuizThemeField, useQuizThemeSummary } from './quiz-theme-field';
 import { QuizThemeProvider, useQuizThemeValues } from '@/lib/quiz-theme';
+import { LiveThemeAnswers } from '../game/theme';
+import { READ_DELAY_DEFAULT_MS } from './question-form-model';
+import { QuizTimeline } from './quiz-timeline';
+import { quizTimeline } from './quiz-timeline-model';
 import { quizItems, moveItem, slideLabel, type QuizItem } from '@/lib/quiz-items';
+import { QuizVariables, slideQuizFieldsOf } from './quiz-stage-preview';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { languageName, licenseName } from '@/lib/quiz-terms';
 import { ChromiumNotice } from '@/components/chromium-notice';
 import { Notice } from '@/components/ui/notice';
-import { Disclosure } from '@/components/ui/disclosure';
+import { SettingsLine } from '@/components/ui/settings-line';
 import { Drawer } from '@/components/ui/drawer';
 import { QuestionForm } from './question-form';
 import { PublicationDialog } from './publication-export';
@@ -110,7 +116,7 @@ import {
 } from '../api/generated/store/store';
 import { useGameControllerMine } from '../api/generated/games/games';
 import { useQuestionsControllerRemove } from '../api/generated/questions/questions';
-import { getDemo } from '../config';
+import { appConfig, getDemo } from '../config';
 import { editorRoute } from '../router';
 import { LoadFailed, PageLoading } from '@/components/ui/loading';
 import { CheckboxField } from '@/components/ui/checkbox-field';
@@ -158,13 +164,23 @@ function ThemedQuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const theme = useQuizThemeValues(quiz);
   return (
     <QuizThemeProvider value={theme}>
-      <QuizEditor quiz={quiz} />
+      {/* The answers' marks and colours as the room will see them, in the form too. */}
+      <LiveThemeAnswers theme={theme}>
+        <QuizVariables quiz={quiz}>
+          <QuizEditor quiz={quiz} />
+        </QuizVariables>
+      </LiveThemeAnswers>
     </QuizThemeProvider>
   );
 }
 
 function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
-  const { t, i18n } = useTranslation(['editor', 'common']);
+  const { t, i18n } = useTranslation(['editor', 'common', 'themes']);
+  const themeSummary = useQuizThemeSummary({
+    themeId: quiz.themeId,
+    themeBuiltin: quiz.themeBuiltin,
+  });
+  const feedback = useFeedbackSummary(quiz.id);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const update = useQuizzesControllerUpdate();
@@ -185,7 +201,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const [formDirty, setFormDirty] = useState(false);
   const [pendingEdit, setPendingEdit] = useState<Editing | undefined>(undefined);
   const onFormDirty = useCallback((d: boolean) => setFormDirty(d), []);
-  // The open question form's save, to save before switching (#195); a slide form has none.
+  // The open step form's save, a question's or a slide's, to save before switching (#195).
   const saveFormRef = useRef<(() => Promise<boolean>) | null>(null);
   const [savingFirst, setSavingFirst] = useState(false);
   // A new question saved: it stays open, as the question it now is.
@@ -325,6 +341,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const setTheme = (theme: { builtin?: string; id?: string } | null) =>
     saveSettings({ theme: theme as UpdateQuizDto['theme'] });
 
+  const [archiving, setArchiving] = useState(false);
   const changeStatus = (status: 'draft' | 'ready' | 'archived') =>
     guarded(async () => {
       await transition.mutateAsync({ id: quiz.id, data: { status } });
@@ -373,6 +390,8 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
     }))
     .filter((u) => u.issues.length > 0);
   const [checklist, setChecklist] = useState(false);
+  // The quiz timeline to scale, or one box per step (a long quiz's slides stay readable).
+  const [timelineScale, setTimelineScale] = useState<'time' | 'equal'>('time');
   // Publishing an unfinished quiz lists what is missing, each line opening its step.
   const onPublish = () => (unfinished.length > 0 ? setChecklist(true) : void changeStatus('ready'));
   // Arrived from the dashboard's « Publish to present »: done once, then the address is clean.
@@ -428,16 +447,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
   const editingItem = items.find((it) => it.id === editing);
   const editingIndex = items.findIndex((it) => it.id === editing);
   // What a slide's quiz variables read in the builder's preview (`{title}`, `{questions}`…).
-  const slideQuizFields = quiz
-    ? {
-        title: quiz.title,
-        description: quiz.description,
-        questionCount: quiz.questionCount,
-        ...(quiz.ownerName ? { author: quiz.ownerName } : {}),
-        tags: quiz.tags,
-        license: quiz.license,
-      }
-    : undefined;
+  const slideQuizFields = slideQuizFieldsOf(quiz);
   const openForm: ReactNode =
     editing === 'new' ? (
       <QuestionForm
@@ -455,12 +465,15 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
       />
     ) : editing === 'new-slide' ? (
       <SlideForm
+        mediaTailS={quiz.mediaTailS}
         key="new-slide"
         quizId={quiz.id}
         quizStatus={quiz.status}
         onMoveToDraft={moveToDraft}
         quizFields={slideQuizFields}
         onClose={closeForm}
+        onCreated={openCreated}
+        saveRef={saveFormRef}
         onDirtyChange={onFormDirty}
       />
     ) : editingItem?.kind === 'question' ? (
@@ -480,6 +493,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
       />
     ) : editingItem?.kind === 'slide' ? (
       <SlideForm
+        mediaTailS={quiz.mediaTailS}
         key={editingItem.id}
         quizId={quiz.id}
         slide={editingItem.slide}
@@ -487,6 +501,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         onMoveToDraft={moveToDraft}
         quizFields={slideQuizFields}
         onClose={closeForm}
+        saveRef={saveFormRef}
         onDirtyChange={onFormDirty}
       />
     ) : null;
@@ -598,7 +613,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                       disabled={transition.isPending}
                       onClick={() => {
                         close();
-                        void changeStatus('archived');
+                        setArchiving(true);
                       }}
                     >
                       <Archive className="size-4" />
@@ -622,8 +637,8 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
           </div>
         </div>
         {shareNote ? <p className="text-muted-foreground text-sm">{shareNote}</p> : null}
-        <div className={cn('grid items-start gap-x-8 gap-y-4', PAGE_COLUMNS)}>
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               {t('settings.descriptionLabel')}
             </span>
@@ -656,162 +671,198 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
               </button>
             )}
           </div>
-          {/* À droite de la description, les réglages du quiz dans une carte : les avis
-                en clair sur une rangée, le son replié sur la suivante. */}
-          <Section className="bg-muted/30 min-w-0 rounded-lg border px-3 py-2">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <label className="flex items-center gap-2 text-sm" title={t('feedback.enableHelp')}>
-                <Switch
-                  checked={quiz.feedbackEnabled}
-                  disabled={update.isPending}
-                  onCheckedChange={(checked) => void setFeedbackEnabled(checked)}
-                  aria-label={t('feedback.enableLabel')}
-                />
-                <span className="font-medium">{t('feedback.enableLabel')}</span>
-              </label>
-              <FeedbackSection quizId={quiz.id} />
-            </div>
-            {/* Its look on the live screens (docs/themes.md). */}
-            <QuizThemeField
-              value={{ themeId: quiz.themeId, themeBuiltin: quiz.themeBuiltin }}
-              disabled={update.isPending}
-              onChange={(theme) => void setTheme(theme)}
-            />
-            <Disclosure
-              flush
-              className="-mx-3 border-t px-3 pt-1"
-              title={t('settings.soundLegend')}
-              value={t('settings.soundSummary', {
-                lufs: String(quiz.loudnessTargetLufs).replace('-', '−'),
-                target: t(`settings.audioTarget.${quiz.audioTarget}`),
-                tail: quiz.mediaTailS,
-              })}
-            >
-              {/* Ouvert, les trois réglages se lisent sur une ligne. */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <MediaTailField
-                  value={quiz.mediaTailS}
-                  disabled={update.isPending}
-                  onSave={(mediaTailS) => void setMediaTailS(mediaTailS)}
-                />
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.loudnessHelp')}
-                >
-                  <span className="font-medium">{t('settings.loudnessLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={String(quiz.loudnessTargetLufs)}
+          {/* À droite, sous les actions, les réglages secondaires du quiz : des
+                résumés, chacun ouvrant sa modale. */}
+          <SettingsLine
+            className="lg:max-w-xl lg:justify-end"
+            items={[
+              {
+                key: 'feedback',
+                title: t('feedback.title'),
+                description: t('settings.feedbackDescription'),
+                value: [
+                  quiz.feedbackEnabled ? null : t('feedback.off'),
+                  feedback && feedback.count > 0
+                    ? `${feedback.average.toFixed(1)} ★ · ${t('feedback.count', { count: feedback.count })}`
+                    : quiz.feedbackEnabled && feedback
+                      ? t('feedback.empty')
+                      : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · '),
+                content: (
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <label
+                      className="flex items-center gap-2 text-sm"
+                      title={t('feedback.enableHelp')}
+                    >
+                      <Switch
+                        checked={quiz.feedbackEnabled}
+                        disabled={update.isPending}
+                        onCheckedChange={(checked) => void setFeedbackEnabled(checked)}
+                        aria-label={t('feedback.enableLabel')}
+                      />
+                      <span className="font-medium">{t('feedback.enableLabel')}</span>
+                    </label>
+                    <FeedbackSection quizId={quiz.id} />
+                  </div>
+                ),
+              },
+              {
+                key: 'theme',
+                title: t('themes:picker.legend'),
+                description: t('settings.themeDescription'),
+                wide: true,
+                value: themeSummary,
+                content: (
+                  /* Its look on the live screens (docs/themes.md). */
+                  <QuizThemeField
+                    value={{ themeId: quiz.themeId, themeBuiltin: quiz.themeBuiltin }}
                     disabled={update.isPending}
-                    onChange={(e) => void setLoudness(Number(e.target.value) as LoudnessTarget)}
-                  >
-                    {LOUDNESS_TARGETS.map((lufs) => (
-                      <option key={lufs} value={lufs}>
-                        {t(`settings.loudness.${-lufs}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-                <label
-                  className="flex flex-wrap items-center gap-2 text-[1em]"
-                  title={t('settings.audioTargetHelp')}
-                >
-                  <span className="font-medium">{t('settings.audioTargetLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.audioTarget}
-                    disabled={update.isPending}
-                    onChange={(e) => void setAudioTarget(e.target.value as AudioTarget)}
-                  >
-                    {AUDIO_TARGETS.map((target) => (
-                      <option key={target} value={target}>
-                        {t(`settings.audioTarget.${target}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-              </div>
-            </Disclosure>
-            {/* The terms the quiz is shared under: required before sharing it as a template. */}
-            <Disclosure
-              flush
-              className="-mx-3 border-t px-3 pt-1"
-              title={t('settings.sharingLegend')}
-              value={[
-                quiz.shared ? t('settings.sharedOn') : t('settings.sharedOff'),
-                languageName(quiz.language, i18n.language),
-                quiz.license
-                  ? t('settings.sharingSummary', {
-                      license: licenseName(quiz.license),
-                      count: quiz.tags.length,
-                    })
-                  : t('settings.noLicense'),
-              ].join(' · ')}
-            >
-              {/* Private by default: the other hosts see nothing of it until it is shared. */}
-              <CheckboxField
-                className="mb-2"
-                checked={quiz.shared}
-                disabled={update.isPending}
-                onChange={(shared) => void setShared(shared)}
-                label={t('settings.sharedLabel')}
-                hint={t('settings.sharedHelp')}
-              />
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.languageHelp')}
-                >
-                  <span className="font-medium">{t('settings.languageLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.language}
-                    disabled={update.isPending}
-                    onChange={(e) => void setLanguage(e.target.value)}
-                  >
-                    {languageOptions(quiz.language, i18n.language).map(({ code, name }) => (
-                      <option key={code} value={code}>
-                        {name}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-                <label
-                  className="flex items-center gap-2 text-[1em]"
-                  title={t('settings.licenseHelp')}
-                >
-                  <span className="font-medium">{t('settings.licenseLabel')}</span>
-                  <Select
-                    className="h-8 w-auto"
-                    value={quiz.license ?? ''}
-                    disabled={update.isPending}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === '' || isQuizLicense(value)) void setLicense(value || null);
-                    }}
-                  >
-                    <option value="">{t('settings.noLicense')}</option>
-                    {QUIZ_LICENSES.map((license) => (
-                      <option key={license} value={license}>
-                        {t(`settings.license.${LICENSE_KEYS[license]}`)}
-                      </option>
-                    ))}
-                    {/* An imported quiz may carry a licence no longer offered: shown, not lost. */}
-                    {quiz.license && !isQuizLicense(quiz.license) ? (
-                      <option value={quiz.license} disabled>
-                        {quiz.license}
-                      </option>
-                    ) : null}
-                  </Select>
-                </label>
-                <TagsField
-                  value={quiz.tags}
-                  disabled={update.isPending}
-                  onSave={(tags) => void setTags(tags)}
-                />
-              </div>
-            </Disclosure>
-          </Section>
+                    onChange={(theme) => void setTheme(theme)}
+                  />
+                ),
+              },
+              {
+                key: 'sound',
+                title: t('settings.soundLegend'),
+                description: t('settings.soundDescription'),
+                value: t('settings.soundSummary', {
+                  lufs: String(quiz.loudnessTargetLufs).replace('-', '−'),
+                  target: t(`settings.audioTarget.${quiz.audioTarget}`),
+                  tail: quiz.mediaTailS,
+                }),
+                content: (
+                  <div className="flex flex-col items-start gap-3">
+                    <MediaTailField
+                      value={quiz.mediaTailS}
+                      disabled={update.isPending}
+                      onSave={(mediaTailS) => void setMediaTailS(mediaTailS)}
+                    />
+                    <label
+                      className="flex flex-wrap items-center gap-2 text-[1em]"
+                      title={t('settings.loudnessHelp')}
+                    >
+                      <span className="font-medium">{t('settings.loudnessLabel')}</span>
+                      <Select
+                        className="h-8 w-auto"
+                        value={String(quiz.loudnessTargetLufs)}
+                        disabled={update.isPending}
+                        onChange={(e) => void setLoudness(Number(e.target.value) as LoudnessTarget)}
+                      >
+                        {LOUDNESS_TARGETS.map((lufs) => (
+                          <option key={lufs} value={lufs}>
+                            {t(`settings.loudness.${-lufs}`)}
+                          </option>
+                        ))}
+                      </Select>
+                    </label>
+                    <label
+                      className="flex flex-wrap items-center gap-2 text-[1em]"
+                      title={t('settings.audioTargetHelp')}
+                    >
+                      <span className="font-medium">{t('settings.audioTargetLabel')}</span>
+                      <Select
+                        className="h-8 w-auto"
+                        value={quiz.audioTarget}
+                        disabled={update.isPending}
+                        onChange={(e) => void setAudioTarget(e.target.value as AudioTarget)}
+                      >
+                        {AUDIO_TARGETS.map((target) => (
+                          <option key={target} value={target}>
+                            {t(`settings.audioTarget.${target}`)}
+                          </option>
+                        ))}
+                      </Select>
+                    </label>
+                  </div>
+                ),
+              },
+              {
+                /* The terms the quiz is shared under: required before sharing it as a template. */
+                key: 'sharing',
+                title: t('settings.sharingLegend'),
+                description: t('settings.sharingDescription'),
+                value: [
+                  quiz.shared ? t('settings.sharedOn') : t('settings.sharedOff'),
+                  languageName(quiz.language, i18n.language),
+                  quiz.license
+                    ? t('settings.sharingSummary', {
+                        license: licenseName(quiz.license),
+                        count: quiz.tags.length,
+                      })
+                    : t('settings.noLicense'),
+                ].join(' · '),
+                content: (
+                  <>
+                    {/* Private by default: the other hosts see nothing of it until it is shared. */}
+                    <CheckboxField
+                      className="mb-2"
+                      checked={quiz.shared}
+                      disabled={update.isPending}
+                      onChange={(shared) => void setShared(shared)}
+                      label={t('settings.sharedLabel')}
+                      hint={t('settings.sharedHelp')}
+                    />
+                    <div className="flex flex-col items-start gap-3">
+                      <label
+                        className="flex flex-wrap items-center gap-2 text-[1em]"
+                        title={t('settings.languageHelp')}
+                      >
+                        <span className="font-medium">{t('settings.languageLabel')}</span>
+                        <Select
+                          className="h-8 w-auto"
+                          value={quiz.language}
+                          disabled={update.isPending}
+                          onChange={(e) => void setLanguage(e.target.value)}
+                        >
+                          {languageOptions(quiz.language, i18n.language).map(({ code, name }) => (
+                            <option key={code} value={code}>
+                              {name}
+                            </option>
+                          ))}
+                        </Select>
+                      </label>
+                      <label
+                        className="flex flex-wrap items-center gap-2 text-[1em]"
+                        title={t('settings.licenseHelp')}
+                      >
+                        <span className="font-medium">{t('settings.licenseLabel')}</span>
+                        <Select
+                          className="h-8 w-auto"
+                          value={quiz.license ?? ''}
+                          disabled={update.isPending}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === '' || isQuizLicense(value))
+                              void setLicense(value || null);
+                          }}
+                        >
+                          <option value="">{t('settings.noLicense')}</option>
+                          {QUIZ_LICENSES.map((license) => (
+                            <option key={license} value={license}>
+                              {t(`settings.license.${LICENSE_KEYS[license]}`)}
+                            </option>
+                          ))}
+                          {/* An imported quiz may carry a licence no longer offered: shown, not lost. */}
+                          {quiz.license && !isQuizLicense(quiz.license) ? (
+                            <option value={quiz.license} disabled>
+                              {quiz.license}
+                            </option>
+                          ) : null}
+                        </Select>
+                      </label>
+                      <TagsField
+                        value={quiz.tags}
+                        disabled={update.isPending}
+                        onSave={(tags) => void setTags(tags)}
+                      />
+                    </div>
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
         {/* Où en est le quiz, et l'action qui suit : toute la largeur, sous la
               description et les réglages — l'accès live s'affiche ici pendant une session. */}
@@ -835,6 +886,25 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         ) : null}
       </header>
       <ImportReportNotice quizId={quiz.id} />
+      {/* The whole quiz, in order and to scale, between its settings and its steps. */}
+      <QuizTimeline
+        steps={quizTimeline(items, {
+          readMs: READ_DELAY_DEFAULT_MS,
+          tailS: quiz.mediaTailS,
+          autoAdvanceS: appConfig.autoAdvanceS ?? null,
+        })}
+        labels={items.map((item, i) => ({
+          number: questionNumber(items, i),
+          name:
+            item.kind === 'question'
+              ? item.question.prompt
+              : slideLabel(item.slide, slideQuizFields),
+        }))}
+        selected={editing}
+        onOpen={(id) => requestEditing(id)}
+        scale={timelineScale}
+        onScale={setTimelineScale}
+      />
       {/* Master / detail: the sequence on the left, the open item on the right (a bottom
           sheet below `lg`). */}
       <div
@@ -858,7 +928,10 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
             <ul className="flex flex-col items-center gap-1">
               {items.map((item, i) => {
                 const n = questionNumber(items, i);
-                const label = item.kind === 'slide' ? slideLabel(item.slide) : item.question.prompt;
+                const label =
+                  item.kind === 'slide'
+                    ? slideLabel(item.slide, slideQuizFields)
+                    : item.question.prompt;
                 const active = editing === item.id;
                 return (
                   <li key={item.id}>
@@ -887,7 +960,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                 label={t('questions.itemActions', {
                   label:
                     editingItem.kind === 'slide'
-                      ? slideLabel(editingItem.slide)
+                      ? slideLabel(editingItem.slide, slideQuizFields)
                       : editingItem.question.prompt,
                 })}
                 deleteLabel={
@@ -959,6 +1032,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
                       {(handle) => (
                         <ItemRow
                           item={item}
+                          quiz={slideQuizFields}
                           unfinished={unfinished.some((u) => u.item.id === item.id)}
                           active={editing === item.id}
                           number={questionNumber(items, i)}
@@ -1026,6 +1100,14 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         )}
       </div>
 
+      <ArchiveQuizDialog
+        title={archiving ? quiz.title : null}
+        onCancel={() => setArchiving(false)}
+        onConfirm={() => {
+          setArchiving(false);
+          void changeStatus('archived');
+        }}
+      />
       <ConfirmDialog
         open={pendingDelete !== null}
         destructive
@@ -1037,7 +1119,7 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         description={t('deleteItemConfirm.description', {
           label: pendingDelete
             ? pendingDelete.kind === 'slide'
-              ? slideLabel(pendingDelete.slide)
+              ? slideLabel(pendingDelete.slide, slideQuizFields)
               : pendingDelete.question.prompt
             : '',
         })}
@@ -1059,9 +1141,9 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         confirmLabel={
           pendingEdit ? t('discardConfirm.discardAndContinue') : t('discardConfirm.confirmLabel')
         }
-        // A question's changes can be saved on the way (#195): only once saved does it go on.
+        // A step's changes can be saved on the way (#195): only once saved does it go on.
         alternative={
-          editing === 'new' || editingItem?.kind === 'question'
+          editing !== null
             ? {
                 label: pendingEdit
                   ? t('discardConfirm.saveAndContinue')
@@ -1100,7 +1182,10 @@ function QuizEditor({ quiz }: { quiz: QuizDetailDto }) {
         steps={unfinished.map((u) => ({
           id: u.item.id,
           number: u.number,
-          label: u.item.kind === 'question' ? u.item.question.prompt : slideLabel(u.item.slide),
+          label:
+            u.item.kind === 'question'
+              ? u.item.question.prompt
+              : slideLabel(u.item.slide, slideQuizFields),
           slide: u.item.kind === 'slide',
           texts: [...new Set(u.issues.map((i) => validationText(i.code)))],
         }))}
@@ -1184,25 +1269,14 @@ function ImportReportNotice({ quizId }: { quizId: string }) {
   );
 }
 
-function Section({
-  title,
-  className,
-  children,
-}: {
-  title?: string;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className={cn('flex flex-col gap-2', className)}>
-      {title ? (
-        <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-          {title}
-        </h2>
-      ) : null}
-      {children}
-    </section>
-  );
+/** The quiz's feedback summary, once the API has one. */
+function useFeedbackSummary(quizId: string) {
+  const { data, isLoading } = useQuizzesControllerFeedback(quizId, { page: 1, pageSize: 1 });
+  const summary = data?.data;
+  // Sans `count`, la réponse n'est pas (encore) un résumé : on se tait plutôt que
+  // d'afficher une moyenne inventée.
+  if (isLoading || typeof summary?.count !== 'number') return null;
+  return summary;
 }
 
 /**
@@ -1211,11 +1285,8 @@ function Section({
  */
 function FeedbackSection({ quizId }: { quizId: string }) {
   const { t } = useTranslation(['editor', 'common']);
-  const { data, isLoading } = useQuizzesControllerFeedback(quizId, { page: 1, pageSize: 1 });
-  const summary = data?.data;
-  // Sans `count`, la réponse n'est pas (encore) un résumé : on se tait plutôt que
-  // d'afficher une moyenne inventée.
-  if (isLoading || typeof summary?.count !== 'number') return null;
+  const summary = useFeedbackSummary(quizId);
+  if (!summary) return null;
   if (summary.count === 0)
     return <p className="text-muted-foreground text-xs">{t('feedback.empty')}</p>;
   return (
@@ -1257,8 +1328,11 @@ function ItemRow({
   onMove,
   onEdit,
   onDelete,
+  quiz,
 }: {
   item: QuizItem;
+  /** What its slide's variables read (`{title}`…). */
+  quiz: Parameters<typeof slideLabel>[1];
   /** Misses something to be played: publishing waits for it. */
   unfinished?: boolean;
   number: number | null;
@@ -1273,7 +1347,7 @@ function ItemRow({
 }) {
   const { t } = useTranslation('editor');
   const isSlide = item.kind === 'slide';
-  const label = isSlide ? slideLabel(item.slide) : item.question.prompt;
+  const label = isSlide ? slideLabel(item.slide, quiz) : item.question.prompt;
   // Same shape for both kinds: "<kind> · <effective duration>".
   const meta = isSlide
     ? `${t('slides.kind')} · ${
@@ -1289,13 +1363,14 @@ function ItemRow({
         active ? 'bg-primary/5 border-primary/30' : 'hover:bg-accent/60',
       )}
     >
-      {/* The open step shows how to move it; nothing appears on hover only. */}
-      {active ? <div className="flex items-center pl-1">{handle}</div> : null}
+      {/* The open step shows how to move it; nothing appears on hover only. Its place is
+          kept on every row, so the numbers stay in one column whichever step is open. */}
+      <div className="flex w-6 shrink-0 items-center justify-center">{active ? handle : null}</div>
       <button
         type="button"
         aria-current={active ? 'true' : undefined}
         onClick={onEdit}
-        className="flex min-w-0 flex-1 items-start gap-3 py-3 pr-2 text-left"
+        className="flex min-w-0 flex-1 items-start gap-3 py-3 pr-2 pl-0 text-left"
       >
         <span
           className={cn(

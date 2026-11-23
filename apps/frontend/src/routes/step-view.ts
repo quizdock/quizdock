@@ -7,6 +7,7 @@ import {
   type QuestionRevealPayload,
   type QuestionStartPayload,
   type MediaPosition,
+  type MediaStyle,
   type WaveformSize,
   basePointsFor,
   normalizeAnswer,
@@ -57,6 +58,22 @@ export function stepView(
     : { ...base, state: GameState.QuestionShow, question };
 }
 
+/**
+ * A slide being written, as the room will see it (the step editor's preview): the slide
+ * alone, still, in the quiz's theme.
+ */
+export function slidePreviewView(slide: GameView['slide'], theme: ThemeValues | null): GameView {
+  return {
+    ...INITIAL_VIEW,
+    status: 'ready',
+    joinLocked: true,
+    still: true,
+    theme,
+    state: GameState.SlideShow,
+    slide,
+  };
+}
+
 /** The question as `question:start` carries it. */
 function liveQuestion(
   q: QuizDetailDtoQuestionsItem,
@@ -70,6 +87,7 @@ function liveQuestion(
     url,
     q.waveformSize as WaveformSize,
     q.mediaPosition as MediaPosition,
+    q.mediaStyle as MediaStyle | null | undefined,
   );
   return {
     questionIndex,
@@ -110,6 +128,7 @@ function liveMedia(
   url: MediaResolver,
   size: WaveformSize,
   position: MediaPosition | undefined,
+  style: MediaStyle | null | undefined,
 ): LiveQuestionMedia {
   const visual = media?.visual;
   const audio = media?.audio;
@@ -132,6 +151,8 @@ function liveMedia(
       : null,
     // As the server sends it: only a visual has a place, the default goes without saying.
     ...(visual && position && position !== 'bottom' ? { position } : {}),
+    // As the server sends it: none when empty, a video never revealed.
+    ...(visual && style ? liveStyle(style, visual.kind === 'image') : {}),
   };
 }
 
@@ -159,4 +180,10 @@ function revealOf(
     reveal.correctOptionIds = q.options.filter((o) => o.isCorrect).map((o) => o.id);
   }
   return reveal;
+}
+
+function liveStyle(style: MediaStyle, image: boolean): { style?: MediaStyle } {
+  const { revealS, ...rest } = style;
+  const kept = image && revealS ? { ...rest, revealS } : rest;
+  return Object.keys(kept).length > 0 ? { style: kept } : {};
 }

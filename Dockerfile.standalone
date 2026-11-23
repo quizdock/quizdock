@@ -47,6 +47,8 @@ RUN chmod +x /usr/local/bin/start.sh \
 
 # Tells the app it is the all-in-one image, so it can say so where it matters
 # (the limitations shown on a demo instance's home page).
+# LOBBY_LISTING: a single container is a private instance; its home page lists
+# the open lobbies (an administrator may turn it off).
 # CHECKPOINT_DISABLE: `prisma migrate deploy` at start would otherwise report to
 # checkpoint.prisma.io; the server makes no outgoing request of its own accord.
 ENV QUIZDOCK_FLAVOR=standalone \
@@ -60,7 +62,8 @@ ENV QUIZDOCK_FLAVOR=standalone \
     DATABASE_URL=postgresql://quizdock@127.0.0.1:5432/quizdock \
     REDIS_URL=redis://127.0.0.1:6379 \
     APP_NAME=QuizDock \
-    APP_LANG=en
+    APP_LANG=en \
+    LOBBY_LISTING=listed
 
 # Auth *mode* selector (none | oidc), not a credential — Trivy DS-0031 matches on
 # the "AUTH" substring.

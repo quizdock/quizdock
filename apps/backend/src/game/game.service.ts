@@ -1,5 +1,6 @@
 import { randomBytes, randomInt } from 'node:crypto';
 import { liveMotionDefault } from './live-motion';
+import { listsLobbies } from './lobby-listing';
 import {
   BadRequestException,
   ConflictException,
@@ -43,6 +44,7 @@ import type {
   AnswerRecord,
   GameFields,
   GameMeta,
+  ListedLobby,
   PlayerRecord,
   PlayerScore,
   QuizSnapshot,
@@ -51,6 +53,7 @@ import type {
 import {
   QUIZ_SNAPSHOT_INCLUDE,
   buildSnapshot,
+  hintMediaIds,
   refreshSnapshotForm,
   snapshotHasSound,
 } from './snapshot';
@@ -261,6 +264,7 @@ export class GameService {
       motion: liveMotionDefault(),
       audienceLanguage: '',
       selectionId: first ? dto.selectionId : '',
+      listed: listsLobbies(),
       hostName:
         (
           await this.prisma.user.findUnique({
@@ -277,6 +281,7 @@ export class GameService {
     // Index des parties en cours de l'hôte (reprise depuis le dashboard §6.2).
     pipe.sadd(gameKeys.hostGames(hostUserId), pin);
     pipe.expire(gameKeys.hostGames(hostUserId), GAME_TTL_S);
+    if (room.listed) pipe.sadd(gameKeys.listedRooms(), pin);
     await pipe.exec();
 
     return { pin };
@@ -406,7 +411,17 @@ export class GameService {
     if (quiz.questions.length < 1) {
       throw new BadRequestException('quiz.empty');
     }
-    const snapshot = buildSnapshot(quiz);
+    // The media its hints hold (in the hints, not a relation): read with it.
+    const hintIds = quiz.questions.flatMap((q) => hintMediaIds(q.hint));
+    const hintMedia = new Map(
+      hintIds.length > 0
+        ? (await this.prisma.mediaAsset.findMany({ where: { id: { in: hintIds } } })).map((m) => [
+            m.id,
+            m,
+          ])
+        : [],
+    );
+    const snapshot = buildSnapshot(quiz, hintMedia);
     if (quiz.ownerId !== hostUserId) snapshot.borrowed = true;
     // Frozen with the rest: a licence's attribution is owed for what was played.
     const credits = (await this.mediaLibrary?.creditsOf(quiz.id)) ?? [];
@@ -1098,6 +1113,45 @@ export class GameService {
       }
     }
     return games;
+  }
+
+  /** Puts the room on the home page's list, or takes it off (`LOBBY_LISTING`). */
+  async setListed(pin: string, listed: boolean): Promise<void> {
+    await this.redis.hset(gameKeys.room(pin), roomHash({ listed }));
+    if (listed) await this.redis.sadd(gameKeys.listedRooms(), pin);
+    else await this.redis.srem(gameKeys.listedRooms(), pin);
+  }
+
+  /**
+   * The lobbies the home page lists (`LOBBY_LISTING`): those listed and still
+   * open to newcomers, the oldest first. Nothing while the instance lists none.
+   * Drops from the index, as it goes, the rooms gone, over or taken off.
+   */
+  async listedLobbies(): Promise<ListedLobby[]> {
+    if (!listsLobbies()) return [];
+    const lobbies: { openedAt: number; lobby: ListedLobby }[] = [];
+    for (const pin of await this.redis.smembers(gameKeys.listedRooms())) {
+      const room = await this.getRoom(pin);
+      const meta = room?.listed ? await this.getMeta(pin) : null;
+      if (!room || !meta || meta.state === GameState.Ended) {
+        await this.redis.srem(gameKeys.listedRooms(), pin);
+        continue;
+      }
+      if (meta.joinLocked) continue;
+      lobbies.push({
+        openedAt: room.openedAt,
+        lobby: {
+          pin,
+          roomName: room.name || null,
+          hostName: room.hostName,
+          quizTitle: meta.title,
+          playing: meta.state !== GameState.Lobby,
+          playerCount: await this.connectedCount(pin),
+          participantAccess: room.participantAccess,
+        },
+      });
+    }
+    return lobbies.sort((a, b) => a.openedAt - b.openedAt).map((l) => l.lobby);
   }
 
   /**

@@ -246,9 +246,16 @@
     "spaceKey": "空白鍵",
     "slideAuto": "{{seconds}} 秒",
     "slideManual": "手動",
-    "motion": "動畫",
+    "motion": "動畫轉場",
+    "motionOn": "開",
+    "motionOff": "關",
     "motionOnTooltip": "螢幕在各步驟之間有過場動畫。點擊可關閉，適合較慢的投影設備。",
     "motionOffTooltip": "螢幕切換時沒有過場動畫。點擊可重新開啟。",
+    "listed": "首頁",
+    "listedOn": "已顯示",
+    "listedOff": "已隱藏",
+    "listedOnTooltip": "任何開啟首頁的人都能看到此房間，一鍵加入。",
+    "listedOffTooltip": "只能透過 PIN、連結或 QR 碼進入。",
     "pickerPlayed": "本房間已玩",
     "pickerPlayedAll": "全部測驗",
     "pickerPlayedFresh": "尚未玩過",
@@ -260,9 +267,9 @@
     "columnQuiz": "測驗",
     "columnTotal": "總分",
     "columnActions": "操作",
-    "audienceLanguageLabel": "畫面語言",
+    "audienceLanguageLabel": "介面語言",
     "audienceLanguageQuiz": "每個測驗的語言",
-    "audienceLanguageHint": "投影和參與者的畫面，適用於整個房間：語言課可以用英文測驗，而介面使用自己的語言。",
+    "audienceLanguageHint": "投影與參與者手機的介面語言，適用於整個大廳（自行選擇語言的參與者維持不變）。測驗保持其自身語言：語言課可以在介面使用本國語言的同時玩英語測驗。",
     "chooseQuiz": "選擇測驗",
     "chooseQuizTooltip": "選擇房間接下來進行的測驗：參與者留在房間內",
     "chooseQuizDescription": "參與者留在房間內；所有人準備就緒後測驗自動開始，或在 30 秒後開始。",
@@ -271,7 +278,9 @@
     "backToLobbyDescription": "參與者留在房間內，您在那裡選擇下一個測驗；無需再次輸入 PIN。",
     "noQuizYetHint": "房間正在等待：請選擇接下來進行的測驗。",
     "columnRank": "排名",
-    "seeResults": "查看結果"
+    "seeResults": "查看結果",
+    "stopMenu": "其他停止方式",
+    "roomSettings": "大廳設定"
   },
   "screen": {
     "sessionUnavailable": "房間無法使用。",
@@ -526,5 +535,21 @@
     "played": "已示範",
     "save": "儲存為選集",
     "saved": "已儲存為選集：開啟"
+  },
+  "hint": {
+    "consoleLabel": "提示",
+    "switch": "提示",
+    "planned": "提示於 {{seconds}} 秒 · −{{penalty}}%",
+    "revealed": "提示已顯示 · −{{penalty}}%",
+    "reminder": "本題有提示，但提示已關閉。",
+    "enable": "開啟",
+    "onProjection": "在投影上",
+    "costs": "提示——此後的作答將失去本題 {{penalty}}% 的分數",
+    "show": "顯示",
+    "fold": "收起",
+    "label": "提示",
+    "penaltyApplied": "提示：−{{penalty}}%（少 {{lost}} 分）",
+    "imageAlt": "提示圖片",
+    "replay": "重新播放"
   }
 }

@@ -251,9 +251,16 @@
     "spaceKey": "Spazio",
     "slideAuto": "{{seconds}} s",
     "slideManual": "manuale",
-    "motion": "Animazioni",
+    "motion": "Transizioni animate",
+    "motionOn": "Attivo",
+    "motionOff": "Disattivo",
     "motionOnTooltip": "Le schermate si muovono tra un passaggio e l’altro. Clicca per tenerle ferme, per un proiettore lento.",
     "motionOffTooltip": "Le schermate cambiano senza transizioni. Clicca per riattivare le transizioni.",
+    "listed": "Pagina iniziale",
+    "listedOn": "Visibile",
+    "listedOff": "Nascosta",
+    "listedOnTooltip": "Chiunque apra la pagina iniziale vede questa sala e la raggiunge con un clic.",
+    "listedOffTooltip": "Solo il PIN, il link o il codice QR portano qui.",
     "pickerPlayed": "Giocati in questa sala",
     "pickerPlayedAll": "Tutti i quiz",
     "pickerPlayedFresh": "Non ancora giocati",
@@ -265,9 +272,9 @@
     "columnQuiz": "Quiz",
     "columnTotal": "Totale",
     "columnActions": "Azioni",
-    "audienceLanguageLabel": "Lingua delle schermate",
+    "audienceLanguageLabel": "Lingua dell’interfaccia",
     "audienceLanguageQuiz": "La lingua di ogni quiz",
-    "audienceLanguageHint": "La proiezione e le schermate dei partecipanti, per tutta la sala: una classe di lingua gioca un quiz in inglese con l’interfaccia nella propria lingua.",
+    "audienceLanguageHint": "Quella della proiezione e dei telefoni dei partecipanti, per tutta la lobby (chi ha scelto la propria la mantiene). Il quiz resta nella sua lingua: un corso di lingua gioca un quiz in inglese con l’interfaccia nella propria.",
     "chooseQuiz": "Scegli il quiz",
     "chooseQuizTooltip": "Scegli il quiz che la sala gioca dopo: i partecipanti restano",
     "chooseQuizDescription": "I partecipanti restano nella sala; il quiz parte da solo quando tutti sono pronti, o dopo 30 s.",
@@ -276,7 +283,9 @@
     "backToLobbyDescription": "I partecipanti restano nella sala, dove scegli il quiz successivo; nessuno deve ridigitare il PIN.",
     "noQuizYetHint": "La sala aspetta: scegli il quiz che giocherà dopo.",
     "columnRank": "Posizione",
-    "seeResults": "Vedi i risultati"
+    "seeResults": "Vedi i risultati",
+    "stopMenu": "Altri modi per fermare",
+    "roomSettings": "Impostazioni della sala"
   },
   "screen": {
     "sessionUnavailable": "Sala non disponibile.",
@@ -538,5 +547,21 @@
     "played": "giocato",
     "save": "Salva come selezione",
     "saved": "Salvata come selezione: aprila"
+  },
+  "hint": {
+    "consoleLabel": "Indizio",
+    "switch": "Indizi",
+    "planned": "Indizio a {{seconds}} s · −{{penalty}} %",
+    "revealed": "Indizio mostrato · −{{penalty}} %",
+    "reminder": "Questa domanda ha un indizio, e gli indizi sono disattivati.",
+    "enable": "Attiva",
+    "onProjection": "Sulla proiezione",
+    "costs": "Indizio — le risposte da ora perdono il {{penalty}} % dei punti della domanda",
+    "show": "Mostra",
+    "fold": "Chiudi",
+    "label": "Indizio",
+    "penaltyApplied": "Indizio: −{{penalty}} % ({{lost}} punti in meno)",
+    "imageAlt": "L'immagine dell'indizio",
+    "replay": "Riproduci di nuovo"
   }
 }

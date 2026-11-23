@@ -203,6 +203,12 @@ export function timePoints(basePoints: number, tSeconds: number, timeLimitS: num
   return Math.round(basePoints * (1 - ratio / 2));
 }
 
+/** A question's points once the hint took its share (%), for an answer given after it. */
+export function withHint(points: number, penaltyPct: number): number {
+  if (penaltyPct <= 0) return points;
+  return Math.round(points * (1 - Math.min(penaltyPct, 100) / 100));
+}
+
 /** Bonus de série : `+ min(streak - 1, 5) * 100`, cap +500 (§5). */
 export function streakBonus(newStreak: number): number {
   if (newStreak <= 1) return 0;
@@ -218,6 +224,8 @@ export interface ScoreInput {
   prevStreak: number;
   /** Réponse hors délai (`receivedAt > endsAt + grace`) → 0 point, série remise à 0 (§6). */
   isLate?: boolean;
+  /** Given after the question's hint: this share (%) of its question points goes (SPECIFICATIONS-HINTS). */
+  hintPenaltyPct?: number;
 }
 
 /**
@@ -228,7 +236,7 @@ export interface ScoreInput {
  * - Sinon, réponse incorrecte OU hors délai : 0 point et série remise à 0.
  */
 export function scoreAnswer(input: ScoreInput): ScoreResult {
-  const { question, answer, tMs, prevStreak, isLate = false } = input;
+  const { question, answer, tMs, prevStreak, isLate = false, hintPenaltyPct = 0 } = input;
   const credit = isLate ? 0 : creditFor(question, answer);
   const correct = credit === 1;
 
@@ -244,14 +252,30 @@ export function scoreAnswer(input: ScoreInput): ScoreResult {
     return { correct: false, points: 0, newStreak: 0, credit };
   }
   // `fixed`: full base points whatever the speed; else the usual time weighting.
-  const timed =
+  const full =
     question.pointsMode === PointsMode.Fixed
       ? question.basePoints
       : timePoints(question.basePoints, tMs / 1000, question.timeLimitS);
+  // The hint takes its share of the question's points, never of the streak bonus.
+  const timed = withHint(full, hintPenaltyPct);
+  const lost = (share: number) =>
+    hintPenaltyPct > 0 ? { hintLost: Math.round(full * share) - Math.round(timed * share) } : {};
   if (!correct) {
     // Partial credit: a share of the points; the streak neither grows nor breaks.
-    return { correct: false, points: Math.round(timed * credit), newStreak: prevStreak, credit };
+    return {
+      correct: false,
+      points: Math.round(timed * credit),
+      newStreak: prevStreak,
+      credit,
+      ...lost(credit),
+    };
   }
   const newStreak = prevStreak + 1;
-  return { correct: true, points: timed + streakBonus(newStreak), newStreak, credit };
+  return {
+    correct: true,
+    points: timed + streakBonus(newStreak),
+    newStreak,
+    credit,
+    ...lost(1),
+  };
 }

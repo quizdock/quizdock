@@ -45,6 +45,10 @@
       "everyone": "所有裝置"
     },
     "sharingLegend": "語言與分享",
+    "feedbackDescription": "玩家對測驗的看法：每局結束時，他們可以按 5 分制評分並留言。",
+    "themeDescription": "測驗在投影和玩家手機上的外觀，從房間到頒獎台。",
+    "soundDescription": "測驗的音訊和影片如何播放：每道題音量一致，在所選裝置上播放，繼續之前留出停頓。",
+    "sharingDescription": "測驗使用的語言，以及誰可以看到它。加上授權條款和標籤後，可將其作為範本提供。",
     "sharingSummary_one": "{{license}} · {{count}} 個標籤",
     "sharingSummary_other": "{{license}} · {{count}} 個標籤",
     "noLicense": "無授權條款",
@@ -83,6 +87,7 @@
     "enableLabel": "允許參與者提供回饋",
     "enableHelp": "每次測驗結束時向參與者提供回饋界面。",
     "title": "玩家回饋",
+    "off": "已關閉",
     "empty": "暫無回饋。",
     "anonymous": "匿名",
     "starsAriaLabel": "{{value}} / 5 星",
@@ -143,7 +148,8 @@
       "text": "文字",
       "image": "圖片",
       "columns2": "兩欄",
-      "columns3": "三欄"
+      "columns3": "三欄",
+      "media": "媒體"
     },
     "dragBlock": "拖曳以重新排序區塊",
     "removeBlock": "移除區塊",
@@ -182,9 +188,13 @@
     "videoSound": "音訊",
     "videoSoundHint": "播放影片本身的音訊。關閉：靜音，簡報可以有自己的音訊。",
     "audioExcludesVideoSound": "簡報已有音訊：一次只能有一個。移除它才能開啟影片的音訊。",
-    "videoSoundExcludesAudio": "影片播放本身的音訊：不能再加音訊。將影片靜音後才能加入。",
     "variablesLegend": "變數",
     "variablesHint": "寫在標題或文字中：簡報顯示時會被替換。測驗的變數在預覽中顯示，房間的變數在進行測驗時顯示。",
+    "variablesInsert": "插入變數",
+    "variablesGroup": {
+      "quiz": "測驗",
+      "room": "房間"
+    },
     "variables": {
       "title": "測驗標題",
       "description": "測驗說明",
@@ -209,6 +219,19 @@
     "moveToDraft": {
       "title": "儲存這張空白投影片？",
       "description": "此測驗已發布，隨時可以演示，投影片必須顯示內容。改回草稿即可照原樣儲存，或繼續編輯。"
+    },
+    "media": {
+      "onlyOne": "每張簡報只能有一個媒體：它已放置。",
+      "state": {
+        "none": "簡報圖片或影片的位置：請在下方時間軸中新增。",
+        "image": "在下方時間軸中設定的簡報圖片會顯示在這裡。",
+        "video": "在下方時間軸中設定的簡報影片會在這裡播放。",
+        "behind": "簡報的媒體位於內容區塊後方：此區塊未被使用。在「版面配置」中選擇「媒體在上」或「媒體在下」即可將其放在這裡。",
+        "alone": "簡報的媒體單獨顯示：此區塊未被使用。"
+      },
+      "imageBlock": "舊的圖片區塊：簡報的圖片現在是它的媒體，在時間軸中設定，並由媒體區塊放置。",
+      "adopt": "設為簡報的媒體",
+      "adoptRefused": "此簡報已有圖片或影片。"
     }
   },
   "formSaved": "已儲存",
@@ -231,16 +254,19 @@
     "description": "「{{title}}」及其題目將被永久刪除。此操作不可撤銷。",
     "confirmLabel": "刪除"
   },
+  "archiveConfirm": {
+    "title": "歸檔此測驗？",
+    "description": "「{{title}}」將無法再展示，並從清單中移出（篩選可再次顯示）。還原後會變回草稿，需要重新發布。",
+    "confirmLabel": "歸檔"
+  },
   "questionForm": {
     "typeLabel": "類型",
     "promptLabel": "題目",
     "promptPlaceholder": "您的題目…",
-    "playbackLegend": "播放",
     "timingLegend": "時間",
     "pointsLegend": "計分",
     "answerExplanationLabel": "答案詳解（與正確答案一起顯示）",
     "answerExplanationPlaceholder": "為什麼這是正確答案…（可選）",
-    "timeLimitLabel": "時間（秒）",
     "revealDelayLabel": "答案顯示時長（秒）",
     "revealDelayPlaceholder": "自動",
     "revealDelayHint": "自動模式下：正確答案在畫面上停留多久再繼續。留空 = 執行個體的設定。",
@@ -369,28 +395,197 @@
     "optionActions": "選項 {{index}} 的操作",
     "removeOptionShort": "移除",
     "ticksCleared": "題型已變更：正確答案已取消勾選。請依新規則重新勾選。",
-    "explanationWritten": "已填寫",
-    "explanationEmpty": "未填寫",
     "numericLegend": "答案",
     "decimalsAllowed": "可以使用小數：3.14、0.5…",
-    "timingSummary": "{{time}} 秒",
-    "timingSummaryStretched": "{{time}} 秒（含媒體 {{total}} 秒）",
-    "revealDelayAuto": "答案顯示時長自動",
-    "revealDelaySummary": "答案顯示 {{seconds}} 秒",
     "place_ordinal_one": "第{{count}}",
     "place_ordinal_two": "第{{count}}",
     "place_ordinal_few": "第{{count}}",
     "place_ordinal_other": "第{{count}}",
-    "mediaPositionLabel": "投影上的圖片",
-    "mediaPositionHint": "圖片相對文字的位置；答案始終在下方。",
     "mediaPosition": {
       "bottom": "文字下方",
       "top": "文字上方",
       "left": "文字左側",
-      "right": "文字右側"
+      "right": "文字右側",
+      "behind": "文字後方",
+      "alone": "僅媒體"
     },
     "revealDelayAutoValue": "自動（{{seconds}} 秒）",
-    "revealDelaySummaryAuto": "答案顯示 {{seconds}} 秒（自動）"
+    "timingSummary": "{{time}} 秒"
+  },
+  "timeline": {
+    "legend": "時間軸",
+    "timeRow": "流程：閱讀、作答、延長",
+    "visualRow": "畫面通道",
+    "audioRow": "聲音通道",
+    "minimum": "最短時長 {{seconds}} 秒",
+    "stretched": "最短時長 {{minimum}} 秒，因媒體延長至 {{actual}} 秒",
+    "total": "總計 {{seconds}} 秒",
+    "manualShort": "手動",
+    "phase": {
+      "reading": "閱讀：{{seconds}} 秒（全域設定）",
+      "listen": "媒體播放中，尚不能作答：{{seconds}} 秒",
+      "answers": "作答：最短時長 {{seconds}} 秒",
+      "display": "顯示：{{seconds}} 秒",
+      "manual": "手動：由主持人繼續",
+      "stretch": "因媒體延長：+{{seconds}} 秒",
+      "tail": "媒體後的停頓：{{seconds}} 秒（測驗設定）",
+      "answer": "顯示正確答案：{{seconds}} 秒（自動模式）",
+      "answerManual": "顯示正確答案：由主持人繼續"
+    },
+    "element": {
+      "image": "圖片，全程",
+      "video": "影片，{{seconds}} 秒，有聲音",
+      "videoMuted": "影片，{{seconds}} 秒，無聲音",
+      "videoLoop": "循環影片，整張投影片",
+      "audio": "聲音，{{seconds}} 秒",
+      "unknown": "時長尚未知",
+      "reveal": "逐步顯現：{{seconds}} 秒",
+      "explanation": "解析，與正確答案一同顯示",
+      "hint": "提示，從 {{seconds}} 秒起"
+    },
+    "label": {
+      "image": "圖片",
+      "video": "影片",
+      "reveal": "顯現",
+      "explanation": "解析",
+      "hint": "提示"
+    },
+    "add": "新增元素",
+    "clear": "移除所有媒體",
+    "questionSettings": "題目流程",
+    "slideSettings": "簡報流程",
+    "minimumLabel": "最短時長（秒）",
+    "minimumHint": "這是最短時長：較長的媒體會延長題目。",
+    "choice": {
+      "image": "圖片",
+      "imageHint": "視覺通道，全程",
+      "video": "影片",
+      "videoHint": "畫面和聲音，佔兩個通道",
+      "audio": "音訊",
+      "audioHint": "音訊通道",
+      "reveal": "逐步顯現",
+      "revealHint": "全場作答時圖片逐漸清晰",
+      "explanation": "解析",
+      "explanationHint": "與正確答案一同顯示",
+      "hint": "提示",
+      "hintHint": "作答過程中的線索，代價是本題部分分數"
+    },
+    "refused": {
+      "imageChoice": "圖片選擇題不能有自己的圖片或影片。",
+      "oneVisual": "題目只能有圖片或影片，不能兩者都有。",
+      "videoHasSound": "影片和音訊不能同時使用：影片自帶聲音。",
+      "oneAudio": "每題一個音訊。",
+      "oneVideo": "每張簡報一個影片。",
+      "oneSlideAudio": "每張簡報一個音訊。",
+      "slideVideoSound": "影片正在播放自己的聲音：將其靜音後才能新增音訊。",
+      "revealNeedsImage": "逐步顯現：請先新增圖片。",
+      "oneReveal": "每張圖片只能有一個逐步顯現。",
+      "pollExplanation": "投票沒有需要解析的正確答案。",
+      "oneExplanation": "每題一個解析。",
+      "oneHint": "每題一個提示。",
+      "oneSlideVisual": "簡報只能顯示圖片或影片，不能兩者都有。"
+    },
+    "clearConfirm": {
+      "title": "移除所有媒體？",
+      "description": "時間軸將被清空：此步驟的圖片、影片和音訊都會被移除。儲存之前不會遺失任何內容。",
+      "confirm": "移除"
+    },
+    "layout": "版面配置",
+    "layoutNeedsVisual": "版面配置：請先新增圖片或影片。",
+    "layoutApply": "套用",
+    "layoutDescription": {
+      "bottom": "圖片或影片在文字下方，答案在最下方。",
+      "top": "圖片或影片在文字上方，答案在最下方。",
+      "left": "圖片或影片在左側，文字在旁邊，答案在下方。",
+      "right": "文字在左側，圖片或影片在旁邊，答案在下方。",
+      "behind": "文字疊在圖片或影片上，藉由「背景」區塊的顏色和描邊保持清晰；答案在下方，位於媒體之外。",
+      "alone": "以圖片或影片取代文字：由主持人朗讀題目。手機上仍顯示題目；答案保留在下方。"
+    },
+    "picture": {
+      "behindNote": "在文字後方時，媒體會填滿區域：僅裁切點生效。",
+      "fit": "填滿方式",
+      "fitValue": {
+        "contain": "完整",
+        "cover": "填滿畫框"
+      },
+      "focus": "裁切點",
+      "focusValue": {
+        "center": "置中",
+        "top": "上",
+        "bottom": "下",
+        "left": "左",
+        "right": "右"
+      },
+      "reveal": "逐步顯現",
+      "revealHint": "讀題時圖片是模糊的，從開放作答起逐漸清晰——手機上也一樣。",
+      "revealSeconds": "清晰所需時間（秒）",
+      "ratio": "比例",
+      "ratioFile": "依檔案",
+      "ratioFree": "自訂",
+      "ratioFreeLabel": "比例（寬:高）",
+      "ratioInvalid": "比例寫作 寬:高，使用整數，範圍 1:4 到 4:1。"
+    },
+    "view": {
+      "label": "檢視",
+      "timeline": "時間軸",
+      "list": "清單"
+    },
+    "list": {
+      "caption": "元素：{{n}} · 共 {{total}} 秒",
+      "element": "元素",
+      "channels": "通道",
+      "start": "開始",
+      "length": "長度",
+      "note": "作用",
+      "open": "開啟",
+      "settings": "設定",
+      "openNamed": "開啟：{{name}}",
+      "settingsNamed": "設定：{{name}}",
+      "flow": "流程",
+      "untilEnd": "直到結束（{{seconds}} 秒）",
+      "stretches": "使題目延長 {{seconds}} 秒",
+      "channel": {
+        "time": "時間",
+        "visual": "視覺",
+        "audio": "音訊"
+      }
+    },
+    "reset": "恢復預設值：{{type}}",
+    "resetConfirm": {
+      "title": "恢復「{{type}}」的預設值？",
+      "description": "媒體將被移除，時長恢復為 {{seconds}} 秒，流程恢復預設設定。儲存之前不會遺失任何內容。",
+      "confirm": "恢復"
+    },
+    "slideKind": "簡報",
+    "totalOpen": "{{seconds}} 秒，然後由主持人繼續",
+    "explanationHint": "在正確答案顯示期間，與其一同顯示在螢幕上。",
+    "hint": {
+      "text": "提示內容",
+      "textPlaceholder": "它是在 1923 年被選定的",
+      "textHint": "{{n}} / {{max}} 個字元",
+      "afterS": "開放作答後（秒）",
+      "penalty": "扣分（%）",
+      "rule": "在提示之後作答，將失去本題 {{penalty}}% 的分數；連對獎勵不受影響。主持人可以關閉提示。",
+      "image": "圖片（有文字時可選）",
+      "video": "影片",
+      "audio": "聲音",
+      "videoExcludesImage": "影片會取代圖片的位置。",
+      "videoExcluded": "已有圖片或聲音：影片兩者兼具。",
+      "videoHasSound": "影片自帶聲音。",
+      "soundRule": "其聲音在顯示時播放一次，並蓋過題目的聲音；若長於作答時間，會延長題目。"
+    },
+    "removeElement": "移除此元素",
+    "embeddedVideo": "嵌入的影片：只能移除。",
+    "slideLayoutDescription": {
+      "bottom": "圖片或影片在區塊下方。",
+      "top": "圖片或影片在區塊上方。",
+      "left": "圖片或影片在左側，區塊在旁邊。",
+      "right": "區塊在左側，圖片或影片在旁邊。",
+      "behind": "圖片或影片鋪滿簡報，區塊疊在其上（即以往簡報的影片）。",
+      "alone": "只有圖片或影片，取代區塊。"
+    },
+    "conflicts": "衝突：{{n}}",
+    "conflictTip": "提示的聲音蓋過了題目的聲音：遊戲中以提示為準。"
   },
   "preview": {
     "view": "預覽（玩家視角）",
@@ -429,7 +624,6 @@
     "altPlaceholder": "例如：身穿法國隊球衣的姆巴佩",
     "altHelp": "供螢幕閱讀器朗讀。當圖片本身是題目的一部分時，請描述圖片內容；純裝飾性圖片可留空。",
     "slotsLegend": "題目媒體",
-    "visualLabel": "畫面",
     "audioLabel": "音訊",
     "kindImage": "圖片",
     "kindVideo": "影片",
@@ -437,8 +631,6 @@
     "addImage": "新增圖片",
     "addVideo": "新增影片",
     "addAudio": "新增音訊",
-    "videoExcludesAudio": "影片本身已有音訊：不能再加音軌。移除影片後才能新增音訊。",
-    "audioExcludesVideo": "影片本身已有音訊：移除音訊後才能選擇影片。",
     "converting": "轉換中…",
     "convertingPercent": "轉換中… {{percent}} %",
     "cancelConversion": "取消",
@@ -596,6 +788,74 @@
       "invalid_time": "時限不在 {{min}}–{{max}} 秒之間",
       "formula": "不讀取公式",
       "invalid_content": "文字超出 QuizDock 的長度限制"
+    }
+  },
+  "quizTimeline": {
+    "legend": "測驗流程",
+    "total": "自動模式約 {{time}}",
+    "count": "{{questions}} 題 · {{slides}} 張簡報",
+    "scale": "比例",
+    "scaleValue": {
+      "time": "按時長",
+      "equal": "每步一格"
+    },
+    "minute": "{{n}} 分鐘",
+    "slideTip": "簡報「{{name}}」· {{time}}",
+    "questionTip": "第 {{n}} 題 · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "版面配置",
+    "title": "簡報版面配置",
+    "groupEmpty": "編排空白簡報",
+    "groupMedia": "放置媒體",
+    "emptyOnly": "適用於空白簡報：這張已有內容",
+    "welcomeTitle": "歡迎來到 {title}",
+    "welcomeText": "在 {join} 輸入 PIN **{pin}** 加入",
+    "layout": {
+      "title": "標題",
+      "titleSubtitle": "標題和副標題",
+      "titleText": "標題和文字",
+      "titleTextMedia": "標題、文字、媒體",
+      "mediaTitle": "媒體和標題",
+      "textMedia": "文字 | 媒體",
+      "mediaText": "媒體 | 文字",
+      "behindTitle": "媒體上的標題",
+      "mediaAlone": "僅媒體",
+      "twoColumns": "兩欄",
+      "titleTwoColumns": "標題、兩欄",
+      "threeColumns": "三欄",
+      "section": "章節",
+      "quote": "引言",
+      "welcome": "歡迎",
+      "mediaAbove": "媒體在上",
+      "mediaBelow": "媒體在下",
+      "mediaLeft": "媒體在左",
+      "mediaRight": "媒體在右",
+      "mediaBehind": "媒體在後方",
+      "mediaOnly": "媒體單獨"
+    },
+    "description": {
+      "title": "置中的標題。",
+      "titleSubtitle": "一個標題，下方一個較小的標題。",
+      "titleText": "文字上方一個標題。",
+      "titleTextMedia": "一個標題、一段文字，下方是簡報的圖片或影片。",
+      "mediaTitle": "圖片或影片，下方是標題。",
+      "textMedia": "左側標題和文字，右側圖片或影片。",
+      "mediaText": "左側圖片或影片，右側標題和文字。",
+      "behindTitle": "圖片或影片佈滿簡報，上方疊加標題。",
+      "mediaAlone": "僅圖片或影片，佈滿簡報。",
+      "twoColumns": "兩欄，每欄一個標題和一段文字。",
+      "titleTwoColumns": "兩欄文字上方一個標題。",
+      "threeColumns": "三欄，每欄一個標題和一段文字。",
+      "section": "大標題上方一個小標題：一個部分的開始。",
+      "quote": "一段大字，右下方是出處。",
+      "welcome": "測驗標題和加入方式，由大廳自動填入。",
+      "mediaAbove": "媒體區塊移到頂部；其他區塊保持不變。",
+      "mediaBelow": "媒體區塊移到末尾；其他區塊保持不變。",
+      "mediaLeft": "圖片或影片位於所有內容區塊左側；內容區塊保持不變。",
+      "mediaRight": "圖片或影片位於所有內容區塊右側；內容區塊保持不變。",
+      "mediaBehind": "圖片或影片在內容區塊後方佈滿簡報。",
+      "mediaOnly": "圖片或影片取代內容區塊顯示；內容區塊保留以備後用。"
     }
   }
 }

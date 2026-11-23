@@ -36,6 +36,16 @@ Exact (within the tolerance) = full base points; otherwise 100 / 75 / 50 /
 game. The reveal shows the ranking (nickname, value, distance, points) and
 each participant sees their own rank and distance.
 
+## Hints (SPECIFICATIONS-HINTS)
+
+A question's hint takes `penaltyPct` % of the points an answer **given after its
+reveal** earns on that question (`withHint`), rounded; an answer given before keeps
+them all. The share comes off the question's points only — speed-weighted, partial
+credit or *closest wins* alike — never off the streak bonus, and a right answer
+given after the hint still grows the streak. A wrong answer stays at 0. A hint never
+revealed (hints switched off, or its time not reached) costs nothing. What the hint
+took is kept with the answer (`hintLost`).
+
 ## Ranking (`apps/backend/src/game/results.ts`, `rankPlayers`)
 
 A quiz's leaderboard, podium and archived `finalRank` order players by score,

@@ -9,6 +9,8 @@ import type { CreateSlideDtoAudioTarget } from './createSlideDtoAudioTarget';
 import type { CreateSlideDtoBackgroundStyle } from './createSlideDtoBackgroundStyle';
 import type { CreateSlideDtoBlocksItem } from './createSlideDtoBlocksItem';
 import type { CreateSlideDtoGradient } from './createSlideDtoGradient';
+import type { CreateSlideDtoMediaPosition } from './createSlideDtoMediaPosition';
+import type { CreateSlideDtoMediaStyle } from './createSlideDtoMediaStyle';
 import type { CreateSlideDtoTextTone } from './createSlideDtoTextTone';
 import type { CreateSlideDtoWaveformSize } from './createSlideDtoWaveformSize';
 
@@ -30,7 +32,16 @@ export interface CreateSlideDto {
      * @maxLength 26
      * @nullable
      */
+  imageMediaId?: string | null;
+  /**
+     * @minLength 26
+     * @maxLength 26
+     * @nullable
+     */
   videoMediaId?: string | null;
+  mediaPosition?: CreateSlideDtoMediaPosition;
+  /** @nullable */
+  mediaStyle?: CreateSlideDtoMediaStyle;
   videoLoop?: boolean;
   videoSound?: boolean;
   /**

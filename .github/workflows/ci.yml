@@ -74,6 +74,9 @@ jobs:
       - name: Migrate (DB de test)
         run: pnpm --filter @quiz-dock/backend exec prisma migrate deploy
 
+      - name: Rollback checks (down.sql, ghosts, upgrade again)
+        run: pnpm --filter @quiz-dock/backend rollback:check
+
       - name: Tests
         run: pnpm -r test
 

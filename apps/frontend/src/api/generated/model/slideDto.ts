@@ -9,6 +9,8 @@ import type { SlideDtoAudioTarget } from './slideDtoAudioTarget';
 import type { SlideDtoBackgroundStyle } from './slideDtoBackgroundStyle';
 import type { SlideDtoBlocksItem } from './slideDtoBlocksItem';
 import type { SlideDtoGradient } from './slideDtoGradient';
+import type { SlideDtoMediaPosition } from './slideDtoMediaPosition';
+import type { SlideDtoMediaStyle } from './slideDtoMediaStyle';
 import type { SlideDtoTextTone } from './slideDtoTextTone';
 import type { SlideDtoWaveformSize } from './slideDtoWaveformSize';
 
@@ -30,7 +32,12 @@ export interface SlideDto {
   /** @nullable */
   backgroundStyle: SlideDtoBackgroundStyle;
   /** @nullable */
+  imageMediaId: string | null;
+  /** @nullable */
   videoMediaId: string | null;
+  mediaPosition: SlideDtoMediaPosition;
+  /** @nullable */
+  mediaStyle: SlideDtoMediaStyle;
   videoLoop: boolean;
   videoSound: boolean;
   /** @nullable */

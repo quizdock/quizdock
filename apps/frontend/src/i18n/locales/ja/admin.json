@@ -165,6 +165,7 @@
     "AUTH_MODE": "認証モード",
     "DEMO_MODE": "公開デモ",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "アカウントなしの参加者",
+    "LOBBY_LISTING": "ホームページに開いているルームを表示",
     "OIDC_ISSUER": "ID プロバイダー（issuer）",
     "OIDC_CLIENT_ID": "クライアント識別子",
     "OIDC_CLIENT_SECRET": "クライアントシークレット",

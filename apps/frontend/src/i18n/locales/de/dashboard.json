@@ -215,5 +215,7 @@
   "results": "Ergebnisse",
   "newQuizBlank": "Leeres Quiz",
   "newQuizFromTemplate": "Aus einer Vorlage…",
-  "newQuizImport": "Datei importieren…"
+  "newQuizImport": "Datei importieren…",
+  "duration": "≈ {{n}} Min.",
+  "durationHint": "Geschätzte Dauer im Automodus"
 }

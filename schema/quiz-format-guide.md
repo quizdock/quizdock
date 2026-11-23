@@ -77,9 +77,9 @@ QuizDock. Never write these fields (a zipped export carries them, with its files
 
 - the file: `media`, `theme`;
 - `quiz`: `feedbackEnabled`, `mediaTailS`, `loudnessTargetLufs`, `audioTarget`, `cover`, `slug`, `namespace`, `revision`, `updatedAt`, `domain`, `tags`, `license`;
-- a question: `media`, `audio`, `backgroundImage`, `backgroundGradient`, `background`, `textTone`, `textOutline`, `revealDelayS`, `audioTarget`, `waveformSize`, `mediaPosition`, `timerAfterMedia`, `multiSelect`;
+- a question: `media`, `audio`, `backgroundImage`, `backgroundGradient`, `background`, `textTone`, `textOutline`, `revealDelayS`, `audioTarget`, `waveformSize`, `mediaPosition`, `mediaStyle`, `hint`, `timerAfterMedia`, `multiSelect`;
 - an option: `media`, `alt`;
-- a slide: `backgroundImage`, `backgroundGradient`, `background`, `textTone`, `textOutline`, `video`, `videoLoop`, `videoSound`, `audio`, `waveformSize`, `audioTarget`, `displayDelayS`; block types `image`, `columns`;
+- a slide: `backgroundImage`, `backgroundGradient`, `background`, `textTone`, `textOutline`, `image`, `video`, `mediaPosition`, `mediaStyle`, `videoLoop`, `videoSound`, `audio`, `waveformSize`, `audioTarget`, `displayDelayS`; block types `image`, `media`, `columns`;
 - Markdown images (`![…](…)`) anywhere.
 
 ## Writing it

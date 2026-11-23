@@ -251,5 +251,7 @@
   "results": "Wyniki",
   "newQuizBlank": "Pusty quiz",
   "newQuizFromTemplate": "Z szablonu…",
-  "newQuizImport": "Importuj plik…"
+  "newQuizImport": "Importuj plik…",
+  "duration": "≈ {{n}} min",
+  "durationHint": "Szacowany czas w trybie auto"
 }

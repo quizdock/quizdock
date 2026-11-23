@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { VariablesContext } from '@/lib/variables';
 import { Markdown } from './markdown';
 
 describe('Markdown — block profile', () => {
@@ -67,5 +68,17 @@ describe('Markdown — inline profile', () => {
     expect(container.querySelector('img')).toBeNull();
     expect(container.textContent).toContain('l');
     expect(container.textContent).toContain('item');
+  });
+});
+
+describe('Markdown — variables', () => {
+  it('fills those its context knows, the others stay as written', () => {
+    const { container } = render(
+      <VariablesContext.Provider value={{ title: 'Discover France', players: 4 }}>
+        <Markdown>{'**{title}**: {players} here, PIN {pin}'}</Markdown>
+      </VariablesContext.Provider>,
+    );
+    expect(container.querySelector('strong')?.textContent).toBe('Discover France');
+    expect(container.textContent).toBe('Discover France: 4 here, PIN {pin}');
   });
 });

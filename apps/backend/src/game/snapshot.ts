@@ -12,24 +12,27 @@ import type {
   SlideBackground,
 } from '@quiz-dock/contracts';
 import {
+  mediaStyleSchema,
+  questionHintSchema,
   type AudioTarget,
   LOUDNESS_TARGET_LUFS,
   effectiveTimeLimitS,
   fillSlideBlocks,
+  fillVariables,
   quizVariables,
   mediaDurationMs,
   playbackGainDb,
   resolveAudioTarget,
   slideHasPlayback,
   slideSoundMedia,
-  slideTimedMs,
+  slideMediaHoldMs,
   SETTINGS,
 } from '@quiz-dock/contracts';
 import { QUESTION_MEDIA_INCLUDE, liveMediaOf } from '../questions/question-media';
 import { MEDIA_LEAD_MS } from './game.keys';
 import { settings } from '../admin/settings/settings.service';
 import { basePointsFor } from './scoring';
-import type { QuizSnapshot, SnapshotQuestion, SnapshotSlide } from './game.types';
+import type { QuizSnapshot, SnapshotHint, SnapshotQuestion, SnapshotSlide } from './game.types';
 import type {
   SlideBlock,
   SlideGradient,
@@ -53,7 +56,7 @@ const quizWithContent = Prisma.validator<Prisma.QuizDefaultArgs>()({
     },
     slides: {
       orderBy: { orderIndex: 'asc' },
-      include: { media: true, videoMedia: true, audioMedia: true },
+      include: { media: true, imageMedia: true, videoMedia: true, audioMedia: true },
     },
     // Its slides may name the author (`{author}`).
     owner: { select: { displayName: true } },
@@ -124,7 +127,14 @@ const readDelayMs = () => settings.get(SETTINGS.GAME_READ_DELAY_MS);
  * (secret serveur) et les réponses texte normalisées. La boucle live ne touche
  * plus la base après cet appel.
  */
-export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
+export function buildSnapshot(
+  quiz: QuizWithContent,
+  /** The media its hints hold, by id (they live in the hints, not in a relation). */
+  hintMedia: Map<string, MediaAsset> = new Map(),
+): QuizSnapshot {
+  // A prompt naming the quiz (`{title}`, `{questions}`…) reads its current values;
+  // the room's are filled by each screen.
+  const variables = quizVariables(slideQuizFields(quiz));
   return {
     quizId: quiz.id,
     title: quiz.title,
@@ -141,7 +151,7 @@ export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
         id: q.id,
         orderIndex: q.orderIndex,
         type: q.type as QuestionType,
-        prompt: q.prompt,
+        prompt: fillVariables(q.prompt, variables),
         media,
         answerExplanation: q.answerExplanation ?? null,
         background: backdropOf(q.backgroundMedia, q.backgroundGradient, q.backgroundStyle),
@@ -161,6 +171,7 @@ export function buildSnapshot(quiz: QuizWithContent): QuizSnapshot {
               readDelayMs() - MEDIA_LEAD_MS,
             ),
         timerAfterMedia: listensFirst,
+        ...hintOf(q.hint, hintMedia, quiz.loudnessTargetLufs, quiz.mediaTailS),
         revealDelayS: q.revealDelayS ?? null,
         audioTarget: q.audioTarget ?? null,
         basePoints: basePointsFor(q.pointsMode as PointsMode),
@@ -242,16 +253,24 @@ function snapshotSlide(
         size: slide.waveformSize,
       }
     : null;
-  const timedMs = slideTimedMs({ video, audio });
+  // Its picture (never beside a video), where its visual sits, and how it is framed.
+  const img = !v && slide.imageMedia?.kind === 'image' ? slide.imageMedia : null;
+  const style = mediaStyleSchema.safeParse(slide.mediaStyle ?? {});
+  // Framed, never revealed: a slide has no answers to open.
+  const framing = { ...(style.success ? style.data : {}) };
+  delete framing.revealS;
   return {
     id: slide.id,
     beforeQuestionIndex: anchor,
+    ...(img ? { image: { url: img.url, alt: img.alt ?? null } } : {}),
+    ...((img || v) && slide.mediaPosition !== 'behind' ? { position: slide.mediaPosition } : {}),
+    ...((img || v) && Object.keys(framing).length > 0 ? { style: framing } : {}),
     blocks: resolveBlocks(slide.blocks as SlideBlock[], quiz),
     background: backdropOf(slide.media, slide.gradient, slide.backgroundStyle),
     video,
     audio,
     audioTarget: slide.audioTarget ?? null,
-    mediaHoldMs: timedMs === null ? null : timedMs + mediaTailS * 1000,
+    mediaHoldMs: slideMediaHoldMs({ video, audio }, mediaTailS),
     textTone: slide.textTone as SlideTextTone,
     textOutline: slide.textOutline,
     displayDelayS: slide.displayDelayS,
@@ -276,10 +295,10 @@ function backdropOf(
   return style ? { ...base, style: style as BackgroundStyle } : base;
 }
 
-/** What a slide's variables read of the quiz (see `quizVariables`). */
+/** What a slide's or a prompt's variables read of the quiz (see `quizVariables`). */
 type SlideQuizFields = Parameters<typeof quizVariables>[0];
 
-/** The quiz's fields for its slides' variables, from the rows the snapshot reads. */
+/** The quiz's fields for its variables, from the rows the snapshot reads. */
 function slideQuizFields(quiz: QuizWithContent): SlideQuizFields {
   return {
     title: quiz.title,
@@ -322,6 +341,9 @@ export function buildSlideShow(
     blocks: slide.blocks,
     background: slide.background,
     ...(slide.video ? { video: slide.video } : {}),
+    ...(slide.image ? { image: slide.image } : {}),
+    ...(slide.position && slide.position !== 'behind' ? { position: slide.position } : {}),
+    ...(slide.style ? { style: slide.style } : {}),
     ...(slide.audio ? { audio: slide.audio } : {}),
     ...(gameTarget && slideHasSound(slide)
       ? { audioTarget: slideAudioTarget(slide, gameTarget) }
@@ -376,6 +398,10 @@ export function buildQuestionStart(
     endsAt,
     ...(mediaLeadMs !== null && startedAt > 0 ? { mediaStartAt: startedAt - mediaLeadMs } : {}),
     ...(question.timerAfterMedia ? { listenFirst: true } : {}),
+    // When the hint comes and what it costs; its text waits for its reveal.
+    ...(question.hint
+      ? { hint: { afterS: question.hint.afterS, penaltyPct: question.hint.penaltyPct } }
+      : {}),
     background: question.background,
     textTone: question.textTone,
     textOutline: question.textOutline,
@@ -448,4 +474,61 @@ export function slideTitle(blocks: SlideBlock[]): string {
     return plain.length > 80 ? `${plain.slice(0, 79)}…` : plain;
   }
   return '';
+}
+
+/** The ids of the media a stored hint holds: loaded with the quiz for its snapshot. */
+export function hintMediaIds(stored: unknown): string[] {
+  const parsed = questionHintSchema.safeParse(stored);
+  if (!parsed.success) return [];
+  const { imageMediaId, videoMediaId, audioMediaId } = parsed.data;
+  return [imageMediaId, videoMediaId, audioMediaId].filter((id): id is string => !!id);
+}
+
+/**
+ * A stored hint as the game plays it (SPECIFICATIONS-HINTS): its picture's address, its
+ * video and sound as the screens play them, and how long its sound holds the question
+ * (its length, then the quiz's pause). None when unreadable.
+ */
+function hintOf(
+  stored: unknown,
+  media: Map<string, MediaAsset>,
+  targetLufs: number,
+  tailS: number,
+): { hint?: SnapshotHint } {
+  const parsed = questionHintSchema.safeParse(stored);
+  if (!parsed.success) return {};
+  const h = parsed.data;
+  const gain = (m: MediaAsset) => playbackGainDb(m.loudnessLufs, m.peakDbfs, targetLufs);
+  const video = h.videoMediaId ? media.get(h.videoMediaId) : undefined;
+  const audio = h.audioMediaId ? media.get(h.audioMediaId) : undefined;
+  const v = video?.kind === 'video' ? video : null;
+  const a = audio?.kind === 'audio' ? audio : null;
+  const soundMs = (v ?? a)?.durationMs ?? null;
+  return {
+    hint: {
+      ...h,
+      ...(h.imageMediaId ? { imageUrl: mediaUrl(h.imageMediaId) } : {}),
+      ...(v
+        ? {
+            video: {
+              url: v.url,
+              gainDb: gain(v),
+              ...(v.durationMs ? { durationMs: v.durationMs } : {}),
+            },
+          }
+        : {}),
+      ...(a
+        ? {
+            audio: {
+              url: a.url,
+              durationMs: a.durationMs ?? 0,
+              peaks: a.peaks,
+              gainDb: gain(a),
+              size: 'hidden' as const,
+            },
+          }
+        : {}),
+      ...(soundMs ? { holdMs: soundMs + tailS * 1000 } : {}),
+    },
+  };
 }

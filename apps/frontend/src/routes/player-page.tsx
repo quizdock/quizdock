@@ -6,7 +6,7 @@ import { LiveMotion } from '../game/motion/level';
 import { BackdropFade, StepEnter } from '../game/motion/step-transition';
 import { type Backdrop, stepKeyOf } from '../game/motion/step';
 import { FittedStage } from '../game/slide-stage';
-import { NICKNAME_MAX, type PlayerPresence, playsSound } from '@quiz-dock/contracts';
+import { NICKNAME_MAX, type PlayerPresence, fillVariables, playsSound } from '@quiz-dock/contracts';
 import {
   Ban,
   Check,
@@ -27,7 +27,8 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { APP_NAME } from '../config';
 import { ScreenSurface } from './screen-page';
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useContext, useEffect, useState } from 'react';
+import { VariablesContext } from '@/lib/variables';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Markdown } from '@/components/markdown';
@@ -73,6 +74,9 @@ import { FollowedWaveform, QuestionMediaStage } from '../game/media/question-med
 import { SlidePlaybackContext } from '../game/media/slide-media';
 import { RoomVariables } from '../game/slide-variables';
 import { anchorOf, followed } from '../game/media/followed';
+import { revealOf } from '../game/media/media-frame';
+import { PhoneHint } from '../game/phone-hint';
+import { HintMedia, useHintSounding } from '../game/hint-media';
 import { RatingPanel } from '../game/rating-panel';
 import { setDeviceMuted, useDeviceSound } from '../game/media/audio-mixer';
 import { SoundButton } from '../game/media/sound-button';
@@ -123,11 +127,13 @@ export function PlayerPage() {
   return (
     <>
       <ConnectionLost lost={session.view.connectionLost} />
-      <PlayerAnnouncer view={session.view} />
-      {/* A hook for override.css, with the game's state (no box: the layout is the page's). */}
-      <div className="qd-player contents" data-state={session.view.state ?? 'none'}>
-        <PlayerView pin={pin} session={session} />
-      </div>
+      <RoomVariables view={session.view} pin={pin}>
+        <PlayerAnnouncer view={session.view} />
+        {/* A hook for override.css, with the game's state (no box: the layout is the page's). */}
+        <div className="qd-player contents" data-state={session.view.state ?? 'none'}>
+          <PlayerView pin={pin} session={session} />
+        </div>
+      </RoomVariables>
     </>
   );
 }
@@ -139,6 +145,7 @@ export function PlayerPage() {
  */
 function PlayerAnnouncer({ view }: { view: ReturnType<typeof useGameSession>['view'] }) {
   const { t } = useTranslation('live');
+  const variables = useContext(VariablesContext);
   const question = view.question;
   let said = '';
   if (view.state === 'ANSWERING' && question) {
@@ -146,7 +153,7 @@ function PlayerAnnouncer({ view }: { view: ReturnType<typeof useGameSession>['vi
       ? t('player.announce.pending')
       : view.answerAccepted
         ? t('player.announce.saved')
-        : t('player.announce.question', { prompt: question.prompt });
+        : t('player.announce.question', { prompt: fillVariables(question.prompt, variables) });
   } else if ((view.state === 'REVEAL' || view.state === 'LEADERBOARD') && view.result) {
     said = `${view.result.correct ? t('player.correct') : t('player.wrong')} ${t('player.points', {
       points: view.result.points,
@@ -483,6 +490,11 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   // unless the sound is meant for it too.
   const hears = !!question?.audioTarget && playsSound(question.audioTarget, presence);
   const playsHere = remote || hears;
+  // The hint's sound plays where the question's does, and takes over meanwhile.
+  const hintSounding = useHintSounding(
+    view.hint && question && view.hint.questionIndex === question.questionIndex ? view.hint : null,
+    !!view.paused,
+  );
 
   const participantTop =
     topbarSlot && view.status === 'ready' && view.state !== 'ENDED' && !view.kicked
@@ -771,9 +783,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             videos: remote,
           }}
         >
-          <RoomVariables view={view} pin={pin}>
-            <SlideView key={slide.slideIndex} slide={slide} />
-          </RoomVariables>
+          <SlideView key={slide.slideIndex} slide={slide} />
         </SlidePlaybackContext.Provider>
       </div>
     );
@@ -869,6 +879,12 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               {r.correct ? t('player.correct') : t('player.wrong')}
             </p>
             <p className="text-[1.25em]">{t('player.points', { points: r.points })}</p>
+            {r.hint ? (
+              // What the hint took: its share, and the points it cost.
+              <p className="text-warning-text text-[1em]">
+                {t('hint.penaltyApplied', { penalty: r.hint.penaltyPct, lost: r.hint.lost })}
+              </p>
+            ) : null}
             {r.closestRank ? (
               <p className="text-muted-foreground text-[1em]">
                 {t('player.yourClosest', {
@@ -978,8 +994,9 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
               key={question.questionIndex}
               media={question.media}
               mode={view.paused ? 'pause' : 'play'}
+              reveal={revealOf(question, !!view.paused)}
               audible={hears}
-              muted={muted}
+              muted={muted || hintSounding}
               follow={hears ? undefined : followed(view, { questionIndex: question.questionIndex })}
               catchUp={followed(view, { questionIndex: question.questionIndex })}
               startAt={question.mediaStartAt ?? null}
@@ -990,7 +1007,12 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             />
           ) : (
             <>
-              <QuestionMedia media={question.media} zoomable className="max-h-[18dvh] w-auto" />
+              <QuestionMedia
+                media={question.media}
+                zoomable
+                reveal={revealOf(question, !!view.paused)}
+                className="max-h-[18dvh] w-auto"
+              />
               {/* In the room the sound plays on the projection; its playhead shows here only
                   when the sound is the question (listen first), not a background (#92). */}
               {question.media?.audio && question.listenFirst ? (
@@ -1011,6 +1033,25 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
             tiled && 'on-backdrop:rounded-t-[0.75em]',
           )}
         >
+          {/* The hint, attached on top of the tiles: it unfolds upwards, over the question. */}
+          {view.hint?.questionIndex === question.questionIndex ? (
+            <PhoneHint
+              key={question.questionIndex}
+              text={view.hint.text}
+              image={view.hint.image}
+              media={
+                playsHere ? (
+                  <HintMedia
+                    hint={view.hint}
+                    mode={view.paused ? 'pause' : 'play'}
+                    audible={hears}
+                    muted={muted}
+                    boxClassName="w-full max-h-[25dvh]"
+                  />
+                ) : null
+              }
+            />
+          ) : null}
           <AnswerRules question={question} />
           {reading ? (
             <OpeningCountdown
@@ -1166,9 +1207,10 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         </div>
       ) : null}
 
-      {/* "Ready!" (#104): the host sees one count and still starts when they choose. */}
+      {/* "Ready!" (#104): the host sees one count and still starts when they choose.
+          Ready for a quiz only: none asked while the host has not picked the next. */}
       <div className="mt-auto flex w-full flex-col items-center gap-2">
-        {view.youReady ? (
+        {!view.quizTitle ? null : view.youReady ? (
           <Button
             type="button"
             variant="outline"

@@ -1,0 +1,400 @@
+import {
+  type Audio,
+  effectiveTimeLimitS,
+  HINT_PENALTY_DEFAULT,
+  TIME_LIMIT_BY_TYPE,
+  MEDIA_POSITIONS,
+  type QuestionMedia,
+} from '@quiz-dock/contracts';
+import { useStore } from '@tanstack/react-form';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MarkdownEditor } from '@/components/markdown-editor';
+import { FieldMessage } from '@/components/ui/field-message';
+import type { FieldIssue } from '@/lib/question-issues';
+import { cn } from '@/lib/utils';
+import { appConfig } from '../config';
+import { MediaDetailsFields, MediaUpload, type UploadedMedia } from './media-upload';
+import { mediaHasSound, type QuestionFormApi, READ_DELAY_DEFAULT_MS } from './question-form-model';
+import { HintFields } from './hint-fields';
+import { PictureStyleFields, REVEAL_DEFAULT_S } from './picture-style-fields';
+import { AudioTargetField, WaveformSizeField } from './sound-fields';
+import { QuestionTimingFields } from './question-timing-section';
+import { StepTimeline, type TimelineSelection, useAssetDurationMs } from './step-timeline';
+import {
+  type AddChoice,
+  AddElementModal,
+  ElementPanel,
+  LayoutModal,
+} from './step-timeline-editing';
+import { questionTimeline } from './step-timeline-model';
+import { useStepView } from './use-step-view';
+
+/**
+ * The question's timeline, where its media are added and its flow set
+ * (SPECIFICATIONS-QUESTION-TIMELINE §4): the + offers what the format allows, an element
+ * or the time row opens its drawer. The visual holds an image or a video; a video brings
+ * its own sound, so it never goes with an audio.
+ */
+export function QuestionTimelineSection({
+  form,
+  mediaTailS,
+  issues,
+}: {
+  form: QuestionFormApi;
+  /** The quiz's pause after a media. */
+  mediaTailS: number;
+  issues: FieldIssue[];
+}) {
+  const { t } = useTranslation('editor');
+  const type = useStore(form.store, (s) => s.values.type);
+  const media = useStore(form.store, (s) => s.values.media);
+  const timeLimitS = useStore(form.store, (s) => s.values.timeLimitS);
+  const listenFirst = useStore(form.store, (s) => s.values.timerAfterMedia);
+  const [selected, setSelected] = useState<TimelineSelection | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [view, setView] = useStepView();
+  const [layingOut, setLayingOut] = useState(false);
+  const mediaPosition = useStore(form.store, (s) => s.values.mediaPosition);
+  const mediaStyle = useStore(form.store, (s) => s.values.mediaStyle);
+
+  const mediaMs = useMediaDurationMs(media);
+  const canListenFirst = mediaHasSound(media) && mediaMs !== null;
+  const stretchedS =
+    canListenFirst && listenFirst
+      ? timeLimitS
+      : effectiveTimeLimitS(timeLimitS, mediaMs, mediaTailS, READ_DELAY_DEFAULT_MS);
+  const withVisual = type !== 'image_choice';
+  // The selected element is the visual: its options sit beside its preview.
+  const styled = (selected === 'image' || selected === 'video') && media.visual?.kind === selected;
+  const { visual, audio } = media;
+  const hasVideo = visual?.kind === 'video';
+
+  const setMedia = (next: QuestionMedia) => {
+    form.setFieldValue('media', next);
+    // Taken away, its drawer goes with it.
+    if (selected !== 'time' && !hasElement(next, selected)) setSelected(null);
+  };
+  const setImage = (id: string | null) =>
+    setMedia({ visual: id ? { kind: 'image', assetId: id } : null, audio });
+  const setVideo = (id: string | null) =>
+    setMedia(
+      id
+        ? { visual: { kind: 'video', source: 'upload', assetId: id }, audio: null }
+        : { visual: null, audio },
+    );
+  const setAudio = (id: string | null, uploaded?: UploadedMedia) => {
+    const track: Audio | null =
+      id && uploaded?.durationMs && uploaded.peaks
+        ? { assetId: id, origin: 'upload', durationMs: uploaded.durationMs, peaks: uploaded.peaks }
+        : null;
+    setMedia({ visual: hasVideo ? null : visual, audio: track } as QuestionMedia);
+  };
+  const revealDelayS = useStore(form.store, (s) => s.values.revealDelayS);
+  const explanation = useStore(form.store, (s) => s.values.answerExplanation);
+  const explains = type !== 'poll' && explanation.trim() !== '';
+  const hint = useStore(form.store, (s) => s.values.hint);
+  // Its sound's length (its own, or its video's), from the library: its place on the timeline.
+  const hintSoundMs = useAssetDurationMs(hint?.audioMediaId ?? hint?.videoMediaId ?? null);
+  const defaultS = TIME_LIMIT_BY_TYPE[type];
+  // Already at its type's defaults: nothing to bring back.
+  const atDefaults =
+    !visual &&
+    !audio &&
+    timeLimitS === defaultS &&
+    !listenFirst &&
+    revealDelayS === null &&
+    !hint &&
+    Object.keys(mediaStyle).length === 0;
+  const reset = () => {
+    form.setFieldValue('media', { visual: null, audio: null });
+    form.setFieldValue('mediaStyle', {});
+    form.setFieldValue('timerAfterMedia', false);
+    form.setFieldValue('timeLimitS', defaultS);
+    form.setFieldValue('revealDelayS', null);
+    form.setFieldValue('hint', null);
+    setSelected(null);
+  };
+  const clear = () => {
+    form.setFieldValue('media', { visual: null, audio: null });
+    form.setFieldValue('mediaStyle', {});
+    form.setFieldValue('timerAfterMedia', false);
+    setSelected(null);
+  };
+
+  const refusedVisual = !withVisual
+    ? t('timeline.refused.imageChoice')
+    : visual
+      ? t('timeline.refused.oneVisual')
+      : null;
+  const choices: AddChoice[] = [
+    { kind: 'image', refused: refusedVisual },
+    {
+      kind: 'video',
+      refused: refusedVisual ?? (audio ? t('timeline.refused.videoHasSound') : null),
+    },
+    {
+      kind: 'reveal',
+      refused:
+        visual?.kind !== 'image'
+          ? t('timeline.refused.revealNeedsImage')
+          : mediaStyle.revealS
+            ? t('timeline.refused.oneReveal')
+            : null,
+    },
+    { kind: 'hint', refused: hint ? t('timeline.refused.oneHint') : null },
+    {
+      kind: 'explanation',
+      refused:
+        type === 'poll'
+          ? t('timeline.refused.pollExplanation')
+          : explains
+            ? t('timeline.refused.oneExplanation')
+            : null,
+    },
+    {
+      kind: 'audio',
+      refused: audio
+        ? t('timeline.refused.oneAudio')
+        : hasVideo
+          ? t('timeline.refused.videoHasSound')
+          : null,
+    },
+  ];
+
+  return (
+    <div id="qf-media" className="flex flex-col gap-1.5">
+      <StepTimeline
+        model={questionTimeline({
+          timeLimitS,
+          listenFirst: canListenFirst && listenFirst,
+          visual: withVisual ? (visual?.kind ?? null) : null,
+          revealS: visual?.kind === 'image' ? (mediaStyle.revealS ?? null) : null,
+          // In auto mode, the question's own time, else the instance's; without one, by hand.
+          answerShownS: revealDelayS ?? appConfig.autoAdvanceS ?? null,
+          explanation: explains,
+          hint: hint
+            ? {
+                afterS: hint.afterS,
+                visual: !!(hint.text.trim() || hint.imageMediaId || hint.videoMediaId),
+                soundMs: hintSoundMs,
+              }
+            : null,
+          audio: audio ? { peaks: audio.peaks } : null,
+          mediaMs,
+          tailS: mediaTailS,
+          readMs: READ_DELAY_DEFAULT_MS,
+        })}
+        edit={{
+          selected,
+          // The reveal is the picture's: its panel holds it.
+          onSelect: (s) => setSelected(s === 'reveal' ? 'image' : s),
+          onAdd: () => setAdding(true),
+          view: { value: view, onChange: setView },
+          onClear: visual || audio ? clear : null,
+          reset: atDefaults
+            ? null
+            : { type: t(`questionType.${type}`), seconds: defaultS, run: reset },
+          layout: {
+            open: () => setLayingOut(true),
+            refused: !withVisual
+              ? t('timeline.refused.imageChoice')
+              : visual
+                ? null
+                : t('timeline.layoutNeedsVisual'),
+          },
+        }}
+      />
+      <FieldMessage issues={issues} />
+      <LayoutModal
+        open={layingOut}
+        value={mediaPosition}
+        choices={MEDIA_POSITIONS.map((position) => ({
+          value: position,
+          label: t(`questionForm.mediaPosition.${position}`),
+          description: t(`timeline.layoutDescription.${position}`),
+        }))}
+        onApply={(position) => {
+          form.setFieldValue('mediaPosition', position);
+          setLayingOut(false);
+        }}
+        onClose={() => setLayingOut(false)}
+      />
+      <AddElementModal
+        open={adding}
+        choices={choices}
+        onPick={(kind) => {
+          setAdding(false);
+          if (kind === 'hint') {
+            // Halfway through the answers, at the default penalty: a starting point.
+            form.setFieldValue('hint', {
+              text: '',
+              afterS: Math.floor(timeLimitS / 2),
+              penaltyPct: HINT_PENALTY_DEFAULT,
+            });
+            setSelected('hint');
+          } else if (kind === 'reveal') {
+            form.setFieldValue('mediaStyle', {
+              ...mediaStyle,
+              revealS: Math.min(REVEAL_DEFAULT_S, timeLimitS),
+            });
+            setSelected('image');
+          } else setSelected(kind);
+        }}
+        onClose={() => setAdding(false)}
+      />
+      {selected === 'time' ? (
+        <ElementPanel title={t('timeline.questionSettings')} onClose={() => setSelected(null)}>
+          <QuestionTimingFields
+            form={form}
+            stretchedS={stretchedS}
+            canListenFirst={canListenFirst}
+            mediaMs={mediaMs}
+            mediaTailS={mediaTailS}
+          />
+        </ElementPanel>
+      ) : selected === 'hint' && hint ? (
+        <ElementPanel
+          title={t('timeline.choice.hint')}
+          onClose={() => setSelected(null)}
+          onRemove={() => {
+            form.setFieldValue('hint', null);
+            setSelected(null);
+          }}
+        >
+          <HintFields form={form} timeLimitS={timeLimitS} />
+        </ElementPanel>
+      ) : selected === 'explanation' ? (
+        <ElementPanel
+          title={t('timeline.choice.explanation')}
+          onClose={() => setSelected(null)}
+          onRemove={
+            explains
+              ? () => {
+                  form.setFieldValue('answerExplanation', '');
+                  setSelected(null);
+                }
+              : undefined
+          }
+        >
+          <form.Field name="answerExplanation">
+            {(field) => (
+              <MarkdownEditor
+                aria-label={t('questionForm.answerExplanationLabel')}
+                value={field.state.value}
+                onChange={field.handleChange}
+                placeholder={t('questionForm.answerExplanationPlaceholder')}
+              />
+            )}
+          </form.Field>
+          <p className="text-muted-foreground text-xs">{t('timeline.explanationHint')}</p>
+        </ElementPanel>
+      ) : selected === 'image' || selected === 'video' || selected === 'audio' ? (
+        <ElementPanel
+          title={t(`timeline.choice.${selected}`)}
+          onClose={() => setSelected(null)}
+          onRemove={
+            selected === 'audio'
+              ? audio
+                ? () => setAudio(null)
+                : undefined
+              : visual?.kind === selected
+                ? () => (selected === 'image' ? setImage(null) : setVideo(null))
+                : undefined
+          }
+        >
+          {/* The preview on the left, how it is shown on the right; its texts below, full width. */}
+          <div className={cn('grid items-start gap-4', styled && 'md:grid-cols-2')}>
+            <div className="flex min-w-0 flex-col gap-3">
+              {selected === 'image' ? (
+                <MediaUpload
+                  value={visual?.kind === 'image' ? visual.assetId : null}
+                  onChange={setImage}
+                  kind="image"
+                  label={t('media.addImage')}
+                  withDetails={!styled}
+                  removable={false}
+                />
+              ) : selected === 'video' ? (
+                visual?.kind === 'video' && visual.source !== 'upload' ? (
+                  // An embedded video (YouTube / Vimeo) comes with its own phase: only removed, below.
+                  <p className="text-muted-foreground text-sm">{t('timeline.embeddedVideo')}</p>
+                ) : (
+                  <MediaUpload
+                    value={visual?.kind === 'video' ? visual.assetId : null}
+                    onChange={setVideo}
+                    kind="video"
+                    label={t('media.addVideo')}
+                    withDetails={!styled}
+                    removable={false}
+                  />
+                )
+              ) : (
+                <MediaUpload
+                  value={audio?.assetId ?? null}
+                  onChange={setAudio}
+                  kind="audio"
+                  label={t('media.addAudio')}
+                  removable={false}
+                />
+              )}
+              {selected === 'audio' && audio ? (
+                <PlaybackFields form={form} peaks={audio.peaks} />
+              ) : null}
+            </div>
+            {styled && visual ? (
+              <PictureStyleFields
+                form={form}
+                image={visual.kind === 'image'}
+                behind={mediaPosition === 'behind'}
+                timeLimitS={timeLimitS}
+              />
+            ) : null}
+          </div>
+          {styled && visual && 'assetId' in visual ? (
+            <MediaDetailsFields mediaId={visual.assetId} withAlt={visual.kind === 'image'} />
+          ) : null}
+          {selected === 'video' && hasVideo ? <PlaybackFields form={form} peaks={null} /> : null}
+        </ElementPanel>
+      ) : null}
+    </div>
+  );
+}
+
+function hasElement(media: QuestionMedia, kind: TimelineSelection | null): boolean {
+  if (kind === 'image' || kind === 'video') return media.visual?.kind === kind;
+  if (kind === 'audio') return !!media.audio;
+  return false;
+}
+
+/** How the sound plays: on which devices, and an audio's waveform, previewed at its size. */
+function PlaybackFields({ form, peaks }: { form: QuestionFormApi; peaks: number[] | null }) {
+  return (
+    <>
+      <form.Field name="audioTarget">
+        {(field) => <AudioTargetField value={field.state.value} onChange={field.handleChange} />}
+      </form.Field>
+      {peaks ? (
+        <form.Field name="waveformSize">
+          {(field) => (
+            <WaveformSizeField
+              value={field.state.value}
+              onChange={field.handleChange}
+              peaks={peaks}
+            />
+          )}
+        </form.Field>
+      ) : null}
+    </>
+  );
+}
+
+/** How long the question's media plays (ms): a sound says it itself, a video is asked of the library. */
+function useMediaDurationMs(media: QuestionMedia): number | null {
+  const videoId =
+    media.visual?.kind === 'video' && media.visual.source === 'upload'
+      ? media.visual.assetId
+      : null;
+  const videoMs = useAssetDurationMs(videoId);
+  return media.audio ? media.audio.durationMs : videoMs;
+}

@@ -43,13 +43,7 @@ export function ParticipantPreview({
   if (view.state === 'SLIDE_SHOW' && view.slide) {
     body = (
       <div className="flex min-h-[32em] w-full">
-        {pin ? (
-          <RoomVariables view={view} pin={pin}>
-            <SlideView slide={view.slide} />
-          </RoomVariables>
-        ) : (
-          <SlideView slide={view.slide} />
-        )}
+        <SlideView slide={view.slide} />
       </div>
     );
   } else if ((view.state === 'ANSWERING' || view.state === 'QUESTION_SHOW') && q) {
@@ -115,7 +109,14 @@ export function ParticipantPreview({
             textOutline={q?.background ? q.textOutline : !!themed && 'url' in themed.background}
             className={cn('flex w-full', !q?.background && !themed && 'bg-transparent')}
           >
-            {body}
+            {/* A live room's variables; a quiz's preview has no room, they stay as written. */}
+            {pin ? (
+              <RoomVariables view={view} pin={pin}>
+                {body}
+              </RoomVariables>
+            ) : (
+              body
+            )}
           </Surface>
         </LiveTheme>
       </div>

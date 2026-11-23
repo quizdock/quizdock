@@ -16,7 +16,8 @@
     "code": "Kod",
     "codeBlock": "Blok kodu",
     "bulletList": "Lista punktowana",
-    "orderedList": "Lista numerowana"
+    "orderedList": "Lista numerowana",
+    "clear": "Wyczyść formatowanie"
   },
   "captureConfirm": {
     "title": "Włączyć pełny zapis odpowiedzi?",

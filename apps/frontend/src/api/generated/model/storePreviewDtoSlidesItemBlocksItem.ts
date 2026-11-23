@@ -49,6 +49,13 @@ export type StorePreviewDtoSlidesItemBlocksItem = {
   size?: 'small' | 'medium' | 'large' | 'full';
   align?: 'left' | 'center' | 'right';
 } | {
+  type: 'media';
+  /**
+     * @minLength 1
+     * @maxLength 64
+     */
+  id: string;
+} | {
   type: 'columns';
   /**
      * @minLength 1
@@ -102,6 +109,13 @@ export type StorePreviewDtoSlidesItemBlocksItem = {
   mediaId: string;
   size?: 'small' | 'medium' | 'large' | 'full';
   align?: 'left' | 'center' | 'right';
+} | {
+  type: 'media';
+  /**
+     * @minLength 1
+     * @maxLength 64
+     */
+  id: string;
 })[])[];
   ratio?: '1-1' | '1-2' | '2-1';
 };

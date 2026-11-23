@@ -66,14 +66,14 @@ if (!locales.includes(REFERENCE)) {
   console.error(`Reference locale "${REFERENCE}" not found in ${localesDir}`);
   process.exit(2);
 }
-/** The languages the app ships, read from `supportedLngs` in languages.ts. */
+/** The languages the app ships, read from `RELEASED` in languages.ts. */
 const shipped = new Set(
   [
     ...readFileSync(
       resolve(dirname(fileURLToPath(import.meta.url)), '../src/i18n/languages.ts'),
       'utf8',
     )
-      .match(/supportedLngs = \[([^\]]*)\]/)[1]
+      .match(/const RELEASED = \[([^\]]*)\]/)[1]
       .matchAll(/'([^']+)'/g),
   ].map((m) => m[1]),
 );

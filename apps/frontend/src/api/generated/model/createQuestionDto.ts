@@ -9,8 +9,10 @@ import type { CreateQuestionDtoAcceptedAnswersItem } from './createQuestionDtoAc
 import type { CreateQuestionDtoAudioTarget } from './createQuestionDtoAudioTarget';
 import type { CreateQuestionDtoBackgroundGradient } from './createQuestionDtoBackgroundGradient';
 import type { CreateQuestionDtoBackgroundStyle } from './createQuestionDtoBackgroundStyle';
+import type { CreateQuestionDtoHint } from './createQuestionDtoHint';
 import type { CreateQuestionDtoMedia } from './createQuestionDtoMedia';
 import type { CreateQuestionDtoMediaPosition } from './createQuestionDtoMediaPosition';
+import type { CreateQuestionDtoMediaStyle } from './createQuestionDtoMediaStyle';
 import type { CreateQuestionDtoOptionsItem } from './createQuestionDtoOptionsItem';
 import type { CreateQuestionDtoPointsMode } from './createQuestionDtoPointsMode';
 import type { CreateQuestionDtoScoring } from './createQuestionDtoScoring';
@@ -41,6 +43,10 @@ export interface CreateQuestionDto {
   backgroundStyle?: CreateQuestionDtoBackgroundStyle;
   media?: CreateQuestionDtoMedia;
   mediaPosition?: CreateQuestionDtoMediaPosition;
+  /** @nullable */
+  mediaStyle?: CreateQuestionDtoMediaStyle;
+  /** @nullable */
+  hint?: CreateQuestionDtoHint;
   /**
      * @minimum 5
      * @maximum 240

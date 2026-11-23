@@ -5,9 +5,12 @@ name: Release
 #   2. Images Docker Hub qui en découlent — jobs `publish` + `standalone`.
 #   3. (Overview Docker Hub : workflow `dockerhub-readme.yml`, à chaque README poussé sur main.)
 #   4. Redéploiement de la démo publique (image :standalone) : Render — job `deploy-demo`.
-# Seul un tag strictement vX.Y.Z publie (job `gate`). Une pré-release (v1.2.0-rc.1,
-# tout tag avec - ou +) ne crée qu'une Release GitHub marquée pré-release : aucune
-# image, :latest intact, démo intacte. Idem pour un lancement manuel hors d'un tel tag.
+# Le job `gate` passe d'abord les contrôles de release (scripts/release-check.mjs :
+# migrations figées, rollback et upgrade rejoués) : s'ils échouent, rien n'est publié.
+# Seul un tag strictement vX.Y.Z publie tout. Une release candidate (vX.Y.Z-rc.N) passe
+# les mêmes contrôles et publie sa seule image :X.Y.Z-rc.N (et :standalone-X.Y.Z-rc.N),
+# pour l'essayer sur un serveur : ni :X.Y, ni :latest, ni :standalone, ni démo. Tout autre
+# tag (avec - ou +) ne crée qu'une Release GitHub marquée pré-release, sans image.
 # Secrets requis (repo → Settings → Secrets and variables → Actions) :
 #   DOCKERHUB_USERNAME = fchaussin
 #   DOCKERHUB_TOKEN    = access token Docker Hub (Read & Write)
@@ -27,17 +30,54 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       stable: ${{ steps.check.outputs.stable }}
+      rc: ${{ steps.check.outputs.rc }}
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: live
+          POSTGRES_PASSWORD: live
+          POSTGRES_DB: quizdock
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U live -d quizdock"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://live:live@localhost:5432/quizdock?schema=public
     steps:
       - id: check
         env:
           REF: ${{ github.ref }}
         run: |
+          echo "stable=false" >> "$GITHUB_OUTPUT"
+          echo "rc=false" >> "$GITHUB_OUTPUT"
           if [[ "$REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "stable=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+            echo "rc=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$REF is a release candidate: its own image only, no :latest, no demo deploy."
           else
-            echo "stable=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::$REF is not a stable vX.Y.Z tag: no image, no :latest, no demo deploy."
+            echo "::notice::$REF is not a vX.Y.Z or vX.Y.Z-rc.N tag: no image, no :latest, no demo deploy."
           fi
+
+      # Migrations frozen, rollback and upgrade played against the releases before.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.check.outputs.stable == 'true' || steps.check.outputs.rc == 'true'
+        with:
+          fetch-depth: 0 # the tags before, which the checks compare with
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        if: steps.check.outputs.stable == 'true' || steps.check.outputs.rc == 'true'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: steps.check.outputs.stable == 'true' || steps.check.outputs.rc == 'true'
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Release checks
+        if: steps.check.outputs.stable == 'true' || steps.check.outputs.rc == 'true'
+        run: |
+          pnpm install --frozen-lockfile --filter @quiz-dock/backend...
+          pnpm --filter @quiz-dock/backend release:check "$GITHUB_REF_NAME"
 
   # ---- Source de vérité : Release GitHub + CHANGELOG (auto, pour chaque tag) ----
   github-release:
@@ -86,7 +126,7 @@ jobs:
 
   publish:
     needs: gate
-    if: needs.gate.outputs.stable == 'true'
+    if: needs.gate.outputs.stable == 'true' || needs.gate.outputs.rc == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -111,10 +151,12 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: fchaussin/quizdock
+          # A release candidate: its own tag only.
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest
+            type=semver,pattern={{major}}.{{minor}},enable=${{ needs.gate.outputs.stable == 'true' }}
+            type=raw,value=latest,enable=${{ needs.gate.outputs.stable == 'true' }}
+          flavor: latest=false
 
       - name: Build & push (multi-arch)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -136,7 +178,7 @@ jobs:
   # All-in-one image (Postgres + Redis + app) for one-command beginner use.
   # Reuses the exact artifact published above (COPY --from the X.Y.Z tag), so it runs after.
   standalone:
-    needs: publish
+    needs: [gate, publish]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -162,7 +204,7 @@ jobs:
         with:
           images: fchaussin/quizdock
           tags: |
-            type=raw,value=standalone
+            type=raw,value=standalone,enable=${{ needs.gate.outputs.stable == 'true' }}
             type=semver,pattern=standalone-{{version}}
           # metadata-action's default `latest=auto` appends `latest` whenever a
           # semver tag matches — that silently re-pointed :latest at THIS image
@@ -196,7 +238,8 @@ jobs:
   # Public demo (Render, `:standalone` + DEMO_MODE=true). Render does not watch the
   # registry: without this POST the instance keeps running the cached image.
   deploy-demo:
-    needs: standalone
+    needs: [gate, standalone]
+    if: needs.gate.outputs.stable == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger the Render deploy hook

@@ -165,6 +165,7 @@
     "AUTH_MODE": "प्रमाणीकरण मोड",
     "DEMO_MODE": "सार्वजनिक डेमो",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "बिना खाते के प्रतिभागी",
+    "LOBBY_LISTING": "होम पेज पर खुले रूम",
     "OIDC_ISSUER": "पहचान प्रदाता (issuer)",
     "OIDC_CLIENT_ID": "क्लाइंट पहचानकर्ता",
     "OIDC_CLIENT_SECRET": "क्लाइंट सीक्रेट",

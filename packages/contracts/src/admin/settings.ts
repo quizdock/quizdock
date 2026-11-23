@@ -306,7 +306,7 @@ export const SETTINGS = {
   APP_FEEDBACK_URL: define({
     key: 'APP_FEEDBACK_URL',
     description:
-      "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language, and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
+      "Where the home page's *Report a bug · Suggest a feature · Fix a translation · Ask a question* links lead. Empty: the QuizDock repository, its forms filled in with the version, the browser and the language (translations fixed on Weblate), and an invitation to star it on GitHub. Another GitHub repository (`https://github.com/owner/repo`): the same forms there — copy `.github/ISSUE_TEMPLATE/` into it. Any other address: a single *Send feedback* link. `none`: no links.",
     category: 'identity',
     criticality: 'C4',
     schema: text(),
@@ -384,6 +384,18 @@ export const SETTINGS = {
       levels: { colleagues: false, class: false, public: true },
       requires: { key: 'AUTH_MODE', value: 'oidc' },
     },
+  }),
+  LOBBY_LISTING: define({
+    key: 'LOBBY_LISTING',
+    description:
+      'Whether the home page lists the open lobbies under the PIN field, joined in one click: `listed`, handy on a private instance. Each lobby opened from then on is listed; its host takes it off the list, or puts it back, at any time, from the console’s header. A lobby closed to newcomers is not listed. `unlisted`: a lobby is reached by its PIN, link or QR code only. `listed` in the `:standalone` image.',
+    category: 'access',
+    criticality: 'C3',
+    schema: oneOf(['unlisted', 'listed'] as const, (raw) => raw.trim().toLowerCase()),
+    accepts: '`unlisted` · `listed`',
+    default: 'unlisted' as 'unlisted' | 'listed',
+    applies: 'next-room',
+    overridable: true,
   }),
   OIDC_ISSUER: define({
     key: 'OIDC_ISSUER',

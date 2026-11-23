@@ -45,6 +45,10 @@
       "everyone": "Każde urządzenie"
     },
     "sharingLegend": "Język i udostępnianie",
+    "feedbackDescription": "Co uczestnicy myślą o quizie: na koniec rozgrywki mogą ocenić go w skali do 5 i zostawić komentarz.",
+    "themeDescription": "Wygląd quizu na projekcji i telefonach graczy, od pokoju po podium.",
+    "soundDescription": "Jak odtwarzane są audio i filmy quizu: na tym samym poziomie od pytania do pytania, na wybranych urządzeniach, z przerwą przed przejściem dalej.",
+    "sharingDescription": "Język, w którym napisano quiz, i kto może go zobaczyć. Licencja i tagi pozwalają udostępnić go jako szablon.",
     "sharingSummary_one": "{{license}} · {{count}} tag",
     "sharingSummary_few": "{{license}} · {{count}} tagi",
     "sharingSummary_many": "{{license}} · {{count}} tagów",
@@ -85,6 +89,7 @@
     "enableLabel": "Zezwól uczestnikom na opinie",
     "enableHelp": "Na koniec quizu, przy każdym rozegraniu, pojawia się panel oceny.",
     "title": "Opinie uczestników",
+    "off": "Wyłączone",
     "empty": "Brak opinii.",
     "anonymous": "Anonimowo",
     "starsAriaLabel": "{{value}} na 5",
@@ -151,7 +156,8 @@
       "text": "Tekst",
       "image": "Obraz",
       "columns2": "2 kolumny",
-      "columns3": "3 kolumny"
+      "columns3": "3 kolumny",
+      "media": "Medium"
     },
     "dragBlock": "Przeciągnij, aby zmienić kolejność bloku",
     "removeBlock": "Usuń blok",
@@ -190,9 +196,13 @@
     "videoSound": "Dźwięk",
     "videoSoundHint": "Odtwarza dźwięk filmu. Wyłączone: wyciszony, a slajd może mieć własne nagranie.",
     "audioExcludesVideoSound": "Slajd ma już nagranie: jedno naraz. Usuń je, aby włączyć dźwięk filmu.",
-    "videoSoundExcludesAudio": "Film odtwarza własny dźwięk: bez dodatkowego nagrania. Wycisz film, aby dodać nagranie.",
     "variablesLegend": "Zmienne",
     "variablesHint": "Wpisz zmienną w nagłówku lub tekście: zostanie zastąpiona wszędzie, gdzie slajd jest wyświetlany. Zmienne quizu są wypełnione w podglądzie, zmienne pokoju — gdy quiz jest rozgrywany.",
+    "variablesInsert": "Wstaw zmienną",
+    "variablesGroup": {
+      "quiz": "Quiz",
+      "room": "Pokój"
+    },
     "variables": {
       "title": "Tytuł quizu",
       "description": "Opis quizu",
@@ -217,6 +227,19 @@
     "moveToDraft": {
       "title": "Zapisać ten pusty slajd?",
       "description": "Ten quiz jest opublikowany, więc można go zaprezentować w każdej chwili: slajd musi coś pokazywać. Przywróć quiz do szkicu, aby zapisać ten slajd w obecnej postaci, albo kontynuuj edycję."
+    },
+    "media": {
+      "onlyOne": "Jedno medium na slajd: jest już umieszczone.",
+      "state": {
+        "none": "Miejsce obrazu lub wideo slajdu: dodaj je na osi czasu poniżej.",
+        "image": "Obraz slajdu, wybrany na osi czasu poniżej, pojawia się tutaj.",
+        "video": "Wideo slajdu, wybrane na osi czasu poniżej, jest odtwarzane tutaj.",
+        "behind": "Medium slajdu jest za blokami: ten blok nie jest używany. Wybierz Medium na górze lub Medium na dole w Układach, aby umieścić je tutaj.",
+        "alone": "Medium slajdu jest wyświetlane samodzielnie: ten blok nie jest używany."
+      },
+      "imageBlock": "Dawny blok obrazu: obraz slajdu jest teraz jego medium, wybieranym na osi czasu i umieszczanym blokiem Medium.",
+      "adopt": "Ustaw jako medium slajdu",
+      "adoptRefused": "Slajd ma już obraz lub wideo."
     }
   },
   "formSaved": "Zapisano",
@@ -239,16 +262,19 @@
     "description": "„{{title}}” i jego pytania zostaną trwale usunięte. Tej operacji nie można cofnąć.",
     "confirmLabel": "Usuń"
   },
+  "archiveConfirm": {
+    "title": "Zarchiwizować ten quiz?",
+    "description": "„{{title}}” nie może być już prezentowany i znika z listy (jej filtr pokaże go ponownie). Przywrócony wraca jako szkic do ponownej publikacji.",
+    "confirmLabel": "Archiwizuj"
+  },
   "questionForm": {
     "typeLabel": "Typ",
     "promptLabel": "Treść pytania",
     "promptPlaceholder": "Twoje pytanie…",
-    "playbackLegend": "Odtwarzanie",
     "timingLegend": "Czas",
     "pointsLegend": "Punkty",
     "answerExplanationLabel": "Wyjaśnienie odpowiedzi (pokazywane z poprawną odpowiedzią)",
     "answerExplanationPlaceholder": "Dlaczego to poprawna odpowiedź… (opcjonalnie)",
-    "timeLimitLabel": "Czas (s)",
     "revealDelayLabel": "Wyświetlanie odpowiedzi (s)",
     "revealDelayPlaceholder": "auto",
     "revealDelayHint": "W trybie automatycznym: jak długo poprawna odpowiedź pozostaje na ekranie przed przejściem dalej. Puste = ustawienie instancji.",
@@ -377,28 +403,197 @@
     "optionActions": "Działania dla wariantu {{index}}",
     "removeOptionShort": "Usuń",
     "ticksCleared": "Typ się zmienił: poprawne odpowiedzi zostały wyczyszczone. Zaznacz je ponownie według nowych zasad.",
-    "explanationWritten": "Napisane",
-    "explanationEmpty": "Puste",
     "numericLegend": "Odpowiedź",
     "decimalsAllowed": "Ułamki dziesiętne są dozwolone: 3,14, 0,5…",
-    "timingSummary": "{{time}} s",
-    "timingSummaryStretched": "{{time}} s ({{total}} s z nagraniem)",
-    "revealDelayAuto": "wyświetlanie odpowiedzi: auto",
-    "revealDelaySummary": "wyświetlanie odpowiedzi: {{seconds}} s",
     "place_ordinal_one": "{{count}}.",
     "place_ordinal_two": "{{count}}.",
     "place_ordinal_few": "{{count}}.",
     "place_ordinal_other": "{{count}}.",
-    "mediaPositionLabel": "Obraz na dużym ekranie",
-    "mediaPositionHint": "Gdzie obraz znajduje się względem tekstu; odpowiedzi pozostają poniżej.",
     "mediaPosition": {
       "bottom": "Pod tekstem",
       "top": "Nad tekstem",
       "left": "Na lewo od tekstu",
-      "right": "Na prawo od tekstu"
+      "right": "Na prawo od tekstu",
+      "behind": "Za tekstem",
+      "alone": "Samo medium"
     },
     "revealDelayAutoValue": "auto ({{seconds}} s)",
-    "revealDelaySummaryAuto": "wyświetlanie odpowiedzi: {{seconds}} s (auto)"
+    "timingSummary": "{{time}} s"
+  },
+  "timeline": {
+    "legend": "Oś czasu",
+    "timeRow": "Przebieg: czytanie, odpowiedzi, wydłużenie",
+    "visualRow": "Kanał obrazu",
+    "audioRow": "Kanał dźwięku",
+    "minimum": "Minimalny czas {{seconds}} s",
+    "stretched": "Minimalny czas {{minimum}} s, wydłużony przez media do {{actual}} s",
+    "total": "Razem {{seconds}} s",
+    "manualShort": "Ręcznie",
+    "phase": {
+      "reading": "Czytanie: {{seconds}} s (ustawienie globalne)",
+      "listen": "Media grają, jeszcze bez odpowiedzi: {{seconds}} s",
+      "answers": "Odpowiedzi: minimalny czas {{seconds}} s",
+      "display": "Wyświetlanie: {{seconds}} s",
+      "manual": "Ręcznie: prowadzący przechodzi dalej",
+      "stretch": "Wydłużone przez media: +{{seconds}} s",
+      "tail": "Przerwa po mediach: {{seconds}} s (ustawienie quizu)",
+      "answer": "Pokazana poprawna odpowiedź: {{seconds}} s (tryb auto)",
+      "answerManual": "Pokazana poprawna odpowiedź: prowadzący przechodzi dalej"
+    },
+    "element": {
+      "image": "Obraz, przez cały czas",
+      "video": "Wideo, {{seconds}} s, z dźwiękiem",
+      "videoMuted": "Wideo, {{seconds}} s, bez dźwięku",
+      "videoLoop": "Wideo w pętli, przez cały slajd",
+      "audio": "Dźwięk, {{seconds}} s",
+      "unknown": "Długość jeszcze nieznana",
+      "reveal": "Stopniowe odsłanianie: {{seconds}} s",
+      "explanation": "Wyjaśnienie, pokazane z poprawną odpowiedzią",
+      "hint": "Podpowiedź, od {{seconds}} s"
+    },
+    "label": {
+      "image": "Obraz",
+      "video": "Wideo",
+      "reveal": "Odsłanianie",
+      "explanation": "Wyjaśnienie",
+      "hint": "Podpowiedź"
+    },
+    "add": "Dodaj element",
+    "clear": "Usuń wszystkie media",
+    "questionSettings": "Przebieg pytania",
+    "slideSettings": "Przebieg slajdu",
+    "minimumLabel": "Minimalny czas (s)",
+    "minimumHint": "To minimum: dłuższe medium wydłuża pytanie.",
+    "choice": {
+      "image": "Obraz",
+      "imageHint": "Kanał wizualny, przez cały czas",
+      "video": "Wideo",
+      "videoHint": "Obraz i dźwięk, na obu kanałach",
+      "audio": "Nagranie",
+      "audioHint": "Kanał audio",
+      "reveal": "Stopniowe odsłanianie",
+      "revealHint": "Obraz wyostrza się, gdy sala odpowiada",
+      "explanation": "Wyjaśnienie",
+      "explanationHint": "Pokazane z poprawną odpowiedzią",
+      "hint": "Podpowiedź",
+      "hintHint": "Pomoc w trakcie pytania w zamian za część punktów"
+    },
+    "refused": {
+      "imageChoice": "Wybór obrazów nie ma własnego obrazu ani wideo.",
+      "oneVisual": "Pytanie ma obraz albo wideo, nie oba naraz.",
+      "videoHasSound": "Nigdy wideo i nagranie razem: wideo ma własny dźwięk.",
+      "oneAudio": "Jedno nagranie na pytanie.",
+      "oneVideo": "Jedno wideo na slajd.",
+      "oneSlideAudio": "Jedno nagranie na slajd.",
+      "slideVideoSound": "Wideo odtwarza własny dźwięk: wycisz je, aby dodać nagranie.",
+      "revealNeedsImage": "Stopniowe odsłanianie: najpierw dodaj obraz.",
+      "oneReveal": "Jedno odsłanianie na obraz.",
+      "pollExplanation": "Ankieta nie ma poprawnej odpowiedzi do wyjaśnienia.",
+      "oneExplanation": "Jedno wyjaśnienie na pytanie.",
+      "oneHint": "Jedna podpowiedź na pytanie.",
+      "oneSlideVisual": "Slajd pokazuje obraz albo wideo, nie oba naraz."
+    },
+    "clearConfirm": {
+      "title": "Usunąć wszystkie media?",
+      "description": "Oś czasu zostanie opróżniona: obrazy, wideo i nagrania zostaną usunięte z tego kroku. Nic nie przepada, dopóki nie zapiszesz.",
+      "confirm": "Usuń"
+    },
+    "layout": "Układ",
+    "layoutNeedsVisual": "Układ: najpierw dodaj obraz lub wideo.",
+    "layoutApply": "Zastosuj",
+    "layoutDescription": {
+      "bottom": "Obraz lub wideo pod tekstem, odpowiedzi poniżej.",
+      "top": "Obraz lub wideo nad tekstem, odpowiedzi poniżej.",
+      "left": "Obraz lub wideo po lewej, tekst obok, odpowiedzi poniżej.",
+      "right": "Tekst po lewej, obraz lub wideo obok, odpowiedzi poniżej.",
+      "behind": "Tekst na obrazie lub wideo, czytelny dzięki kolorowi i obrysowi z bloku Tło; odpowiedzi poniżej, poza medium.",
+      "alone": "Obraz lub wideo zamiast tekstu: prowadzący czyta pytanie. Telefony nadal je pokazują; odpowiedzi zostają poniżej."
+    },
+    "picture": {
+      "behindNote": "Za tekstem medium wypełnia obszar: liczy się tylko punkt kadrowania.",
+      "fit": "Wypełnienie",
+      "fitValue": {
+        "contain": "Całość",
+        "cover": "Wypełnij ramkę"
+      },
+      "focus": "Punkt kadrowania",
+      "focusValue": {
+        "center": "Środek",
+        "top": "Góra",
+        "bottom": "Dół",
+        "left": "Lewo",
+        "right": "Prawo"
+      },
+      "reveal": "Stopniowe odsłanianie",
+      "revealHint": "Rozmyty podczas czytania pytania, obraz wyostrza się od otwarcia odpowiedzi – także na telefonach.",
+      "revealSeconds": "Ostry po (s)",
+      "ratio": "Proporcje",
+      "ratioFile": "Z pliku",
+      "ratioFree": "Dowolne",
+      "ratioFreeLabel": "Proporcje (S:W)",
+      "ratioInvalid": "Proporcje zapisuje się S:W, liczbami całkowitymi, od 1:4 do 4:1."
+    },
+    "view": {
+      "label": "Widok",
+      "timeline": "Oś czasu",
+      "list": "Lista"
+    },
+    "list": {
+      "caption": "Elementy: {{n}} · razem {{total}} s",
+      "element": "Element",
+      "channels": "Kanały",
+      "start": "Początek",
+      "length": "Czas trwania",
+      "note": "Co robi",
+      "open": "Otwórz",
+      "settings": "Ustaw",
+      "openNamed": "Otwórz: {{name}}",
+      "settingsNamed": "Ustaw: {{name}}",
+      "flow": "Przebieg",
+      "untilEnd": "do końca ({{seconds}} s)",
+      "stretches": "wydłuża pytanie o {{seconds}} s",
+      "channel": {
+        "time": "Czas",
+        "visual": "Obraz",
+        "audio": "Dźwięk"
+      }
+    },
+    "reset": "Przywróć wartości domyślne: {{type}}",
+    "resetConfirm": {
+      "title": "Przywrócić wartości domyślne dla „{{type}}”?",
+      "description": "Media zostaną usunięte, czas wróci do {{seconds}} s, a przebieg do ustawień domyślnych. Nic nie przepada, dopóki nie zapiszesz.",
+      "confirm": "Przywróć"
+    },
+    "slideKind": "Slajd",
+    "totalOpen": "{{seconds}} s, potem prowadzący przechodzi dalej",
+    "explanationHint": "Pokazywane na ekranach z poprawną odpowiedzią, dopóki ona jest widoczna.",
+    "hint": {
+      "text": "Tekst podpowiedzi",
+      "textPlaceholder": "Wybrano ją w 1923 roku",
+      "textHint": "{{n}} / {{max}} znaków",
+      "afterS": "Po otwarciu (s)",
+      "penalty": "Kara (%)",
+      "rule": "Odpowiedzi udzielone po podpowiedzi tracą {{penalty}} % punktów za pytanie; seria pozostaje nietknięta. Prowadzący może wyłączyć podpowiedzi.",
+      "image": "Obraz (opcjonalny, jeśli jest tekst)",
+      "video": "Wideo",
+      "audio": "Dźwięk",
+      "videoExcludesImage": "Wideo zajmuje miejsce obrazu.",
+      "videoExcluded": "Jest już obraz lub dźwięk: wideo daje jedno i drugie.",
+      "videoHasSound": "Wideo ma własny dźwięk.",
+      "soundRule": "Jego dźwięk gra raz przy odsłonięciu i ma pierwszeństwo przed dźwiękiem pytania; dłuższy niż czas odpowiedzi, wydłuża pytanie."
+    },
+    "removeElement": "Usuń ten element",
+    "embeddedVideo": "Osadzone wideo: można je tylko usunąć.",
+    "slideLayoutDescription": {
+      "bottom": "Obraz lub wideo pod blokami.",
+      "top": "Obraz lub wideo nad blokami.",
+      "left": "Obraz lub wideo po lewej, bloki obok.",
+      "right": "Bloki po lewej, obraz lub wideo obok.",
+      "behind": "Obraz lub wideo wypełnia slajd, bloki na nim (dotąd wideo slajdu).",
+      "alone": "Sam obraz lub wideo, zamiast bloków."
+    },
+    "conflicts": "Konflikty: {{n}}",
+    "conflictTip": "Dźwięk podpowiedzi zagłusza dźwięk pytania: w grze pierwszeństwo ma podpowiedź."
   },
   "preview": {
     "view": "Podgląd (widok uczestnika)",
@@ -437,7 +632,6 @@
     "altPlaceholder": "np. Robert Lewandowski w koszulce reprezentacji Polski",
     "altHelp": "Odczytywany na głos przez czytniki ekranu. Opisz, co przedstawia obraz, gdy jest częścią pytania; zostaw puste, gdy obraz jest dekoracją.",
     "slotsLegend": "Multimedia pytania",
-    "visualLabel": "Obraz",
     "audioLabel": "Nagranie",
     "kindImage": "Obraz",
     "kindVideo": "Film",
@@ -445,8 +639,6 @@
     "addImage": "Dodaj obraz",
     "addVideo": "Dodaj film",
     "addAudio": "Dodaj nagranie",
-    "videoExcludesAudio": "Film ma już własny dźwięk: bez dodatkowej ścieżki audio. Usuń film, aby dodać nagranie.",
-    "audioExcludesVideo": "Film ma już własny dźwięk: usuń nagranie, aby wybrać film.",
     "converting": "Konwertowanie…",
     "convertingPercent": "Konwertowanie… {{percent}} %",
     "cancelConversion": "Anuluj",
@@ -624,6 +816,74 @@
       "invalid_time": "limit czasu poza zakresem {{min}}–{{max}} sekund",
       "formula": "formuły nie są odczytywane",
       "invalid_content": "tekst za długi dla QuizDock"
+    }
+  },
+  "quizTimeline": {
+    "legend": "Przebieg quizu",
+    "total": "≈ {{time}} w trybie auto",
+    "count": "Pytania: {{questions}} · slajdy: {{slides}}",
+    "scale": "Skala",
+    "scaleValue": {
+      "time": "W skali",
+      "equal": "Jedno pole na krok"
+    },
+    "minute": "{{n}} min",
+    "slideTip": "Slajd „{{name}}” · {{time}}",
+    "questionTip": "P{{n}} · {{name}} · {{time}}"
+  },
+  "slideLayouts": {
+    "button": "Układy",
+    "title": "Układy slajdu",
+    "groupEmpty": "Ułóż pusty slajd",
+    "groupMedia": "Umieść medium",
+    "emptyOnly": "dla pustego slajdu: ten ma już treść",
+    "welcomeTitle": "Witamy w {title}",
+    "welcomeText": "Dołącz na {join} z PIN-em **{pin}**",
+    "layout": {
+      "title": "Tytuł",
+      "titleSubtitle": "Tytuł i podtytuł",
+      "titleText": "Tytuł i tekst",
+      "titleTextMedia": "Tytuł, tekst, medium",
+      "mediaTitle": "Medium i tytuł",
+      "textMedia": "Tekst | medium",
+      "mediaText": "Medium | tekst",
+      "behindTitle": "Tytuł na medium",
+      "mediaAlone": "Tylko medium",
+      "twoColumns": "Dwie kolumny",
+      "titleTwoColumns": "Tytuł, dwie kolumny",
+      "threeColumns": "Trzy kolumny",
+      "section": "Sekcja",
+      "quote": "Cytat",
+      "welcome": "Powitanie",
+      "mediaAbove": "Medium na górze",
+      "mediaBelow": "Medium na dole",
+      "mediaLeft": "Medium po lewej",
+      "mediaRight": "Medium po prawej",
+      "mediaBehind": "Medium w tle",
+      "mediaOnly": "Medium samo"
+    },
+    "description": {
+      "title": "Nagłówek, wyśrodkowany.",
+      "titleSubtitle": "Nagłówek i mniejszy pod nim.",
+      "titleText": "Nagłówek nad tekstem.",
+      "titleTextMedia": "Nagłówek, tekst, a pod nimi obraz lub wideo slajdu.",
+      "mediaTitle": "Obraz lub wideo, pod nim nagłówek.",
+      "textMedia": "Nagłówek i tekst po lewej, obraz lub wideo po prawej.",
+      "mediaText": "Obraz lub wideo po lewej, nagłówek i tekst po prawej.",
+      "behindTitle": "Obraz lub wideo wypełnia slajd, nad nim nagłówek.",
+      "mediaAlone": "Sam obraz lub wideo, na cały slajd.",
+      "twoColumns": "Dwie kolumny, każda z nagłówkiem i tekstem.",
+      "titleTwoColumns": "Nagłówek nad dwiema kolumnami tekstu.",
+      "threeColumns": "Trzy kolumny, każda z nagłówkiem i tekstem.",
+      "section": "Mały nagłówek nad dużym: początek części.",
+      "quote": "Duży tekst, pod nim po prawej jego źródło.",
+      "welcome": "Tytuł quizu i sposób dołączenia, uzupełniane przez lobby.",
+      "mediaAbove": "Blok Medium przechodzi na górę; pozostałe bloki zostają bez zmian.",
+      "mediaBelow": "Blok Medium przechodzi na koniec; pozostałe bloki zostają bez zmian.",
+      "mediaLeft": "Obraz lub wideo po lewej, obok wszystkich bloków; bloki zostają bez zmian.",
+      "mediaRight": "Obraz lub wideo po prawej, obok wszystkich bloków; bloki zostają bez zmian.",
+      "mediaBehind": "Obraz lub wideo wypełnia slajd za blokami.",
+      "mediaOnly": "Obraz lub wideo zamiast bloków; bloki zostają zachowane na później."
     }
   }
 }

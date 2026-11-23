@@ -1,21 +1,12 @@
-import type { SlideVariable } from '@quiz-dock/contracts';
-import { type ReactNode, createContext } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { joinHostLabel } from './join-url';
 import { roomLabel } from './room-components';
+import { VariablesContext, type VariableValues } from '@/lib/variables';
 import type { GameView } from './use-game-session';
 
-export type SlideVariableValues = Partial<Record<SlideVariable, string | number | null>>;
-
-/**
- * The room's variables a slide may hold (`{room}`, `{pin}`, `{players}`…), as this
- * screen knows them. The quiz's are filled by the server; without a provider (the
- * builder), the room's stay as written.
- */
-export const SlideVariablesContext = createContext<SlideVariableValues>({});
-
 /** The room's variables for a live screen, kept live (a count follows the room). */
-export function useRoomVariables(view: GameView, pin: string): SlideVariableValues {
+export function useRoomVariables(view: GameView, pin: string): VariableValues {
   const { t, i18n } = useTranslation('live');
   const now = new Date();
   // The question the slide leads to (1-based), and what is left from it.
@@ -34,7 +25,7 @@ export function useRoomVariables(view: GameView, pin: string): SlideVariableValu
   };
 }
 
-/** Gives the slides inside the room's variables. */
+/** Gives the slides and questions inside the room's variables. */
 export function RoomVariables({
   view,
   pin,
@@ -45,8 +36,8 @@ export function RoomVariables({
   children: ReactNode;
 }) {
   return (
-    <SlideVariablesContext.Provider value={useRoomVariables(view, pin)}>
+    <VariablesContext.Provider value={useRoomVariables(view, pin)}>
       {children}
-    </SlideVariablesContext.Provider>
+    </VariablesContext.Provider>
   );
 }

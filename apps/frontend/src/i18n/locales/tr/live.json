@@ -246,9 +246,16 @@
     "spaceKey": "Boşluk",
     "slideAuto": "{{seconds}} sn",
     "slideManual": "elle",
-    "motion": "Animasyonlar",
+    "motion": "Animasyonlu geçişler",
+    "motionOn": "Açık",
+    "motionOff": "Kapalı",
     "motionOnTooltip": "Ekranlar adımlar arasında hareket eder. Yavaş bir projeksiyon cihazı için sabitlemek üzere tıkla.",
     "motionOffTooltip": "Ekranlar geçiş olmadan değişir. Geçişleri geri getirmek için tıkla.",
+    "listed": "Ana sayfa",
+    "listedOn": "Gösteriliyor",
+    "listedOff": "Gizli",
+    "listedOnTooltip": "Ana sayfayı açan herkes bu odayı görür ve tek tıkla katılır.",
+    "listedOffTooltip": "Buraya yalnızca PIN, bağlantı veya QR kodu ile gelinir.",
     "pickerPlayed": "Bu odada oynananlar",
     "pickerPlayedAll": "Tüm quizler",
     "pickerPlayedFresh": "Henüz oynanmamış",
@@ -260,9 +267,9 @@
     "columnQuiz": "Quiz",
     "columnTotal": "Toplam",
     "columnActions": "İşlemler",
-    "audienceLanguageLabel": "Ekranların dili",
+    "audienceLanguageLabel": "Arayüz dili",
     "audienceLanguageQuiz": "Her quizin kendi dili",
-    "audienceLanguageHint": "Yansıtma ekranı ve katılımcı ekranları, tüm oda için: bir dil dersi İngilizce bir quizi kendi dilindeki arayüzle oynar.",
+    "audienceLanguageHint": "Yansıtma ekranının ve katılımcıların telefonlarının, tüm lobi için (kendi dilini seçen katılımcı onu korur). Quiz kendi dilinde kalır: bir dil dersi, arayüz kendi dilindeyken İngilizce bir quiz oynar.",
     "chooseQuiz": "Quizi seç",
     "chooseQuizTooltip": "Odanın sıradaki quizini seçin: katılımcılar kalır",
     "chooseQuizDescription": "Katılımcılar odada kalır; quiz herkes hazır olduğunda ya da 30 sn sonra kendiliğinden başlar.",
@@ -271,7 +278,9 @@
     "backToLobbyDescription": "Katılımcılar odada kalır; sıradaki quizi orada seçersiniz, kimse PIN'i yeniden yazmaz.",
     "noQuizYetHint": "Oda bekliyor: sıradaki quizi seçin.",
     "columnRank": "Sıra",
-    "seeResults": "Sonuçları gör"
+    "seeResults": "Sonuçları gör",
+    "stopMenu": "Diğer durdurma seçenekleri",
+    "roomSettings": "Lobi ayarları"
   },
   "screen": {
     "sessionUnavailable": "Oda kullanılamıyor.",
@@ -526,5 +535,21 @@
     "played": "oynandı",
     "save": "Seçki olarak kaydet",
     "saved": "Seçki olarak kaydedildi: aç"
+  },
+  "hint": {
+    "consoleLabel": "İpucu",
+    "switch": "İpuçları",
+    "planned": "İpucu {{seconds}}. sn’de · −%{{penalty}}",
+    "revealed": "İpucu gösterildi · −%{{penalty}}",
+    "reminder": "Bu sorunun bir ipucu var ve ipuçları kapalı.",
+    "enable": "Aç",
+    "onProjection": "Projeksiyonda",
+    "costs": "İpucu — bundan sonraki cevaplar sorunun puanının %{{penalty}}’ini kaybeder",
+    "show": "Göster",
+    "fold": "Kapat",
+    "label": "İpucu",
+    "penaltyApplied": "İpucu: −%{{penalty}} ({{lost}} puan eksik)",
+    "imageAlt": "İpucunun resmi",
+    "replay": "Tekrar oynat"
   }
 }

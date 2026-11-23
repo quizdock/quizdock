@@ -26,7 +26,8 @@ import type {
 
 import type {
   ActiveGameDto,
-  JoinAddressesDto
+  JoinAddressesDto,
+  LobbyListingDto
 } from '../model';
 
 import { customFetch } from '../../http';
@@ -146,6 +147,112 @@ export function useGameControllerMine<TData = Awaited<ReturnType<typeof gameCont
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGameControllerMineQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type gameControllerListedResponse200 = {
+  data: LobbyListingDto
+  status: 200
+}
+
+export type gameControllerListedResponseSuccess = (gameControllerListedResponse200) & {
+  headers: Headers;
+};
+;
+
+export type gameControllerListedResponse = (gameControllerListedResponseSuccess)
+
+export const getGameControllerListedUrl = () => {
+
+
+
+
+  return `/api/v1/games/listed`
+}
+
+export const gameControllerListed = async ( options?: Parameters<typeof customFetch>[1]): Promise<gameControllerListedResponse> => {
+
+  return customFetch<gameControllerListedResponse>(getGameControllerListedUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGameControllerListedQueryKey = () => {
+    return [
+    `/api/v1/games/listed`
+    ] as const;
+    }
+
+
+export const getGameControllerListedQueryOptions = <TData = Awaited<ReturnType<typeof gameControllerListed>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGameControllerListedQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof gameControllerListed>>> = ({ signal }) => gameControllerListed({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GameControllerListedQueryResult = NonNullable<Awaited<ReturnType<typeof gameControllerListed>>>
+export type GameControllerListedQueryError = unknown
+
+
+export function useGameControllerListed<TData = Awaited<ReturnType<typeof gameControllerListed>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof gameControllerListed>>,
+          TError,
+          Awaited<ReturnType<typeof gameControllerListed>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGameControllerListed<TData = Awaited<ReturnType<typeof gameControllerListed>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof gameControllerListed>>,
+          TError,
+          Awaited<ReturnType<typeof gameControllerListed>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGameControllerListed<TData = Awaited<ReturnType<typeof gameControllerListed>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGameControllerListed<TData = Awaited<ReturnType<typeof gameControllerListed>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof gameControllerListed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGameControllerListedQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

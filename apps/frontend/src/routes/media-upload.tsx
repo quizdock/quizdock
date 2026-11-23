@@ -58,6 +58,7 @@ export function MediaUpload({
   label,
   withDetails = true,
   preview = true,
+  removable = true,
   assetAlt = true,
 }: {
   value: string | null;
@@ -67,6 +68,8 @@ export function MediaUpload({
   label?: string;
   /** The media's credit (and an image's alt) to edit under it; not for a room's sound. */
   withDetails?: boolean;
+  /** Its own remove button; off where the page takes it away by another (a timeline panel). */
+  removable?: boolean;
   /** Its own thumbnail; off where the parent draws the media itself (an answer's tile). */
   preview?: boolean;
   /** The image's alt on the media; off where the use carries its own (an answer's, per language). */
@@ -156,10 +159,12 @@ export function MediaUpload({
           ) : (
             <audio src={src} controls preload="metadata" className="max-w-full" />
           )}
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange(null)}>
-            <Trash2 className="size-4" />
-            {t('media.remove')}
-          </Button>
+          {removable ? (
+            <Button type="button" variant="outline" size="sm" onClick={() => onChange(null)}>
+              <Trash2 className="size-4" />
+              {t('media.remove')}
+            </Button>
+          ) : null}
         </div>
       ) : progress !== null ? (
         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -234,7 +239,7 @@ export function MediaUpload({
  * and, for any kind, its credit (#53): who made it, under which licence, from
  * where, shown with the quiz and at the end of a session.
  */
-function MediaDetailsFields({ mediaId, withAlt }: { mediaId: string; withAlt: boolean }) {
+export function MediaDetailsFields({ mediaId, withAlt }: { mediaId: string; withAlt: boolean }) {
   const { t } = useTranslation('editor');
   const setAlt = useMediaControllerSetAlt();
   const setCredit = useMediaControllerSetCredit();

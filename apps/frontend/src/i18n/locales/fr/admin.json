@@ -165,6 +165,7 @@
     "AUTH_MODE": "Mode d’authentification",
     "DEMO_MODE": "Démo publique",
     "ALLOW_ANONYMOUS_PARTICIPANTS": "Participants sans compte",
+    "LOBBY_LISTING": "Salons ouverts sur la page d'accueil",
     "OIDC_ISSUER": "Fournisseur d’identité (émetteur)",
     "OIDC_CLIENT_ID": "Identifiant du client",
     "OIDC_CLIENT_SECRET": "Secret du client",

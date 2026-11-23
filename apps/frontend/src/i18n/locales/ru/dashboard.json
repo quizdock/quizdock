@@ -251,5 +251,7 @@
   "results": "Результаты",
   "newQuizBlank": "Пустой квиз",
   "newQuizFromTemplate": "Из шаблона…",
-  "newQuizImport": "Импортировать файл…"
+  "newQuizImport": "Импортировать файл…",
+  "duration": "≈ {{n}} мин",
+  "durationHint": "Примерная длительность в авторежиме"
 }

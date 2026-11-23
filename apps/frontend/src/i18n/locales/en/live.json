@@ -246,9 +246,16 @@
     "spaceKey": "Space",
     "slideAuto": "{{seconds}} s",
     "slideManual": "manual",
-    "motion": "Animations",
+    "motion": "Animated transitions",
+    "motionOn": "On",
+    "motionOff": "Off",
     "motionOnTooltip": "The screens move between steps. Click to keep them still, for a slow projector.",
     "motionOffTooltip": "The screens change without transitions. Click to bring the transitions back.",
+    "listed": "Home page",
+    "listedOn": "Listed",
+    "listedOff": "Not listed",
+    "listedOnTooltip": "Anyone opening the home page sees this lobby and joins it in one click.",
+    "listedOffTooltip": "Only the PIN, the link or the QR code lead here.",
     "pickerPlayed": "Played in this lobby",
     "pickerPlayedAll": "All quizzes",
     "pickerPlayedFresh": "Not played yet",
@@ -260,9 +267,9 @@
     "columnQuiz": "Quiz",
     "columnTotal": "Total",
     "columnActions": "Actions",
-    "audienceLanguageLabel": "Language of the screens",
+    "audienceLanguageLabel": "Interface language",
     "audienceLanguageQuiz": "Each quiz's language",
-    "audienceLanguageHint": "The projection and the participants' screens, for the whole lobby: a language class plays an English quiz with the interface in its own.",
+    "audienceLanguageHint": "For the projection and the participants' phones, in the whole lobby (a participant who picked their own language keeps it). The quiz stays in its own language: a language class plays an English quiz with the interface in its own.",
     "chooseQuiz": "Choose the quiz",
     "chooseQuizTooltip": "Pick the quiz the lobby plays next: the participants stay",
     "chooseQuizDescription": "The participants stay in the lobby; the quiz starts on its own once everyone is ready, or after 30 s.",
@@ -271,7 +278,9 @@
     "backToLobbyDescription": "The participants stay in the lobby, where you pick the next quiz; nobody types the PIN again.",
     "noQuizYetHint": "The lobby is waiting: choose the quiz it plays next.",
     "columnRank": "Rank",
-    "seeResults": "See the results"
+    "seeResults": "See the results",
+    "stopMenu": "More ways to stop",
+    "roomSettings": "Lobby settings"
   },
   "screen": {
     "sessionUnavailable": "Lobby unavailable.",
@@ -526,5 +535,21 @@
     "played": "played",
     "save": "Save as a selection",
     "saved": "Saved as a selection: open it"
+  },
+  "hint": {
+    "consoleLabel": "Hint",
+    "switch": "Hints",
+    "planned": "Hint at {{seconds}} s · −{{penalty}} %",
+    "revealed": "Hint out · −{{penalty}} %",
+    "reminder": "This question has a hint, and hints are off.",
+    "enable": "Turn on",
+    "onProjection": "On the projection",
+    "costs": "Hint — the answers from now on lose {{penalty}} % of the question's points",
+    "show": "Show",
+    "fold": "Fold",
+    "label": "Hint",
+    "penaltyApplied": "Hint: −{{penalty}} % ({{lost}} points less)",
+    "imageAlt": "The hint's picture",
+    "replay": "Replay"
   }
 }

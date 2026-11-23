@@ -117,6 +117,9 @@ const view = (partial: Partial<GameView>): GameView => ({
   youReady: false,
   sounds: null,
   motion: null,
+  listed: null,
+  hint: null,
+  hintsEnabled: true,
   roomName: null,
   hostName: null,
   standings: null,
@@ -496,9 +499,17 @@ describe('PlayerPage (client participant)', () => {
   describe('“Ready!” in the lobby (#104)', () => {
     const session = { pin: '771122', nickname: 'Bob', sessionToken: 't', playerId: 'p1' };
 
+    it('is not asked while the host has not picked the next quiz', async () => {
+      loadPlayerSession.mockReturnValue(session);
+      hookState.value = view({ state: GameState.Lobby, quizTitle: null });
+      renderApp('/join/771122');
+      await screen.findByText(/^dans /);
+      expect(screen.queryByRole('button', { name: 'Je suis prêt' })).toBeNull();
+    });
+
     it('says so once the server took it', async () => {
       loadPlayerSession.mockReturnValue(session);
-      hookState.value = view({ state: GameState.Lobby });
+      hookState.value = view({ state: GameState.Lobby, quizTitle: 'Capitales' });
       renderApp('/join/771122');
       fireEvent.click(await screen.findByRole('button', { name: 'Je suis prêt' }));
       await waitFor(() => expect(markReady).toHaveBeenCalledWith(true));
@@ -540,7 +551,7 @@ describe('PlayerPage (client participant)', () => {
 
     it('once ready, waits for the host and can take it back', async () => {
       loadPlayerSession.mockReturnValue(session);
-      hookState.value = view({ state: GameState.Lobby, youReady: true });
+      hookState.value = view({ state: GameState.Lobby, youReady: true, quizTitle: 'Capitales' });
       renderApp('/join/771122');
       expect(await screen.findByText(/Prêt — en attente de l’animateur/)).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: 'Pas encore' }));

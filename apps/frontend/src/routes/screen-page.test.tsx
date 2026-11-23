@@ -66,6 +66,9 @@ const view = (partial: Partial<GameView>): GameView => ({
   youReady: false,
   sounds: null,
   motion: null,
+  listed: null,
+  hint: null,
+  hintsEnabled: true,
   roomName: null,
   hostName: null,
   standings: null,
@@ -205,6 +208,44 @@ describe('ScreenPage: the branding hooks (lot 5)', () => {
     expect(container.querySelectorAll('.qd-band')).toHaveLength(1);
   });
 
+  it.each([
+    ['behind', 'laid over the picture, cropped to fill', false],
+    ['alone', 'in the text’s place: the prompt is only for screen readers', true],
+  ] as const)('a picture %s: %s', async (position, _, promptHidden) => {
+    const now = Date.now();
+    hookState.value = view({
+      state: GameState.Answering,
+      questionIndex: 0,
+      question: {
+        questionIndex: 0,
+        type: 'single_choice',
+        prompt: 'Which city is this?',
+        media: {
+          visual: { kind: 'image', url: '/m/paris.webp', alt: 'Paris' },
+          audio: null,
+          position,
+        },
+        options: [
+          { id: 'a', text: 'Lyon', color: 'red', shape: 'triangle' },
+          { id: 'b', text: 'Paris', color: 'blue', shape: 'diamond' },
+        ],
+        startedAt: now - 2_000,
+        endsAt: now + 18_000,
+      } as never,
+    });
+    const { container } = renderApp('/session/482913/projection');
+    const picture = await screen.findByRole('img', { name: 'Paris' });
+    const prompt = screen.getByRole('heading', { name: 'Which city is this?' });
+    expect(prompt.classList.contains('sr-only')).toBe(promptHidden);
+    expect(picture.classList.contains('object-cover')).toBe(position === 'behind');
+    // The answers stay outside the media, below it.
+    const answers = container.querySelector('.qd-answers')!;
+    expect(picture.contains(answers)).toBe(false);
+    expect(
+      picture.compareDocumentPosition(answers) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it('has no sound button of its own: the console controls its sound (#150)', async () => {
     hookState.value = view({ state: GameState.Lobby });
     renderApp('/session/482913/projection');
@@ -224,6 +265,33 @@ describe('ScreenPage: the branding hooks (lot 5)', () => {
     expect($('.qd-screen[data-state="LOBBY"] .qd-lobby .qd-join-pin')).toHaveTextContent('482913');
     expect($('.qd-join-qr svg')).not.toBeNull();
     expect($('.qd-roster')).toHaveTextContent('Ada');
+  });
+
+  it('the lobby rings green who said they are ready, their media loaded or not', async () => {
+    hookState.value = view({
+      state: GameState.Lobby,
+      players: [
+        { playerId: 'p1', nickname: 'Ada' },
+        { playerId: 'p2', nickname: 'Bob' },
+      ],
+      readiness: {
+        questionIndex: 0,
+        ready: 0,
+        total: 2,
+        lobby: true,
+        screens: { ready: 1, total: 1 },
+        players: [
+          { playerId: 'p1', ready: false, pressed: true },
+          { playerId: 'p2', ready: false, pressed: false },
+        ],
+      },
+    });
+    const { container } = renderApp('/session/482913/projection');
+    await screen.findByText('Ada');
+    const rings = [...container.querySelectorAll('.qd-roster li')].map((li) =>
+      li.innerHTML.includes('ring-success'),
+    );
+    expect(rings).toEqual([true, false]);
   });
 
   it('the standings after a question: the top three apart, then down to the tenth', async () => {

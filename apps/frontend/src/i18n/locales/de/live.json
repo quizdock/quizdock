@@ -246,9 +246,16 @@
     "spaceKey": "Leertaste",
     "slideAuto": "{{seconds}} s",
     "slideManual": "manuell",
-    "motion": "Animationen",
+    "motion": "Animierte Übergänge",
+    "motionOn": "An",
+    "motionOff": "Aus",
     "motionOnTooltip": "Die Bildschirme bewegen sich zwischen den Schritten. Klicken, um sie ruhig zu halten, für einen langsamen Beamer.",
     "motionOffTooltip": "Die Bildschirme wechseln ohne Übergänge. Klicken, um die Übergänge zurückzuholen.",
+    "listed": "Startseite",
+    "listedOn": "Angezeigt",
+    "listedOff": "Ausgeblendet",
+    "listedOnTooltip": "Wer die Startseite öffnet, sieht diesen Raum und tritt mit einem Klick bei.",
+    "listedOffTooltip": "Nur die PIN, der Link oder der QR-Code führen hierher.",
     "pickerPlayed": "In diesem Raum gespielt",
     "pickerPlayedAll": "Alle Quizze",
     "pickerPlayedFresh": "Noch nicht gespielt",
@@ -260,9 +267,9 @@
     "columnQuiz": "Quiz",
     "columnTotal": "Gesamt",
     "columnActions": "Aktionen",
-    "audienceLanguageLabel": "Sprache der Bildschirme",
+    "audienceLanguageLabel": "Sprache der Oberfläche",
     "audienceLanguageQuiz": "Sprache des jeweiligen Quiz",
-    "audienceLanguageHint": "Die Projektion und die Bildschirme der Teilnehmenden, für den ganzen Raum: Eine Sprachklasse spielt ein englisches Quiz mit der Oberfläche in ihrer eigenen Sprache.",
+    "audienceLanguageHint": "Die der Projektion und der Handys der Teilnehmenden, für die ganze Lobby (wer seine eigene gewählt hat, behält sie). Das Quiz bleibt in seiner Sprache: Ein Sprachkurs spielt ein englisches Quiz mit der Oberfläche in seiner eigenen.",
     "chooseQuiz": "Quiz wählen",
     "chooseQuizTooltip": "Das Quiz wählen, das der Raum als nächstes spielt: Die Teilnehmenden bleiben",
     "chooseQuizDescription": "Die Teilnehmenden bleiben im Raum; das Quiz startet von selbst, sobald alle bereit sind, oder nach 30 s.",
@@ -271,7 +278,9 @@
     "backToLobbyDescription": "Die Teilnehmenden bleiben im Raum, wo Sie das nächste Quiz wählen; niemand gibt die PIN erneut ein.",
     "noQuizYetHint": "Der Raum wartet: Wählen Sie das Quiz, das er als nächstes spielt.",
     "columnRank": "Rang",
-    "seeResults": "Ergebnisse ansehen"
+    "seeResults": "Ergebnisse ansehen",
+    "stopMenu": "Weitere Möglichkeiten zum Beenden",
+    "roomSettings": "Lobby-Einstellungen"
   },
   "screen": {
     "sessionUnavailable": "Raum nicht verfügbar.",
@@ -526,5 +535,21 @@
     "played": "gespielt",
     "save": "Als Auswahl speichern",
     "saved": "Als Auswahl gespeichert: öffnen"
+  },
+  "hint": {
+    "consoleLabel": "Hinweis",
+    "switch": "Hinweise",
+    "planned": "Hinweis bei {{seconds}} s · −{{penalty}} %",
+    "revealed": "Hinweis gezeigt · −{{penalty}} %",
+    "reminder": "Diese Frage hat einen Hinweis, und Hinweise sind aus.",
+    "enable": "Einschalten",
+    "onProjection": "Auf der Projektion",
+    "costs": "Hinweis – Antworten ab jetzt verlieren {{penalty}} % der Punkte der Frage",
+    "show": "Anzeigen",
+    "fold": "Einklappen",
+    "label": "Hinweis",
+    "penaltyApplied": "Hinweis: −{{penalty}} % ({{lost}} Punkte weniger)",
+    "imageAlt": "Das Bild des Hinweises",
+    "replay": "Erneut abspielen"
   }
 }

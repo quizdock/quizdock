@@ -246,9 +246,16 @@
     "spaceKey": "スペース",
     "slideAuto": "{{seconds}}秒",
     "slideManual": "手動",
-    "motion": "アニメーション",
+    "motion": "アニメーション付きの切り替え",
+    "motionOn": "オン",
+    "motionOff": "オフ",
     "motionOnTooltip": "ステップ間で画面が動きます。クリックすると、遅いプロジェクター向けに静止させます。",
     "motionOffTooltip": "画面はトランジションなしで切り替わります。クリックするとトランジションを戻します。",
+    "listed": "ホームページ",
+    "listedOn": "表示中",
+    "listedOff": "非表示",
+    "listedOnTooltip": "ホームページを開いた人は誰でもこのルームを見て、ワンクリックで参加できます。",
+    "listedOffTooltip": "PIN、リンク、QRコードからのみ参加できます。",
     "pickerPlayed": "このルームでの実施",
     "pickerPlayedAll": "すべてのクイズ",
     "pickerPlayedFresh": "未実施",
@@ -260,9 +267,9 @@
     "columnQuiz": "クイズ",
     "columnTotal": "合計",
     "columnActions": "操作",
-    "audienceLanguageLabel": "画面の言語",
+    "audienceLanguageLabel": "インターフェースの言語",
     "audienceLanguageQuiz": "各クイズの言語",
-    "audienceLanguageHint": "ルーム全体の投影画面と参加者の画面に適用されます。たとえば語学の授業で、英語のクイズを自分たちの言語のインターフェースで実施できます。",
+    "audienceLanguageHint": "投影画面と参加者のスマートフォンの言語で、ロビー全体に適用されます（自分の言語を選んだ参加者はそのままです）。クイズは自分の言語のままです：語学クラスは、インターフェースを自分の言語にして英語のクイズを遊べます。",
     "chooseQuiz": "クイズを選ぶ",
     "chooseQuizTooltip": "ルームで次に実施するクイズを選びます。参加者はそのまま残ります",
     "chooseQuizDescription": "参加者はルームに残ります。全員の準備が整うか、30秒経つと、クイズは自動的に始まります。",
@@ -271,7 +278,9 @@
     "backToLobbyDescription": "参加者はルームに残り、そこで次のクイズを選びます。PIN を入力し直す必要はありません。",
     "noQuizYetHint": "ルームは待っています。次に実施するクイズを選んでください。",
     "columnRank": "順位",
-    "seeResults": "結果を見る"
+    "seeResults": "結果を見る",
+    "stopMenu": "その他の停止方法",
+    "roomSettings": "ロビーの設定"
   },
   "screen": {
     "sessionUnavailable": "ルームを利用できません。",
@@ -526,5 +535,21 @@
     "played": "出題済み",
     "save": "セレクションとして保存",
     "saved": "セレクションとして保存しました：開く"
+  },
+  "hint": {
+    "consoleLabel": "ヒント",
+    "switch": "ヒント",
+    "planned": "ヒント {{seconds}} 秒 · −{{penalty}} %",
+    "revealed": "ヒント表示済み · −{{penalty}} %",
+    "reminder": "この問題にはヒントがありますが、ヒントはオフです。",
+    "enable": "オンにする",
+    "onProjection": "プロジェクション上",
+    "costs": "ヒント — これからの回答は問題の得点が {{penalty}} % 減ります",
+    "show": "表示",
+    "fold": "閉じる",
+    "label": "ヒント",
+    "penaltyApplied": "ヒント：−{{penalty}} %（{{lost}} 点減点）",
+    "imageAlt": "ヒントの画像",
+    "replay": "もう一度再生"
   }
 }
