@@ -55,6 +55,55 @@ export function lobbyTests(ctx: GameContext): void {
     expect(evt.playerCount).toBe(1);
   }, 15_000);
 
+  it('who comes and goes: told to the screens, the participants hear the count (#291)', async () => {
+    const host = connect({ localUser: 'Animateur' });
+    const { pin } = await host.emitWithAck('host:create', { quizId });
+    const spectator = connect();
+    await spectator.emitWithAck('spectator:join', { pin });
+    const ann = connect();
+    const seen: Record<string, string[]> = { host: [], spectator: [], ann: [] };
+    const all: [string, Socket][] = [
+      ['host', host],
+      ['spectator', spectator],
+      ['ann', ann],
+    ];
+    for (const [name, socket] of all) {
+      socket.on('player:joined', (p: { nickname: string }) => seen[name].push(`+${p.nickname}`));
+      socket.on('player:left', () => seen[name].push('-'));
+    }
+    let total = 0;
+    ann.on('lobby:count', (p: { total: number }) => (total = p.total));
+    const until = async (ok: () => boolean) => {
+      for (let i = 0; i < 100 && !ok(); i++) await new Promise((r) => setTimeout(r, 20));
+      expect(ok()).toBe(true);
+    };
+    await ann.emitWithAck('player:join', { pin, nickname: 'Ann' });
+    const bob = connect();
+    await bob.emitWithAck('player:join', { pin, nickname: 'Bob' });
+    await until(() => total === 2);
+    bob.disconnect();
+    await until(() => total === 1 && seen.host.includes('-') && seen.spectator.includes('-'));
+    expect(seen).toEqual({
+      host: ['+Ann', '+Bob', '-'],
+      spectator: ['+Ann', '+Bob', '-'],
+      ann: [],
+    });
+
+    // Her phone shows the big screen: a fresh list, then who comes, until it goes back.
+    const roster = new Promise<{ players: { nickname: string }[] }>((resolve) =>
+      ann.once('game:roster', resolve),
+    );
+    ann.emit('player:screen', { pin, on: true });
+    expect((await roster).players.map((p) => p.nickname)).toEqual(['Ann']);
+    await connect().emitWithAck('player:join', { pin, nickname: 'Cleo' });
+    await until(() => seen.ann.length === 1);
+    ann.emit('player:screen', { pin, on: false });
+    await ann.emitWithAck('player:ready', { pin, ready: true });
+    await connect().emitWithAck('player:join', { pin, nickname: 'Dan' });
+    await until(() => total === 3 && seen.host.includes('+Dan'));
+    expect(seen.ann).toEqual(['+Cleo']);
+  }, 15_000);
+
   it('one player per socket: joining the same room again is refused', async () => {
     const host = connect({ localUser: 'Animateur' });
     const { pin } = await host.emitWithAck('host:create', { quizId });

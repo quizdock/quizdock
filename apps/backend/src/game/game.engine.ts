@@ -47,6 +47,7 @@ import {
   READINESS_EVERY_MS,
   type GameId,
   ROOM_HASH_KEY,
+  screensRoom,
   gameKeys,
 } from './game.keys';
 import { gameHash, roomHash } from './game-hash';
@@ -627,36 +628,40 @@ export class GameEngine {
       }
       return;
     }
-    await this.sendReadiness(pin);
+    await this.sendReadiness(pin, true);
   }
 
   /**
    * Sends the readiness of the upcoming question now: to the screens in full, to the
-   * participants the lobby's count only. The step changes call it directly, once per
-   * step; it replaces a readiness still waiting.
+   * participants their count only (`{players}` in a text reads it): in the lobby each time,
+   * elsewhere when a device moved (`moved`, or one still waiting), not at every step.
+   * The step changes call it directly, once per step; it replaces a readiness still waiting.
    */
-  private async sendReadiness(pin: string): Promise<void> {
+  private async sendReadiness(pin: string, moved = false): Promise<void> {
     this.timers.cancel('readiness', pin);
+    const counts = moved || this.readinessSent.get(pin)?.waiting === true;
     this.readinessSent.set(pin, { at: Date.now(), waiting: false });
     const meta = await this.game.getMeta(pin);
     if (!meta || meta.state === GameState.Ended) return;
     const ref = refOf(pin, meta);
     const snapshot = await this.game.getSnapshot(meta.id);
-    if (!snapshot) return;
-    const payload = await this.readiness(
-      ref,
-      this.upcomingStep(meta, snapshot),
-      meta.state === GameState.Lobby,
-    );
-    if (!payload) return;
-    // The participants hear the lobby's count only: who said they are ready, not whose media.
-    const lobbyCount = payload.lobby
-      ? { ready: payload.players.filter((p) => p.pressed).length, total: payload.players.length }
+    const payload = snapshot
+      ? await this.readiness(ref, this.upcomingStep(meta, snapshot), meta.state === GameState.Lobby)
       : null;
+    // The participants hear a count only: who said they are ready, not whose media. Nobody
+    // is asked outside a lobby, nor in one whose quiz is not picked yet.
+    const count = payload?.lobby
+      ? { ready: payload.players.filter((p) => p.pressed).length, total: payload.players.length }
+      : counts || meta.state === GameState.Lobby
+        ? { ready: 0, total: await this.game.connectedCount(pin) }
+        : null;
+    if (!payload && !count) return;
     for (const socket of await this.server.in(pin).fetchSockets()) {
-      if (!(socket.data as { playerId?: string }).playerId) socket.emit('media:readiness', payload);
-      else if (lobbyCount) socket.emit('lobby:count', lobbyCount);
+      if (!(socket.data as { playerId?: string }).playerId) {
+        if (payload) socket.emit('media:readiness', payload);
+      } else if (count) socket.emit('lobby:count', count);
     }
+    if (!payload) return;
     // The last device waited for is ready (or the last one not ready left): go.
     if (meta.state === GameState.MediaLoading && payload.ready >= payload.total) {
       await this.endMediaWait(ref, waitedStep(meta));
@@ -1515,6 +1520,24 @@ export class GameEngine {
   }
 
   /**
+   * `player:screen`: a participant's phone shows the big screen (#104), or goes back to
+   * their answers. While it does, it hears who comes and goes like any screen, from a
+   * fresh list.
+   */
+  async setPlayerScreen(
+    socket: Emitter & { join(room: string): unknown; leave(room: string): unknown },
+    pin: string,
+    on: boolean,
+  ): Promise<void> {
+    if (!on) {
+      await socket.leave(screensRoom(pin));
+      return;
+    }
+    await socket.join(screensRoom(pin));
+    socket.emit('game:roster', { players: await this.connectedRoster(pin) });
+  }
+
+  /**
    * Progression de la question **sur les joueurs connectés** (§8). `answered` et
    * `total` ne comptent QUE les connectés : une réponse persiste dans le hash après
    * le départ de son auteur, donc comparer `hlen(answers)` au nombre de connectés
@@ -1559,11 +1582,13 @@ export class GameEngine {
       if ((s.data as { playerId?: string }).playerId === playerId) {
         s.emit('kicked', { minutes });
         await s.leave(pin);
+        await s.leave(screensRoom(pin));
       }
     }
     this.server
-      .to(pin)
+      .to(screensRoom(pin))
       .emit('player:left', { playerId, playerCount: await this.game.connectedCount(pin) });
+    await this.broadcastReadiness(pin);
     if (meta.state === GameState.Answering) {
       const progress = await this.connectedProgress(refOf(pin, meta), meta.currentIndex);
       const { answered, total, allAnswered } = progress;
@@ -1586,7 +1611,7 @@ export class GameEngine {
     const record = await this.game.setConnected(pin, playerId, false);
     if (!record) return;
     const playerCount = await this.game.connectedCount(pin);
-    this.server.to(pin).emit('player:left', { playerId, playerCount });
+    this.server.to(screensRoom(pin)).emit('player:left', { playerId, playerCount });
     await this.broadcastReadiness(pin);
 
     const meta = await this.game.getMeta(pin);

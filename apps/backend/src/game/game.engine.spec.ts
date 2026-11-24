@@ -1605,6 +1605,24 @@ describe('GameEngine (characterization)', () => {
       expect(console.of('media:readiness').at(-1)).toMatchObject({ ready: 4, total: 4 });
     });
 
+    it('the participants hear how many are here in a quiz without media too', async () => {
+      const ann = join('p1');
+      const console = join();
+      await startedAt(snapshotOf([question()]), { p1: player('Ann'), p2: player('Bob') });
+      await engine.handlePlayerDisconnect(pin, 'p2');
+      await eventually(async () => ann.of<{ total: number }>('lobby:count').at(-1)?.total === 1);
+      expect(ann.of('lobby:count').at(-1)).toEqual({ ready: 0, total: 1 });
+      expect(console.of('lobby:count')).toEqual([]);
+    });
+
+    it('a player thrown out leaves the count', async () => {
+      const ann = join('p1');
+      await seed(snapshotOf([question()]), {}, { p1: player('Ann'), p2: player('Bob') });
+      await engine.banPlayer(pin, HOST, 'p2', 5);
+      await eventually(async () => ann.of<{ total: number }>('lobby:count').at(-1)?.total === 1);
+      expect(ann.of('lobby:count').at(-1)).toEqual({ ready: 0, total: 1 });
+    });
+
     it('a lobby count still waiting when the game starts never goes out after it', async () => {
       const console = join();
       await seed(snapshotOf([question(), question()]), {}, { p1: player('Ann') });

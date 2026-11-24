@@ -154,7 +154,7 @@ up right away:
   their score starts at 0 and only counts the questions they could answer.
 - The **leaderboard** places them naturally (cumulative score); no special handling.
 
-> A late join reuses `player:joined` (to the room) → the list in the control window and
+> A late join reuses `player:joined` (to the screens, §9.1) → the list in the control window and
 > on the projection updates live.
 
 ---
@@ -229,8 +229,8 @@ implemented.
 
 - When a player socket disconnects: `connected=false` in the `players` hash (their seat
   and score are **kept** — they can come back through `player:reconnect`). Broadcast
-  `player:left { playerId, playerCount }`, where `playerCount` counts the **connected**
-  players.
+  `player:left { playerId, playerCount }` to the screens (§9.1), where `playerCount` counts
+  the **connected** players.
 - **A convergence fix (a bug).** "Everyone answered → early REVEAL" must compare the
   number of answers with the **number of connected players**, not with everyone who ever
   joined. Otherwise one departure hangs the question until the timer.
@@ -249,7 +249,7 @@ The wireframes (UI §3–§5) give the *look*; this matrix gives the *binding*.
 
 | State | Control (host) | Projection (spectator; a participant's copy follows it, #104) | Player | Triggering events |
 |---|---|---|---|---|
-| `LOBBY` | the player list + the session options (full capture, personalised tracking, chosen display name) + **Start**; in a room (#89) also **Change quiz** and the room's standings; one *Ready* count (#104) | PIN/QR + the player list (UI §4.1); in a room, the next quiz's title and the room's standings | "You are in the game" (UI §5.2); in a room, their rank in it, "Waiting for the next quiz", the last quiz still to rate, **Enable sound** when the next quiz has some; **Ready!** and *Share the projection* (#104) | `player:joined`/`left`, `room:standings`, `game:media` |
+| `LOBBY` | the player list + the session options (full capture, personalised tracking, chosen display name) + **Start**; in a room (#89) also **Change quiz** and the room's standings; one *Ready* count (#104) | PIN/QR + the player list (UI §4.1); in a room, the next quiz's title and the room's standings | "You are in the game" (UI §5.2); in a room, their rank in it, "Waiting for the next quiz", the last quiz still to rate, **Enable sound** when the next quiz has some; **Ready!** and *Share the projection* (#104) | `player:joined`/`left` (the screens), `lobby:count` (the players), `room:standings`, `game:media` |
 | `QUESTION_SHOW`* | question number + prompt | prompt + media, **answers hidden** | a minimal prompt, the grid **locked** | `question:start` (the reading window, `startedAt` in the future) |
 | `ANSWERING` | the `x/total` counter, **Reveal**/**Pause** | prompt + options (no right answer) + chrono + counter (UI §4.2) | the grid is live, then "Answer recorded ✓" (UI §5.3) | `question:start`, `answer:count`, `answer:ack` |
 | `REVEAL` | the right answer + distribution + leaderboard (UI §3.3) | the right answer + distribution | **personal** feedback: right or wrong, points, streak, rank (UI §5.4) | `question:reveal` (per socket), `leaderboard` |
@@ -266,6 +266,21 @@ The wireframes (UI §3–§5) give the *look*; this matrix gives the *binding*.
 > then `leaderboard` in the same step — a decision shipped in P3-BACK-7). The column
 > stays for the screen mapping (the control window and the projection show the
 > leaderboard after the reveal).
+
+### 9.1 Who comes and goes (#291)
+
+- `player:joined` and `player:left` go to the **screens** only: the consoles, the
+  projections and their copies. Sent to the participants too, filling a room of N was
+  O(N²) messages.
+- A **participant** gets the roster once, on joining or coming back (`game:roster`: their
+  own avatar and presence), and from then on the count: `lobby:count { ready, total }`, at
+  most every 100 ms per room (media §5.4), in **every** state as devices come and go. In the lobby, `total` is the
+  game's connected players; elsewhere, and in a lobby with no quiz picked, whoever is
+  connected, and `ready` is 0. The lobby's count and `{players}` in a slide or a question
+  read `total`.
+- A phone showing the **big screen** (#104) lists the players as a screen does: it says so
+  (`player:screen { pin, on }`), gets a fresh roster, and hears them come and go until it
+  goes back to the answers. Said again after a reconnection.
 
 ---
 

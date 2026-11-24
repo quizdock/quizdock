@@ -63,6 +63,23 @@ describe('useGameSession', () => {
     expect(managerListeners.has('reconnect')).toBe(false);
   });
 
+  it('a phone on the big screen says so, and again on each return to the room (#291)', async () => {
+    loadPlayerSession.mockReturnValue({ pin: '482913', sessionToken: 't' });
+    const said = () => emitted.filter((e) => e.event === 'player:screen').map((e) => e.payload);
+    const { result } = renderHook(() => useGameSession('482913', 'player'));
+    await waitFor(() => expect(emitted.some((e) => e.event === 'player:reconnect')).toBe(true));
+    expect(said()).toEqual([]);
+    act(() => result.current.showOnScreen(true));
+    act(() => managerListeners.get('reconnect')?.());
+    act(() => result.current.showOnScreen(false));
+    act(() => managerListeners.get('reconnect')?.());
+    expect(said()).toEqual([
+      { pin: '482913', on: true },
+      { pin: '482913', on: true },
+      { pin: '482913', on: false },
+    ]);
+  });
+
   it('takes on every event it follows, and lets every one go on unmount', async () => {
     const { unmount } = renderHook(() => useGameSession('482913', 'host'));
     await waitFor(() => expect(emitted.some((e) => e.event === 'host:attach')).toBe(true));

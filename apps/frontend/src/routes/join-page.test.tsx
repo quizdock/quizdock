@@ -6,6 +6,7 @@ import { renderApp } from '../test/harness';
 // on le neutralise (no-session) pour vérifier uniquement la navigation depuis /join.
 vi.mock('../game/use-game-session', () => ({
   useGameSession: () => ({
+    showOnScreen: () => undefined,
     view: { status: 'no-session', players: [], questionIndex: -1 },
     socket: null,
     markJoined: vi.fn(),
