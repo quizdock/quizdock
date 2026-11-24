@@ -30,6 +30,7 @@ import { AUTH_PROVIDER, type AuthProvider } from '../auth/auth-provider';
 import { isHost } from '../auth/roles';
 import { UsersService } from '../users/users.service';
 import { GameEngine } from './game.engine';
+import { screensRoom } from './game.keys';
 import { GameService } from './game.service';
 import { LISTING_WATCHERS } from './lobby-listing';
 import { noticeOf } from './game.types';
@@ -135,7 +136,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     const { pin } = await this.game.createSession(hostId, payload);
     socket.data.pin = pin;
     socket.data.isHostControl = true;
-    await socket.join(pin);
+    await socket.join([pin, screensRoom(pin)]);
     const meta = await this.game.getMeta(pin);
     if (meta) socket.emit('notice', noticeOf(meta));
     await this.engine.announceListing(pin);
@@ -158,7 +159,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
 
   /**
    * Joueur (invité ou participant authentifié) : rejoint le lobby d'une partie.
-   * Renvoie son `playerId` + un `sessionToken` de reconnexion, et notifie la room.
+   * Renvoie son `playerId` + un `sessionToken` de reconnexion, et notifie les écrans.
    * Sous `AUTH_MODE=oidc`, le jeton est exigé (RG-15) sauf partie en accès libre
    * (#57) — le service en décide, il lit la partie. Les PIN faux sont comptés.
    */
@@ -182,7 +183,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     socket.data.pin = res.pin;
     socket.data.playerId = res.playerId;
     await socket.join(res.pin);
-    this.server.to(res.pin).emit('player:joined', {
+    this.server.to(screensRoom(res.pin)).emit('player:joined', {
       playerId: res.playerId,
       nickname: res.nickname,
       playerCount: res.playerCount,
@@ -208,7 +209,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     await this.engine.requireHost(payload.pin, this.requireHostId(socket));
     socket.data.pin = payload.pin;
     socket.data.isHostControl = true;
-    await socket.join(payload.pin);
+    await socket.join([payload.pin, screensRoom(payload.pin)]);
     // L'hôte est de retour : annule la grâce/fenêtre de fin et reprend si la partie
     // était figée en HOST_DISCONNECTED (§7.3), avant de relire l'état pour ce socket.
     await this.engine.onHostAttached(payload.pin);
@@ -283,7 +284,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     if (!projection && payload.follow !== true) {
       socket.data.pairingCode = await this.freePairingCode(payload.pin);
     }
-    await socket.join(payload.pin);
+    await socket.join([payload.pin, screensRoom(payload.pin)]);
     await this.engine.sendStateTo(socket, payload.pin);
     // A projection counts among the devices waited for (a participant's copy does not).
     await this.engine.broadcastReadiness(payload.pin);
@@ -351,7 +352,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     socket.data.pin = session.pin;
     socket.data.playerId = session.playerId;
     await socket.join(session.pin);
-    this.server.to(session.pin).emit('player:joined', {
+    this.server.to(screensRoom(session.pin)).emit('player:joined', {
       playerId: session.playerId,
       nickname: record.nickname,
       playerCount: await this.game.connectedCount(session.pin),
@@ -372,6 +373,17 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     const me = playerOf(socket, payload.pin);
     if (!me) return;
     await this.engine.setAvatar(me.pin, me.playerId, payload.avatar);
+  }
+
+  /** `player:screen`: the phone shows the big screen (#104), or the answers again. */
+  @SubscribeMessage('player:screen')
+  async playerScreen(
+    @ConnectedSocket() socket: GameSocket,
+    @MessageBody() payload: { pin: string; on: boolean },
+  ): Promise<void> {
+    const me = playerOf(socket, payload.pin);
+    if (!me) return;
+    await this.engine.setPlayerScreen(socket, me.pin, payload.on === true);
   }
 
   /** `host:start` : l'hôte propriétaire lance la 1re question (LOBBY → ANSWERING). */

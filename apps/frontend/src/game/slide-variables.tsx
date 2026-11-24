@@ -16,7 +16,8 @@ export function useRoomVariables(view: GameView, pin: string): VariableValues {
     host: view.hostName ?? '',
     pin,
     join: joinHostLabel(view),
-    players: view.players.length,
+    // A participant hears the count, not who comes and goes (#291); a screen has the list.
+    players: view.lobbyCount?.total ?? view.players.length,
     question: next,
     total: view.totalQuestions,
     remaining: Math.max(0, view.totalQuestions - view.questionIndex),

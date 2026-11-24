@@ -107,8 +107,11 @@ Before that measure, the analysis read the code:
   to 176–194 ms at 500 and from 744–749 ms to 386–394 ms at 1000 (`load-test.mjs`);
   the backend's CPU over the wave from 2.1 s to 1.2–1.4 s at 500, 8.4 s to 4.2–4.4 s at
   1000.
-- **Left**: `player:joined` still goes to every device, about 93 % of what a join wave
-  sends now; who needs it is a protocol question (#291).
+- **Then** `player:joined` and `player:left` to the screens only (SPECIFICATIONS-LIVE §9.1),
+  the same wave: the messages to the participants from 135,000 to 8,000 at 500 players and
+  from 536,000 to 24,000 at 1000; `player:join` ack p95 from 184–190 ms to 90–99 ms and from
+  383–386 ms to 174–175 ms; the backend's CPU from 1.3–1.6 s to 0.8–1.1 s and from 4.3 s
+  to 2.2 s. The roster each participant gets on joining is still O(N) long.
 
 ### 3.4 Several processes — architecture
 

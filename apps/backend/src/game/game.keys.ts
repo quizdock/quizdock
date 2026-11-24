@@ -47,6 +47,13 @@ export type GameId = string & { readonly __gameId: unique symbol };
 /** A game hash: `game:` then the 32 hex characters of its id (never a PIN). */
 export const GAME_HASH_KEY = /^game:[0-9a-f]{32}$/;
 
+/**
+ * The Socket.IO room of a room's screens: the consoles, the projections and their copies,
+ * and a participant's phone while it shows the big screen. They are the ones told who
+ * comes and goes (`player:joined`, `player:left`), one by one (#291).
+ */
+export const screensRoom = (pin: string): string => `${pin}:screens`;
+
 /** A room hash: `room:` then its PIN. */
 export const ROOM_HASH_KEY = /^room:\d+$/;
 

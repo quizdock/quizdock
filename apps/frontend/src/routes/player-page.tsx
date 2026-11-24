@@ -169,7 +169,7 @@ function PlayerAnnouncer({ view }: { view: ReturnType<typeof useGameSession>['vi
 /** The participant's side of the session the page follows, in each state of the game. */
 function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof useGameSession> }) {
   const { t } = useTranslation('live');
-  const { view, socket, markJoined, markReady } = session;
+  const { view, socket, markJoined, markReady, showOnScreen } = session;
   const [nickname, setNickname] = useState(() => loadPlayerSession()?.nickname ?? loadNickname());
   const [joining, setJoining] = useState(false);
   // Asked only when the quiz plays sound: a remote player then gets it on their device.
@@ -181,6 +181,7 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
   const { muted } = useDeviceSound();
   // The big screen on this phone (#104), in place of the answers, and back.
   const [showScreen, setShowScreen] = useState(false);
+  useEffect(() => showOnScreen(showScreen), [showOnScreen, showScreen]);
   // "Share the projection": the link once copied (and its QR code) when the phone cannot share.
   const [sharedLink, setSharedLink] = useState<string | null>(null);
   // Leaving on purpose: the seat and the score are gone, so it is confirmed first.
@@ -1149,7 +1150,9 @@ function PlayerView({ pin, session }: { pin: string; session: ReturnType<typeof 
         <p className="text-muted-foreground flex items-center gap-1.5">
           <Users className="size-4" />
           {t('player.lobbyPlayers', { count: players })}
-          {view.lobbyCount ? <span>· {t('player.lobbyReady', view.lobbyCount)}</span> : null}
+          {view.lobbyCount && view.quizTitle ? (
+            <span>· {t('player.lobbyReady', view.lobbyCount)}</span>
+          ) : null}
         </p>
         {/* Between two quizzes of a room (#89): where they stand. */}
         {view.standings?.you ? (

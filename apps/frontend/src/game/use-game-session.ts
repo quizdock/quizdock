@@ -34,7 +34,7 @@ import type {
   ThemeValues,
 } from '@quiz-dock/contracts';
 import i18next from 'i18next';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FollowedPosition } from './media/question-media-stage';
 import {
   type GameSocket,
@@ -163,7 +163,7 @@ export interface GameView {
   hintsEnabled: boolean;
   /** Whether this participant said they are ready in the lobby (#104). */
   youReady: boolean;
-  /** The lobby's count, as a participant sees it: ready, out of how many (#104). */
+  /** The room's count, as a participant hears it: ready (in the lobby), out of how many (#104). */
   lobbyCount: { ready: number; total: number } | null;
   /** The room's own name (null = the default, "<host>'s room") and its host's name. */
   roomName: string | null;
@@ -330,6 +330,8 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
   const socketRef = useRef<GameSocket | null>(null);
   // A player's socket is in the room once joined or reconnected, until the connection drops.
   const attachedRef = useRef(false);
+  // A player's phone showing the big screen (#104), said again on each return to the room.
+  const onScreenRef = useRef(false);
   const pendingRef = useRef<{ questionIndex: number; answer: AnswerValue } | null>(null);
 
   useEffect(() => {
@@ -416,7 +418,10 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
         answerCount:
           prev.question?.questionIndex === p.questionIndex
             ? prev.answerCount
-            : { answered: 0, total: prev.answerCount?.total ?? prev.players.length },
+            : {
+                answered: 0,
+                total: prev.answerCount?.total ?? prev.lobbyCount?.total ?? prev.players.length,
+              },
       }));
     const onJoinUrl = (p: { baseUrl: string | null }) => patch({ joinBaseUrl: p.baseUrl });
     const onHint = (p: QuestionHintPayload) => patch({ hint: p });
@@ -645,6 +650,7 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
                   return;
                 }
                 attachedRef.current = true;
+                if (onScreenRef.current) sock.emit('player:screen', { pin, on: true });
                 flush();
               },
             );
@@ -672,6 +678,7 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
   /** Joueur : à appeler après un `player:join` réussi pour quitter `no-session`. */
   const markJoined = () => {
     attachedRef.current = true;
+    if (onScreenRef.current) socketRef.current?.emit('player:screen', { pin, on: true });
     setView((prev) => ({ ...prev, status: 'ready' }));
   };
   /**
@@ -688,6 +695,18 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
     pendingRef.current = { questionIndex, answer };
     setView((prev) => ({ ...prev, answerPending: true }));
   };
+  /**
+   * The participant's phone shows the big screen, or their answers again: the server tells
+   * it who comes and goes meanwhile, as it tells the screens (#291).
+   */
+  const showOnScreen = useCallback(
+    (on: boolean) => {
+      if (onScreenRef.current === on) return;
+      onScreenRef.current = on;
+      if (attachedRef.current) socketRef.current?.emit('player:screen', { pin, on });
+    },
+    [pin],
+  );
   /** The participant said (or took back) that they are ready (#104), once the server took it. */
   const markReady = (ready: boolean) => setView((prev) => ({ ...prev, youReady: ready }));
 
@@ -697,6 +716,7 @@ export function useGameSession(pin: string, role: LiveRole, opts: { follow?: boo
     pairingCode,
     markJoined,
     markReady,
+    showOnScreen,
     submitAnswer,
   };
 }

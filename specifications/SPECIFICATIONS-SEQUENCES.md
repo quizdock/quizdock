@@ -64,6 +64,7 @@ sequenceDiagram
     API-->>A: joined { sessionToken, playerId }
     API-->>F: player:joined { nickname, playerCount }
     API-->>P: player:joined { nickname, playerCount }
+    API-->>A: lobby:count { ready, total }
     opt full-capture mode
         API-->>A: notice { fullCapture, personalTracking, pickOwnName } (what the session records)
     end

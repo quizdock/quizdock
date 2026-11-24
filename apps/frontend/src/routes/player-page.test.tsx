@@ -13,6 +13,7 @@ const { fakeSocket, hookState, audio } = vi.hoisted(() => ({
 }));
 const markJoined = vi.fn();
 const markReady = vi.fn();
+const showOnScreen = vi.fn();
 const claimMediaElements = vi.fn();
 
 vi.mock('../game/media/media-pool', () => ({
@@ -48,6 +49,7 @@ vi.mock('../game/use-game-session', () => ({
     socket: fakeSocket,
     markJoined,
     markReady,
+    showOnScreen,
     submitAnswer: (questionIndex: number, answer: unknown) =>
       fakeSocket.emit('player:submit', { pin, questionIndex, answer }),
   }),
@@ -531,6 +533,18 @@ describe('PlayerPage (client participant)', () => {
       expect(await screen.findByText(/À suivre : Capitales/)).toBeInTheDocument();
       expect(screen.getByText(/5 joueurs dans le salon/)).toBeInTheDocument();
       expect(screen.getByText(/2 sur 5 prêts/)).toBeInTheDocument();
+    });
+
+    it('with no quiz picked yet: how many are here, and nobody asked to be ready', async () => {
+      loadPlayerSession.mockReturnValue(session);
+      hookState.value = view({
+        state: GameState.Lobby,
+        quizTitle: null,
+        lobbyCount: { ready: 0, total: 5 },
+      });
+      renderApp('/join/771122');
+      expect(await screen.findByText(/5 joueurs dans le salon/)).toBeInTheDocument();
+      expect(screen.queryByText(/sur 5 prêts/)).not.toBeInTheDocument();
     });
 
     it('a new avatar stays a draft until saved: the top bar keeps the room’s, Cancel goes back', async () => {

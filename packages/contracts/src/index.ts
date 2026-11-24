@@ -780,6 +780,11 @@ export interface ClientToServerEvents {
   'player:reconnect': (p: { sessionToken: string }, ack: (res: { ok: boolean }) => void) => void;
   /** Change la graine d'avatar (cosmétique) — accepté uniquement avant le démarrage. */
   'player:avatar': (p: { pin: string; avatar: string }) => void;
+  /**
+   * The participant's phone shows the big screen (#104), or their answers again: while it
+   * does, it hears `player:joined` / `player:left` like any screen, from a fresh roster.
+   */
+  'player:screen': (p: { pin: string; on: boolean }) => void;
   'player:submit': (p: { pin: string; questionIndex: number; answer: AnswerValue }) => void;
   /**
    * Avis de fin de partie : note Likert 1..5 + commentaire facultatif. Recevable
@@ -864,6 +869,7 @@ export interface ServerToClientEvents {
    * drapeaux décident du texte affiché aux participants.
    */
   notice: (p: SessionNotice) => void;
+  /** To the screens only (#291): the participants get the count, `lobby:count`. */
   'player:joined': (p: {
     playerId: string;
     nickname: string;
@@ -871,6 +877,7 @@ export interface ServerToClientEvents {
     avatar?: string;
     presence?: PlayerPresence;
   }) => void;
+  /** To the screens only, as `player:joined`. */
   'player:left': (p: { playerId: string; playerCount: number }) => void;
   /** Le joueur a été banni par l'hôte : son client affiche l'exclusion (durée en minutes). */
   kicked: (p: { minutes: number }) => void;
@@ -921,7 +928,10 @@ export interface ServerToClientEvents {
   'screen:paired': (p: { token: string }) => void;
   /** To a participant back in a lobby: whether they already said they are ready (#104). */
   'lobby:you': (p: { ready: boolean }) => void;
-  /** To the participants in a lobby (#104): how many said they are ready, out of how many. */
+  /**
+   * To the participants: how many said they are ready in the lobby (#104), out of how many.
+   * Outside a lobby, `total` is who is connected, and nobody is asked: `ready` is 0.
+   */
   'lobby:count': (p: { ready: number; total: number }) => void;
   /** The room's standings: at a podium, in the lobby of the next quiz, and when the room closes. */
   'room:standings': (p: RoomStandingsPayload) => void;

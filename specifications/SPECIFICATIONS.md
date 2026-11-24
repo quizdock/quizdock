@@ -326,6 +326,7 @@ points = P_max_time * (right_ticks - wrong_ticks) / total_right   (floored at 0)
 | `player:join` | `{ pin, nickname, authToken? }` | a player | Joins the LOBBY; returns a `sessionToken` and the **nickname the server retained** (the account's name when the host did not open the choice, a suffix when a homonym was already there). Refused without a valid token under `AUTH_MODE=oidc` unless the game is in open access, where everyone joins as a guest; refused once the host closed the game (RG-15) |
 | `host:sounds` | `{ pin, tick?, gong?, tickId?, gongId?, musicId?, musicLevel?, sfxLevel? }` | the host | The room's game sounds (#93), at any time; a sample or a track is a sound of the host's or the instance's |
 | `player:ready` | `{ pin, ready }` | a player | In the lobby (#104): ready, or not yet; the host sees one count, it never blocks the start |
+| `player:screen` | `{ pin, on }` | a player | Their phone shows the big screen (#104), or the answers again: told who comes and goes meanwhile (live §9.1) |
 | `spectator:join` | `{ pin, follow? }` | a projection | Joins read-only; `follow`: a participant's copy of the projection (#104) — never waited for, never a position source |
 | `player:peek` | `{ pin }` | a player | Before joining: whether the quiz plays sound and whether an account is needed (`participantAccess`) |
 | `player:reconnect` | `{ sessionToken }` | a player | Takes back their seat and score |
@@ -338,8 +339,9 @@ points = P_max_time * (right_ticks - wrong_ticks) / total_right   (floored at 0)
 |-------|---------|---------------|
 | `game:created` | `{ pin }` | the host |
 | `notice` | `{ fullCapture, personalTracking, pickOwnName, participantAccess, joinLocked }` | the room (a player on joining, before anything is collected — its wording follows the first flags and the access; the console reflects the access and the lock) |
-| `player:joined` | `{ playerId, nickname, playerCount }` | the host + the players (the lobby list) |
-| `player:left` | `{ playerId, playerCount }` | the room |
+| `player:joined` | `{ playerId, nickname, playerCount }` | the screens (live §9.1) |
+| `player:left` | `{ playerId, playerCount }` | the screens (live §9.1) |
+| `lobby:count` | `{ ready, total }` | the players: how many are ready in the lobby, out of how many; `ready` is 0 elsewhere (live §9.1) |
 | `game:state` | `{ state, questionIndex, totalQuestions }` | the room |
 | `question:start` | `{ questionIndex, type, prompt, media?, options:[{id,text,color,shape,media?}], multiSelect?, timeLimitS, basePoints, startedAt, endsAt }` | the room (**without** a correct flag) |
 | `answer:ack` | `{ accepted, receivedAt }` | the sending player |
